@@ -312,11 +312,6 @@ get_birds <- function(level, quiet, connection, force) {
   if (level == "state") count_zip <- "States.zip"
   if (level == "stop") count_zip <- "50-StopData.zip"
 
-  bird_count_filenames <- system.file("data-import",
-                                 paste0(level, "-dir.csv"),
-                                 package = "bbsBayes2") %>%
-    utils::read.csv()
-
   if(!quiet) message("Downloading count data (Task 1/3)")
   suppressMessages({
     full_path <- sbtools::item_file_download(
