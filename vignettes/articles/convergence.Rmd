@@ -1,0 +1,81 @@
+---
+title: "Assessing Model Convergence"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Assessing Model Convergence}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bbsBayes)
+library(ggplot2)
+```
+
+First make sure you have the BBS data downloaded
+```{r}
+have_bbs_data()
+```
+
+If not, install with `fetch_bbs_data()`
+```{r, eval = !have_bbs_data()}
+fetch_bbs_data()
+```
+
+Let's start by running a quick (and dirty) model looking at the Pacific Wren.
+
+```{r, eval = FALSE}
+m <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
+  prepare_data() %>%
+  prepare_model(model = "first_diff") %>%
+  run_model(iter_sampling = 20, iter_warmup = 20, chains = 2)
+
+```
+
+Or we can use the example model included in bbsBayes, `pacific_wren_model`
+```{r}
+m <- pacific_wren_model
+```
+
+
+Now we can calculate our convergence metrics
+```{r, warning=FALSE}
+conv <- get_convergence(m)
+conv
+```
+
+Wow, there are a *lot* of variables here.
+
+We can visualize this by transforming the data frame and using ggplot2
+
+```{r}
+tconv <- tidyr::pivot_longer(conv, cols = c(ess_bulk, ess_tail, rhat))
+
+ggplot(data = tconv, aes(x = variable, y = value, colour = variable_type)) +
+    geom_point() +
+    facet_wrap(~name, scales = "free_y") +
+    scale_colour_viridis_d(guide = FALSE)
+```
+
+We can also choose to extract only some variables. To see which ones are available,
+use the `get_model_vars()` function.
+
+```{r}
+get_model_vars(m)
+```
+
+
+We can also extract summary information from the model via the helper function `get_summary()` (wrapper for  `cmdstanr::summary()`)
+
+```{r, warning=FALSE}
+get_summary(m)
+```
+
+

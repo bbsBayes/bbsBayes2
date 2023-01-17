@@ -1,0 +1,84 @@
+url: http://steffilazerte.ca/bbsBayes/
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+
+articles:
+- title: Usage
+  contents:
+  - bbsBayes
+  - articles/workflow
+  - stratification
+  - articles/custom_stratification
+  - articles/models
+  - articles/convergence
+  - articles/advanced
+
+- title: Model runs
+  desc: Articles to illustrate the various models and for testing
+  contents:
+  - starts_with("articles/models_")
+
+reference:
+- title: BBS Data
+  desc: Functions for downloading and managing BBS data
+  contents:
+  - ends_with("bbs_data")
+
+- title: Processing data
+  desc: >
+    Functions for processing BBS data according to the type of models to be run
+  contents:
+  - stratify
+  - prepare_data
+  - prepare_spatial
+  - prepare_model
+
+- title: Stan models
+  desc: >
+    Functions for running Stan models via cmdstanr, as well as for saving and
+    evaluating convergence
+  contents:
+  - run_model
+  - save_model_run
+  - copy_model_file
+  - get_convergence
+  - get_model_vars
+  - get_summary
+
+- title: Indices and trends
+  desc: Functions for generating indices and trends from models
+  contents:
+  - generate_indices
+  - generate_trends
+
+- title: Plots
+  desc: Functions for plotting indices and trends
+  contents:
+  - plot_map
+  - plot_indices
+  - plot_geofacet
+
+- title: Helper functions
+  contents:
+  - search_species
+  - load_map
+  - assign_prov_state
+  - remove_cache
+
+- title: Included data
+  contents:
+  - bbs_data_sample
+  - bbs_strata
+  - bbs_models
+  - pacific_wren_model
+  - species_forms
+
+- title: "Deprecated/Defunct functions"
+  contents:
+  - bbsBayes-defunct
+  - bbsBayes-deprecated

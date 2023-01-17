@@ -1,0 +1,66 @@
+Package: bbsBayes2
+Type: Package
+Title: Hierarchical Bayesian Analysis of North American BBS Data
+Version: 0.0.0.9999
+Authors@R: c(person("Brandon P.M.", "Edwards", role = c("aut", "cre"),
+                     email = "brandonedwards3@cmail.carleton.ca"),
+              person("Adam C.", "Smith", role = "aut",
+                      email = "adam.smith2@canada.ca"),
+              person("Steffi", "LaZerte", role = "aut",
+                      email = "steffi@steffi.ca"))
+Imports:
+    backports (>= 1.4.1),
+    dplyr (>= 1.0.0),
+    ggrepel,
+    geofacet,
+    ggplot2 (>= 3.4.0),
+    magrittr,
+    mgcv,
+    posterior (>= 1.2.1),
+    purrr (>= 0.3.4),
+    rappdirs,
+    readr (>= 2.1.2),
+    rlang (>= 0.4.11),
+    sbtools,
+    sf (>= 1.0.8),
+    spdep (>= 1.2.7),
+    snakecase,
+    stringr,
+    tidyr (>= 1.2.0),
+    units (>= 0.8.0),
+    withr (>= 2.5.0)
+Depends: R (>= 3.5)
+SystemRequirements: CmdStan (https://mc-stan.org/users/interfaces/cmdstan)
+URL: https://github.com/bbsBayes/bbsBayes2
+BugReports: https://github.com/bbsBayes/bbsBayes2/issues
+NeedsCompilation: no
+Description: The North American Breeding Bird Survey (BBS) is a long-running
+  program that seeks to monitor the status and trends of the breeding birds in
+  North America. Since its start in 1966, the BBS has accumulated over 50 years 
+  of data for over 500 species of North American Birds. Given the temporal and 
+  spatial structure of the data, hierarchical Bayesian models are used to assess 
+  the status and trends of these 500+ species of birds. 'bbsBayes2' allows you to perform 
+  hierarchical Bayesian analysis of BBS data. You can run a full
+  model analysis for one or more species that you choose, or you can take
+  more control and specify how the data should be stratified, prepared
+  for 'JAGS', or modelled. The functions provided here allow you to replicate
+  analyses performed by the United State Geological Survey (USGS, see Link 
+  and Sauer (2011) <doi:10.1525/auk.2010.09220>) and Canadian Wildlife Service
+  (CWS, see Smith and Edwards (2020) <doi:10.1101/2020.03.26.010215>).
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.1
+Roxygen: list(markdown = TRUE)
+Suggests: 
+    cmdstanr,
+    covr,
+    knitr,
+    rmarkdown,
+    rnaturalearth,
+    rnaturalearthhires,
+    roxygen2,
+    testthat (>= 3.0.0)
+Additional_repositories: https://mc-stan.org/r-packages/, https://ropensci.r-universe.dev
+Config/testthat/edition: 3
+VignetteBuilder: knitr

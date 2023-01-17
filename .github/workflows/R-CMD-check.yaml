@@ -1,0 +1,80 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: R-CMD-check
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macos-latest,   r: 'release'}
+          - {os: windows-latest, r: 'release', rtools: '42'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-1'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          rtools-version: ${{ matrix.config.rtools }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+          extra-repositories: 'https://mc-stan.org/r-packages/ https://ropensci.r-universe.dev'
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            any::rcmdcheck
+            local::.
+            any::rnaturalearthhires
+          needs: check
+
+      - name: Install cmdstan
+        run: |
+          cmdstanr::check_cmdstan_toolchain(fix = TRUE)
+          cmdstanr::install_cmdstan(cores = 2)
+        shell: Rscript {0}
+
+      - name: Get cache dir
+        id: cache-dir
+        run: |
+          echo "CACHE_DIR=$(Rscript -e 'bbsBayes:::bbs_dir()' | sed -E 's/.*"(.+)"/\1/')" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache BBS data
+        id: cache-data
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.cache-dir.outputs.CACHE_DIR  }}
+          key: bbs-data-${{ secrets.BBS_DATA_VERSION }}
+
+      - name: Fetch BBS data
+        if: steps.cache-data.outputs.cache-hit != 'true'
+        run: bbsBayes:::fetch_bbs_data_internal(quiet = FALSE)
+        shell: Rscript {0}
+
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--ignore-vignettes", "--no-manual")'
+          build_args: 'c("--no-build-vignettes", "--no-manual")'
+          upload-snapshots: true

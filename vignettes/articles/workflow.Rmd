@@ -1,0 +1,110 @@
+---
+title: "Workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+We can visualize the bbsBayes workflow with this flow chart of functions.
+
+The functions are colour coded by category:
+
+- BBS Data - Blue
+- Data Prep - Pink
+- Modelling - Green
+- Exploring model trends and indices - Purple
+- General helper functions - Orange
+
+Functions which are connected by a **solid, black** arrow, indicate that the
+output of the first function is required as input to the second. For example,
+the output of `stratify()` is required input for `prepare_data()`.
+
+Functions which are connected by a **solid, grey** arrow, indicate that the
+output of the first function is *optional* input to the second. For example, the
+output of `grenerate_trends()` is an option input for `plot_geofacet()`.
+
+Functions which are connected by a **dotted** arrow indicate that the first 
+function can be used to create input for the second, but not necessarily 
+directly. For example, `fetch_bbs_data()` downloads BBS data which is used by
+`stratify()`, but it isn't an input. Alternatively, `load_map()` can load
+a spatial data file for a specific stratification which can be modified by the
+user and then used as input to `prepare_spatial()` or `generate_indices()`. 
+
+See the [Function Reference](../reference) for more details on how to use a
+particular function.
+
+```{r, echo = FALSE}
+library(DiagrammeR)
+grViz("digraph functions {
+
+  # a 'graph' statement
+  graph [overlap = true, fontsize = 10 compound = true, ranksep = 0.5]
+
+  # several 'node' statements
+  node [shape = rectangle, fontname = 'Courier New', 
+        fixedsize = false, style=filled, fillcolor=white]
+        
+  fetch [label = 'fetch_bbs_data()', fillcolor=lightblue]
+  remove [label = 'remove_cache()', fillcolor=orange]
+  loadbbs [label = 'load_bbs_data()', fillcolor=lightblue]
+  
+  search [label = 'search_species()', fillcolor=orange]
+  strat [label = 'stratify()', fillcolor=lightpink]
+  prepdata [label = 'prepare_data()', fillcolor=lightpink]
+  prepspatial [label = 'prepare_spatial()', fillcolor=lightpink]
+  prepmodel [label = 'prepare_model()', fillcolor=darkolivegreen3]
+  loadmap [label = 'load_map()', fillcolor=orange]
+  assign_ps [label = 'assign_prov_state()', fillcolor=orange]
+
+  runmodel [label = 'run_model()', fillcolor=darkolivegreen3]
+  modelfile [label = 'copy_model_file()', fillcolor=darkolivegreen3]
+  
+  conv[label = 'save_model_run()\nget_convergence()\nget_model_vars()\nget_summary()', fillcolor=darkolivegreen3]
+  
+  genind [label = 'generate_indices()', fillcolor=thistle]
+  gentre [label = 'generate_trends()', fillcolor=thistle]
+  geo [label = 'plot_geofacet()', fillcolor=thistle]
+  plotind [label = 'plot_indices()', fillcolor=thistle]
+  genmap [label = 'plot_map()', fillcolor=thistle]
+  
+
+  # several 'edge' statements
+  edge []
+  fetch->remove [style=dashed]
+  fetch->loadbbs [style=dashed]
+  fetch->strat [style=dashed]
+  
+  runmodel->remove [style=dashed]
+  
+  modelfile->prepmodel [style=dashed]
+  
+  search->strat [style=dashed]
+  strat->prepdata
+  prepdata->prepspatial
+  prepdata->prepmodel [color=grey50]
+  prepspatial->prepmodel [color=grey50]
+  prepmodel->runmodel
+  
+  
+  runmodel->conv
+  runmodel->genind
+  genind->gentre
+
+  loadmap->assign_ps  [style=dashed] 
+  loadmap->genind [style=dashed] 
+  loadmap->prepspatial [style=dashed] 
+  loadmap->strat [style=dashed] 
+  
+  genind->plotind
+  genind->geo
+  gentre->geo [color=grey50]
+  gentre->genmap
+  
+  # Invisible edges for arranging
+  prepspatial->conv [style=invis]
+}")
+```
+
+

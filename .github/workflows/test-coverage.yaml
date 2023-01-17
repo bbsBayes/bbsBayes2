@@ -1,0 +1,78 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+name: test-coverage
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+          extra-repositories: 'https://mc-stan.org/r-packages/ https://ropensci.r-universe.dev'
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            any::covr
+            local::.
+            any::rnaturalearthhires
+          needs: coverage
+
+      - name: Install cmdstan
+        run: |
+          cmdstanr::check_cmdstan_toolchain(fix = TRUE)
+          cmdstanr::install_cmdstan(cores = 2)
+        shell: Rscript {0}
+
+      - name: Get cache dir
+        id: cache-dir
+        run: |
+          echo "CACHE_DIR=$(Rscript -e 'bbsBayes:::bbs_dir()' | sed -E 's/.*"(.+)"/\1/')" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache BBS data
+        id: cache-data
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.cache-dir.outputs.CACHE_DIR  }}
+          key: bbs-data-${{ secrets.BBS_DATA_VERSION }}
+
+      - name: Fetch BBS data
+        if: steps.cache-data.outputs.cache-hit != 'true'
+        run: bbsBayes:::fetch_bbs_data_internal(quiet = FALSE)
+        shell: Rscript {0}
+
+      - name: Test coverage
+        run: |
+          covr::codecov(
+            quiet = FALSE,
+            clean = FALSE,
+            install_path = file.path(Sys.getenv("RUNNER_TEMP"), "package")
+          )
+        shell: Rscript {0}
+
+      - name: Show testthat output
+        if: always()
+        run: |
+          ## --------------------------------------------------------------------
+          find ${{ runner.temp }}/package -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-test-failures
+          path: ${{ runner.temp }}/package

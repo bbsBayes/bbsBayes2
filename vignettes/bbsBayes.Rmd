@@ -1,0 +1,199 @@
+---
+title: "Get Started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Get Started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Welcome! Let's get you started with bbsBayes.
+
+First we'll make sure we have the right software installed, we'll fetch the 
+breeding bird data, and then we'll run through some example workflows.
+
+
+
+## Install [cmdstanr](https://mc-stan.org/cmdstanr/)
+
+Because bbsBayes uses Stan to run the Bayesian models, we need to make
+sure we have cmdstanr and cmdstan both installed.
+
+It is recommended to run this is a fresh R session or restart your current
+session
+```{r, eval = FALSE}
+install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", 
+                                       getOption("repos")))
+```
+
+Now we should be able to use cmdstanr to install cmdstan
+```{r, eval = FALSE}
+cmdstanr::install_cmdstan()
+```
+
+Let's check that everything went as planned
+
+```{r}
+cmdstanr::cmdstan_path()
+cmdstanr::cmdstan_version()
+```
+
+
+> Problems? Check out cmdstanr's vignette on 
+> [Getting Started](https://mc-stan.org/cmdstanr/articles/cmdstanr.html)
+
+
+
+## Download BBS data
+
+Now we'll fetch the BBS data using functions included in bbsBayes.
+
+> Note that most bbsBayes functionality can be explored **without** downloading
+> BBS data by using the included sample data. Specify `sample_data = TRUE`
+> in the first `stratify()` step (see the next section). 
+
+First we'll load the package.
+```{r}
+library(bbsBayes)
+```
+
+There are four types of BBS data that can be downloaded:
+- Two levels `state` and `stop` (only `state` works with bbsBayes models)
+- Two releases `2020` and `2022`
+
+Unless you have a specific reason to need a different version, the default 
+(level `state` and release `2022`) is likely the one you want. However
+you can download all data sets and specify which one you wish to use in the
+`stratify()` step.
+
+```{r, eval = FALSE}
+fetch_bbs_data()                  # Default
+fetch_bbs_data(release = "2020")  # Specify a different release
+```
+
+
+```{r, echo = FALSE, eval = !have_bbs_data()}
+fetch_bbs_data()
+```
+
+## Workflow
+
+Now that you have cmdstanr installed and the BBS data downloaded, we'll walk
+through a general workflow for modelling species trends with bbsBayes.
+
+### Stratify the data
+
+The first step in any bbsBayes analysis is to stratify the data. 
+In this step we choose a stratification type as well as a species to explore. 
+
+```{r}
+s <- stratify(by = "bbs_usgs", species = "Snowy Owl")
+```
+
+We can also play around with the included sample data (Pacific Wrens)
+```{r}
+s <- stratify(by = "bbs_cws", sample_data = TRUE) # Only Pacific Wren
+```
+
+Stratifications included in bbsBayes are 
+`r paste0(names(bbs_strata), collapse = ",")`. See the articles on
+[stratifications](articles/stratification) and 
+[custom stratifications](articles/custom_stratification) for more details and 
+examples.
+
+Available species can be explore using the `search_species()` function.
+
+### Prepare the data
+
+Once we have stratified the data, we can now prepare it for use in a model. 
+In this step data will be filtered to omit routes with too few samples, etc.
+See `prepare_data()` for more details on how you can customize this step.
+
+```{r}
+p <- prepare_data(s)
+```
+
+### Prepare the model
+
+Next we will prepare the model parameters and initialization values.
+See `prepare_model()` for more details on how you can customize this step.
+
+```{r}
+md <- prepare_model(p, model = "first_diff")
+```
+
+
+### Run model
+
+Now we can run the model.
+
+The default `iter_sampling` and `iter_warmup` are 1000 and the default `chains`
+is 3. In the interest of speed for this example, we are using much lower values,
+but note that this almost certainly will result in problems with our model.
+
+```{r, eval = FALSE}
+m <- run_model(md, iter_sampling = 20, iter_warmup = 20, chains = 2)
+```
+
+```{r, echo = FALSE}
+m <- pacific_wren_model
+```
+
+### Explore the model outputs
+
+First we will generate indices according to different regional categories.
+By default these are `continent` and `stratum`. 
+
+```{r}
+i <- generate_indices(model_output = m)
+```
+
+We can visually explore these indices by accessing the `indices` item in the list
+
+```{r}
+i[["indices"]]
+```
+
+We can also plot these indicies. 
+
+```{r}
+p <- plot_indices(indices = i, add_observed_means = TRUE)
+```
+
+Note that we get one plot for each region and regional category, in this case
+that means one plot for the continent, and one for each stratum.
+
+```{r}
+names(p)
+```
+
+We can plot them individually by pulling a plot out of the list
+
+```{r}
+p[["continent"]]
+p[["CA_AB_10"]]
+```
+
+Next we can calculate the specific trends based on these indices
+
+```{r}
+t <- generate_trends(i)
+```
+
+We can plot these on a map
+
+```{r}
+plot_map(t)
+```
+
+```{r, include = FALSE}
+unlink(list.files(pattern = "^BBS_STAN_(\\w|\\d|-)+.(csv|rds)"))
+```
+
