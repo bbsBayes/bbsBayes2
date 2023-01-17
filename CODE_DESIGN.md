@@ -41,7 +41,7 @@ making collaboration and future modifications easier.
 - Here we use the backports package to get access to this function
   - We import backports package
   - We specify which function to import (see `.onLoad()` in
-  `R/bbsBayes-package.R`
+  `R/bbsBayes2-package.R`
   - We use `R_user_dir()` directly (no `pkg::`, see `bbs_dir()` in
   `R/fetch-bbs-data.R`
 
@@ -81,8 +81,8 @@ making collaboration and future modifications easier.
 - If possible, all examples and required data are created by `data-raw/data_XXX.R`
 - Currently, all data are exported, so usable by the user as well as functions.
 - For (stupid) reasons, exported data (e.g., `species_forms`) need to be
-referenced via `bbsBayes::data` (e.g., `bbsBayes::species_forms`) *inside*
-bbsBayes functions (See here for more details/other options:
+referenced via `bbsBayes2::data` (e.g., `bbsBayes2::species_forms`) *inside*
+bbsBayes2 functions (See here for more details/other options:
 https://coolbutuseless.github.io/2018/12/10/r-packages-internal-and-external-data/)
 
 ## Testing and examples
@@ -113,21 +113,21 @@ https://coolbutuseless.github.io/2018/12/10/r-packages-internal-and-external-dat
 - Use "grey60" rather than `grDevices::grey(0.6)` to avoid another dependency
 
 ## Deprecating, Defunct-ing, and other big changes
-- See `R/bbsBayes-defunct.R` for listing all defunct packages in a document page
-- See `R/bbsBayes-deprectated.R` for listing all deprecated packages in a document page
-- `dep_stop()` and `dep_warn()` are created in `bbsBayes-defunct.R` and can be used to 
+- See `R/bbsBayes2-defunct.R` for listing all defunct packages in a document page
+- See `R/bbsBayes2-deprectated.R` for listing all deprecated packages in a document page
+- `dep_stop()` and `dep_warn()` are created in `bbsBayes2-defunct.R` and can be used to 
   stop or warn on use of functions or arguments, depending. See `?plot_map`
   vs `?generate_map`
 - Because v3.0.0 of this package entails such a massive overhaul, I suggest 
-  using a start up message (in `R/bbsBayes-package.R`) to share this with users
+  using a start up message (in `R/bbsBayes2-package.R`) to share this with users
 - To deprecate a function
   - Add `dep_warn()` to the start of the function call and either continue, or
-    switch to new function (e.g., `R/bbsBayes-deprectated.R`)
-  - Add to documentation for `bbsBayes-deprecated`
+    switch to new function (e.g., `R/bbsBayes2-deprectated.R`)
+  - Add to documentation for `bbsBayes2-deprecated`
 - To make a function defunct
   - Add `dep_stop()` to the start of the function call and remove the rest of
-    the code (for clarity) (e.g., `R/bbsBayes-defunct.R`)
-  - Add to documentation for `bbsBayes-defunct`
+    the code (for clarity) (e.g., `R/bbsBayes2-defunct.R`)
+  - Add to documentation for `bbsBayes2-defunct`
 - To deprecate/defunct an argument
   - Move the argument in the `function()` call to the end of the list, without
     a default

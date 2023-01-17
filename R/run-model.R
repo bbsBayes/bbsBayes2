@@ -17,7 +17,7 @@
 #' @param k Numeric. The K-fold group to run for cross-validation. Only relevant
 #'   if folds defined by `prepare_model(calculate_cv = TRUE)` or custom
 #'   definition. See `?prepare_model` or the [models
-#'   article](https://steffilazerte.ca/bbsBayes/articles/models.html) for more
+#'   article](https://bbsBayes.github.io/bbsBayes2/articles/models.html) for more
 #'   details.
 #' @param output_basename Character. Name of the files created as part of the
 #'   Stan model run and the final model output RDS file if `save_model = TRUE`.
@@ -49,7 +49,7 @@
 #' Here is where you can tweak how the model will be run (iterations etc.).
 #'
 #' See the [models
-#' article](https://steffilazerte.ca/bbsBayes/articles/models.html) for more
+#' article](https://bbsBayes.github.io/bbsBayes2/articles/models.html) for more
 #' advanced examples and explanations.
 #'
 #' @return A list containing the model output (`model_fit`), meta data for the
@@ -128,7 +128,7 @@ run_model <- function(model_data,
   meta_data <- append(
     meta_data,
     list("run_date" = Sys.time(),
-         "bbsBayes_version" = as.character(utils::packageVersion("bbsBayes")),
+         "bbsBayes2_version" = as.character(utils::packageVersion("bbsBayes2")),
          "cmdstan_path" = cmdstanr::cmdstan_path(),
          "cmdstan_version" = cmdstanr::cmdstan_version()))
 

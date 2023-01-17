@@ -49,7 +49,7 @@ strata_bbs_usgs <- "data-raw/maps_orig/BBS_USGS_strata.shp" %>%
 
 
 st_write(strata_bbs_usgs,
-         file.path(system.file("maps", package = "bbsBayes"),
+         file.path(system.file("maps", package = "bbsBayes2"),
                    "bbs_usgs_strata.gpkg"), append = FALSE)
 
 # CWS ----------------------------------------------------
@@ -76,7 +76,7 @@ strata_bbs_cws <- strata_bbs_usgs %>%
 #                arrange(s, strata_name), tolerance = 0.1)
 
 st_write(strata_bbs_cws,
-         file.path(system.file("maps", package = "bbsBayes"),
+         file.path(system.file("maps", package = "bbsBayes2"),
                    "bbs_cws_strata.gpkg"), append = FALSE)
 
 
@@ -97,7 +97,7 @@ strata_bcr <- "data-raw/maps_orig/BBS_BCR_strata.shp" %>%
 # waldo::compare(arrange(load_internal_file("bbs_strata", "bcr"), strata_name),
 #                arrange(s, strata_name), tolerance = 0.1)
 
-st_write(strata_bcr, file.path(system.file("maps", package = "bbsBayes"),
+st_write(strata_bcr, file.path(system.file("maps", package = "bbsBayes2"),
                                "bcr_strata.gpkg"), append = FALSE)
 
 # Latitude/Longitude -------------------------------------------------
@@ -117,7 +117,7 @@ strata_latlong <- "data-raw/maps_orig/BBS_LatLong_strata.shp" %>%
 #                strata_name),
 #                arrange(s, strata_name), tolerance = 0.1)
 
-st_write(strata_latlong, file.path(system.file("maps", package = "bbsBayes"),
+st_write(strata_latlong, file.path(system.file("maps", package = "bbsBayes2"),
                                    "latlong_strata.gpkg"), append = FALSE)
 
 
@@ -125,7 +125,7 @@ st_write(strata_latlong, file.path(system.file("maps", package = "bbsBayes"),
 
 # Cannot include Mexico right now, as there is overlap between NL Canada and NL
 # Mexico
-prov_state_names <- bbsBayes:::format_ne_states() %>%
+prov_state_names <- bbsBayes2:::format_ne_states() %>%
   st_drop_geometry()
 
 strata_prov_state <- "data-raw/maps_orig/BBS_ProvState_strata.shp" %>%
@@ -154,7 +154,7 @@ strata_prov_state <- "data-raw/maps_orig/BBS_ProvState_strata.shp" %>%
 #   arrange(s, prov_state), tolerance = 0.1)
 
 
-st_write(strata_prov_state, file.path(system.file("maps", package = "bbsBayes"),
+st_write(strata_prov_state, file.path(system.file("maps", package = "bbsBayes2"),
                                       "prov_state_strata.gpkg"), append = FALSE)
 
 

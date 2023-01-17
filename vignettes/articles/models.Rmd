@@ -1,5 +1,5 @@
 ---
-title: "Models in bbsBayes"
+title: "Models in bbsBayes2"
 ---
 
 ```{r, include = FALSE}
@@ -10,10 +10,10 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(bbsBayes)
+library(bbsBayes2)
 ```
 
-There are 9 types of models that can be run with bbsBayes. For a quick overview
+There are 9 types of models that can be run with bbsBayes2. For a quick overview
 you can access the `bbs_models` data frame.
 
 ```{r}
@@ -66,7 +66,7 @@ p <- prepare_data(s)
 For cross fold validation, you'll need to define which observations are part 
 of a test set and which are part of a training set.
 
-To use the method implemented by bbsBayes, we'll specify `calculate_cv` as
+To use the method implemented by bbsBayes2, we'll specify `calculate_cv` as
 `TRUE` during the `prepare_model()` step. By default, this will prepare 10 test
 sets (K-folds, `cv_k`) using `obs_n` as the grouping variable (`cv_fold_groups`)
 and omitting groups with only single observations (`cv_omit_singles`).

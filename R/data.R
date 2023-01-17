@@ -24,14 +24,14 @@
 #'
 "bbs_data_sample"
 
-#' Stan models included in bbsBayes
+#' Stan models included in bbsBayes2
 #'
-#' These models are included in bbsBayes. The model files themselves can be
-#' found by running `system.file("models", package = "bbsBayes")`.
+#' These models are included in bbsBayes2. The model files themselves can be
+#' found by running `system.file("models", package = "bbsBayes2")`.
 #'
 #' To create a custom Stan model, see `copy_model_file()` and the `model_file`
 #' argument of `prepare_model()`. See also the [models
-#' article](https://steffilazerte.ca/bbsBayes/articles/models.html) for more
+#' article](https://bbsBayes.github.io/bbsBayes2/articles/models.html) for more
 #' details.
 #'
 #' @format ## `bbs_models`
@@ -57,7 +57,7 @@
 
 #' List of included strata
 #'
-#' List of strata included in bbsBayes. Each list item contains a data frame
+#' List of strata included in bbsBayes2. Each list item contains a data frame
 #' describing the strata for that stratification (name, area, country, etc.)
 #'
 #' @format ## `bbs_strata`

@@ -2,7 +2,7 @@
 % Please edit documentation in R/fetch-bbs-data.R
 \name{remove_cache}
 \alias{remove_cache}
-\title{Remove bbsBayes cache}
+\title{Remove bbsBayes2 cache}
 \usage{
 remove_cache(type = "bbs_data", level, release)
 }

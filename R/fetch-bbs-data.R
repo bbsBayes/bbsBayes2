@@ -27,7 +27,7 @@
 #' a route. In contrast BBS `stop` level counts provides stop-level data
 #' beginning in 1997, which includes counts for each stop along routes
 #' individually. **Note that stop-level data is not currently supported by the
-#' modelling utilities in bbsBayes.**
+#' modelling utilities in bbsBayes2.**
 #'
 #' There are two releases for each type of data, `2020` and `2022`. By default
 #' all functions use the most recent release unless otherwise specified. For
@@ -59,9 +59,9 @@ fetch_bbs_data <- function(level = "state",
 
   # Print Terms of Use
   terms <- readChar(system.file(paste0("data-terms-",release),
-                                package = "bbsBayes"),
+                                package = "bbsBayes2"),
                     file.info(system.file(paste0("data-terms-",release),
-                                          package = "bbsBayes"))$size)
+                                          package = "bbsBayes2"))$size)
 
   message(terms)
   agree <- readline(prompt = "Type \"yes\" (without quotes) to agree: ")
@@ -88,7 +88,7 @@ fetch_bbs_data_internal <- function(level = "state", release = 2022,
   routes <- get_routes(release, quiet, connection, force)
   weather <- get_weather(quiet, connection, force)
   regs <- readr::read_csv(
-    system.file("data-import", "regs.csv", package = "bbsBayes"),
+    system.file("data-import", "regs.csv", package = "bbsBayes2"),
     col_types = "cnncc", progress = FALSE) %>%
     dplyr::rename_with(snakecase::to_snake_case) %>%
     dplyr::rename(country_num = "countrynum", state_num = "statenum")
@@ -180,7 +180,7 @@ get_sb_id <- function(release) {
 
 bbs_dir <- function(quiet = TRUE) {
 
-  d <- R_user_dir("bbsBayes", which = "data") #imported from backports pkg
+  d <- R_user_dir("bbsBayes2", which = "data") #imported from backports pkg
 
   if(!dir.exists(d)) {
     if(!quiet) message(paste0("Creating data directory at ", d))
@@ -192,7 +192,7 @@ bbs_dir <- function(quiet = TRUE) {
   d
 }
 
-#' Remove bbsBayes cache
+#' Remove bbsBayes2 cache
 #'
 #' Remove all or some of the data downloaded via `fetch_bbs_data()` as well as
 #' model executables created by `cmdstanr::cmdstan_model()` via `run_model()`.
@@ -263,7 +263,7 @@ remove_cache <- function(type = "bbs_data", level, release) {
 #' Check whether BBS data exists locally
 #'
 #' Use this function to check if you have the BBS data downloaded and where
-#' bbsBayes is expecting to find it. If it returns `FALSE`, the data is not
+#' bbsBayes2 is expecting to find it. If it returns `FALSE`, the data is not
 #' present; use `fetch_bbs_data()` to retrieve it.
 #'
 #' @param level Character. BBS data to check, one of "all", "state", or "stop".
@@ -314,7 +314,7 @@ get_birds <- function(level, quiet, connection, force) {
 
   bird_count_filenames <- system.file("data-import",
                                  paste0(level, "-dir.csv"),
-                                 package = "bbsBayes") %>%
+                                 package = "bbsBayes2") %>%
     utils::read.csv()
 
   if(!quiet) message("Downloading count data (Task 1/3)")
@@ -402,7 +402,7 @@ combine_species <- function(birds, species, quiet = FALSE) {
 
   # Species list - Rename unidentified to name of combo group
   s <- species %>%
-    dplyr::left_join(bbsBayes::species_forms, by = c("aou" = "aou_unid")) %>%
+    dplyr::left_join(bbsBayes2::species_forms, by = c("aou" = "aou_unid")) %>%
     dplyr::mutate(
       english = dplyr::if_else(
         !is.na(.data$english_combined), .data$english_combined, .data$english),
@@ -413,7 +413,7 @@ combine_species <- function(birds, species, quiet = FALSE) {
     dplyr::mutate(unid_combined = TRUE)
 
   # Birds - Pull out original, non-combined, non-unidentified species, & combine
-  sp_forms <- tidyr::unnest(bbsBayes::species_forms, "aou_id")
+  sp_forms <- tidyr::unnest(bbsBayes2::species_forms, "aou_id")
 
   b <- birds %>%
     dplyr::inner_join(dplyr::select(sp_forms, "aou_unid", "aou_id"),

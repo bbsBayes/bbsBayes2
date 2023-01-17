@@ -3,7 +3,7 @@
 \docType{data}
 \name{bbs_models}
 \alias{bbs_models}
-\title{Stan models included in bbsBayes}
+\title{Stan models included in bbsBayes2}
 \format{
 \subsection{\code{bbs_models}}{
 
@@ -31,12 +31,12 @@ A data frame with 9 rows and 3 columns:
 bbs_models
 }
 \description{
-These models are included in bbsBayes. The model files themselves can be
-found by running \code{system.file("models", package = "bbsBayes")}.
+These models are included in bbsBayes2. The model files themselves can be
+found by running \code{system.file("models", package = "bbsBayes2")}.
 }
 \details{
 To create a custom Stan model, see \code{copy_model_file()} and the \code{model_file}
-argument of \code{prepare_model()}. See also the \href{https://steffilazerte.ca/bbsBayes/articles/models.html}{models article} for more
+argument of \code{prepare_model()}. See also the \href{https://bbsBayes.github.io/bbsBayes2/articles/models.html}{models article} for more
 details.
 }
 \keyword{datasets}

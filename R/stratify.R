@@ -48,9 +48,9 @@
 #'   frame `species_forms`, for which species are set to be combined with which
 #'   other species.
 #'
-#'   See `vignette("stratification", package = "bbsBayes")` and the article
+#'   See `vignette("stratification", package = "bbsBayes2")` and the article
 #'   [custom
-#'   stratification](https://steffilazerte.ca/bbsBayes/articles/custom_stratification.html)
+#'   stratification](https://bbsBayes.github.io/bbsBayes2/articles/custom_stratification.html)
 #'   for more details.
 #'
 #' @return List of (meta) data.
@@ -245,7 +245,7 @@ stratify <- function(by,
     if(stratify_type == "subset") {
       meta_strata <- strata_custom
     } else {
-      meta_strata <- bbsBayes::bbs_strata[[stratify_by]]
+      meta_strata <- bbsBayes2::bbs_strata[[stratify_by]]
     }
 
     # Assing NA to all routes not in stratification (omitted below)

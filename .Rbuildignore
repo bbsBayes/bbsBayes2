@@ -1,7 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 testdata
-bbsBayes-report.html
 testfile.R
 ^CODE_OF_CONDUCT.md$
 ^CONTRIBUTING.md$
@@ -21,3 +20,4 @@ generate-map-abundance.R
 ^maps/BBS_*
 ^DEVTESTS$
 ^codecov\.yml$
+

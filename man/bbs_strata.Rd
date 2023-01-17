@@ -16,7 +16,7 @@ Contains \code{bbs_usgs}, \code{bbs_cws}, \code{bcr}, \code{latlong} and \code{p
 bbs_strata
 }
 \description{
-List of strata included in bbsBayes. Each list item contains a data frame
+List of strata included in bbsBayes2. Each list item contains a data frame
 describing the strata for that stratification (name, area, country, etc.)
 }
 \keyword{datasets}

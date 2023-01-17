@@ -89,8 +89,8 @@ forms separate, \code{combine_species_forms} can be set to \code{FALSE}. See the
 frame \code{species_forms}, for which species are set to be combined with which
 other species.
 
-See \code{vignette("stratification", package = "bbsBayes")} and the article
-\href{https://steffilazerte.ca/bbsBayes/articles/custom_stratification.html}{custom stratification}
+See \code{vignette("stratification", package = "bbsBayes2")} and the article
+\href{https://bbsBayes.github.io/bbsBayes2/articles/custom_stratification.html}{custom stratification}
 for more details.
 }
 \examples{

@@ -28,13 +28,11 @@ load_bbs_data <- function(level = "state", release = 2022,
   # Return sample data
   if(sample) {
     if(!quiet) message("Using sample BBS data...")
-    return(bbsBayes::bbs_data_sample)
+    return(bbsBayes2::bbs_data_sample)
   }
 
   # Return full data
   if(!quiet) message("Loading BBS data...")
-
-  bbs_dir <- rappdirs::app_dir(appname = "bbsBayes")
 
   f <- file.path(bbs_dir(), paste0("bbs_", level, "_data_", release, ".rds"))
 

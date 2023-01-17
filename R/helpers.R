@@ -92,7 +92,7 @@ load_map <- function(stratify_by = NULL, type = "strata") {
   if(type == "strata") {
     stratify_by <- check_strata(stratify_by, simple = TRUE)
 
-    f <- system.file("maps", package = "bbsBayes") %>%
+    f <- system.file("maps", package = "bbsBayes2") %>%
       list.files(pattern = paste0(stratify_by, "_strata"), full.names = TRUE)
 
     map <- sf::read_sf(dsn = f, quiet = TRUE)

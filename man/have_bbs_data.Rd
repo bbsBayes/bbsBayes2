@@ -20,7 +20,7 @@ Default "state".}
 }
 \description{
 Use this function to check if you have the BBS data downloaded and where
-bbsBayes is expecting to find it. If it returns \code{FALSE}, the data is not
+bbsBayes2 is expecting to find it. If it returns \code{FALSE}, the data is not
 present; use \code{fetch_bbs_data()} to retrieve it.
 }
 \examples{

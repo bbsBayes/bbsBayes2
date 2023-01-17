@@ -1,4 +1,4 @@
-url: http://steffilazerte.ca/bbsBayes/
+url: http://bbsBayes.github.io/bbsBayes2/
 template:
   bootstrap: 5
 
@@ -10,7 +10,7 @@ navbar:
 articles:
 - title: Usage
   contents:
-  - bbsBayes
+  - bbsBayes2
   - articles/workflow
   - stratification
   - articles/custom_stratification
@@ -80,5 +80,5 @@ reference:
 
 - title: "Deprecated/Defunct functions"
   contents:
-  - bbsBayes-defunct
-  - bbsBayes-deprecated
+  - bbsBayes2-defunct
+  - bbsBayes2-deprecated

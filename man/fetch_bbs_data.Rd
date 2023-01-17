@@ -47,7 +47,7 @@ bins, each of which contains cumulative counts from 10 of the 50 stops along
 a route. In contrast BBS \code{stop} level counts provides stop-level data
 beginning in 1997, which includes counts for each stop along routes
 individually. \strong{Note that stop-level data is not currently supported by the
-modelling utilities in bbsBayes.}
+modelling utilities in bbsBayes2.}
 
 There are two releases for each type of data, \code{2020} and \code{2022}. By default
 all functions use the most recent release unless otherwise specified. For

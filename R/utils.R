@@ -3,7 +3,7 @@ ext <- function(file) {
 }
 
 load_internal_file <- function(name, stratify_by = NULL) {
-  system.file(name, paste0(stratify_by, ".csv"), package = "bbsBayes") %>%
+  system.file(name, paste0(stratify_by, ".csv"), package = "bbsBayes2") %>%
     readr::read_csv(show_col_types = FALSE, progress = FALSE)
 }
 

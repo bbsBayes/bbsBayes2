@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-Welcome! Let's get you started with bbsBayes.
+Welcome! Let's get you started with bbsBayes2.
 
 First we'll make sure we have the right software installed, we'll fetch the 
 breeding bird data, and then we'll run through some example workflows.
@@ -23,7 +23,7 @@ breeding bird data, and then we'll run through some example workflows.
 
 ## Install [cmdstanr](https://mc-stan.org/cmdstanr/)
 
-Because bbsBayes uses Stan to run the Bayesian models, we need to make
+Because bbsBayes2 uses Stan to run the Bayesian models, we need to make
 sure we have cmdstanr and cmdstan both installed.
 
 It is recommended to run this is a fresh R session or restart your current
@@ -53,19 +53,19 @@ cmdstanr::cmdstan_version()
 
 ## Download BBS data
 
-Now we'll fetch the BBS data using functions included in bbsBayes.
+Now we'll fetch the BBS data using functions included in bbsBayes2.
 
-> Note that most bbsBayes functionality can be explored **without** downloading
+> Note that most bbsBayes2 functionality can be explored **without** downloading
 > BBS data by using the included sample data. Specify `sample_data = TRUE`
 > in the first `stratify()` step (see the next section). 
 
 First we'll load the package.
 ```{r}
-library(bbsBayes)
+library(bbsBayes2)
 ```
 
 There are four types of BBS data that can be downloaded:
-- Two levels `state` and `stop` (only `state` works with bbsBayes models)
+- Two levels `state` and `stop` (only `state` works with bbsBayes2 models)
 - Two releases `2020` and `2022`
 
 Unless you have a specific reason to need a different version, the default 
@@ -86,11 +86,11 @@ fetch_bbs_data()
 ## Workflow
 
 Now that you have cmdstanr installed and the BBS data downloaded, we'll walk
-through a general workflow for modelling species trends with bbsBayes.
+through a general workflow for modelling species trends with bbsBayes2.
 
 ### Stratify the data
 
-The first step in any bbsBayes analysis is to stratify the data. 
+The first step in any bbsBayes2 analysis is to stratify the data. 
 In this step we choose a stratification type as well as a species to explore. 
 
 ```{r}
@@ -102,7 +102,7 @@ We can also play around with the included sample data (Pacific Wrens)
 s <- stratify(by = "bbs_cws", sample_data = TRUE) # Only Pacific Wren
 ```
 
-Stratifications included in bbsBayes are 
+Stratifications included in bbsBayes2 are 
 `r paste0(names(bbs_strata), collapse = ",")`. See the articles on
 [stratifications](articles/stratification) and 
 [custom stratifications](articles/custom_stratification) for more details and 

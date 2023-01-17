@@ -69,9 +69,9 @@ check_model <- function(model, model_variant) {
 
   model_variant <- check_model_variant(model_variant)
 
-  if(!model %in% bbsBayes::bbs_models$model) {
+  if(!model %in% bbsBayes2::bbs_models$model) {
     stop("Invalid `model` specified. Must be one of ",
-         paste0(unique(bbsBayes::bbs_models$model), collapse = ", "),
+         paste0(unique(bbsBayes2::bbs_models$model), collapse = ", "),
          call. = FALSE)
   }
 
@@ -90,9 +90,9 @@ check_model_variant <- function(model_variant) {
   if(is.null(model_variant)) stop("No `model_variant` specified",
                                   call. = FALSE)
   model_variant <- tolower(model_variant)
-  if(!model_variant %in% bbsBayes::bbs_models$variant) {
+  if(!model_variant %in% bbsBayes2::bbs_models$variant) {
     stop("Invalid `model_variant` specified. Must be one of ",
-         paste0(unique(bbsBayes::bbs_models$variant), collapse = ", "),
+         paste0(unique(bbsBayes2::bbs_models$variant), collapse = ", "),
          call. = FALSE)
   }
   model_variant
@@ -102,14 +102,14 @@ check_model_file <- function(model, model_variant, model_file = NULL) {
   if(is.null(model_file)) {
     f <- system.file("models",
                      paste0(model, "_", model_variant, "_bbs_CV.stan"),
-                     package = "bbsBayes")
+                     package = "bbsBayes2")
   } else f <- model_file
 
   if(!file.exists(f)) {
     msg <- "Stan model file not found"
     if(is.null(model_file)) {
       msg <- c(msg, ". Please submit an issue at \n",
-               "https://github.com/BrandonEdwards/bbsBayes/issues")
+               "https://github.com/bbsBayes/bbsBayes2/issues")
     } else {
       msg <- c(msg, " ('", f, "')")
     }
@@ -153,11 +153,11 @@ check_cv <- function(folds, k) {
   if(is.null(folds)) {
     stop("Missing K-folds specification.\nFor cross-validation, ",
          "either create a `folds` list item in `model_data`,\n",
-         "or use the bbsBayes method by setting `calculate_cv = TRUE` in ",
+         "or use the bbsBayes2 method by setting `calculate_cv = TRUE` in ",
          "`prepare_model()`.\n",
          "If you don't want to use cross-validation, leave `k` NULL.\n",
          "See Models article for more details: ",
-         "https://steffilazerte.ca/bbsBayes/articles/models.html",
+         "https://bbsBayes.github.io/bbsBayes2/articles/models.html",
          call. = FALSE)
   } else if(!is.numeric(folds)) {
     stop("Incorrect K-folds specification.\n",
@@ -220,9 +220,9 @@ check_strata <- function(strata, custom = NULL, simple = FALSE,
 
   # Simple checks
   if(simple) {
-    if(!strata %in% names(bbsBayes::bbs_strata)) {
+    if(!strata %in% names(bbsBayes2::bbs_strata)) {
       stop("Invalid stratification specified, choose one of '",
-           paste0(names(bbsBayes::bbs_strata), collapse = "', '"), "'",
+           paste0(names(bbsBayes2::bbs_strata), collapse = "', '"), "'",
            call. = FALSE)
     } else {
       return(strata)
@@ -230,11 +230,11 @@ check_strata <- function(strata, custom = NULL, simple = FALSE,
   }
 
   # Working with a custom stratification
-  if(!strata %in% names(bbsBayes::bbs_strata)) {
+  if(!strata %in% names(bbsBayes2::bbs_strata)) {
 
     if(is.null(custom) || !inherits(custom, "sf")) {
       stop("Invalid stratification specified, choose one of '",
-           paste0(names(bbsBayes::bbs_strata), collapse = "', '"),
+           paste0(names(bbsBayes2::bbs_strata), collapse = "', '"),
            "',\n or provide an sf spatial data frame to `strata_custom` ",
            "to use a custom stratification", call. = FALSE)
     }
@@ -242,7 +242,7 @@ check_strata <- function(strata, custom = NULL, simple = FALSE,
   }
 
   # Working with an established stratification
-  if(strata %in% names(bbsBayes::bbs_strata)) {
+  if(strata %in% names(bbsBayes2::bbs_strata)) {
 
     if(!is.null(custom)) {
       # Check if strata established, and custom is a data frame
@@ -255,9 +255,9 @@ check_strata <- function(strata, custom = NULL, simple = FALSE,
         # Check if strata established, and custom is subset of the correct data
 
         # - Check cols, then check strata names
-        if(!all(names(bbsBayes::bbs_strata[[strata]]) %in% names(custom)) ||
+        if(!all(names(bbsBayes2::bbs_strata[[strata]]) %in% names(custom)) ||
            !all(custom$strata_name %in%
-                bbsBayes::bbs_strata[[strata]]$strata_name)) {
+                bbsBayes2::bbs_strata[[strata]]$strata_name)) {
           stop("`strata_custom` is not a subset of ",
                "`bbs_strata[[\"", strata, "\"]]`.\n",
                "If using a custom set of an established stratification ",
@@ -268,7 +268,7 @@ check_strata <- function(strata, custom = NULL, simple = FALSE,
       }
 
       # Don't modify if the exact same
-      if(!isTRUE(all.equal(bbsBayes::bbs_strata[[strata]], custom))) {
+      if(!isTRUE(all.equal(bbsBayes2::bbs_strata[[strata]], custom))) {
         type <- "subset"
       }
     }

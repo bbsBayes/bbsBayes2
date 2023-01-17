@@ -1,7 +1,7 @@
 test_that("dep_stop()", {
 
   f <- function() dep_stop("2.0.0")
-  expect_error(f(), "`f\\(\\)` is defunct as of bbsBayes 2.0.0")
+  expect_error(f(), "`f\\(\\)` is defunct as of bbsBayes2 2.0.0")
 
   f <- function() dep_stop("2.0.0", replace = "`g()`")
   expect_error(f(), "Use `g\\(\\)` instead.")
@@ -17,7 +17,7 @@ test_that("dep_stop()", {
 test_that("dep_warn()", {
 
   f <- function() dep_warn("2.0.0")
-  expect_warning(f(), "`f\\(\\)` is deprecated as of bbsBayes 2.0.0")
+  expect_warning(f(), "`f\\(\\)` is deprecated as of bbsBayes2 2.0.0")
 
   f <- function() dep_warn("2.0.0", replace = "`g()`")
   expect_warning(f(), "Use `g\\(\\)` instead.")

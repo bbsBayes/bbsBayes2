@@ -26,7 +26,7 @@ Let's get started!
 
 First, we'll load the packages we need.
 ```{r setup}
-library(bbsBayes)
+library(bbsBayes2)
 library(sf)       # Spatial data manipulations
 library(dplyr)    # General data manipulations
 library(ggplot2)  # Plotting
@@ -47,7 +47,7 @@ fetch_bbs_data()
 The existing stratifications are `r paste0(names(bbs_strata), collapse = ", ")`
 
 You can take a look at how these stratify your data by looking at the maps 
-included in bbsBayes with `load_map()`.
+included in bbsBayes2 with `load_map()`.
 
 ```{r}
 ggplot(data = load_map("bbs_cws"), aes(fill = strata_name)) +
@@ -111,7 +111,7 @@ unzip(t)
 unlink(t)
 ```
 
-To use this file in bbsBayes, we need to load it as an sf object using the sf 
+To use this file in bbsBayes2, we need to load it as an sf object using the sf 
 package.
 ```{r}
 map <- sf::read_sf("WBPHS_stratum_boundaries_2019.shp")

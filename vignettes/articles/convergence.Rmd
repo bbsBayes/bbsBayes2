@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(bbsBayes)
+library(bbsBayes2)
 library(ggplot2)
 ```
 
@@ -39,7 +39,7 @@ m <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
 
 ```
 
-Or we can use the example model included in bbsBayes, `pacific_wren_model`
+Or we can use the example model included in bbsBayes2, `pacific_wren_model`
 ```{r}
 m <- pacific_wren_model
 ```

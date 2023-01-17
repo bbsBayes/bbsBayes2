@@ -62,7 +62,7 @@ allowed tree depth for the NUTS engine. See \code{?cmdstanr::sample}.}
 
 \item{k}{Numeric. The K-fold group to run for cross-validation. Only relevant
 if folds defined by \code{prepare_model(calculate_cv = TRUE)} or custom
-definition. See \code{?prepare_model} or the \href{https://steffilazerte.ca/bbsBayes/articles/models.html}{models article} for more
+definition. See \code{?prepare_model} or the \href{https://bbsBayes.github.io/bbsBayes2/articles/models.html}{models article} for more
 details.}
 
 \item{output_basename}{Character. Name of the files created as part of the
@@ -124,7 +124,7 @@ The model is set up in \code{prepare_model()}. The \code{run_model()} function
 does the final (and often long-running) step of actually running the model.
 Here is where you can tweak how the model will be run (iterations etc.).
 
-See the \href{https://steffilazerte.ca/bbsBayes/articles/models.html}{models article} for more
+See the \href{https://bbsBayes.github.io/bbsBayes2/articles/models.html}{models article} for more
 advanced examples and explanations.
 }
 \examples{

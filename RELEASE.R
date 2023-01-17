@@ -1,3 +1,16 @@
+# Non-cran release cycles
+#
+# Generally have main (release) branch, and dev (or whatever name) (production)
+# branches.
+#
+# Main has version 1.0.0
+# Dev has version 1.0.0.9000
+#
+# Ready to release, fix dev version, merge dev into main, done!
+
+
+
+
 # Get local BBS data ---------------------------------------------------------
 fetch_bbs_data_internal() # Run to ensure BBS data for examples
 
@@ -8,6 +21,12 @@ source("data-raw/data_exported.R")
 source("data-raw/data_strata.R")
 
 source("data-raw/data_examples.R") # Creates example data and models (takes time to run)
+
+# Housekeeping -----------------------------
+
+# Bump version?
+# Update the NEWS.md file
+
 
 
 # Checks ---------------------------------------------------------------------
@@ -48,13 +67,27 @@ m <- stratify(by = "bbs_cws", species = "Barn Swallow") %>%
   run_model(output_basename = "cws_basw_gamye")
 
 # Create Tag on GitHub Repo
-piggyback::pb_new_release("steffilazerte/bbsBayes", "v3.0.0")
+piggyback::pb_new_release("bbsBayes/bbsBayes2", "v3.0.0")
 
 # Save model output
 
 piggyback::pb_upload("cws_basw_gamye",
-                     repo = "steffilazerte/bbsBayes",
+                     repo = "bbsBayes/bbsBayes2",
                      tag = "v3.0.0")
+
+
+# Release --------------------------------------
+
+# Merge release branch to main
+# Create signed release
+usethis::use_github_release()
+
+# Create dev/next release branch
+# Add .9000 to version (i.e. 1.0.0.9000) for that branch
+
+
+
+
 
 
 # Local checks of website, etc. ------------------------------------------

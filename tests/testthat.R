@@ -1,4 +1,4 @@
 library(testthat)
-library(bbsBayes)
+library(bbsBayes2)
 
-test_check("bbsBayes")
+test_check("bbsBayes2")

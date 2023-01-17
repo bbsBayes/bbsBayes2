@@ -16,12 +16,12 @@ knitr::opts_chunk$set(
 ```
 
 ```{r}
-library(bbsBayes)
+library(bbsBayes2)
 ```
 
 ## Basic Status and Trend Analyses
 
-bbsBayes provides functions for every stage of Breeding Bird Survey data
+bbsBayes2 provides functions for every stage of Breeding Bird Survey data
 analysis.
 
 ### Data Retrieval
@@ -31,7 +31,7 @@ package-specific directory on your computer. You must agree to the terms and
 conditions of the data usage before downloading. You only need run this function
 once for each annual update of the BBS database.
 
-``` {r, eval = !bbsBayes::have_bbs_data()}
+``` {r, eval = !bbsBayes2::have_bbs_data()}
 fetch_bbs_data()
 ```
 
@@ -147,7 +147,7 @@ ggmcmc::ggmcmc(S,family = "B.X") ## this will output a pdf with a series of plot
 ```
 
 
-bbsBayes also includes a function to help re-start an MCMC chain, so that you avoid having to wait for an additional burn-in period.
+bbsBayes2 also includes a function to help re-start an MCMC chain, so that you avoid having to wait for an additional burn-in period.
 
 ```{r, eval = FALSE}
 ### if jags_mod has failed to converge...
@@ -293,7 +293,7 @@ jags_mod <- run_model(jags_data = jags_data,
 
 The USGS analysis, from 2011 through 2017, uses the SLOPE model. Future analyses from the USGS will likely use the first difference model (see, Link et al. 2017 <https://doi.org/10.1650/CONDOR-17-1.1>)
 
-NOTE: the USGS analysis is not run using the bbsBayes package, and so this analysis may not exactly replicate the published version. However, any variations should be very minor.
+NOTE: the USGS analysis is not run using the bbsBayes2 package, and so this analysis may not exactly replicate the published version. However, any variations should be very minor.
 
 ``` {.r}
 species.eng = "Pacific Wren"
