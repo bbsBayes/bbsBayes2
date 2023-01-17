@@ -20,7 +20,7 @@ custom stratifications. Here we will explore how to use custom stratifications
 in later steps, such as `generate_indices()`.
 
 First, we'll load the packages we need.
-```{r setup}
+```{r setup, message = FALSE}
 library(bbsBayes2)
 library(sf)       # Spatial data manipulations
 library(dplyr)    # General data manipulations

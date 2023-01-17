@@ -60,7 +60,7 @@ Now we'll fetch the BBS data using functions included in bbsBayes2.
 > in the first `stratify()` step (see the next section). 
 
 First we'll load the package.
-```{r}
+```{r, message = FALSE}
 library(bbsBayes2)
 ```
 

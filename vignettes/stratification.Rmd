@@ -25,7 +25,7 @@ Let's get started!
 
 
 First, we'll load the packages we need.
-```{r setup}
+```{r setup, message = FALSE}
 library(bbsBayes2)
 library(sf)       # Spatial data manipulations
 library(dplyr)    # General data manipulations
