@@ -20,19 +20,6 @@ run_model(
   overwrite = FALSE,
   set_seed = NULL,
   quiet = FALSE,
-  jags_data,
-  inits,
-  parameters_to_save,
-  track_n,
-  n_adapt,
-  n_burnin,
-  n_thin,
-  n_chains,
-  n_saved_steps,
-  n_iter,
-  modules,
-  parallel,
-  n_cores,
   ...
 )
 }
@@ -82,32 +69,6 @@ integer number to be used with \code{withr::with_seed()} internally to ensure
 reproducibility.}
 
 \item{quiet}{Logical. Suppress progress messages? Default \code{FALSE}.}
-
-\item{jags_data}{Defunct.}
-
-\item{inits}{Defunct.}
-
-\item{parameters_to_save}{Defunct.}
-
-\item{track_n}{Defunct.}
-
-\item{n_adapt}{Defunct.}
-
-\item{n_burnin}{Defunct.}
-
-\item{n_thin}{Defunct.}
-
-\item{n_chains}{Defunct.}
-
-\item{n_saved_steps}{Defunct.}
-
-\item{n_iter}{Defunct.}
-
-\item{modules}{Defunct.}
-
-\item{parallel}{Defunct.}
-
-\item{n_cores}{Defunct.}
 
 \item{...}{Other arguments passed on to \code{cmdstanr::sample()}}
 }

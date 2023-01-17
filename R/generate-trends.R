@@ -16,8 +16,6 @@
 #' @param prob_increase Numeric vector. Percent-increase values for which to
 #'   optionally calculate the posterior probabilities (see Details). Default is
 #'   `NULL` (do not calculate).
-#' @param Min_year Deprecated. Use `min_year` instead
-#' @param Max_year Deprecated. Use `max_year` instead
 #'
 #' @inheritParams common_docs
 #'
@@ -120,18 +118,7 @@ generate_trends <- function(indices,
                             quantiles = c(0.025, 0.05, 0.25, 0.75, 0.95, 0.975),
                             slope = FALSE,
                             prob_decrease = NULL,
-                            prob_increase = NULL,
-                            Min_year, Max_year) {
-
-  # Deprecated/Defunct args
-  if(!missing(Min_year)) {
-    dep_warn("3.0.0", "Min_year", "`min_year`")
-    min_year <- Min_year
-  }
-  if(!missing(Max_year)) {
-    dep_warn("3.0.0", "Max_year", "`max_year`")
-    max_year <- Max_year
-  }
+                            prob_increase = NULL) {
 
   # Checks
   check_data(indices)

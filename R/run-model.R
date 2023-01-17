@@ -28,19 +28,6 @@
 #' @param save_model Logical. Whether or not to save the model output to file
 #'   as an RDS object with all required data. Defaults to `TRUE`.
 #' @param ... Other arguments passed on to `cmdstanr::sample()`
-#' @param jags_data Defunct.
-#' @param inits Defunct.
-#' @param parameters_to_save Defunct.
-#' @param track_n Defunct.
-#' @param n_adapt Defunct.
-#' @param n_burnin Defunct.
-#' @param n_thin Defunct.
-#' @param n_chains Defunct.
-#' @param n_saved_steps Defunct.
-#' @param n_iter Defunct.
-#' @param modules Defunct.
-#' @param parallel Defunct.
-#' @param n_cores Defunct.
 #'
 #' @inheritParams common_docs
 #'
@@ -84,26 +71,7 @@ run_model <- function(model_data,
                       overwrite = FALSE,
                       set_seed = NULL,
                       quiet = FALSE,
-                      jags_data, inits, parameters_to_save, track_n, n_adapt,
-                      n_burnin, n_thin, n_chains, n_saved_steps, n_iter,
-                      modules, parallel, n_cores,
                       ...) {
-
-  # Deprecated/Defunct args
-  msg <- "alternate arguments for `cmdstanr` (see ?run_model)"
-  if(!missing(jags_data)) dep_stop("3.0.0", "jags_data", msg)
-  if(!missing(inits)) dep_stop("3.0.0", "inits", msg)
-  if(!missing(parameters_to_save)) dep_stop("3.0.0", "parameters_to_save", msg)
-  if(!missing(track_n)) dep_stop("3.0.0", "track_n", msg)
-  if(!missing(n_chains)) dep_stop("3.0.0", "n_chains", msg)
-  if(!missing(n_adapt)) dep_stop("3.0.0", "n_adapt", msg)
-  if(!missing(n_saved_steps)) dep_stop("3.0.0", "n_saved_steps", msg)
-  if(!missing(n_burnin)) dep_stop("3.0.0", "n_burnin", msg)
-  if(!missing(n_thin)) dep_stop("3.0.0", "n_thin", msg)
-  if(!missing(n_iter)) dep_stop("3.0.0", "n_iter", msg)
-  if(!missing(modules)) dep_stop("3.0.0", "modules", msg)
-  if(!missing(parallel)) dep_stop("3.0.0", "parallel", msg)
-  if(!missing(n_cores)) dep_stop("3.0.0", "n_cores", msg)
 
   # Check inputs
   check_data(model_data)

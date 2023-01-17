@@ -10,9 +10,6 @@
 #'   `TRUE`.
 #' @param col_viridis Logical flag to use "viridis" colour-blind friendly
 #'   palette. Default is FALSE
-#' @param species Defunct. Use `title` instead
-#' @param stratify_by Defunct.
-#' @param select Defunct.
 #'
 #' @inheritParams common_docs
 #'
@@ -36,13 +33,7 @@
 plot_map <- function(trends,
                      slope = FALSE,
                      title = TRUE,
-                     col_viridis = FALSE,
-                     species, stratify_by, select) {
-
-  # Deprecated/Defunct args
-  if(!missing(species)) dep_stop("3.0.0", "species", "`title`")
-  if(!missing(stratify_by)) dep_stop("3.0.0", "stratify_by")
-  if(!missing(select)) dep_stop("3.0.0", "select")
+                     col_viridis = FALSE) {
 
   # Checks
   check_data(trends)

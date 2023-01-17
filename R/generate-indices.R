@@ -36,10 +36,6 @@
 #'   is `FALSE` (regions are flagged and listed but not dropped).
 #' @param start_year Numeric. Trim the data record before calculating annual
 #'   indices.
-#' @param jags_mod Defunct. Use `model_output` instead
-#' @param jags_data Defunct.
-#' @param alt_region_names Defunct. Use `regions_index` instead
-#' @param startyear Deprecated. Use `start_year` instead
 #'
 #' @inheritParams common_docs
 #'
@@ -125,18 +121,7 @@ generate_indices <- function(
     start_year = NULL,
     drop_exclude = FALSE,
     max_backcast = NULL,
-    quiet = FALSE,
-    jags_mod, jags_data, alt_region_names, startyear) {
-
-  # Deprecated/Defunct args
-  if(!missing(jags_mod)) dep_stop("3.0.0", "jags_mod", "`model_output`")
-  if(!missing(jags_data)) dep_stop("3.0.0", "jags_data")
-  if(!missing(alt_region_names)) dep_stop("3.0.0", "alt_region_names",
-                                          "`regions_index`")
-  if(!missing(startyear)) {
-    start_year <- startyear
-    dep_warn("3.0.0", "startyear", "`start_year`")
-  }
+    quiet = FALSE) {
 
   # Checks
   check_data(model_output)

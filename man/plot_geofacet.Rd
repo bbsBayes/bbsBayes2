@@ -11,11 +11,7 @@ plot_geofacet(
   trends = NULL,
   slope = FALSE,
   add_observed_means = FALSE,
-  col_viridis = FALSE,
-  indices_list,
-  stratify_by,
-  species,
-  select
+  col_viridis = FALSE
 )
 }
 \arguments{
@@ -40,14 +36,6 @@ and annual indices may not match due to imbalanced sampling among strata}
 
 \item{col_viridis}{Logical flag to use "viridis" colour-blind friendly
 palette. Default is \code{FALSE}}
-
-\item{indices_list}{Deprecated. Use \code{indices} instead}
-
-\item{stratify_by}{Defunct.}
-
-\item{species}{Defunct.}
-
-\item{select}{Defunct.}
 }
 \value{
 ggplot object

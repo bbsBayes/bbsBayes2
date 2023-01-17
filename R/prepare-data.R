@@ -13,14 +13,6 @@
 #'   route with the species observed. Default 1. Only retain strata where the
 #'   average number of years the species was observed per route is greater than
 #'   this value.
-#' @param species Defunct. Use `species` in `stratify()` instead
-#' @param model Defunct. Use `model` in `prepare_model()` instead
-#' @param heavy_tailed Defunct. Use `heavy_tailed` in `prepare_model()` instead
-#' @param n_knots Defunct. Use `n_knots` in `prepare_model()` instead
-#' @param basis Defunct. Use `basis` in `prepare_model()` instead
-#' @param sampler Defunct.
-#' @param strat_data Defunct. Use `strata_data` instead
-#' @param strata_rem Defunct. Use `custom_strata` in `stratify()` instead
 #'
 #' @inheritParams common_docs
 #'
@@ -54,34 +46,7 @@ prepare_data <- function(strata_data,
                          min_n_routes = 3,
                          min_max_route_years = 3,
                          min_mean_route_years = 1,
-                         quiet = FALSE,
-                         species,
-                         model, heavy_tailed, n_knots, basis, sampler,
-                         strat_data, strata_rem) {
-
-  # Deprecated/Defunct args
-  if(!missing(species)) {
-    dep_stop("3.0.0", "species", "the `species` argument in `stratify()`")
-  }
-  if(!missing(model)) {
-    dep_stop("3.0.0", "model", "the `model` argument in `prepare_model()`")
-  }
-  if(!missing(heavy_tailed)) {
-    dep_stop("3.0.0", "heavy_tailed",
-             "the `heavy_tailed` argument in `prepare_model()`")
-  }
-  if(!missing(n_knots)) {
-    dep_stop("3.0.0", "n_knots", "the `n_knots` argument in `prepare_model()`")
-  }
-  if(!missing(basis)) {
-    dep_stop("3.0.0", "basis", "the `basis` argument in `prepare_model()`")
-  }
-  if(!missing(sampler)) dep_stop("3.0.0", "sampler")
-  if(!missing(strat_data)) dep_stop("3.0.0", "strat_data", "`strata_data`")
-  if(!missing(strata_rem)) {
-    dep_stop("3.0.0", "strata_rem",
-             "the `custom_strata` argument in `stratify()`")
-  }
+                         quiet = FALSE) {
 
   # Checks
   if(missing(strata_data)) stop("Missing `strata_data`", call. = FALSE)

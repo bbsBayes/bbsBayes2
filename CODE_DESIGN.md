@@ -119,10 +119,7 @@ https://coolbutuseless.github.io/2018/12/10/r-packages-internal-and-external-dat
 - See `R/bbsBayes2-defunct.R` for listing all defunct packages in a document page
 - See `R/bbsBayes2-deprectated.R` for listing all deprecated packages in a document page
 - `dep_stop()` and `dep_warn()` are created in `bbsBayes2-defunct.R` and can be used to 
-  stop or warn on use of functions or arguments, depending. See `?plot_map`
-  vs `?generate_map`
-- Because v3.0.0 of this package entails such a massive overhaul, I suggest 
-  using a start up message (in `R/bbsBayes2-package.R`) to share this with users
+  stop or warn on use of functions or arguments, depending.
 - To deprecate a function
   - Add `dep_warn()` to the start of the function call and either continue, or
     switch to new function (e.g., `R/bbsBayes2-deprectated.R`)
@@ -138,7 +135,6 @@ https://coolbutuseless.github.io/2018/12/10/r-packages-internal-and-external-dat
    "Deprecated. Use X instead", or just "Deprecated." (or Defunct)
   - If deprecated with a replacement, add `if(!missing(arg)) {dep_warn(...)}` to
     the start of the function and use arg_new <- arg_old inside the condition
-    (e.g., `plot_indices()`)
   - If defunct or without a replacement, add `if(!missing(arg)) dep_warn(...)`
     or `if(!missing(arg)) dep_stop(...)`
   

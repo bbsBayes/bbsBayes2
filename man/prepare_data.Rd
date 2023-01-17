@@ -11,15 +11,7 @@ prepare_data(
   min_n_routes = 3,
   min_max_route_years = 3,
   min_mean_route_years = 1,
-  quiet = FALSE,
-  species,
-  model,
-  heavy_tailed,
-  n_knots,
-  basis,
-  sampler,
-  strat_data,
-  strata_rem
+  quiet = FALSE
 )
 }
 \arguments{
@@ -45,22 +37,6 @@ average number of years the species was observed per route is greater than
 this value.}
 
 \item{quiet}{Logical. Suppress progress messages? Default \code{FALSE}.}
-
-\item{species}{Defunct. Use \code{species} in \code{stratify()} instead}
-
-\item{model}{Defunct. Use \code{model} in \code{prepare_model()} instead}
-
-\item{heavy_tailed}{Defunct. Use \code{heavy_tailed} in \code{prepare_model()} instead}
-
-\item{n_knots}{Defunct. Use \code{n_knots} in \code{prepare_model()} instead}
-
-\item{basis}{Defunct. Use \code{basis} in \code{prepare_model()} instead}
-
-\item{sampler}{Defunct.}
-
-\item{strat_data}{Defunct. Use \code{strata_data} instead}
-
-\item{strata_rem}{Defunct. Use \code{custom_strata} in \code{stratify()} instead}
 }
 \value{
 List of prepared (meta) data to be used for modelling and further

@@ -24,8 +24,6 @@
 #'   route-years which were omitted during stratification as they did not
 #'   overlap with any stratum. For checking and troubleshooting. Default
 #'   `FALSE`.
-#' @param lump_species_forms Deprecated. Use `combine_species_forms` instead
-#' @param bbs_data Defunct.
 #'
 #' @inheritParams common_docs
 #'
@@ -140,15 +138,7 @@ stratify <- function(by,
                      release = 2022,
                      sample_data = FALSE,
                      return_omitted = FALSE,
-                     quiet = FALSE,
-                     lump_species_forms, bbs_data) {
-
-  # Deprecated/Defunct args
-  if(!missing(lump_species_forms)) {
-    dep_warn("3.0.0", "lump_species_forms", "`combine_species_forms`")
-    combine_species_forms <- lump_species_forms
-  }
-  if(!missing(bbs_data)) dep_stop("3.0.0", "bbs_data")
+                     quiet = FALSE) {
 
   # Checks
   by <- check_strata(by, custom = strata_custom, quiet = quiet)

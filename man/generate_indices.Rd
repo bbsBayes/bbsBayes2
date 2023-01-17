@@ -13,11 +13,7 @@ generate_indices(
   start_year = NULL,
   drop_exclude = FALSE,
   max_backcast = NULL,
-  quiet = FALSE,
-  jags_mod,
-  jags_data,
-  alt_region_names,
-  startyear
+  quiet = FALSE
 )
 }
 \arguments{
@@ -63,14 +59,6 @@ back cast of 5. Note that unless \code{drop_exclude = TRUE}, problematic years
 are only flagged, not omitted. See Details for more specifics.}
 
 \item{quiet}{Logical. Suppress progress messages? Default \code{FALSE}.}
-
-\item{jags_mod}{Defunct. Use \code{model_output} instead}
-
-\item{jags_data}{Defunct.}
-
-\item{alt_region_names}{Defunct. Use \code{regions_index} instead}
-
-\item{startyear}{Deprecated. Use \code{start_year} instead}
 }
 \value{
 A list containing the indices (\code{indices}), an array of posterior

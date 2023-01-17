@@ -15,9 +15,7 @@ plot_indices(
   axis_text_size = 16,
   line_width = 1,
   add_observed_means = FALSE,
-  add_number_routes = FALSE,
-  indices_list,
-  species
+  add_number_routes = FALSE
 )
 }
 \arguments{
@@ -48,10 +46,6 @@ annual indices may not match due to imbalanced sampling among routes}
 showing the number of BBS routes included in each year. This is useful as a
 visual check on the relative data-density through time because in most
 cases the number of observations increases over time}
-
-\item{indices_list}{Deprecated. Use \code{indices} instead}
-
-\item{species}{Defunct. Use \code{title} instead}
 }
 \value{
 List of ggplot objects, each entry being a plot of a stratum indices

@@ -12,9 +12,7 @@ stratify(
   release = 2022,
   sample_data = FALSE,
   return_omitted = FALSE,
-  quiet = FALSE,
-  lump_species_forms,
-  bbs_data
+  quiet = FALSE
 )
 }
 \arguments{
@@ -46,10 +44,6 @@ overlap with any stratum. For checking and troubleshooting. Default
 \code{FALSE}.}
 
 \item{quiet}{Logical. Suppress progress messages? Default \code{FALSE}.}
-
-\item{lump_species_forms}{Deprecated. Use \code{combine_species_forms} instead}
-
-\item{bbs_data}{Defunct.}
 }
 \value{
 List of (meta) data.
