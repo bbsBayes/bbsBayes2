@@ -30,6 +30,9 @@ making collaboration and future modifications easier.
     - Precompiled vignettes have ext `.Rmd.orig`, then are compiled to `.Rmd`
       (all R code already run, so actually Vignette to HTML is super fast)
   - In RELEASE.R there is a step for re-pre-compiling vignettes
+  - For easier editing and testing, you can make RStudio treat these `.Rmd.orig`
+    files as `.Rmd` files by clicking on the language button in the bottom right
+    corner of the script pane and changing txt to R Markdown.
 
 ## Storing data
 - `bbs_dir()` figures out the folder in which to store data and creates it if 
