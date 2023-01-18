@@ -30,7 +30,8 @@ Imports:
     withr (>= 2.5.0)
 Depends: R (>= 3.5)
 SystemRequirements: CmdStan (https://mc-stan.org/users/interfaces/cmdstan)
-URL: https://github.com/bbsBayes/bbsBayes2
+URL: https://github.com/bbsBayes/bbsBayes2,
+    https://bbsbayes.github.io/bbsBayes2/
 BugReports: https://github.com/bbsBayes/bbsBayes2/issues
 NeedsCompilation: no
 Description: The North American Breeding Bird Survey (BBS) is a long-running
