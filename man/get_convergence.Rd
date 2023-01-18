@@ -23,7 +23,6 @@ and tail effective sample sizes (ess_bulk, ess_tail) and R-hat (\code{rhat}).
 Returns output very similar to \code{get_summary()}.
 }
 \examples{
-
 # Temporarily suppress convergence warning for legibility
 # "The ESS has been capped to avoid unstable estimates."
 opts <- options(warn = -1)

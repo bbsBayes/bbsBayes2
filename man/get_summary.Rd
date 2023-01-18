@@ -20,7 +20,6 @@ A data frame of model summary statistics.
 Extract and return the model summary using \code{cmdstanr::summary()}.
 }
 \examples{
-
 # Temporarily suppress convergence warning for legibility
 # "The ESS has been capped to avoid unstable estimates."
 opts <- options(warn = -1)

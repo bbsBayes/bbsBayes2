@@ -90,7 +90,6 @@ See \code{vignette("stratification", package = "bbsBayes2")} and the article
 for more details.
 }
 \examples{
-
 # Sample Data - USGS BBS strata
 s <- stratify(by = "bbs_usgs", sample_data = TRUE)
 

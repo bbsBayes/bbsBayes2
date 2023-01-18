@@ -29,7 +29,6 @@ files can then be used in \code{prepare_model()} by specifying the \code{model_f
 argument.
 }
 \examples{
-
 # Save the Slope model in temp directory
 copy_model_file(model = "slope", model_variant = "spatial", dir = tempdir())
 

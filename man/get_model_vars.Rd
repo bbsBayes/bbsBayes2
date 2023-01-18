@@ -21,7 +21,6 @@ Returns the basic model variables and/or variable types (note that most
 variables have different iterations for each strata and each year).
 }
 \examples{
-
 # Using the example model for Pacific Wrens...
 
 # List variable types

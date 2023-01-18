@@ -27,7 +27,6 @@ Files are saved to \code{path}, or if not provided, to the original location of
 the Stan model run files (if the original files exist).
 }
 \examples{
-
 # By default, the model is saved as an RDS file during `run_model()`
 
 # But you can also deliberately save the file (here with an example model)

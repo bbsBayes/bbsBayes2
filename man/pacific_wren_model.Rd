@@ -26,11 +26,12 @@ on the included sample data for Pacific Wrens.
 }
 \examples{
 # Code to replicate:
-
+\dontrun{
 pacific_wren_model <- stratify(by = "bbs_cws", sample_data = TRUE) \%>\%
   prepare_data() \%>\%
   prepare_model(model = "first_diff", set_seed = 111) \%>\%
   run_model(chains = 2, iter_sampling = 20, iter_warmup = 20, set_seed = 111)
+}
 
 }
 \keyword{datasets}

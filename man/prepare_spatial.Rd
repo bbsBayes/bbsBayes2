@@ -79,7 +79,6 @@ link up the strata before applying a buffer at a distance of \code{buffer_dist}.
 Note that all distances are in the units of \code{sf::st_crs(strata_map)}.
 }
 \examples{
-
 map <- load_map("bbs_cws")
 s <- stratify(by = "bbs_cws", species = "Connecticut Warbler")
 p <- prepare_data(s, min_max_route_years = 2)
