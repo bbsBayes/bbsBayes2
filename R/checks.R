@@ -17,7 +17,7 @@ check_data <- function(data) {
     n <- c(n, "model_data", "init_values", "folds", "raw_data")
     from <- "prepare_model()"
   } else if(type == "model_output") {
-    n <- c(n, "model_fit", "raw_data")
+    n <- c(n, "model_fit", "model_data", "raw_data")
     from <- "run_model()"
   } else if(type == "indices") {
     n <- c(n, "indices", "samples", "raw_data")

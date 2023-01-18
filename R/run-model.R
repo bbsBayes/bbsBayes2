@@ -151,6 +151,7 @@ run_model <- function(model_data,
     ...)
 
   model_output <- list("model_fit" = model_fit,
+                       "model_data" = model_data,
                        "meta_data" = meta_data,
                        "meta_strata" = meta_strata,
                        "raw_data" = raw_data)
