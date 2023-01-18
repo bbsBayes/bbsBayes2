@@ -12,7 +12,7 @@ articles:
   contents:
   - bbsBayes2
   - articles/workflow
-  - stratification
+  - articles/stratification
   - articles/custom_stratification
   - articles/models
   - articles/convergence
