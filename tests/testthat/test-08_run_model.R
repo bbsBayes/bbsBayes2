@@ -20,7 +20,8 @@ test_that("run_model() first_diff short", {
     utils::capture.output()
 
     expect_type(r, "list")
-    expect_named(r, c("model_fit", "meta_data", "meta_strata", "raw_data"))
+    expect_named(r, c("model_fit", "model_data","meta_data", "meta_strata",
+                      "raw_data"))
 
     expect_s3_class(r$model_fit, "CmdStanMCMC")
     expect_type(r[["meta_data"]], "list")
@@ -52,7 +53,8 @@ test_that("run_model() slope", {
   r <- slope_test_model
 
   expect_type(r, "list")
-  expect_named(r, c("model_fit", "meta_data", "meta_strata", "raw_data"))
+  expect_named(r, c("model_fit", "model_data", "meta_data", "meta_strata",
+                    "raw_data"))
 
   expect_s3_class(r$model_fit, "CmdStanMCMC")
   expect_type(r[["meta_data"]], "list")
@@ -86,7 +88,8 @@ test_that("run_model() first_diff spatial", {
     utils::capture.output()
 
   expect_type(r, "list")
-  expect_named(r, c("model_fit", "meta_data", "meta_strata", "raw_data"))
+  expect_named(r, c("model_fit", "model_data", "meta_data", "meta_strata",
+                    "raw_data"))
 
   expect_s3_class(r$model_fit, "CmdStanMCMC")
   expect_type(r[["meta_data"]], "list")
@@ -195,8 +198,8 @@ test_that("run_model() Full", {
       utils::capture.output()
 
     expect_type(r, "list")
-    expect_named(r, c("model_fit", "non_zero_weight", "meta_data",
-                      "meta_strata", "raw_data"))
+    expect_named(r, c("model_fit", "model_data", "meta_data", "meta_strata",
+                      "raw_data"))
 
     expect_s3_class(r$model_fit, "CmdStanMCMC")
     expect_type(r[["meta_data"]], "list")
