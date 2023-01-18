@@ -204,9 +204,9 @@ bbs_dir <- function(quiet = TRUE) {
 #'   `fetch_bbs_data()`. If "models", removes only model executables compiled
 #'   when `run_models()` is run.
 #' @param level Character. BBS data to remove, one of "all", "state", or "stop".
-#'   Only applies if `type = "bbs_data"`.
+#'   Only applies if `type = "bbs_data"`. Default "all".
 #' @param release Character/Numeric. BBS data to remove, one of "all", 2020, or
-#'   2022. Only applies if `type = "bbs_data"`.
+#'   2022. Only applies if `type = "bbs_data"`. Default "all".
 #'
 #' @family BBS data functions
 #'
@@ -235,7 +235,7 @@ bbs_dir <- function(quiet = TRUE) {
 #' remove_cache(type = "model")
 #' }
 #'
-remove_cache <- function(type = "bbs_data", level = NULL, release = NULL) {
+remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
   if(type == "all") {
     message("Removing all data files (BBS data and Stan models) ",
             "and cache directory")
@@ -249,7 +249,11 @@ remove_cache <- function(type = "bbs_data", level = NULL, release = NULL) {
       if(level == "all") level <- c("state", "stop")
       if(release == "all") release <- c("2020", "2022")
 
-      f <- file.path(bbs_dir(), paste0("bbs_", level, "_data_", release, ".rds"))
+      # To get all combos
+      f <- vector()
+      for(r in release) f <- c(f, paste0("bbs_", level, "_data_", r, ".rds"))
+      f <- file.path(bbs_dir(), f)
+
       f <- f[file.exists(f)]
     } else if(type == "models") {
       f <- list.files(bbs_dir(), "CV$", full.names = TRUE)
