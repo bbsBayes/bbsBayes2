@@ -15,7 +15,7 @@
 #' @return Subset of the BBS species data frame matching the species pattern.
 #' @export
 #'
-#' @examples
+#' @examplesIf have_bbs_data()
 #' # Search for various terms
 #' search_species("Paridae")
 #' search_species("chickadee")
@@ -233,4 +233,3 @@ assign_prov_state <- function(strata_map, min_overlap = 0.75, plot = FALSE,
   if(!keep_spatial) r <- sf::st_drop_geometry(ps_assigned)
   r
 }
-

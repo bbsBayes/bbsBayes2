@@ -8,6 +8,8 @@ test_that("check_bbs_data()", {
 
 test_that("check_species()", {
 
+  skip_if_no_data()
+
   s_list <- load_bbs_data()$species
 
   # No combining possible

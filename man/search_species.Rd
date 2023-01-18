@@ -23,6 +23,7 @@ A helper function for finding the appropriate species name for use in
 \code{stratify()}.
 }
 \examples{
+\dontshow{if (have_bbs_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Search for various terms
 search_species("Paridae")
 search_species("chickadee")
@@ -39,7 +40,7 @@ search_species("blue grouse", combine_species_forms = FALSE)
 search_species("sooty grouse", combine_species_forms = FALSE)
 search_species("northern flicker")
 search_species("northern flicker", combine_species_forms = FALSE)
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 Other helper functions: 

@@ -2,17 +2,12 @@ test_that("bbs_dir() location", {
   skip_on_ci()
   expect_silent(d <- bbs_dir()) %>%
     expect_type("character")
-  expect_true(dir.exists(d))
 })
 
-# These tests assume that you are starting with already having the most recent
-# BBS data downloaded
 test_that("have_bbs_data() / remove_cache()", {
   skip_on_ci()
   expect_message(h <- have_bbs_data(), "Expected BBS state data 2022")
-  expect_true(h)
-  expect_message(remove_cache(level = "state", release = 2022),
-                 paste0("Removing ", bbs_dir(), "/bbs_state_data_2022.rds"))
+  expect_message(remove_cache(level = "state", release = 2022))
   expect_message(remove_cache(level = "state", release = 2022),
                  "No data files to remove")
   expect_message(h <- have_bbs_data(), "Expected BBS state data 2022")

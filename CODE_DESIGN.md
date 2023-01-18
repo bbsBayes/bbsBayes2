@@ -33,6 +33,9 @@ making collaboration and future modifications easier.
   - For easier editing and testing, you can make RStudio treat these `.Rmd.orig`
     files as `.Rmd` files by clicking on the language button in the bottom right
     corner of the script pane and changing txt to R Markdown.
+- Any vignette that requires the full data OR requires Stan to be installed 
+  should be put in the 'articles' folder (so it's not compiled by R-Universe).
+  These will be compiled into the pkgdown website by our GitHub actions.
 
 ## Storing data
 - `bbs_dir()` figures out the folder in which to store data and creates it if 
@@ -90,8 +93,14 @@ https://coolbutuseless.github.io/2018/12/10/r-packages-internal-and-external-dat
 
 ## Testing and examples
 - When in doubt `skip_on_cran()` for tests (never run fragile tests that *might* fail)
-- Use @examplesIf interactive() to skip examples that can be run but shouldn't
+- Use `@examplesIf interactive()` to skip examples that can be run but shouldn't
   be tested (e.g., `fetch_bbs_data()`)
+- Use `@examplesIf have_bbs_data()` to skip examples that require a full 
+  download of BBS data. This is for R-Universe builds, our GitHub Actions fetch 
+  the data first. 
+- Use `@examplesIf have_cmdstan()` to skip examples that require Stan to be 
+  installed (i.e. anything that will use `run_model()`). This is for R-Universe 
+  builds, our GitHub Actions install Stan first. 
 - use `\dontest` for examples that should *never* be run (try not to have too many)
 - use `\dontrun` for examples that won't fail, but will take a while to run.
 - use first_diff model output by `test-XX_run_model.R` to ensure an up-to-date model

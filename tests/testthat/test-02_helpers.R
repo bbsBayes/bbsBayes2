@@ -1,5 +1,7 @@
 test_that("search_species()", {
 
+  skip_if_no_data()
+
   d <- data.frame(
     term = c("Paridae", "chickadee", "mésang", "Poecile"),
     match = c("(c|C)hickadee|Titmouse", "(c|C)hickadee",

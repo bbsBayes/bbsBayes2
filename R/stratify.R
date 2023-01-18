@@ -67,6 +67,7 @@
 #' # Sample Data - USGS BBS strata
 #' s <- stratify(by = "bbs_usgs", sample_data = TRUE)
 #'
+#' @examplesIf have_bbs_data()
 #' # Full data - species and stratification
 #' # Use `search_species()` to get correct species name
 #'

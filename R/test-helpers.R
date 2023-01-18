@@ -15,7 +15,6 @@ strip_model_files <- function(files) {
 }
 
 
-
 #' Wrapper for `expect_snapshot_value()` from testthat
 #'
 #' Copies parameters over from `expect_snapshot_value()`
@@ -27,4 +26,32 @@ expect_snapshot_value_safe <- function(...) {
      testthat::expect_snapshot_value(...)
    } else message("Skipping snapshot tests because interactive")
 
+}
+
+
+#' Check if cmdstan is installed
+#'
+#' Wrapper around `cmdstanr::cmdstan_version(error_on_NA = FALSE)` for quick
+#' check.
+#'
+#' Used internally for skipping examples and tests if no cmdstan installed.
+#'
+#' @export
+have_cmdstan <- function() {
+  !is.null(cmdstanr::cmdstan_version(error_on_NA = FALSE))
+}
+
+
+#' Skip tests if no BBS data
+#'
+#' @noRd
+skip_if_no_data <-function() {
+  testthat::skip_if_not(have_bbs_data())
+}
+
+#' Skip tests if no Stan installed
+#'
+#' @noRd
+skip_if_no_stan <- function() {
+  testthat::skip_if_not(have_cmdstan())
 }

@@ -94,7 +94,7 @@ through a general workflow for modelling species trends with bbsBayes2.
 The first step in any bbsBayes2 analysis is to stratify the data. 
 In this step we choose a stratification type as well as a species to explore. 
 
-```{r}
+```{r, eval = have_bbs_data()}
 s <- stratify(by = "bbs_usgs", species = "Snowy Owl")
 ```
 

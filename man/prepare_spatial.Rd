@@ -80,7 +80,7 @@ Note that all distances are in the units of \code{sf::st_crs(strata_map)}.
 }
 \examples{
 map <- load_map("bbs_cws")
-s <- stratify(by = "bbs_cws", species = "Connecticut Warbler")
+s <- stratify(by = "bbs_cws", sample_data = TRUE)
 p <- prepare_data(s, min_max_route_years = 2)
 sp <- prepare_spatial(p, map)
 

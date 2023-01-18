@@ -95,6 +95,7 @@ See the \href{https://bbsBayes.github.io/bbsBayes2/articles/models.html}{models 
 advanced examples and explanations.
 }
 \examples{
+\dontshow{if (have_cmdstan()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 s <- stratify(by = "bbs_cws", sample_data = TRUE)
 p <- prepare_data(s)
 pm <- prepare_model(p, model = "first_diff", model_variant = "hier")
@@ -104,6 +105,7 @@ m <- run_model(pm, iter_warmup = 20, iter_sampling = 20, chains = 2)
 
 # Clean up (remove model output files)
 unlink(list.files(pattern = paste0("BBS_STAN_first_diff_hier_", Sys.Date())))
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 Other modelling functions: 
