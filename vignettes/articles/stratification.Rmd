@@ -111,18 +111,18 @@ This is available from available from the US Fish and Wildlife Service Catalogue
 
 You can either download it by hand, or with the following code.
 ```{r}
-t <- tempfile()
+z <- "WBPHS_stratum_boundaries_2019.zip"
 
 download.file(url = "https://ecos.fws.gov/ServCat/DownloadFile/213149",
-              destfile = t)
-unzip(t)  # Unzip
-unlink(t) # Remove the zipped file
+              destfile = z)
+unzip(z)  # Unzip
+unlink(z) # Remove the zipped file
 ```
 
 To use this file in bbsBayes2, we need to load it as an sf object using the sf 
 package.
 ```{r}
-map <- sf::read_sf("WBPHS_stratum_boundaries_2019.shp")
+map <- read_sf("WBPHS_stratum_boundaries_2019.shp")
 map
 ggplot(map, aes(fill = factor(STRAT))) + 
   geom_sf() +

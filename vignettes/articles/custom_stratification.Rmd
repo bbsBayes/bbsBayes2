@@ -55,13 +55,13 @@ z <- "WBPHS_stratum_boundaries_2019.zip"
 
 download.file(url = "https://ecos.fws.gov/ServCat/DownloadFile/213149",
               destfile = z)
-unzip(t)  # Unzip
-unlink(t) # Remove the zipped file
+unzip(z)  # Unzip
+unlink(z) # Remove the zipped file
 ```
 
 We'll load and prepare this data.
 ```{r}
-map <- sf::read_sf("WBPHS_stratum_boundaries_2019.shp") %>%
+map <- read_sf("WBPHS_stratum_boundaries_2019.shp") %>%
   rename(strata_name = STRAT)
 ```
 
