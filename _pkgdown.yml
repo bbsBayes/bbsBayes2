@@ -50,6 +50,7 @@ reference:
   - get_convergence
   - get_model_vars
   - get_summary
+  - have_cmdstan
 
 - title: Indices and trends
   desc: Functions for generating indices and trends from models
