@@ -77,6 +77,10 @@ piggyback::pb_upload("cws_basw_gamye",
 
 # Release --------------------------------------
 
+# Update Code Meta data
+codemetar::write_codemeta()
+codemetar::give_opinions() # Ignore status badge (we have it)
+
 # Merge release branch to main
 # Create signed release
 usethis::use_github_release()

@@ -21,3 +21,4 @@ generate-map-abundance.R
 ^DEVTESTS$
 ^codecov\.yml$
 
+^codemeta\.json$

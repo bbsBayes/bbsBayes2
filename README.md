@@ -3,6 +3,8 @@
 [![R-CMD-check](https://github.com/bbsBayes/bbsBayes2/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bbsBayes/bbsBayes2/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/bbsBayes/bbsBayes2/branch/main/graph/badge.svg)](https://app.codecov.io/gh/bbsBayes/bbsBayes2?branch=main)
 [![R-Universe](https://bbsbayes.r-universe.dev/badges/bbsBayes2)](https://bbsbayes.r-universe.dev/)
+[![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+
 <!-- badges: end -->
 
 # bbsBayes2 <img src="man/figures/logo.png" align="right"/>

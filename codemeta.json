@@ -1,0 +1,469 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "identifier": "bbsBayes2",
+  "description": "The North American Breeding Bird Survey (BBS) is a long-running program that seeks to monitor the status and trends of the breeding birds in North America. Since its start in 1966, the BBS has accumulated over 50 years of data for over 500 species of North American Birds. Given the temporal and spatial structure of the data, hierarchical Bayesian models are used to assess the status and trends of these 500+ species of birds. 'bbsBayes2' allows you to perform hierarchical Bayesian analysis of BBS data. You can run a full model analysis for one or more species that you choose, or you can take more control and specify how the data should be stratified, prepared for 'JAGS', or modelled. The functions provided here allow you to replicate analyses performed by the United State Geological Survey (USGS, see Link and Sauer (2011) <doi:10.1525/auk.2010.09220>) and Canadian Wildlife Service (CWS, see Smith and Edwards (2020) <doi:10.1101/2020.03.26.010215>).",
+  "name": "bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data",
+  "codeRepository": "https://github.com/bbsBayes/bbsBayes2",
+  "issueTracker": "https://github.com/bbsBayes/bbsBayes2/issues",
+  "license": "https://spdx.org/licenses/MIT",
+  "version": "0.0.0.9999",
+  "programmingLanguage": {
+    "@type": "ComputerLanguage",
+    "name": "R",
+    "url": "https://r-project.org"
+  },
+  "runtimePlatform": "R version 4.2.1 (2022-06-23)",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Brandon P.M.",
+      "familyName": "Edwards",
+      "email": "brandonedwards3@cmail.carleton.ca"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Adam C.",
+      "familyName": "Smith",
+      "email": "adam.smith2@canada.ca"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Steffi",
+      "familyName": "LaZerte",
+      "email": "steffi@steffi.ca"
+    }
+  ],
+  "maintainer": [
+    {
+      "@type": "Person",
+      "givenName": "Brandon P.M.",
+      "familyName": "Edwards",
+      "email": "brandonedwards3@cmail.carleton.ca"
+    }
+  ],
+  "softwareSuggestions": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "cmdstanr",
+      "name": "cmdstanr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "covr",
+      "name": "covr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=covr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "knitr",
+      "name": "knitr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=knitr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "rmarkdown",
+      "name": "rmarkdown",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rmarkdown"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "rnaturalearth",
+      "name": "rnaturalearth",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rnaturalearth"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "rnaturalearthhires",
+      "name": "rnaturalearthhires"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "roxygen2",
+      "name": "roxygen2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=roxygen2"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "testthat",
+      "name": "testthat",
+      "version": ">= 3.0.0",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=testthat"
+    }
+  ],
+  "softwareRequirements": {
+    "1": {
+      "@type": "SoftwareApplication",
+      "identifier": "backports",
+      "name": "backports",
+      "version": ">= 1.4.1",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=backports"
+    },
+    "2": {
+      "@type": "SoftwareApplication",
+      "identifier": "dplyr",
+      "name": "dplyr",
+      "version": ">= 1.0.0",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=dplyr"
+    },
+    "3": {
+      "@type": "SoftwareApplication",
+      "identifier": "ggrepel",
+      "name": "ggrepel",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=ggrepel"
+    },
+    "4": {
+      "@type": "SoftwareApplication",
+      "identifier": "geofacet",
+      "name": "geofacet",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=geofacet"
+    },
+    "5": {
+      "@type": "SoftwareApplication",
+      "identifier": "ggplot2",
+      "name": "ggplot2",
+      "version": ">= 3.4.0",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=ggplot2"
+    },
+    "6": {
+      "@type": "SoftwareApplication",
+      "identifier": "magrittr",
+      "name": "magrittr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=magrittr"
+    },
+    "7": {
+      "@type": "SoftwareApplication",
+      "identifier": "mgcv",
+      "name": "mgcv",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=mgcv"
+    },
+    "8": {
+      "@type": "SoftwareApplication",
+      "identifier": "posterior",
+      "name": "posterior",
+      "version": ">= 1.2.1",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=posterior"
+    },
+    "9": {
+      "@type": "SoftwareApplication",
+      "identifier": "purrr",
+      "name": "purrr",
+      "version": ">= 0.3.4",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=purrr"
+    },
+    "10": {
+      "@type": "SoftwareApplication",
+      "identifier": "readr",
+      "name": "readr",
+      "version": ">= 2.1.2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=readr"
+    },
+    "11": {
+      "@type": "SoftwareApplication",
+      "identifier": "rlang",
+      "name": "rlang",
+      "version": ">= 0.4.11",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rlang"
+    },
+    "12": {
+      "@type": "SoftwareApplication",
+      "identifier": "sbtools",
+      "name": "sbtools",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=sbtools"
+    },
+    "13": {
+      "@type": "SoftwareApplication",
+      "identifier": "sf",
+      "name": "sf",
+      "version": ">= 1.0.8",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=sf"
+    },
+    "14": {
+      "@type": "SoftwareApplication",
+      "identifier": "spdep",
+      "name": "spdep",
+      "version": ">= 1.2.7",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=spdep"
+    },
+    "15": {
+      "@type": "SoftwareApplication",
+      "identifier": "snakecase",
+      "name": "snakecase",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=snakecase"
+    },
+    "16": {
+      "@type": "SoftwareApplication",
+      "identifier": "stringr",
+      "name": "stringr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=stringr"
+    },
+    "17": {
+      "@type": "SoftwareApplication",
+      "identifier": "tidyr",
+      "name": "tidyr",
+      "version": ">= 1.2.0",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=tidyr"
+    },
+    "18": {
+      "@type": "SoftwareApplication",
+      "identifier": "units",
+      "name": "units",
+      "version": ">= 0.8.0",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=units"
+    },
+    "19": {
+      "@type": "SoftwareApplication",
+      "identifier": "withr",
+      "name": "withr",
+      "version": ">= 2.5.0",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=withr"
+    },
+    "20": {
+      "@type": "SoftwareApplication",
+      "identifier": "R",
+      "name": "R",
+      "version": ">= 3.5"
+    },
+    "SystemRequirements": "CmdStan (https://mc-stan.org/users/interfaces/cmdstan)"
+  },
+  "fileSize": "18512.544KB",
+  "citation": [
+    {
+      "@type": "ScholarlyArticle",
+      "datePublished": "2021",
+      "author": [
+        {
+          "@type": "Organization",
+          "name": "Edwards"
+        },
+        {
+          "@type": "Person",
+          "givenName": "Brandon",
+          "familyName": "PM"
+        },
+        {
+          "@type": "Organization",
+          "name": "Smith"
+        },
+        {
+          "@type": "Person",
+          "givenName": "Adam",
+          "familyName": "C"
+        }
+      ],
+      "name": "bbsBayes: An R Package for Hierarchical Bayesian Analysis of North American Breeding Bird Survey Data",
+      "url": "https://doi.org/10.5334/jors.329",
+      "isPartOf": {
+        "@type": "PublicationIssue",
+        "datePublished": "2021",
+        "isPartOf": {
+          "@type": ["PublicationVolume", "Periodical"],
+          "volumeNumber": "9",
+          "name": "Journal of Open Research Software"
+        }
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "author": [
+        {
+          "@type": "Organization",
+          "name": "Pardieck"
+        },
+        {
+          "@type": "Person",
+          "givenName": "Keith",
+          "familyName": "L."
+        },
+        {
+          "@type": "Organization",
+          "name": "Ziolkowski Jr."
+        },
+        {
+          "@type": "Person",
+          "givenName": "Dave",
+          "familyName": "J."
+        },
+        {
+          "@type": "Organization",
+          "name": "Lutmerding"
+        },
+        {
+          "@type": "Organization",
+          "name": "M."
+        },
+        {
+          "@type": "Organization",
+          "name": "Aponte"
+        },
+        {
+          "@type": "Organization",
+          "name": "Veronica"
+        },
+        {
+          "@type": "Organization",
+          "name": "Hudson"
+        },
+        {
+          "@type": "Person",
+          "givenName": "Marie-Anne",
+          "familyName": "R."
+        }
+      ],
+      "name": "North American Breeding Bird Survey Dataset 1966 - 2019"
+    }
+  ],
+  "releaseNotes": "https://github.com/bbsBayes/bbsBayes2/blob/master/NEWS.md",
+  "readme": "https://github.com/bbsBayes/bbsBayes2/blob/main/README.md",
+  "contIntegration": ["https://github.com/bbsBayes/bbsBayes2/actions/workflows/R-CMD-check.yaml", "https://app.codecov.io/gh/bbsBayes/bbsBayes2?branch=main"]
+}
