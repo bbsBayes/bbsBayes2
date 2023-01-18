@@ -229,11 +229,13 @@ First we'll start with the CWS BBS data
 map <- load_map("bbs_cws")
 ```
 
-We'll modify this by first looking only at provinces (omitting the northern territories) and transforming to the GPS CRS (4326).
+We'll modify this by first looking only at provinces (omitting the northern territories),
+transforming to the GPS CRS (4326), and ensuring the resulting polygons are valid.
 ```{r}
 new_map <- map %>%
   filter(country_code == "CA", !prov_state %in% c("NT", "NU", "YT")) %>%
-  st_transform(4326)
+  st_transform(4326)%>%
+  st_make_valid()
 ```
 
 Now we can crop this map to make a western and an eastern portion, defined by 
