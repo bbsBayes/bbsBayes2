@@ -64,7 +64,6 @@
 #'     species
 #'
 #' @examples
-#'
 #' # Sample Data - USGS BBS strata
 #' s <- stratify(by = "bbs_usgs", sample_data = TRUE)
 #'

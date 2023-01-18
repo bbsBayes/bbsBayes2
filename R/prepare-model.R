@@ -78,7 +78,6 @@
 #' @export
 #'
 #' @examples
-#'
 #' s <- stratify(by = "bbs_cws", sample_data = TRUE)
 #' p <- prepare_data(s)
 #' pm <- prepare_model(p, model = "first_diff", model_variant = "hier")

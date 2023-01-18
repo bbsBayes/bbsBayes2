@@ -53,7 +53,6 @@
 #' @export
 #'
 #' @examples
-#'
 #' s <- stratify(by = "bbs_cws", sample_data = TRUE)
 #' p <- prepare_data(s)
 #' pm <- prepare_model(p, model = "first_diff", model_variant = "hier")
@@ -188,7 +187,6 @@ run_model <- function(model_data,
 #' @export
 #'
 #' @examples
-#'
 #' # By default, the model is saved as an RDS file during `run_model()`
 #'
 #' # But you can also deliberately save the file (here with an example model)
@@ -256,7 +254,6 @@ save_model_run <- function(model_output, path = NULL, quiet = FALSE) {
 #' @return File path to copy of the new model file.
 #'
 #' @examples
-#'
 #' # Save the Slope model in temp directory
 #' copy_model_file(model = "slope", model_variant = "spatial", dir = tempdir())
 #'

@@ -50,7 +50,6 @@
 #'      (just formatted more nicely)
 #'
 #' @examples
-#'
 #' map <- load_map("bbs_cws")
 #' s <- stratify(by = "bbs_cws", species = "Connecticut Warbler")
 #' p <- prepare_data(s, min_max_route_years = 2)

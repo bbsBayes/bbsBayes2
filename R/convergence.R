@@ -14,7 +14,6 @@
 #'
 #'
 #' @examples
-#'
 #' # Temporarily suppress convergence warning for legibility
 #' # "The ESS has been capped to avoid unstable estimates."
 #' opts <- options(warn = -1)
@@ -63,7 +62,6 @@ get_convergence <- function(model_output, variables = NULL) {
 #' @export
 #'
 #' @examples
-#'
 #' # Using the example model for Pacific Wrens...
 #'
 #' # List variable types
@@ -96,7 +94,6 @@ get_model_vars <- function(model_output, all = FALSE) {
 #' @export
 #'
 #' @examples
-#'
 #' # Temporarily suppress convergence warning for legibility
 #' # "The ESS has been capped to avoid unstable estimates."
 #' opts <- options(warn = -1)
