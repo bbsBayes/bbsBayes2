@@ -45,7 +45,7 @@ fetch_bbs_data()
 ## Stratifying with existing categories
 
 The existing stratifications are 
-``r paste0(names(bbs_strata), collapse = "`, `")``.
+`r paste0(names(bbs_strata), collapse = ", ")`.
 
 You can take a look at how these stratify your data by looking at the maps 
 included in bbsBayes2 with `load_map()`.

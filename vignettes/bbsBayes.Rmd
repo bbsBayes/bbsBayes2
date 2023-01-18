@@ -103,8 +103,9 @@ We can also play around with the included sample data (Pacific Wrens)
 s <- stratify(by = "bbs_cws", sample_data = TRUE) # Only Pacific Wren
 ```
 
-Stratifications included in bbsBayes2 are `
-`r paste0(names(bbs_strata), collapse = "`, `")``. See the articles on
+Stratifications included in bbsBayes2 are 
+`r paste0(names(bbs_strata), collapse = ", ")`. 
+See the articles on
 [stratifications](articles/stratification) and 
 [custom stratifications](articles/custom_stratification) for more details and 
 examples.
