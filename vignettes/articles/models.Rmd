@@ -96,7 +96,9 @@ To customize the initial parameter values you can create the model data with
 the list.
 
 ```{r}
-md <- prepare_model(p, model = "first_diff", model_variant = "hier")
+md <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
+  prepare_data(min_max_route_years = 2) %>%
+  prepare_model(model = "first_diff", model_variant = "hier")
 ```
 
 Make some changes to the `init_values` and pass the `model_data` to
@@ -124,8 +126,10 @@ new_model
 
 Then give the file path of this new file to `prepare_model()`
 ```{r}
-model_data <- prepare_model(p, model = "first_diff", model_variant = "hier",
-                            model_file = new_model)
+model_data <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
+  prepare_data(min_max_route_years = 2) %>%
+  prepare_model(model = "first_diff", model_variant = "hier",
+                model_file = new_model)
 ```
 
 
