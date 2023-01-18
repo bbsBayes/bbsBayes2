@@ -1,6 +1,6 @@
 #' Generate a map of trends by strata
 #'
-#' `plot_map()` allows you to generate a colour-coded map of there percent
+#' `plot_map()` allows you to generate a colour-coded map of the percent
 #' change in species trends for each strata.
 #'
 #' @param slope Logical. Whether or not to map values of the alternative trend
@@ -8,12 +8,11 @@
 #'   `generate_trends()`,  through the annual indices. Default `FALSE`.
 #' @param title Logical. Whether or not to include a title with species. Default
 #'   `TRUE`.
-#' @param col_viridis Logical flag to use "viridis" colour-blind friendly
-#'   palette. Default is FALSE
 #'
 #' @inheritParams common_docs
+#' @family indices and trends functions
 #'
-#' @return spplot object
+#' @return a ggplot2 plot
 #'
 #' @examples
 #' # Using the example model for Pacific Wrens...
@@ -22,10 +21,16 @@
 #' i <- generate_indices(pacific_wren_model)
 #'
 #' # Now generate trends
-#' t <- generate_trends(i)
+#' t <- generate_trends(i, slope = TRUE)
 #'
-#' # Generate the map
-#' map <- plot_map(t)
+#' # Generate the map (without slope trends)
+#' plot_map(t)
+#'
+#' # Generate the map (with slope trends)
+#' plot_map(t, slope = TRUE)
+#'
+#' # Viridis
+#' plot_map(t, col_viridis = TRUE)
 #'
 #' @export
 #'

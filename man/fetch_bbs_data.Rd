@@ -63,3 +63,10 @@ fetch_bbs_data(release = 2020, force = TRUE)
 fetch_bbs_data(release = 2020, level = "stop", force = TRUE)
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+Other BBS data functions: 
+\code{\link{have_bbs_data}()},
+\code{\link{load_bbs_data}()},
+\code{\link{remove_cache}()}
+}
+\concept{BBS data functions}

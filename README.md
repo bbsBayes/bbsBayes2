@@ -21,8 +21,6 @@ Additional resources:
 * [Introductory bbsBayes Workshop](https://github.com/AdamCSmithCWS/bbsBayes_Intro_Workshop)
 * [Journal Article with worked example](https://doi.org/10.5334/jors.329)
 
-<img src="man/figures/BARS_Continental_Trajectory.png"/> <img src="man/figures/BARS_trendmap.png"/>
-
 ## Installation
 
 bbsBayes2 can be installed from the bbsBayes R-Universe:

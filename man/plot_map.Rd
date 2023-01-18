@@ -16,14 +16,14 @@ metric (slope of a log-linear regression) if \code{slope = TRUE} was used in
 \item{title}{Logical. Whether or not to include a title with species. Default
 \code{TRUE}.}
 
-\item{col_viridis}{Logical flag to use "viridis" colour-blind friendly
-palette. Default is FALSE}
+\item{col_viridis}{Logical. Should the colour-blind-friendly "viridis"
+palette be used. Default \code{FALSE}.}
 }
 \value{
-spplot object
+a ggplot2 plot
 }
 \description{
-\code{plot_map()} allows you to generate a colour-coded map of there percent
+\code{plot_map()} allows you to generate a colour-coded map of the percent
 change in species trends for each strata.
 }
 \examples{
@@ -33,9 +33,23 @@ change in species trends for each strata.
 i <- generate_indices(pacific_wren_model)
 
 # Now generate trends
-t <- generate_trends(i)
+t <- generate_trends(i, slope = TRUE)
 
-# Generate the map
-map <- plot_map(t)
+# Generate the map (without slope trends)
+plot_map(t)
+
+# Generate the map (with slope trends)
+plot_map(t, slope = TRUE)
+
+# Viridis
+plot_map(t, col_viridis = TRUE)
 
 }
+\seealso{
+Other indices and trends functions: 
+\code{\link{generate_indices}()},
+\code{\link{generate_trends}()},
+\code{\link{plot_geofacet}()},
+\code{\link{plot_indices}()}
+}
+\concept{indices and trends functions}

@@ -26,6 +26,7 @@
 #'   `FALSE`.
 #'
 #' @inheritParams common_docs
+#' @family Data prep functions
 #'
 #' @details
 #'   To define a custom subset of an existing stratification, specify the
@@ -52,13 +53,15 @@
 #'   for more details.
 #'
 #' @return List of (meta) data.
-#'   - `meta_data` meta data defining the analysis
-#'   - `meta_strata` contains a data frame listing strata names and area for all
-#'      strata relevant to the data (i.e. some may have been removed due to lack
-#'      of count data). Contains at least `strata_name` (the label of the
-#'      stratum), and `area_sq_km` (area of the stratum).
-#'   - `birds_strata` contains stratified count-level data filtered by species
-#'   - `routes_strata` contains stratified route-level data filtered by species
+#'   - `meta_data` - meta data defining the analysis
+#'   - `meta_strata` - data frame listing strata names and area for
+#'     all strata relevant to the data (i.e. some may have been removed due to
+#'     lack of count data). Contains at least `strata_name` (the label of the
+#'     stratum), and `area_sq_km` (area of the stratum).
+#'   - `birds_strata` - data frame of stratified count-level data filtered by
+#'     species
+#'   - `routes_strata` - data frame of stratified route-level data filtered by
+#'     species
 #'
 #' @examples
 #'

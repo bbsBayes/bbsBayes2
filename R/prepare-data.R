@@ -15,14 +15,15 @@
 #'   this value.
 #'
 #' @inheritParams common_docs
+#' @family Data prep functions
 #'
 #' @return List of prepared (meta) data to be used for modelling and further
 #'   steps.
-#'   - `model_data` list of data formatted for use in Stan modelling
-#'   - `meta_data` meta data defining the analysis
-#'   - `meta_strata` data frame listing strata meta data
-#'   - `raw_data` contains a data frame of summarized data used to create
-#'     `model_data` (just formatted more nicely)
+#'   - `model_data` - list of data formatted for use in Stan modelling
+#'   - `meta_data` - meta data defining the analysis
+#'   - `meta_strata` - data frame listing strata meta data
+#'   - `raw_data` - data frame of summarized counts used to create `model_data`
+#'     (just formatted more nicely)
 #'
 #' @export
 #'

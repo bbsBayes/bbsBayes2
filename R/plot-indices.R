@@ -2,29 +2,24 @@
 #'
 #' Generates the indices plot for each stratum modelled.
 #'
-#' @param ci_width Numeric. Quantile defining the width of the plotted credible
-#'   interval. Defaults to 0.95 (lower = 0.025 and upper = 0.975)
-#' @param min_year Numeric. Minimum year to plot
-#' @param max_year Numeric. Maximum year to plot
+#' @param min_year Numeric. Minimum year to plot.
+#' @param max_year Numeric. Maximum year to plot.
 #' @param title Logical. Whether to include a title on the plot.
 #' @param title_size Numeric. Font size of plot title. Defaults to 20
 #' @param axis_title_size Numeric. Font size of axis titles. Defaults to 18
 #' @param axis_text_size Numeric. Font size of axis text. Defaults to 16
 #' @param line_width Numeric. Size of the trajectory line. Defaults to 1
-#' @param add_observed_means Logical. Whether to include points indicating the
-#'   observed mean counts. Default `FALSE`. Note: scale of observed means and
-#'   annual indices may not match due to imbalanced sampling among routes
-#' @param add_number_routes Logical. Whether to superimpose plot over a dotplot
+#' @param add_number_routes Logical. Whether to superimpose dotplot
 #'   showing the number of BBS routes included in each year. This is useful as a
 #'   visual check on the relative data-density through time because in most
-#'   cases the number of observations increases over time
+#'   cases the number of observations increases over time.
 #'
 #' @inheritParams common_docs
+#' @family indices and trends functions
 #'
-#' @return List of ggplot objects, each entry being a plot of a stratum indices
+#' @return List of ggplot2 plots, each item being a plot of a stratum's indices.
 #'
 #' @examples
-#'
 #' # Using the example model for Pacific Wrens...
 #'
 #' # Generate country, continent, and stratum indices
@@ -40,18 +35,21 @@
 #' names(plots)
 #'
 #' # Suppose we wanted to access the continental plot. We could do so with
-#' cont_plot <- plots[["continental"]]
+#' plots[["continent"]]
 #'
 #' # You can specify to only plot a subset of years using min_year and max_year
 #'
 #' # Plots indices from 2015 onward
 #' p_2015_min <- plot_indices(i, min_year = 2015)
+#' p_2015_min[["continent"]]
 #'
 #' #Plot up indices up to the year 2017
 #' p_2017_max <- plot_indices(i, max_year = 2017)
+#' p_2017_max[["continent"]]
 #'
 #' #Plot indices between 2011 and 2016
 #' p_2011_2016 <- plot_indices(i, min_year = 2011, max_year = 2016)
+#' p_2011_2016[["continent"]]
 #'
 #' @export
 #'

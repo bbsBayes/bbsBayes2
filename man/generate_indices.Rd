@@ -24,7 +24,7 @@ posterior distribution. Default is
 \code{c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)}. Note that these quantiles
 will be used to create confidence interval bands in \code{plot_indices()} and
 by quantiles in \code{generate_trends()}, so make sure you specify the ones you
-want to use later in this step.}
+want to use later.}
 
 \item{regions}{Character. Which region(s) to summarize and calculate indices
 for. Default is "continent" and "stratum". Options also include "country",
@@ -35,7 +35,8 @@ examples for more details).}
 
 \item{regions_index}{Data frame. Custom regions to summarize. Data frame must
 include all strata in the original data in one column (\code{strata_name}), and
-any custom regions defined as categories in other columns.}
+any custom regions defined as categories in other columns. See examples for
+more details.}
 
 \item{alternate_n}{Character. Indicating the name of the alternative annual
 index parameter in a model, Default is "n", alternatives are "n2" which
@@ -61,12 +62,17 @@ are only flagged, not omitted. See Details for more specifics.}
 \item{quiet}{Logical. Suppress progress messages? Default \code{FALSE}.}
 }
 \value{
-A list containing the indices (\code{indices}), an array of posterior
-draws (\code{samples}), meta data for the analysis (\code{meta_data}), meta data for
-the strata (\code{meta_strata}) and prepared data counts from \code{prepare_data()}
-(\code{raw_data}).
+A list containing
+\itemize{
+\item \code{indices} - data frame of calculated regional annual indices of
+abundances
+\item \code{samples} - array of posterior draws from the model
+\item \code{meta_data} - meta data defining the analysis
+\item \code{meta_strata} - data frame listing strata meta data
+\item \code{raw_data} - data frame of summarized counts
+}
 
-\code{indices} is a data frame with the following columns:
+\strong{\code{indices}} contains the following columns:
 \itemize{
 \item \code{year} - Year of particular index
 \item \code{region} - Region name
@@ -96,9 +102,6 @@ species range that is free of extrapolated population trajectories. e.g.,
 if 1.0, data cover full time-series; if 0.75, data cover 75 percent of
 time-series. Only calculated if \code{max_backcast != NULL}.
 }
-
-\code{meta_data} is a list passed from \code{run_model()}, now including \code{start_year},
-the first year used in the summary.
 }
 \description{
 Calculate annual indices of relative abundance by year for different regions.
@@ -117,7 +120,6 @@ exclusion of many strata, consider trimming the early years by specifying a
 \code{start_year}.
 }
 \examples{
-
 # Using the example model for Pacific Wrens
 
 # Generate the continental and stratum indices
@@ -139,3 +141,11 @@ i_custom <- generate_indices(
   regions_index = ri)
 
 }
+\seealso{
+Other indices and trends functions: 
+\code{\link{generate_trends}()},
+\code{\link{plot_geofacet}()},
+\code{\link{plot_indices}()},
+\code{\link{plot_map}()}
+}
+\concept{indices and trends functions}

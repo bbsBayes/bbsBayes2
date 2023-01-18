@@ -44,6 +44,7 @@
 #'   details.
 #'
 #' @inheritParams common_docs
+#' @family Data prep functions
 #'
 #' @details
 #'
@@ -66,14 +67,14 @@
 #' advanced examples and explanations.
 #'
 #' @return A list of prepared data.
-#'   - `model_data` list of data formatted for use in Stan modelling
-#'   - `init_values` list of initialization parameters
-#'   - `folds` if `calculate_cv = TRUE`, a vector of k-fold groups each
-#'      observation is assigned to (otherwise `NULL`)
-#'   - `meta_data` meta data defining the analysis
-#'   - `meta_strata` data frame listing strata meta data
-#'   - `raw_data` contains a data frame of summarized data used to create
-#'       `model_data` (just formatted more nicely)
+#'   - `model_data` - list of data formatted for use in Stan modelling
+#'   - `init_values` - list of initialization parameters
+#'   - `folds` - a vector of k-fold groups each
+#'      observation is assigned to (if `calculate_cv = TRUE`), or `NULL`
+#'   - `meta_data` - meta data defining the analysis
+#'   - `meta_strata` - data frame listing strata meta data
+#'   - `raw_data` - data frame of summarized counts used to create `model_data`
+#'      (just formatted more nicely)
 #' @export
 #'
 #' @examples

@@ -14,6 +14,7 @@
 #'
 #'
 #' @inheritParams common_docs
+#' @family BBS data functions
 #'
 #' @details
 #'
@@ -207,12 +208,13 @@ bbs_dir <- function(quiet = TRUE) {
 #' @param release Character/Numeric. BBS data to remove, one of "all", 2020, or
 #'   2022. Only applies if `type = "bbs_data"`.
 #'
-#' @return Nothing.
+#' @family BBS data functions
+#'
+#' @return Nothing
 #'
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
 #' # Remove everything
 #' remove_cache(type = "all")
@@ -233,7 +235,7 @@ bbs_dir <- function(quiet = TRUE) {
 #' remove_cache(type = "model")
 #' }
 #'
-remove_cache <- function(type = "bbs_data", level, release) {
+remove_cache <- function(type = "bbs_data", level = NULL, release = NULL) {
   if(type == "all") {
     message("Removing all data files (BBS data and Stan models) ",
             "and cache directory")
@@ -272,6 +274,7 @@ remove_cache <- function(type = "bbs_data", level, release) {
 #'   2022. Default 2022.
 #'
 #' @inheritParams common_docs
+#' @family BBS data functions
 #'
 #' @returns `TRUE` if the data is found, `FALSE` otherwise
 #'

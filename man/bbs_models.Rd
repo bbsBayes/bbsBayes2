@@ -32,11 +32,13 @@ bbs_models
 }
 \description{
 These models are included in bbsBayes2. The model files themselves can be
-found by running \code{system.file("models", package = "bbsBayes2")}.
-}
-\details{
-To create a custom Stan model, see \code{copy_model_file()} and the \code{model_file}
-argument of \code{prepare_model()}. See also the \href{https://bbsBayes.github.io/bbsBayes2/articles/models.html}{models article} for more
+found in the folder identified by
+\code{system.file("models", package = "bbsBayes2")}.
+To create a custom Stan model, see \code{copy_model_file()} and the
+\code{model_file} argument of \code{prepare_model()}. See also the \href{https://bbsBayes.github.io/bbsBayes2/articles/models.html}{models article} for more
 details.
+}
+\examples{
+bbs_models
 }
 \keyword{datasets}

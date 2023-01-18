@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{assign_prov_state}
 \alias{assign_prov_state}
-\title{Categorize polygon by Province/State if applicable}
+\title{Categorize polygon by Province/State}
 \usage{
 assign_prov_state(
   strata_map,
@@ -15,7 +15,8 @@ assign_prov_state(
 \item{strata_map}{sf data frame. Strata polygons to be categorized.}
 
 \item{min_overlap}{Numeric. The minimum proportion of overlap between a
-stratum polygon and a Province or State. Below this will raise warnings.}
+stratum polygon and a Province or State. Overlap below this proportion will
+raise warnings.}
 
 \item{plot}{Logical. Whether to plot how polygons were assigned to Provinces
 or States}
@@ -24,13 +25,15 @@ or States}
 frame or not.}
 }
 \value{
-(Spatial) data frame with strata assigned to Province/State
+(Spatial) data frame with strata assigned to Province/State.
 }
 \description{
-Categorize polygon by Province/State if applicable
+Categorizes custom stratification polygons by province or state if possible.
+This can be useful for calculating regional indices (\code{generate_indices()}) or
+trends (\code{generate_trends()}) on a custom stratification, or if you want to
+create a geofaceted plot (\code{plot_geofacet()}).
 }
 \examples{
-
 # Demonstration of why we can't divide BCR by Provinces and States!
 map <- load_map("bcr")
 assign_prov_state(map, plot = TRUE)
@@ -50,3 +53,9 @@ s <- assign_prov_state(map, min_overlap = 0.6, plot = TRUE)
 
 
 }
+\seealso{
+Other helper functions: 
+\code{\link{load_map}()},
+\code{\link{search_species}()}
+}
+\concept{helper functions}

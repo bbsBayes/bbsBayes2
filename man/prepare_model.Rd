@@ -89,14 +89,14 @@ reproducibility.}
 \value{
 A list of prepared data.
 \itemize{
-\item \code{model_data} list of data formatted for use in Stan modelling
-\item \code{init_values} list of initialization parameters
-\item \code{folds} if \code{calculate_cv = TRUE}, a vector of k-fold groups each
-observation is assigned to (otherwise \code{NULL})
-\item \code{meta_data} meta data defining the analysis
-\item \code{meta_strata} data frame listing strata meta data
-\item \code{raw_data} contains a data frame of summarized data used to create
-\code{model_data} (just formatted more nicely)
+\item \code{model_data} - list of data formatted for use in Stan modelling
+\item \code{init_values} - list of initialization parameters
+\item \code{folds} - a vector of k-fold groups each
+observation is assigned to (if \code{calculate_cv = TRUE}), or \code{NULL}
+\item \code{meta_data} - meta data defining the analysis
+\item \code{meta_strata} - data frame listing strata meta data
+\item \code{raw_data} - data frame of summarized counts used to create \code{model_data}
+(just formatted more nicely)
 }
 }
 \description{
@@ -127,3 +127,10 @@ s <- stratify(by = "bbs_cws", sample_data = TRUE)
 p <- prepare_data(s)
 pm <- prepare_model(p, model = "first_diff", model_variant = "hier")
 }
+\seealso{
+Other Data prep functions: 
+\code{\link{prepare_data}()},
+\code{\link{prepare_spatial}()},
+\code{\link{stratify}()}
+}
+\concept{Data prep functions}

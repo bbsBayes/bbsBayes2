@@ -19,4 +19,8 @@ bbs_strata
 List of strata included in bbsBayes2. Each list item contains a data frame
 describing the strata for that stratification (name, area, country, etc.)
 }
+\examples{
+bbs_strata[["bbs_cws"]]
+bbs_strata[["latlon"]]
+}
 \keyword{datasets}

@@ -20,16 +20,14 @@ you can access the `bbs_models` data frame.
 bbs_models
 ```
 
-```{r}
-s <- stratify(by = "bbs_cws", sample_data = TRUE)
-p <- prepare_data(s)
-```
 
+For specifics on *how* to run the various models, see the articles on 
+[model runs](./index.html#model-runs).
 
+See the following for details regarding the *why* of these various models. 
+As well as the final section on Advanced Modelling techniques.
 
-
-
-## 1. First Difference Models (`first_diff`)
+## 1. First Difference Models
 
 ### Non-hierarchical
 
@@ -38,21 +36,21 @@ p <- prepare_data(s)
 ### Spatial
 
 
-## 2. General Additive Models (`gam`)
+## 2. General Additive Models
 
 ### Hierarchical
 
 ### Spatial
 
 
-## 3. General Additive Models Year Effect(`gamye`)
+## 3. General Additive Models Year Effect
 
 ### Hierarchical
 
 ### Spatial
 
 
-## 4. Slope (`slope`)
+## 4. Slope
 
 ### Hierarchical
 

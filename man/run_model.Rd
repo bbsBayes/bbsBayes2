@@ -62,7 +62,7 @@ created.}
 as an RDS object with all required data. Defaults to \code{TRUE}.}
 
 \item{overwrite}{Logical. Whether to overwrite an existing model output file
-when saving}
+when saving.}
 
 \item{set_seed}{Numeric. If \code{NULL} (default) no seed is set. Otherwise an
 integer number to be used with \code{withr::with_seed()} internally to ensure
@@ -70,15 +70,21 @@ reproducibility.}
 
 \item{quiet}{Logical. Suppress progress messages? Default \code{FALSE}.}
 
-\item{...}{Other arguments passed on to \code{cmdstanr::sample()}}
+\item{...}{Other arguments passed on to \code{cmdstanr::sample()}.}
 }
 \value{
-A list containing the model output (\code{model_fit}), meta data for the
-analysis (\code{meta_data}), meta data for the strata (\code{meta_strata}) and
-prepared data counts from \code{prepare_data()} (\code{raw_data}).
+List model fit and other (meta) data.
+\itemize{
+\item \code{model_fit} - cmdstanr model output
+\item \code{model_data} - list of data formatted for use in Stan modelling
+\item \code{meta_data} - meta data defining the analysis
+\item \code{meta_strata} - data frame listing strata meta data
+\item \code{raw_data} - data frame of summarized counts
+}
 }
 \description{
-Run Bayesian model
+Run Bayesian model with \code{cmdstandr::sample()}using prepare data and model
+parameters specified in previous steps.
 }
 \details{
 The model is set up in \code{prepare_model()}. The \code{run_model()} function
@@ -97,6 +103,12 @@ pm <- prepare_model(p, model = "first_diff", model_variant = "hier")
 # Run model (quick and dirty)
 m <- run_model(pm, iter_warmup = 20, iter_sampling = 20, chains = 2)
 
-# Clean up (remove model files)
+# Clean up (remove model output files)
 unlink(list.files(pattern = paste0("BBS_STAN_first_diff_hier_", Sys.Date())))
 }
+\seealso{
+Other modelling functions: 
+\code{\link{copy_model_file}()},
+\code{\link{save_model_run}()}
+}
+\concept{modelling functions}

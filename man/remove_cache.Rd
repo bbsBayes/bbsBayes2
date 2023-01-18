@@ -4,7 +4,7 @@
 \alias{remove_cache}
 \title{Remove bbsBayes2 cache}
 \usage{
-remove_cache(type = "bbs_data", level, release)
+remove_cache(type = "bbs_data", level = NULL, release = NULL)
 }
 \arguments{
 \item{type}{Character. Which cached data to remove. One of "all", "bbs_data",
@@ -20,14 +20,13 @@ Only applies if \code{type = "bbs_data"}.}
 2022. Only applies if \code{type = "bbs_data"}.}
 }
 \value{
-Nothing.
+Nothing
 }
 \description{
 Remove all or some of the data downloaded via \code{fetch_bbs_data()} as well as
 model executables created by \code{cmdstanr::cmdstan_model()} via \code{run_model()}.
 }
 \examples{
-
 \dontrun{
 # Remove everything
 remove_cache(type = "all")
@@ -49,3 +48,10 @@ remove_cache(type = "model")
 }
 
 }
+\seealso{
+Other BBS data functions: 
+\code{\link{fetch_bbs_data}()},
+\code{\link{have_bbs_data}()},
+\code{\link{load_bbs_data}()}
+}
+\concept{BBS data functions}

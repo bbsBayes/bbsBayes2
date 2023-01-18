@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{load_map}
 \alias{load_map}
-\title{Load a map of of the geographic strata.}
+\title{Load a geographic strata map}
 \usage{
 load_map(stratify_by = NULL, type = "strata")
 }
@@ -17,8 +17,8 @@ or "US"/"USA"/"United States of America").}
 sf polygon object
 }
 \description{
-\code{load_map} allows you to load a simple features object (\code{sf} package)
-that represents a map of the strata that can be easily plotted.
+Load one of the included spatial data files (maps) as a simple features
+object (\code{sf} package)
 }
 \examples{
 # Toy example with Pacific Wren sample data
@@ -28,5 +28,15 @@ strat_map <- load_map(stratify_by = "bbs_cws")
 # simple plot of the map
 plot(strat_map)
 
+# or use ggplot2
+library(ggplot2)
+ggplot(data = strat_map) +
+  geom_sf(aes(fill = strata_name), show.legend = FALSE)
 
 }
+\seealso{
+Other helper functions: 
+\code{\link{assign_prov_state}()},
+\code{\link{search_species}()}
+}
+\concept{helper functions}

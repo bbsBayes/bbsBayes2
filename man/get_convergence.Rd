@@ -15,16 +15,31 @@ calculate metrics. If \code{NULL} (default) all variables are returned.}
 }
 \value{
 Data frame of convergence metrics for all model variables. Contains
-\verb{variable_type, }variable\verb{, }ess_bulk\verb{, }ess_tail\verb{, and }rhat`
+\code{variable_type}, \code{variable}, \code{ess_bulk}, \code{ess_tail}, and \code{rhat}.
 }
 \description{
-Convergence metrics
+Calculate convergence metrics for the model run. Specifically calculates bulk
+and tail effective sample sizes (ess_bulk, ess_tail) and R-hat (\code{rhat}).
+Returns output very similar to \code{get_summary()}.
 }
 \examples{
 
+# Temporarily suppress convergence warning for legibility
+# "The ESS has been capped to avoid unstable estimates."
+opts <- options(warn = -1)
+
 # Using the example model for Pacific Wrens
 
-conv <- get_convergence(pacific_wren_model)
-conv <- get_convergence(pacific_wren_model, variables = "strata_raw")
-conv <- get_convergence(pacific_wren_model, variables = "strata_raw[9]")
+get_convergence(pacific_wren_model)
+get_convergence(pacific_wren_model, variables = "strata_raw")
+get_convergence(pacific_wren_model, variables = "strata_raw[9]")
+
+# Restore warnings
+options(opts)
 }
+\seealso{
+Other model assessment functions: 
+\code{\link{get_model_vars}()},
+\code{\link{get_summary}()}
+}
+\concept{model assessment functions}

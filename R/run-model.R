@@ -1,5 +1,8 @@
 #' Run Bayesian model
 #'
+#' Run Bayesian model with `cmdstandr::sample()`using prepare data and model
+#' parameters specified in previous steps.
+#'
 #' @param refresh Numeric. Passed to `cmdstanr::sample()`. Number of iterations
 #'   between screen updates. If 0, only errors are shown.
 #' @param chains Numeric. Passed to `cmdstanr::sample()`. Number of Markov
@@ -24,12 +27,13 @@
 #' @param output_dir Character. Directory in which all model files will be
 #'   created.
 #' @param overwrite Logical. Whether to overwrite an existing model output file
-#'   when saving
+#'   when saving.
 #' @param save_model Logical. Whether or not to save the model output to file
 #'   as an RDS object with all required data. Defaults to `TRUE`.
-#' @param ... Other arguments passed on to `cmdstanr::sample()`
+#' @param ... Other arguments passed on to `cmdstanr::sample()`.
 #'
 #' @inheritParams common_docs
+#' @family modelling functions
 #'
 #' @details The model is set up in `prepare_model()`. The `run_model()` function
 #' does the final (and often long-running) step of actually running the model.
@@ -39,9 +43,13 @@
 #' article](https://bbsBayes.github.io/bbsBayes2/articles/models.html) for more
 #' advanced examples and explanations.
 #'
-#' @return A list containing the model output (`model_fit`), meta data for the
-#'   analysis (`meta_data`), meta data for the strata (`meta_strata`) and
-#'   prepared data counts from `prepare_data()` (`raw_data`).
+#' @return List model fit and other (meta) data.
+#'   - `model_fit` - cmdstanr model output
+#'   - `model_data` - list of data formatted for use in Stan modelling
+#'   - `meta_data` - meta data defining the analysis
+#'   - `meta_strata` - data frame listing strata meta data
+#'   - `raw_data` - data frame of summarized counts
+#'
 #' @export
 #'
 #' @examples
@@ -53,7 +61,7 @@
 #' # Run model (quick and dirty)
 #' m <- run_model(pm, iter_warmup = 20, iter_sampling = 20, chains = 2)
 #'
-#' # Clean up (remove model files)
+#' # Clean up (remove model output files)
 #' unlink(list.files(pattern = paste0("BBS_STAN_first_diff_hier_", Sys.Date())))
 
 run_model <- function(model_data,
@@ -163,19 +171,20 @@ run_model <- function(model_data,
 
 #' Save output of run_model()
 #'
-#' This function closely imitate `cmdstanr::save_object()` but saves the
+#' This function closely imitates `cmdstanr::save_object()` but saves the
 #' entire model output object from `run_model()` which contains more details
-#' regarding stratification etc.
+#' regarding data preparation (stratification etc.).
 #'
-#' Files are saved to `path`, or if not provided to the original location of
-#' the Stan model run files (provided the original files exist).
+#' Files are saved to `path`, or if not provided, to the original location of
+#' the Stan model run files (if the original files exist).
 #'
 #' @param path Character. Optional file path to use for saved data. Defaults to
-#' the file path used for the original run
+#' the file path used for the original run.
 #'
 #' @inheritParams common_docs
+#' @family modelling functions
 #'
-#' @return Nothing. Creates .rds file at `path`.
+#' @return Nothing. Creates an `.rds` file at `path`.
 #' @export
 #'
 #' @examples
@@ -234,7 +243,7 @@ save_model_run <- function(model_output, path = NULL, quiet = FALSE) {
 #' Copy model file
 #'
 #' Save a predefined Stan model file to a local text file for editing. These
-#' files can then be used in `run_models()` by specifying the `model_file`
+#' files can then be used in `prepare_model()` by specifying the `model_file`
 #' argument.
 #'
 #' @param dir Character. Directory where file should be saved.
@@ -242,8 +251,9 @@ save_model_run <- function(model_output, path = NULL, quiet = FALSE) {
 #'   file.
 #'
 #' @inheritParams common_docs
+#' @family modelling functions
 #'
-#' @return File path to copy of the model file.
+#' @return File path to copy of the new model file.
 #'
 #' @examples
 #'

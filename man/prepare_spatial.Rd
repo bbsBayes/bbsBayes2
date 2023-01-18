@@ -56,13 +56,13 @@ different strata it can be useful to reduce the size of the labels. Default
 List of prepared (meta) data to be used for modelling and further
 steps.
 \itemize{
-\item \code{spatial_data} list of samples, nodes, adjacent matrix and map
+\item \code{spatial_data} - list of samples, nodes, adjacent matrix and map
 visualizing the matrix
-\item \code{model_data} list of data formatted for use in Stan modelling
-\item \code{meta_data} meta data defining the analysis
-\item \code{meta_strata} data frame listing strata meta data
-\item \code{raw_data} contains a data frame of summarized data used to create
-\code{model_data} (just formatted more nicely)
+\item \code{model_data} - list of data formatted for use in Stan modelling
+\item \code{meta_data} - meta data defining the analysis
+\item \code{meta_strata} - data frame listing strata meta data
+\item \code{raw_data} - data frame of summarized counts used to create \code{model_data}
+(just formatted more nicely)
 }
 }
 \description{
@@ -93,3 +93,10 @@ sp <- prepare_spatial(p, map, add_map = map)
 sp$map
 
 }
+\seealso{
+Other Data prep functions: 
+\code{\link{prepare_data}()},
+\code{\link{prepare_model}()},
+\code{\link{stratify}()}
+}
+\concept{Data prep functions}

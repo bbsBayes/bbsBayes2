@@ -1,20 +1,32 @@
-
 #' Convergence metrics
 #'
+#' Calculate convergence metrics for the model run. Specifically calculates bulk
+#' and tail effective sample sizes (ess_bulk, ess_tail) and R-hat (`rhat`).
+#' Returns output very similar to `get_summary()`.
 #'
 #' @inheritParams common_docs
 #'
+#' @family model assessment functions
+#'
 #' @return Data frame of convergence metrics for all model variables. Contains
-#'   `variable_type, `variable`, `ess_bulk`, `ess_tail`, and `rhat`
+#'   `variable_type`, `variable`, `ess_bulk`, `ess_tail`, and `rhat`.
 #' @export
+#'
 #'
 #' @examples
 #'
+#' # Temporarily suppress convergence warning for legibility
+#' # "The ESS has been capped to avoid unstable estimates."
+#' opts <- options(warn = -1)
+#'
 #' # Using the example model for Pacific Wrens
 #'
-#' conv <- get_convergence(pacific_wren_model)
-#' conv <- get_convergence(pacific_wren_model, variables = "strata_raw")
-#' conv <- get_convergence(pacific_wren_model, variables = "strata_raw[9]")
+#' get_convergence(pacific_wren_model)
+#' get_convergence(pacific_wren_model, variables = "strata_raw")
+#' get_convergence(pacific_wren_model, variables = "strata_raw[9]")
+#'
+#' # Restore warnings
+#' options(opts)
 
 get_convergence <- function(model_output, variables = NULL) {
 
@@ -36,14 +48,16 @@ get_convergence <- function(model_output, variables = NULL) {
 
 #' Get model variables
 #'
-#' Returns the basic model variables types (note that most variables have
-#' different iterations for each strata and each year).
+#' Returns the basic model variables and/or variable types (note that most
+#' variables have different iterations for each strata and each year).
 #'
 #' @param all Logical. Whether or not to return **all**, specific variables
 #'   (e.g., `strata_raw[1]` or just variable types (e.g., `strata_raw`).
 #'   Defaults to `FALSE` (variable types only).
 #'
 #' @inheritParams common_docs
+#'
+#' @family model assessment functions
 #'
 #' @return A character vector of all model variable types.
 #' @export
@@ -76,11 +90,16 @@ get_model_vars <- function(model_output, all = FALSE) {
 #'
 #'
 #' @inheritParams common_docs
+#' @family model assessment functions
 #'
-#' @return A data frame of model summary statistics
+#' @return A data frame of model summary statistics.
 #' @export
 #'
 #' @examples
+#'
+#' # Temporarily suppress convergence warning for legibility
+#' # "The ESS has been capped to avoid unstable estimates."
+#' opts <- options(warn = -1)
 #'
 #' # Using the example model for Pacific Wrens
 #'
@@ -88,6 +107,9 @@ get_model_vars <- function(model_output, all = FALSE) {
 #' get_summary(pacific_wren_model, variables = "strata_raw")
 #' get_summary(pacific_wren_model, variables = "strata_raw[9]")
 #'
+#' # Restore warnings
+#' options(opts)
+
 get_summary <- function(model_output, variables = NULL) {
 
   check_data(model_output)

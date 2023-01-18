@@ -22,6 +22,9 @@ usethis::use_data(bbs_data_sample, overwrite = TRUE)
 
 
 # Example model --------------------------------------------------------
+# NOTE: That this code is included in the examples of pacific_wren_model
+#  in R/data.R. So if updated here, should also be updated there.
+
 pacific_wren_model <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
   prepare_data() %>%
   prepare_model(model = "first_diff", set_seed = 111) %>%

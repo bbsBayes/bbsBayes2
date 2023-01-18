@@ -9,7 +9,7 @@
 #'   `c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)`. Note that these quantiles
 #'   will be used to create confidence interval bands in `plot_indices()` and
 #'   by quantiles in `generate_trends()`, so make sure you specify the ones you
-#'   want to use later in this step.
+#'   want to use later.
 #' @param regions Character. Which region(s) to summarize and calculate indices
 #'   for. Default is "continent" and "stratum". Options also include "country",
 #'   "prov_state", "bcr", and "bcr_by_country". Note that some regions only
@@ -18,7 +18,8 @@
 #'   examples for more details).
 #' @param regions_index Data frame. Custom regions to summarize. Data frame must
 #'   include all strata in the original data in one column (`strata_name`), and
-#'   any custom regions defined as categories in other columns.
+#'   any custom regions defined as categories in other columns. See examples for
+#'   more details.
 #' @param alternate_n Character. Indicating the name of the alternative annual
 #'   index parameter in a model, Default is "n", alternatives are "n2" which
 #'   involves a different way of scaling the annual indices, "n_smooth" for the
@@ -38,6 +39,7 @@
 #'   indices.
 #'
 #' @inheritParams common_docs
+#' @family indices and trends functions
 #'
 #' @details
 #'   `max_backcast` is a way to deal with the fact that the species of interest
@@ -50,12 +52,15 @@
 #'   exclusion of many strata, consider trimming the early years by specifying a
 #'   `start_year`.
 #'
-#' @return A list containing the indices (`indices`), an array of posterior
-#'   draws (`samples`), meta data for the analysis (`meta_data`), meta data for
-#'   the strata (`meta_strata`) and prepared data counts from `prepare_data()`
-#'   (`raw_data`).
+#' @return A list containing
+#'   - `indices` - data frame of calculated regional annual indices of
+#'      abundances
+#'   - `samples` - array of posterior draws from the model
+#'   - `meta_data` - meta data defining the analysis
+#'   - `meta_strata` - data frame listing strata meta data
+#'   - `raw_data` - data frame of summarized counts
 #'
-#'   `indices` is a data frame with the following columns:
+#' **`indices`** contains the following columns:
 #'
 #'   - `year` - Year of particular index
 #'   - `region` - Region name
@@ -85,11 +90,7 @@
 #'   if 1.0, data cover full time-series; if 0.75, data cover 75 percent of
 #'   time-series. Only calculated if `max_backcast != NULL`.
 #'
-#'  `meta_data` is a list passed from `run_model()`, now including `start_year`,
-#'    the first year used in the summary.
-#'
 #' @examples
-#'
 #' # Using the example model for Pacific Wrens
 #'
 #' # Generate the continental and stratum indices

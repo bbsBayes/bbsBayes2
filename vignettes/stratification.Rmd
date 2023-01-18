@@ -44,7 +44,8 @@ fetch_bbs_data()
 
 ## Stratifying with existing categories
 
-The existing stratifications are `r paste0(names(bbs_strata), collapse = ", ")`
+The existing stratifications are 
+``r paste0(names(bbs_strata), collapse = "`, `")``.
 
 You can take a look at how these stratify your data by looking at the maps 
 included in bbsBayes2 with `load_map()`.
@@ -52,7 +53,7 @@ included in bbsBayes2 with `load_map()`.
 ```{r}
 ggplot(data = load_map("bbs_cws"), aes(fill = strata_name)) +
   geom_sf() +
-  scale_fill_viridis_d(guide = NULL)
+  scale_fill_viridis_d(guide = "none")
 ```
 
 
@@ -82,15 +83,22 @@ bbs_strata[["bbs_cws"]]
 
 We can now modify and use this data frame as we like.
 ```{r}
-my_cws <- filter(bbs_strata[["bbs_cws"]], country == "United States of America")
+my_cws <- filter(bbs_strata[["bbs_cws"]], country == "Canada")
 s <- stratify(by = "bbs_cws", species = "Canada Jay", strata_custom = my_cws)
 ```
 
 Note that the stratification is now "bbs_cws" and "subset"
 
 ```{r}
-s$meta_data
+s[["meta_data"]]
 ```
+
+We can see the strata included by looking at the `meta_strata`
+
+```{r}
+print(s[["meta_strata"]], n = Inf)
+```
+
 
 
 ## Custom stratification - New map
@@ -107,8 +115,8 @@ t <- tempfile()
 
 download.file(url = "https://ecos.fws.gov/ServCat/DownloadFile/213149",
               destfile = t)
-unzip(t)
-unlink(t)
+unzip(t)  # Unzip
+unlink(t) # Remove the zipped file
 ```
 
 To use this file in bbsBayes2, we need to load it as an sf object using the sf 
@@ -118,7 +126,7 @@ map <- sf::read_sf("WBPHS_stratum_boundaries_2019.shp")
 map
 ggplot(map, aes(fill = factor(STRAT))) + 
   geom_sf() +
-  scale_fill_viridis_d(guide = NULL)
+  scale_fill_viridis_d(guide = "none")
 
 ```
 
@@ -151,7 +159,7 @@ s[["routes_strata"]]
 ```
 
 To get a different look we can also plot this data on top of our map using
-ggplot2. Note that we use `factor()` to ensure the stratum names are 
+ggplot2. Note that we use `factor()` to ensure the strata names are 
 categorical.
 
 ```{r}
@@ -161,12 +169,12 @@ r <- s[["routes_strata"]] %>%
 ggplot() +
   geom_sf(data = map, aes(fill = factor(strata_name)), alpha = 0.3) +
   geom_sf(data = r, aes(colour = factor(strata_name)), size = 1) +
-  scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = NULL)
+  scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none")
 
 ```
 
-Based on the message we received during stratification and this map, 
-it looks as if our custom stratification is excluding some BBS data. 
+Based on the message we received during stratification (`Omitting...`) and this
+map, it looks as if our custom stratification is excluding some BBS data.
 
 We can re-run the stratification with `return_omitted = TRUE` which will attach
 a data frame of omitted strata to the output.
@@ -186,7 +194,7 @@ ggplot() +
   geom_sf(data = map, aes(fill = factor(strata_name)), alpha = 0.3) +
   geom_sf(data = r, aes(colour = factor(strata_name)), size = 1, alpha = 0.5) +
   geom_sf(data = omitted, size = 0.75, alpha = 0.5) +
-  scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = NULL) 
+  scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none") 
 ```
 
 
@@ -205,7 +213,7 @@ ggplot() +
   geom_sf(data = map, aes(fill = factor(strata_name)), alpha = 0.3) +
   geom_sf(data = r, aes(colour = factor(strata_name)), size = 1) +
   geom_sf(data = bbs_routes, size = 0.5) +
-  scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = NULL) 
+  scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none") 
 ```
 
 So either way, we can clearly see, spatially, which points have been omitted
@@ -213,21 +221,19 @@ from our data.
 
 ## Custom stratification - Modifying existing BBS maps
 
-Stratify by custom stratification, using sf map object
-e.g, with east/west divide of southern Canada with BBS CWS strata
+Stratify by custom stratification, using sf map object. For example, let's look
+at an east/west divide of southern Canada with BBS CWS strata.
 
 First we'll start with the CWS BBS data
 ```{r}
 map <- load_map("bbs_cws")
 ```
 
-We'll modify this by first looking only at provinces (omitting the northern territories), transforming to the GPS CRS (4326), and ensuring the resulting 
-polygons are valid.
+We'll modify this by first looking only at provinces (omitting the northern territories) and transforming to the GPS CRS (4326).
 ```{r}
 new_map <- map %>%
   filter(country_code == "CA", !prov_state %in% c("NT", "NU", "YT")) %>%
-  st_transform(4326) %>%
-  st_make_valid()
+  st_transform(4326)
 ```
 
 Now we can crop this map to make a western and an eastern portion, defined by 
@@ -268,10 +274,10 @@ ggplot() +
 
 ```
 
-Now we're good to continue on with `prepare_data()`...
 
-
-
-
+This outlies the various ways in which you can stratify your data. 
+For a more indepth look at how to use custom stratifications throughout the
+entire workflow, see the 
+[Custom Stratifications article](./custom_stratification.html).
 
 

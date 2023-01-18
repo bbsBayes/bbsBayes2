@@ -10,11 +10,12 @@
 #'   species data or the uncombined species. Note that this results in different
 #'   species names.
 #'
-#' @return Data frame subset of BBS species data frame
+#' @family helper functions
+#'
+#' @return Subset of the BBS species data frame matching the species pattern.
 #' @export
 #'
 #' @examples
-#'
 #' # Search for various terms
 #' search_species("Paridae")
 #' search_species("chickadee")
@@ -63,15 +64,17 @@ search_col <- function(column, search) {
 }
 
 
-#' Load a map of of the geographic strata.
+#' Load a geographic strata map
 #'
-#' `load_map` allows you to load a simple features object (`sf` package)
-#'   that represents a map of the strata that can be easily plotted.
+#' Load one of the included spatial data files (maps) as a simple features
+#' object (`sf` package)
 #'
 #' @param stratify_by Character. Stratification type. One of
 #'   "prov_state", "bcr", "latlong", "bbs_cws", "bbs_usgs".
 #' @param type Character. "strata" or political map ("North America", "Canada"
 #'   or "US"/"USA"/"United States of America").
+#'
+#' @family helper functions
 #'
 #' @return sf polygon object
 #'
@@ -83,9 +86,12 @@ search_col <- function(column, search) {
 #' # simple plot of the map
 #' plot(strat_map)
 #'
+#' # or use ggplot2
+#' library(ggplot2)
+#' ggplot(data = strat_map) +
+#'   geom_sf(aes(fill = strata_name), show.legend = FALSE)
 #'
 #' @export
-#'
 
 load_map <- function(stratify_by = NULL, type = "strata") {
 
@@ -111,22 +117,29 @@ load_map <- function(stratify_by = NULL, type = "strata") {
   map
 }
 
-#' Categorize polygon by Province/State if applicable
+#' Categorize polygon by Province/State
+#'
+#' Categorizes custom stratification polygons by province or state if possible.
+#' This can be useful for calculating regional indices (`generate_indices()`) or
+#' trends (`generate_trends()`) on a custom stratification, or if you want to
+#' create a geofaceted plot (`plot_geofacet()`).
 #'
 #' @param strata_map sf data frame. Strata polygons to be categorized.
 #' @param min_overlap Numeric. The minimum proportion of overlap between a
-#'   stratum polygon and a Province or State. Below this will raise warnings.
+#'   stratum polygon and a Province or State. Overlap below this proportion will
+#'   raise warnings.
 #' @param plot Logical. Whether to plot how polygons were assigned to Provinces
 #'   or States
 #' @param keep_spatial Logical. Whether the output should be a spatial data
 #'   frame or not.
 #'
-#' @return (Spatial) data frame with strata assigned to Province/State
+#' @family helper functions
+#'
+#' @return (Spatial) data frame with strata assigned to Province/State.
 #'
 #' @export
 #'
 #' @examples
-#'
 #' # Demonstration of why we can't divide BCR by Provinces and States!
 #' map <- load_map("bcr")
 #' assign_prov_state(map, plot = TRUE)

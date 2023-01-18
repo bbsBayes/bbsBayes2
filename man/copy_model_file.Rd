@@ -21,11 +21,11 @@ Additive Model with Year Effect), or "slope" (Slope model).}
 file.}
 }
 \value{
-File path to copy of the model file.
+File path to copy of the new model file.
 }
 \description{
 Save a predefined Stan model file to a local text file for editing. These
-files can then be used in \code{run_models()} by specifying the \code{model_file}
+files can then be used in \code{prepare_model()} by specifying the \code{model_file}
 argument.
 }
 \examples{
@@ -41,3 +41,9 @@ copy_model_file(model = "slope", model_variant = "spatial", dir = tempdir(),
 unlink(file.path(tempdir(), "slope_spatial_bbs_CV_COPY.stan"))
 
 }
+\seealso{
+Other modelling functions: 
+\code{\link{run_model}()},
+\code{\link{save_model_run}()}
+}
+\concept{modelling functions}

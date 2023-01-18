@@ -65,6 +65,7 @@ library(bbsBayes2)
 ```
 
 There are four types of BBS data that can be downloaded:
+
 - Two levels `state` and `stop` (only `state` works with bbsBayes2 models)
 - Two releases `2020` and `2022`
 
@@ -102,8 +103,8 @@ We can also play around with the included sample data (Pacific Wrens)
 s <- stratify(by = "bbs_cws", sample_data = TRUE) # Only Pacific Wren
 ```
 
-Stratifications included in bbsBayes2 are 
-`r paste0(names(bbs_strata), collapse = ",")`. See the articles on
+Stratifications included in bbsBayes2 are `
+`r paste0(names(bbs_strata), collapse = "`, `")``. See the articles on
 [stratifications](articles/stratification) and 
 [custom stratifications](articles/custom_stratification) for more details and 
 examples.
@@ -196,4 +197,10 @@ plot_map(t)
 ```{r, include = FALSE}
 unlink(list.files(pattern = "^BBS_STAN_(\\w|\\d|-)+.(csv|rds)"))
 ```
+
+And there you have it!
+
+Check out the other [articles](/index.html) to explore more advanced usage or 
+the [function reference](../reference/) to see what functions are available and 
+how to use them in greater detail.
 

@@ -28,6 +28,7 @@
 #'   3.
 #'
 #' @inheritParams common_docs
+#' @family Data prep functions
 #'
 #' @details
 #' When using the Voronoi method, a buffer is used to fill around and link
@@ -40,13 +41,13 @@
 #'
 #' @return List of prepared (meta) data to be used for modelling and further
 #'   steps.
-#'   - `spatial_data` list of samples, nodes, adjacent matrix and map
+#'   - `spatial_data` - list of samples, nodes, adjacent matrix and map
 #'      visualizing the matrix
-#'   - `model_data` list of data formatted for use in Stan modelling
-#'   - `meta_data` meta data defining the analysis
-#'   - `meta_strata` data frame listing strata meta data
-#'   - `raw_data` contains a data frame of summarized data used to create
-#'     `model_data` (just formatted more nicely)
+#'   - `model_data` - list of data formatted for use in Stan modelling
+#'   - `meta_data` - meta data defining the analysis
+#'   - `meta_strata` - data frame listing strata meta data
+#'   - `raw_data` - data frame of summarized counts used to create `model_data`
+#'      (just formatted more nicely)
 #'
 #' @examples
 #'

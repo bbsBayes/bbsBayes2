@@ -17,8 +17,8 @@ Defaults to \code{FALSE} (variable types only).}
 A character vector of all model variable types.
 }
 \description{
-Returns the basic model variables types (note that most variables have
-different iterations for each strata and each year).
+Returns the basic model variables and/or variable types (note that most
+variables have different iterations for each strata and each year).
 }
 \examples{
 
@@ -31,3 +31,9 @@ get_model_vars(pacific_wren_model)
 get_model_vars(pacific_wren_model, all = TRUE)
 
 }
+\seealso{
+Other model assessment functions: 
+\code{\link{get_convergence}()},
+\code{\link{get_summary}()}
+}
+\concept{model assessment functions}

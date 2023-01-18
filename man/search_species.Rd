@@ -16,14 +16,13 @@ species data or the uncombined species. Note that this results in different
 species names.}
 }
 \value{
-Data frame subset of BBS species data frame
+Subset of the BBS species data frame matching the species pattern.
 }
 \description{
 A helper function for finding the appropriate species name for use in
 \code{stratify()}.
 }
 \examples{
-
 # Search for various terms
 search_species("Paridae")
 search_species("chickadee")
@@ -42,3 +41,9 @@ search_species("northern flicker")
 search_species("northern flicker", combine_species_forms = FALSE)
 
 }
+\seealso{
+Other helper functions: 
+\code{\link{assign_prov_state}()},
+\code{\link{load_map}()}
+}
+\concept{helper functions}

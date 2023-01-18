@@ -24,4 +24,7 @@ species_forms
 Species forms which will be combined if \code{combine_species_forms}
 is \code{TRUE} in \code{stratify()}.
 }
+\examples{
+species_forms
+}
 \keyword{datasets}

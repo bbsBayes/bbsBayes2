@@ -15,7 +15,6 @@
 fetch_bbs_data_internal() # Run to ensure BBS data for examples
 
 # Update exported data -------------------------------------------------------
-# To run in the background
 
 source("data-raw/data_exported.R")
 source("data-raw/data_strata.R")

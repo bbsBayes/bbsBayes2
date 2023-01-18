@@ -6,23 +6,24 @@
 #' in population size for composite regions.
 #'
 #' @param quantiles Numeric vector. Quantiles to be sampled from the posterior
-#'   distribution. Defaults to `c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)`
+#'   distribution. Defaults to `c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)`.
 #' @param slope Logical. Whether to calculate an alternative trend metric, the
 #'   slope of a log-linear regression through the annual indices. Default
 #' `FALSE`.
 #' @param prob_decrease Numeric vector. Percent-decrease values for which to
 #'   optionally calculate the posterior probabilities (see Details). Default is
-#'   `NULL` (do not calculate).
+#'   `NULL` (not calculated).
 #' @param prob_increase Numeric vector. Percent-increase values for which to
 #'   optionally calculate the posterior probabilities (see Details). Default is
-#'   `NULL` (do not calculate).
+#'   `NULL` (not calculated).
 #'
 #' @inheritParams common_docs
+#' @family indices and trends functions
 #'
 #' @details
 #'   The posterior probabilities can be calculated for a percent-decrease
 #'   (`prob_decrease`) and/or percent-increase (`prob_increase`) if desired.
-#'   These calculate the probability that the populationhas decreased/increased
+#'   These calculate the probability that the population has decreased/increased
 #'   by at least the amount specified.
 #'
 #'   For example, a `prob_increase = 100` would result in the calculation of the
@@ -33,13 +34,14 @@
 #'   the probability that the population has decreased by more than 50% (i.e.,
 #'   less than half of the population remains) over the period of the trend.
 #'
-#' @return A list containing the trends (`trends`), meta data for the analysis
-#'   (`meta_data`), meta data for the strata (`meta_strata`) and prepared data
-#'   counts from `prepare_data()` (`raw_data`).
+#' @return A list containing
+#'   - `trends` - data frame of calculated population trends, one row for each
+#'     region in the input `indices`
+#'   - `meta_data` - meta data defining the analysis
+#'   - `meta_strata` - data frame listing strata meta data
+#'   - `raw_data` - data frame of summarized counts
 #'
-#'   `trends` is a data frame with one row for each region in the input
-#'   `indices`. It has the following columns:
-#'
+#' **`trends`** contains the following columns:
 #'   - `start_year` - First year of the trend
 #'   - `end_year` - Last year of the trend
 #'   - `region` - Region name
@@ -99,15 +101,19 @@
 #'
 #'
 #' @examples
-#'
 #' # Using the example model for Pacific Wrens...
 #'
-#' # Generate the continental and stratum indices#'
+#' # Generate the continental and stratum indices
 #' i <- generate_indices(pacific_wren_model)
 #'
 #' # Now, generate the trends
 #' t <- generate_trends(i)
 #'
+#' # Use the slope method
+#' t <- generate_trends(i, slope = TRUE)
+#'
+#' # Calculate probability of the population declining by 50%
+#' t <- generate_trends(i, prob_decrease = 50)
 #'
 #' @export
 #'

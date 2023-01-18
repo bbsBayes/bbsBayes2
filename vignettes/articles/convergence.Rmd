@@ -61,7 +61,7 @@ tconv <- tidyr::pivot_longer(conv, cols = c(ess_bulk, ess_tail, rhat))
 ggplot(data = tconv, aes(x = variable, y = value, colour = variable_type)) +
     geom_point() +
     facet_wrap(~name, scales = "free_y") +
-    scale_colour_viridis_d(guide = FALSE)
+    scale_colour_viridis_d(guide = "none")
 ```
 
 We can also choose to extract only some variables. To see which ones are available,

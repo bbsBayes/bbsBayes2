@@ -9,6 +9,7 @@
 #'   Wrens (see ?bbs_data_sample). Default is `FALSE`. If `TRUE`, `level` and
 #'   `release` are ignored.
 #' @inheritParams common_docs
+#' @family BBS data functions
 #'
 #' @return Large list (3 elements) consisting of:
 #' \item{birds}{Data frame of sample bird point count data per route, per year}

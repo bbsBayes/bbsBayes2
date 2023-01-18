@@ -14,12 +14,16 @@ get_summary(model_output, variables = NULL)
 calculate metrics. If \code{NULL} (default) all variables are returned.}
 }
 \value{
-A data frame of model summary statistics
+A data frame of model summary statistics.
 }
 \description{
 Extract and return the model summary using \code{cmdstanr::summary()}.
 }
 \examples{
+
+# Temporarily suppress convergence warning for legibility
+# "The ESS has been capped to avoid unstable estimates."
+opts <- options(warn = -1)
 
 # Using the example model for Pacific Wrens
 
@@ -27,4 +31,12 @@ get_summary(pacific_wren_model)
 get_summary(pacific_wren_model, variables = "strata_raw")
 get_summary(pacific_wren_model, variables = "strata_raw[9]")
 
+# Restore warnings
+options(opts)
 }
+\seealso{
+Other model assessment functions: 
+\code{\link{get_convergence}()},
+\code{\link{get_model_vars}()}
+}
+\concept{model assessment functions}

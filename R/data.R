@@ -27,10 +27,10 @@
 #' Stan models included in bbsBayes2
 #'
 #' These models are included in bbsBayes2. The model files themselves can be
-#' found by running `system.file("models", package = "bbsBayes2")`.
-#'
-#' To create a custom Stan model, see `copy_model_file()` and the `model_file`
-#' argument of `prepare_model()`. See also the [models
+#' found in the folder identified by
+#' `system.file("models", package = "bbsBayes2")`.
+#' To create a custom Stan model, see `copy_model_file()` and the
+#' `model_file` argument of `prepare_model()`. See also the [models
 #' article](https://bbsBayes.github.io/bbsBayes2/articles/models.html) for more
 #' details.
 #'
@@ -53,6 +53,8 @@
 #'
 #' - `file` - Stan model file name
 #'
+#' @examples
+#' bbs_models
 "bbs_models"
 
 #' List of included strata
@@ -64,6 +66,10 @@
 #' A list of 5 data frames
 #'
 #' Contains `bbs_usgs`, `bbs_cws`, `bcr`, `latlong` and `prov_state`
+#'
+#' @examples
+#' bbs_strata[["bbs_cws"]]
+#' bbs_strata[["latlon"]]
 "bbs_strata"
 
 #' Example model output
@@ -72,12 +78,22 @@
 #' on the included sample data for Pacific Wrens.
 #'
 #' @format ## `pacific_wren_model`
+#'
 #' A list output from `run_model()` with 4 items
 #'
-#' - `model_fit` - The output from `cmdstanr::sample()`
-#' - `meta_data` - Meta data related to the model run
-#' - `meta_strata` - Meta data related to the strata
-#' - `raw_data` - Data compiled by `prepare_data()`
+#' - `model_fit` - cmdstanr model output
+#' - `model_data` - list of data formatted for use in Stan modelling
+#' - `meta_data` - meta data defining the analysis
+#' - `meta_strata` - data frame listing strata meta data
+#' - `raw_data` - data frame of summarized counts
+#'
+#' @examples
+#' # Code to replicate:
+#'
+#' pacific_wren_model <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
+#'   prepare_data() %>%
+#'   prepare_model(model = "first_diff", set_seed = 111) %>%
+#'   run_model(chains = 2, iter_sampling = 20, iter_warmup = 20, set_seed = 111)
 #'
 "pacific_wren_model"
 
@@ -94,4 +110,8 @@
 #' - `english_combined` - The English name of the new 'combined' forms
 #' - `french_combined` - The French name of the new 'combined' forms
 #' - `aou_id` - The AOU id numbers of all the forms which will be combined
+#'
+#' @examples
+#' species_forms
+
 "species_forms"

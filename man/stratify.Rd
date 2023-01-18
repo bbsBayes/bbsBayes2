@@ -48,13 +48,15 @@ overlap with any stratum. For checking and troubleshooting. Default
 \value{
 List of (meta) data.
 \itemize{
-\item \code{meta_data} meta data defining the analysis
-\item \code{meta_strata} contains a data frame listing strata names and area for all
-strata relevant to the data (i.e. some may have been removed due to lack
-of count data). Contains at least \code{strata_name} (the label of the
+\item \code{meta_data} - meta data defining the analysis
+\item \code{meta_strata} - data frame listing strata names and area for
+all strata relevant to the data (i.e. some may have been removed due to
+lack of count data). Contains at least \code{strata_name} (the label of the
 stratum), and \code{area_sq_km} (area of the stratum).
-\item \code{birds_strata} contains stratified count-level data filtered by species
-\item \code{routes_strata} contains stratified route-level data filtered by species
+\item \code{birds_strata} - data frame of stratified count-level data filtered by
+species
+\item \code{routes_strata} - data frame of stratified route-level data filtered by
+species
 }
 }
 \description{
@@ -157,3 +159,10 @@ s <- stratify(by = "WBPHS_2019", strata_map = map)
 
 
 }
+\seealso{
+Other Data prep functions: 
+\code{\link{prepare_data}()},
+\code{\link{prepare_model}()},
+\code{\link{prepare_spatial}()}
+}
+\concept{Data prep functions}

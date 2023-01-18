@@ -24,7 +24,7 @@ year in data.}
 year in data.}
 
 \item{quantiles}{Numeric vector. Quantiles to be sampled from the posterior
-distribution. Defaults to \code{c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)}}
+distribution. Defaults to \code{c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)}.}
 
 \item{slope}{Logical. Whether to calculate an alternative trend metric, the
 slope of a log-linear regression through the annual indices. Default
@@ -32,19 +32,23 @@ slope of a log-linear regression through the annual indices. Default
 
 \item{prob_decrease}{Numeric vector. Percent-decrease values for which to
 optionally calculate the posterior probabilities (see Details). Default is
-\code{NULL} (do not calculate).}
+\code{NULL} (not calculated).}
 
 \item{prob_increase}{Numeric vector. Percent-increase values for which to
 optionally calculate the posterior probabilities (see Details). Default is
-\code{NULL} (do not calculate).}
+\code{NULL} (not calculated).}
 }
 \value{
-A list containing the trends (\code{trends}), meta data for the analysis
-(\code{meta_data}), meta data for the strata (\code{meta_strata}) and prepared data
-counts from \code{prepare_data()} (\code{raw_data}).
+A list containing
+\itemize{
+\item \code{trends} - data frame of calculated population trends, one row for each
+region in the input \code{indices}
+\item \code{meta_data} - meta data defining the analysis
+\item \code{meta_strata} - data frame listing strata meta data
+\item \code{raw_data} - data frame of summarized counts
+}
 
-\code{trends} is a data frame with one row for each region in the input
-\code{indices}. It has the following columns:
+\strong{\code{trends}} contains the following columns:
 \itemize{
 \item \code{start_year} - First year of the trend
 \item \code{end_year} - Last year of the trend
@@ -113,7 +117,7 @@ in population size for composite regions.
 \details{
 The posterior probabilities can be calculated for a percent-decrease
 (\code{prob_decrease}) and/or percent-increase (\code{prob_increase}) if desired.
-These calculate the probability that the populationhas decreased/increased
+These calculate the probability that the population has decreased/increased
 by at least the amount specified.
 
 For example, a \code{prob_increase = 100} would result in the calculation of the
@@ -125,14 +129,26 @@ the probability that the population has decreased by more than 50\% (i.e.,
 less than half of the population remains) over the period of the trend.
 }
 \examples{
-
 # Using the example model for Pacific Wrens...
 
-# Generate the continental and stratum indices#'
+# Generate the continental and stratum indices
 i <- generate_indices(pacific_wren_model)
 
 # Now, generate the trends
 t <- generate_trends(i)
 
+# Use the slope method
+t <- generate_trends(i, slope = TRUE)
+
+# Calculate probability of the population declining by 50\%
+t <- generate_trends(i, prob_decrease = 50)
 
 }
+\seealso{
+Other indices and trends functions: 
+\code{\link{generate_indices}()},
+\code{\link{plot_geofacet}()},
+\code{\link{plot_indices}()},
+\code{\link{plot_map}()}
+}
+\concept{indices and trends functions}
