@@ -14,7 +14,7 @@ navbar:
 articles:
 - title: Usage
   contents:
-  - bbsBayes2
+  - articles/bbsBayes2
   - articles/workflow
   - articles/stratification
   - articles/custom_stratification
