@@ -157,7 +157,7 @@ test_that("generate_trends() prob_decrease/prob_increase", {
 
   # Error/message
   expect_error(generate_trends(i, prob_decrease = -0.2),
-               "range between 0 and Inf")
+               "range between 0 and 100")
   expect_error(generate_trends(i, prob_increase = -0.2),
                "range between 0 and Inf")
 
