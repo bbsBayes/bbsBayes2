@@ -88,8 +88,11 @@ plot_map <- function(trends,
     ggplot2::guides(fill = ggplot2::guide_legend(reverse = TRUE))
 
   if(!col_viridis) {
-    pal <- c("#a50026", "#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf",
-             "#e0f3f8", "#abd9e9", "#74add1", "#4575b4", "#313695")
+    pal <- setNames(
+      c("#a50026", "#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf",
+        "#e0f3f8", "#abd9e9", "#74add1", "#4575b4", "#313695"),
+      levels(map$t_plot))
+
     m <- m + ggplot2::scale_fill_manual(values = pal)
   } else {
     m <- m + ggplot2::scale_fill_viridis_d()

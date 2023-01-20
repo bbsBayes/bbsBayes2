@@ -1,10 +1,12 @@
 
+# Setup data ------------------
 expect_silent({
   r <- pacific_wren_model
   i1 <- generate_indices(r, quiet = TRUE)
   i2 <- generate_indices(r, start_year = 2007, quiet = TRUE)
 })
 
+# Tests -------------------------
 test_that("plot_indices()", {
 
   expect_silent(p <- plot_indices(i1))
@@ -28,7 +30,7 @@ test_that("plot_indices()", {
   expect_silent(plot_indices(i2))
 })
 
-
+# Setup data ------------------
 expect_silent({
   r <- pacific_wren_model
   i1 <- generate_indices(r, regions = c("stratum", "prov_state"), quiet = TRUE)
@@ -41,6 +43,7 @@ expect_silent({
   t4 <- generate_trends(i2)
 })
 
+# Tests --------------------
 test_that("plot_geofacet() diff trends", {
   # Error/message
   expect_error(plot_geofacet(i1, trends = t4), "created from the same")

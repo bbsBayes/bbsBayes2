@@ -50,8 +50,8 @@ devtools::build_readme()
 urlchecker::url_check()
 
 # Precompile Vignettes - MUST BUILD/INSTALL PACKAGE FIRST!
-devtools::install(quick = TRUE, build = TRUE, upgrade = "never")
-unlink("vignettes/articles/figures/", recursive = TRUE)
+devtools::install(quick = TRUE, build = TRUE, upgrade = "never") # Build/install
+unlink("vignettes/articles/figures/", recursive = TRUE) # Clean up old figs
 source("vignettes/_PRECOMPILE.R")
 
 # Preview precompiled vignettes (click on link and hit enter)
