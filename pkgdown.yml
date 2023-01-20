@@ -3,6 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   advanced: advanced.html
+  bbsBayes2: bbsBayes2.html
   convergence: convergence.html
   custom_stratification: custom_stratification.html
   models: models.html
@@ -17,8 +18,7 @@ articles:
   models_slope_spatial: models_slope_spatial.html
   stratification: stratification.html
   workflow: workflow.html
-  bbsBayes2: bbsBayes2.html
-last_built: 2023-01-19T19:16Z
+last_built: 2023-01-19T23:59Z
 urls:
   reference: https://bbsbayes.github.io/bbsBayes2/reference
   article: https://bbsbayes.github.io/bbsBayes2/articles
