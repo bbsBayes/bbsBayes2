@@ -32,11 +32,11 @@ slope of a log-linear regression through the annual indices. Default
 
 \item{prob_decrease}{Numeric vector. Percent-decrease values for which to
 optionally calculate the posterior probabilities (see Details). Default is
-\code{NULL} (not calculated).}
+\code{NULL} (not calculated). Can range from 0 to 100.}
 
 \item{prob_increase}{Numeric vector. Percent-increase values for which to
 optionally calculate the posterior probabilities (see Details). Default is
-\code{NULL} (not calculated).}
+\code{NULL} (not calculated). Can range from 0 to Inf.}
 }
 \value{
 A list containing

@@ -12,10 +12,10 @@
 #' `FALSE`.
 #' @param prob_decrease Numeric vector. Percent-decrease values for which to
 #'   optionally calculate the posterior probabilities (see Details). Default is
-#'   `NULL` (not calculated).
+#'   `NULL` (not calculated). Can range from 0 to 100.
 #' @param prob_increase Numeric vector. Percent-increase values for which to
 #'   optionally calculate the posterior probabilities (see Details). Default is
-#'   `NULL` (not calculated).
+#'   `NULL` (not calculated). Can range from 0 to Inf.
 #'
 #' @inheritParams common_docs
 #' @family indices and trends functions
@@ -133,7 +133,7 @@ generate_trends <- function(indices,
   check_numeric(min_year, max_year, quantiles, prob_decrease, prob_increase,
                 allow_null = TRUE)
   check_range(quantiles, c(0, 1))
-  check_range(prob_decrease, c(0, Inf))
+  check_range(prob_decrease, c(0, 100))
   check_range(prob_increase, c(0, Inf))
 
   start_year <- indices[["meta_data"]]$start_year
