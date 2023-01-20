@@ -1,5 +1,5 @@
 
-# Setup first set of indices
+# Setup first set of indices -------------
 
 expect_silent({
   i <- pacific_wren_model %>%
@@ -7,6 +7,8 @@ expect_silent({
   ix <- i[["indices"]] %>% dplyr::arrange(region_type, region, year)
 })
 
+
+# Tests ----------------
 
 test_that("bsl()", {
   expect_equal(bsl(1:10, 1:10), 1)
@@ -154,10 +156,10 @@ test_that("generate_trends() quantiles", {
 test_that("generate_trends() prob_decrease/prob_increase", {
 
   # Error/message
-  expect_error(generate_trends(i, prob_decrease = 0.2),
-               "range between 1 and 100")
-  expect_error(generate_trends(i, prob_increase = 0.2),
-               "range between 1 and 100")
+  expect_error(generate_trends(i, prob_decrease = -0.2),
+               "range between 0 and Inf")
+  expect_error(generate_trends(i, prob_increase = -0.2),
+               "range between 0 and Inf")
 
   expect_silent(trnd <- generate_trends(i, prob_decrease = 10)[["trends"]])
   expect_true("prob_decrease_10_percent" %in% names(trnd))

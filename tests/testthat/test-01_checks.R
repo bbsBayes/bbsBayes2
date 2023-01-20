@@ -311,3 +311,13 @@ test_that("check_in()", {
   expect_error(check_in(1, 20:30), "must be one of")
   expect_error(check_in("test", LETTERS), "must be one of")
 })
+
+test_that("check_range()", {
+
+  n <- 1:10
+  expect_silent(check_range(n, c(0, 11)))
+  expect_silent(check_range(n, c(-Inf, Inf)))
+  expect_silent(check_range(n, c(1, 10)))
+  expect_error(check_range(n, c(-10, -5)), "`n` must range between -10 and -5")
+  expect_error(check_range(n, c(5, 20)), "`n` must range between 5 and 20")
+})

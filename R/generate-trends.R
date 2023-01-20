@@ -133,8 +133,8 @@ generate_trends <- function(indices,
   check_numeric(min_year, max_year, quantiles, prob_decrease, prob_increase,
                 allow_null = TRUE)
   check_range(quantiles, c(0, 1))
-  check_range(prob_decrease, c(1, 100))
-  check_range(prob_increase, c(1, 100))
+  check_range(prob_decrease, c(0, Inf))
+  check_range(prob_increase, c(0, Inf))
 
   start_year <- indices[["meta_data"]]$start_year
   n_years <- indices[["meta_data"]]$n_years
