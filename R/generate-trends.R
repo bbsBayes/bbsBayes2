@@ -25,7 +25,7 @@
 #' `alternate_n = "nsmooth"`, then the default `slope = FALSE` option will
 #' represent the end-point difference of the smooth component, which already
 #' excludes the annual fluctuations and so has similar inferential properties as
-#' the `slope = TRUE` option from the "first_diff" model.
+#' the `slope = TRUE` option from the "firstdiff" model.
 #' @param prob_decrease Numeric vector. Percent-decrease values for which to
 #'   optionally calculate the posterior probabilities (see Details). Default is
 #'   `NULL` (not calculated). Can range from 0 to 100.
