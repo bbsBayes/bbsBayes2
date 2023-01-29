@@ -78,9 +78,11 @@ check_model <- function(model, model_variant) {
   if(model_variant == "nonhier") {
     if(model != "first_diff") stop("`model_variant` 'nonhier' only allowed ",
                                    "for `first_diff` models", call. = FALSE)
-   warning("Non-hierarchial models are generally not recommended ",
-           "(see ?bbs_models), but provided for compatibility with USGS ",
-           "methods", call. = FALSE, immediate. = TRUE)
+   message("Non-hierarchial models estimate abundance and trend parameters ",
+           "independently in each stratum - they do not share information",
+           "among strata on the species' abundance or population trajectory",
+           "(see ?bbs_models), nonhier first_diff most compatible with USGS",
+           "modelling methods for species using model Dh")
   }
 
   model
