@@ -9,7 +9,23 @@
 #'   distribution. Defaults to `c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)`.
 #' @param slope Logical. Whether to calculate an alternative trend metric, the
 #'   slope of a log-linear regression through the annual indices. Default
-#' `FALSE`.
+#' `FALSE`, which estimates the trend as the geometric mean annual rate of
+#' change between `min_year` and `max_year`. This is the end-point definition
+#' of trend that only directly incorporates information from the two years, and
+#' therefore closely tracks the annual population fluctuations in those
+#' particular years. Conceptually, this metric of trend tracks the difference
+#' between the two years. If `TRUE`, trend represents the slope of a linear
+#' regression through the log-transformed annual indices of abundance for all
+#' years between `min_year` and `max_year`. This definition of trend is less
+#' sensitive to the particular annual fluctuations of a given `min_year` and
+#' `max_year`. Either metric may be more or less appropriate given the user's
+#' desired inference. The appropriate choice of metric may also depend on the
+#' model and the `alternate_n` choice made in `generate_indices`. For example
+#' if the fitted model was one of the "gamye" alternatives, and the
+#' `alternate_n = "nsmooth"`, then the default `slope = FALSE` option will
+#' represent the end-point difference of the smooth component, which already
+#' excludes the annual fluctuations and so has similar inferential properties as
+#' the `slope = TRUE` option from the "firstdiff" model.
 #' @param prob_decrease Numeric vector. Percent-decrease values for which to
 #'   optionally calculate the posterior probabilities (see Details). Default is
 #'   `NULL` (not calculated). Can range from 0 to 100.
