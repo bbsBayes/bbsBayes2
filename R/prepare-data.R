@@ -55,7 +55,12 @@ prepare_data <- function(strata_data,
   check_numeric(min_year, max_year, allow_null = TRUE)
   check_numeric(min_n_routes, min_max_route_years, min_mean_route_years)
   check_logical(quiet)
-
+  if(strata_data$meta_data$stratify_by == "latlong" & min_n_routes > 1){
+    message("Warning: Consider using min_n_routes = 1, because latlong strata are
+    relatively small and many only include 1 BBS route. Using the
+    default (min_n_routes = 3) may exclude many data, routes, and strata
+    with relevant data, and/or large portions of the species' range")
+  }
   # Get observations of interest
   obs <- strata_data$birds_strata %>%
     dplyr::rename(count = "species_total") %>%
