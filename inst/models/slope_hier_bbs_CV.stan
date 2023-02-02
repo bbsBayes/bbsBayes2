@@ -164,7 +164,7 @@ model {
   }
   sdobs ~ normal(0,0.3); // informative prior on scale of observer effects - suggests observer variation larger than 3-4-fold differences is unlikely
   sdste ~ student_t(3,0,1); //prior on sd of site effects
-  sdyear ~ gamma(2,6); // prior on sd of yeareffects - stratum specific, and boundary-avoiding with a prior mode at 0.33 (2/6) - recommended by https://doi.org/10.1007/s11336-013-9328-2
+  sdyear ~ gamma(2,2); // prior on sd of yeareffects - stratum specific, and boundary-avoiding with a prior mode at 0.5 (1/2) - recommended by https://doi.org/10.1007/s11336-013-9328-2
   sdbeta ~ student_t(3,0,1); // prior on sd of GAM parameters
 
 
