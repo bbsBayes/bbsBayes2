@@ -196,10 +196,10 @@ model {
 
 
   obs_raw ~ std_normal();//observer effects
-  //sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint isn't useful here
+  sum(obs_raw) ~ normal(0,0.001*n_observers); //
 
   ste_raw ~ std_normal();//site effects
-  //sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint isn't useful here
+  sum(ste_raw) ~ normal(0,0.001*n_sites); //
 
 
   BETA_raw ~ std_normal();// prior on fixed effect mean intercept
