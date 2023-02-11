@@ -204,10 +204,10 @@ model {
 
 
   obs_raw ~ std_normal(); // ~ student_t(3,0,1);//observer effects
-  //sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint isn't useful here
+  sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint isn't useful here
 
   ste_raw ~ std_normal();//site effects
-  //sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint isn't useful here
+  sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint isn't useful here
 
   BETA_raw ~ std_normal();// prior on fixed effect mean GAM parameters
   //sum to zero constraint built into the basis function
