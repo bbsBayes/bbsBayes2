@@ -140,7 +140,7 @@ for(s in 1:n_strata){
 // first half of time-series - runs backwards from fixed_year
   for(t in Iy1){
     beta[s,t] = (sdbeta[s] * beta_raw[s,t]);// + BETA[t];
-    yeareffect[s,t] = yeareffect[s,t+1] + beta[s,t];
+    yeareffect[s,t] = yeareffect[s,t+1] - beta[s,t];
   //  YearEffect[t] = YearEffect[t+1] + BETA[t]; // hyperparameter trajectory interesting to monitor but no direct inference
   }
 // second half of time-series - runs forwards from fixed_year
