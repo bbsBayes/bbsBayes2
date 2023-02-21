@@ -29,10 +29,12 @@ making collaboration and future modifications easier.
   - Setup: https://ropensci.org/blog/2019/12/08/precompute-vignettes/
     - Precompiled vignettes have ext `.Rmd.orig`, then are compiled to `.Rmd`
       (all R code already run, so actually Vignette to HTML is super fast)
+    - You also need to adjust the location of figs in the first chunk of the `.Rmd.orig` file
   - In RELEASE.R there is a step for re-pre-compiling vignettes
   - For easier editing and testing, you can make RStudio treat these `.Rmd.orig`
     files as `.Rmd` files by clicking on the language button in the bottom right
     corner of the script pane and changing txt to R Markdown.
+    
 - Any vignette that requires the full data OR requires Stan to be installed 
   should be put in the 'articles' folder (so it's not compiled by R-Universe).
   These will be compiled into the pkgdown website by our GitHub actions.
