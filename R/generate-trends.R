@@ -167,6 +167,21 @@ generate_trends <- function(indices,
     dplyr::group_by(.data$region, .data$region_type,
                     .data$strata_included, .data$strata_excluded) %>%
     dplyr::summarize(
+      # Basic statistics
+      rel_abundance = mean(.data$index),
+      obs_rel_abundance = mean(.data$obs_mean),
+      mean_n_routes = mean(.data$n_routes),
+      n_routes = mean(.data$n_routes_total),
+      backcast_flag = mean(.data$backcast_flag),
+
+      # Metadata
+      start_year = .env$min_year,
+      end_year = .env$max_year, .groups = "keep") %>%
+
+    dplyr::mutate(
+      n_strata_included = purrr::map_dbl(
+        .data$strata_included, ~length(unlist(stringr::str_split(.x, " ; ")))),
+
       # Add in samples
       n = purrr::map2(.data$region_type, .data$region,
                       ~indices$samples[[paste0(.x, "_", .y)]]),
@@ -190,23 +205,8 @@ generate_trends <- function(indices,
       pc_q = purrr::map_df(
         .data$ch, ~stats::setNames(
           100 * (stats::quantile(.x, quantiles, names = FALSE) - 1),
-          paste0("percent_change_q_", quantiles))),
-
-      # Other statistics
-      rel_abundance = mean(.data$index),
-      obs_rel_abundance = mean(.data$obs_mean),
-      mean_n_routes = mean(.data$n_routes),
-      n_routes = mean(.data$n_routes_total),
-      backcast_flag = mean(.data$backcast_flag),
-
-      # Metadata
-      start_year = .env$min_year,
-      end_year = .env$max_year,
-      n_strata_included = purrr::map_dbl(
-        .data$strata_included, ~length(unlist(stringr::str_split(.x, " ; ")))),
-      .groups = "drop") %>%
-
-    dplyr::distinct() %>%
+          paste0("percent_change_q_", quantiles)))) %>%
+    dplyr::ungroup() %>%
     tidyr::unnest(cols = c("trend_q", "pc_q")) %>%
     dplyr::arrange(.data$region_type, .data$region)
 
