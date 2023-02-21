@@ -110,6 +110,11 @@ https://coolbutuseless.github.io/2018/12/10/r-packages-internal-and-external-dat
   and `test-XX_plots.R`
 - use `pacific_wren_slope_model` example model for tests needing to check for
   alternate n. Don't create it in `test-XX_run_model.R` because it takes too long.
+- When tracking down lifecycle warnings from tidyverse packages, it can be helpful
+  to set `options(lifecycle_verbosity = "error")` so that the warnings become hard errors 
+  which fail every time (you should be able to do "warning" but I found this 
+  didn't work for me).
+
 
 ## Continuous Integration (CI)
 - CI is setup with GitHub actions. The workflows (all in `.github/workflows/`
