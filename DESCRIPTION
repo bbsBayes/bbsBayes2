@@ -10,7 +10,7 @@ Authors@R: c(person("Brandon P.M.", "Edwards", role = c("aut", "cre"),
                       email = "steffi@steffi.ca"))
 Imports:
     backports (>= 1.4.1),
-    dplyr (>= 1.0.0),
+    dplyr (>= 1.1.0),
     ggrepel,
     geofacet,
     ggplot2 (>= 3.4.0),
