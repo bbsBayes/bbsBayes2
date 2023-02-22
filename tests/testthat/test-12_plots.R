@@ -51,7 +51,7 @@ test_that("plot_geofacet() diff trends", {
                "also run with `slope = TRUE`")
 
   # Plot combos
-  expect_silent(plot_geofacet(i1, trends = t1))
+  expect_warning(plot_geofacet(i1, trends = t1), "TESTING WARNINGS")
   expect_silent(plot_geofacet(i1, trends = t2, slope = TRUE))
   expect_silent(plot_geofacet(i1, trends = t3))
   expect_silent(plot_geofacet(i1, trends = t1, multiple = TRUE))
