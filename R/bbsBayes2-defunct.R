@@ -12,7 +12,7 @@
 #'
 #' ## No longer relevant
 #'
-#'  No non-relevant functions#'
+#'  No non-relevant functions
 #'
 #' @seealso [bbsBayes2-deprecated]
 #'

@@ -157,7 +157,8 @@ test_that("run_model() CV", {
   expect_error(run_model(md, k = 10), "Missing K-folds specification") %>%
     suppressMessages()
 
-  md <- prepare_model(p, "first_diff", calculate_cv = TRUE, cv_k = 2)
+  md <- prepare_model(p, "first_diff", calculate_cv = TRUE, cv_k = 2) %>%
+    suppressMessages()
 
   expect_message(
     m <- run_model(md, k = 1, chains = 2, iter_warmup = 10,

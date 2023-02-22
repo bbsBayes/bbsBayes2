@@ -134,7 +134,7 @@ plot_geofacet <- function(indices,
       dplyr::select("region", "trend") %>%
       dplyr::mutate(trend_cat = cut(
         .data$trend, breaks = c(-Inf, breaks, Inf), ordered_result = TRUE)) %>%
-      dplyr::inner_join(indices, by = "region") %>%
+      dplyr::inner_join(indices, ., by = "region") %>%
       dplyr::arrange(.data$region, .data$year)
 
   } else {
