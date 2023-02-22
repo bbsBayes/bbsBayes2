@@ -79,6 +79,7 @@
 <p>Some articles are pre-compiled to avoid super long CI building or other fragile issues</p>
 <ul><li>Setup: <a href="https://ropensci.org/blog/2019/12/08/precompute-vignettes/" class="external-link uri">https://ropensci.org/blog/2019/12/08/precompute-vignettes/</a>
 <ul><li>Precompiled vignettes have ext <code>.Rmd.orig</code>, then are compiled to <code>.Rmd</code> (all R code already run, so actually Vignette to HTML is super fast)</li>
+<li>You also need to adjust the location of figs in the first chunk of the <code>.Rmd.orig</code> file</li>
 </ul></li>
 <li>In RELEASE.R there is a step for re-pre-compiling vignettes</li>
 <li>For easier editing and testing, you can make RStudio treat these <code>.Rmd.orig</code> files as <code>.Rmd</code> files by clicking on the language button in the bottom right corner of the script pane and changing txt to R Markdown.</li>
@@ -143,6 +144,7 @@
 <li>use first_diff model output by <code>test-XX_run_model.R</code> to ensure an up-to-date model example for testing <code>test-XX_generate_indices.R</code>, <code>test-XX_generate_trends.R</code> and <code>test-XX_plots.R</code>
 </li>
 <li>use <code>pacific_wren_slope_model</code> example model for tests needing to check for alternate n. Don’t create it in <code>test-XX_run_model.R</code> because it takes too long.</li>
+<li>When tracking down lifecycle warnings from tidyverse packages, it can be helpful to set <code>options(lifecycle_verbosity = "error")</code> so that the warnings become hard errors which fail every time (you should be able to do “warning” but I found this didn’t work for me).</li>
 </ul></div>
 <div class="section level2">
 <h2 id="continuous-integration-ci">Continuous Integration (CI)<a class="anchor" aria-label="anchor" href="#continuous-integration-ci"></a></h2>
