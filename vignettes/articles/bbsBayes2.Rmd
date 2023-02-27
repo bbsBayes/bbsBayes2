@@ -137,7 +137,7 @@ md <- prepare_model(p, model = "first_diff")
 Now we can run the model.
 
 The default `iter_sampling` and `iter_warmup` are 1000 and the default `chains`
-is 3. In the interest of speed for this example, we are using much lower values,
+is 4. In the interest of speed for this example, we are using much lower values,
 but note that this almost certainly will result in problems with our model.
 
 ```{r, eval = FALSE}
