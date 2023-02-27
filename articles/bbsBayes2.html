@@ -204,7 +204,7 @@ customize this step.</p>
 </h3>
 <p>Now we can run the model.</p>
 <p>The default <code>iter_sampling</code> and <code>iter_warmup</code>
-are 1000 and the default <code>chains</code> is 3. In the interest of
+are 1000 and the default <code>chains</code> is 4. In the interest of
 speed for this example, we are using much lower values, but note that
 this almost certainly will result in problems with our model.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -218,25 +218,25 @@ categories. By default these are <code>continent</code> and
 <code>stratum</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_indices.html">generate_indices</a></span><span class="op">(</span>model_output <span class="op">=</span> <span class="va">m</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Processing region stratum</span></span>
-<span><span class="co">#&gt; Processing region continent</span></span></code></pre></div>
+<span><span class="co">#&gt; Processing region continent</span></span>
+<span><span class="co">#&gt; Processing region stratum</span></span></code></pre></div>
 <p>We can visually explore these indices by accessing the
 <code>indices</code> item in the list</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">i</span><span class="op">[[</span><span class="st">"indices"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,080 × 17</span></span></span>
-<span><span class="co">#&gt;     year region   region…¹ strat…² strat…³ index index…⁴ index…⁵ index…⁶ index…⁷</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">1</span>968 CA-AB-10 stratum  CA-AB-… <span style="color: #949494;">""</span>      0.717   0.388   0.389   0.545   0.842</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">1</span>969 CA-AB-10 stratum  CA-AB-… <span style="color: #949494;">""</span>      0.605   0.371   0.380   0.433   0.696</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">1</span>970 CA-AB-10 stratum  CA-AB-… <span style="color: #949494;">""</span>      0.732   0.386   0.435   0.586   0.893</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">1</span>971 CA-AB-10 stratum  CA-AB-… <span style="color: #949494;">""</span>      0.845   0.420   0.448   0.674   0.950</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">1</span>972 CA-AB-10 stratum  CA-AB-… <span style="color: #949494;">""</span>      0.824   0.426   0.429   0.666   1.09 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">1</span>973 CA-AB-10 stratum  CA-AB-… <span style="color: #949494;">""</span>      0.901   0.511   0.522   0.731   1.16 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">1</span>974 CA-AB-10 stratum  CA-AB-… <span style="color: #949494;">""</span>      0.991   0.496   0.564   0.795   1.16 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">1</span>975 CA-AB-10 stratum  CA-AB-… <span style="color: #949494;">""</span>      1.00    0.490   0.520   0.770   1.18 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">1</span>976 CA-AB-10 stratum  CA-AB-… <span style="color: #949494;">""</span>      1.11    0.547   0.620   0.921   1.39 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">1</span>977 CA-AB-10 stratum  CA-AB-… <span style="color: #949494;">""</span>      1.32    0.720   0.777   1.13    1.58 </span></span>
+<span><span class="co">#&gt;     year region    regio…¹ strat…² strat…³ index index…⁴ index…⁵ index…⁶ index…⁷</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">1</span>968 continent contin… CA-AB-… <span style="color: #949494;">""</span>       4.74    3.63    3.76    4.20    5.53</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">1</span>969 continent contin… CA-AB-… <span style="color: #949494;">""</span>       3.93    2.94    3.04    3.52    4.43</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">1</span>970 continent contin… CA-AB-… <span style="color: #949494;">""</span>       4.82    3.49    3.64    4.25    5.43</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">1</span>971 continent contin… CA-AB-… <span style="color: #949494;">""</span>       5.46    3.92    4.08    4.84    6.30</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">1</span>972 continent contin… CA-AB-… <span style="color: #949494;">""</span>       5.72    4.59    4.65    5.18    6.13</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">1</span>973 continent contin… CA-AB-… <span style="color: #949494;">""</span>       6.23    5.02    5.07    5.57    6.93</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">1</span>974 continent contin… CA-AB-… <span style="color: #949494;">""</span>       6.44    5.19    5.42    5.99    7.48</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">1</span>975 continent contin… CA-AB-… <span style="color: #949494;">""</span>       6.54    5.25    5.55    5.83    7.28</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">1</span>976 continent contin… CA-AB-… <span style="color: #949494;">""</span>       7.41    5.78    5.88    6.89    7.97</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">1</span>977 continent contin… CA-AB-… <span style="color: #949494;">""</span>       8.88    6.81    7.06    7.79    9.60</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># … with 1,070 more rows, 7 more variables: index_q_0.95 &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   index_q_0.975 &lt;dbl&gt;, obs_mean &lt;dbl&gt;, n_routes &lt;int&gt;, n_routes_total &lt;int&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   n_non_zero &lt;int&gt;, backcast_flag &lt;dbl&gt;, and abbreviated variable names</span></span></span>
@@ -250,10 +250,10 @@ this case that means one plot for the continent, and one for each
 stratum.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "CA_AB_10"  "CA_BC_10"  "CA_BC_4"   "CA_BC_5"   "CA_BC_9"   "US_AK_2"  </span></span>
-<span><span class="co">#&gt;  [7] "US_AK_4"   "US_AK_5"   "US_CA_15"  "US_CA_32"  "US_CA_5"   "US_ID_10" </span></span>
-<span><span class="co">#&gt; [13] "US_MT_10"  "US_OR_10"  "US_OR_5"   "US_OR_9"   "US_WA_10"  "US_WA_5"  </span></span>
-<span><span class="co">#&gt; [19] "US_WA_9"   "continent"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "continent" "CA_AB_10"  "CA_BC_10"  "CA_BC_4"   "CA_BC_5"   "CA_BC_9"  </span></span>
+<span><span class="co">#&gt;  [7] "US_AK_2"   "US_AK_4"   "US_AK_5"   "US_CA_15"  "US_CA_32"  "US_CA_5"  </span></span>
+<span><span class="co">#&gt; [13] "US_ID_10"  "US_MT_10"  "US_OR_10"  "US_OR_5"   "US_OR_9"   "US_WA_10" </span></span>
+<span><span class="co">#&gt; [19] "US_WA_5"   "US_WA_9"</span></span></code></pre></div>
 <p>We can plot them individually by pulling a plot out of the list</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span><span class="op">[[</span><span class="st">"continent"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
