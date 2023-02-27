@@ -14,7 +14,7 @@ No superseded functions
 
 \subsection{No longer relevant}{
 
-No non-relevant functions#'
+No non-relevant functions
 }
 }
 \seealso{

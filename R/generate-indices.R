@@ -298,7 +298,7 @@ generate_indices <- function(
         dplyr::across(.cols = c("obs_mean", "n_routes",
                                 "n_routes_total",
                                 "n_non_zero", "flag_year"),
-                      sum, na.rm = TRUE),
+                      ~ sum(.x, na.rm = TRUE)),
         .groups = "drop")
 
     # Calculate sample statistics for this composite region
