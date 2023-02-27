@@ -46,7 +46,7 @@ have_cmdstan <- function() {
 #'
 #' @noRd
 skip_if_no_data <-function() {
-  testthat::skip_if_not(have_bbs_data())
+  testthat::skip_if_not(have_bbs_data(quiet = TRUE))
 }
 
 #' Skip tests if no Stan installed
