@@ -116,7 +116,7 @@
 generate_indices <- function(
     model_output = NULL,
     quantiles = c(0.025, 0.05, 0.25, 0.75, 0.95, 0.975),
-    regions = c("stratum", "continent"),
+    regions = c("continent","stratum"),
     regions_index = NULL,
     alternate_n = "n",
     start_year = NULL,
