@@ -28,7 +28,23 @@ distribution. Defaults to \code{c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)}.}
 
 \item{slope}{Logical. Whether to calculate an alternative trend metric, the
 slope of a log-linear regression through the annual indices. Default
-\code{FALSE}.}
+\code{FALSE}, which estimates the trend as the geometric mean annual rate of
+change between \code{min_year} and \code{max_year}. This is the end-point definition
+of trend that only directly incorporates information from the two years, and
+therefore closely tracks the annual population fluctuations in those
+particular years. Conceptually, this metric of trend tracks the difference
+between the two years. If \code{TRUE}, trend represents the slope of a linear
+regression through the log-transformed annual indices of abundance for all
+years between \code{min_year} and \code{max_year}. This definition of trend is less
+sensitive to the particular annual fluctuations of a given \code{min_year} and
+\code{max_year}. Either metric may be more or less appropriate given the user's
+desired inference. The appropriate choice of metric may also depend on the
+model and the \code{alternate_n} choice made in \code{generate_indices}. For example
+if the fitted model was one of the "gamye" alternatives, and the
+\code{alternate_n = "nsmooth"}, then the default \code{slope = FALSE} option will
+represent the end-point difference of the smooth component, which already
+excludes the annual fluctuations and so has similar inferential properties as
+the \code{slope = TRUE} option from the "first_diff" model.}
 
 \item{prob_decrease}{Numeric vector. Percent-decrease values for which to
 optionally calculate the posterior probabilities (see Details). Default is
