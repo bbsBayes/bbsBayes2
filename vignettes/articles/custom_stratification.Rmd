@@ -51,12 +51,9 @@ This is available from available from the US Fish and Wildlife Service Catalogue
 
 You can either download it by hand, or with the following code.
 ```{r, eval = !file.exists("WBPHS_stratum_boundaries_2019.zip")}
-z <- "WBPHS_stratum_boundaries_2019.zip"
 
-download.file(url = "https://ecos.fws.gov/ServCat/DownloadFile/213149",
-              destfile = z)
-unzip(z)  # Unzip
-unlink(z) # Remove the zipped file
+download.file(url = "https://ecos.fws.gov/ServCat/DownloadFile/213149", dest="WBPHS_2019.zip", mode="wb") 
+unzip ("WBPHS_2019.zip", exdir = "./")
 ```
 
 We'll load and prepare this data.
@@ -82,6 +79,7 @@ p <- prepare_data(s)
 Prepare and run the model (note this is not an appropriate model, as we're aiming for speed
 rather than accuracy).
 ```{r}
+#a quick mdoel with too few iterations
 m <- prepare_model(p, model = "first_diff") %>%
   run_model(chains = 2, iter_sampling = 20, iter_warmup = 20)
 ```
@@ -160,8 +158,7 @@ We can plot each of these indices with `plot_indices()` which creates a list
 of plots. 
 
 ```{r}
-#| fig-asp: 0.5
-#| fig-width: 10
+
 p <- plot_indices(i)
 names(p)
 
@@ -173,8 +170,7 @@ Finally we can even create geofaceted plots (which is only possible in our case
 because we assigned our strata to Provinces and States and calculated indices
 for these regions).
 ```{r}
-#| fig-asp: 0.5
-#| fig-width: 12
+
 plot_geofacet(i, trends = t, multiple = TRUE)
 ```
 

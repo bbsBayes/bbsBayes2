@@ -144,10 +144,6 @@ but note that this almost certainly will result in problems with our model.
 m <- run_model(md, iter_sampling = 20, iter_warmup = 20, chains = 2)
 ```
 
-```{r, echo = FALSE}
-m <- pacific_wren_model
-```
-
 ### Explore the model outputs
 
 First we will generate indices according to different regional categories.
@@ -195,9 +191,33 @@ We can plot these on a map
 plot_map(t)
 ```
 
+###Example models
+A model with a suitable number of iterations takes a long time to run (the barn swallow model below took 54 hours)! Below are three full models run with 1000 iterations and four chains. Use these to test out some of the features!
+```{r}
+#First is a spatial GAMYE model for the Barn Swallow
+basw <- readRDS("~/Git/bbsBayes2/data/Barn_Swallow_gamye_spatial.rds")
+#investigate model meta data
+basw$meta_data
+#length of run-time in seconds
+basw$model_fit$time()
+
+#Next we have a Hepatic Tanager gamye model
+heta_gamye<- readRDS("~/Git/bbsBayes2/data/HETA_bbs_usgs_gamye.rds")
+heta_gamye$meta_data
+heta_gamye$model_fit$time()
+
+#lastly we have a Hepatic Tanager GAM model, stratified to latitude and longitude
+
+heta_gam <- readRDS("~/Git/bbsBayes2/data/HETA_latlong_gam.rds")
+heta_gam$meta_data
+heta_gam$model_fit$time()
+```
+
+
 ```{r, include = FALSE}
 unlink(list.files(pattern = "^BBS_STAN_(\\w|\\d|-)+.(csv|rds)"))
 ```
+
 
 And there you have it!
 
