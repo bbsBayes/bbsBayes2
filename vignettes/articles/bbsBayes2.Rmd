@@ -33,6 +33,11 @@ install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/",
                                        getOption("repos")))
 ```
 
+If you're having troubles, try increasing the timeout limits. Keep in mind, the installation of cmdstanr may take several tries, do not lose hope!
+```{r}
+options(timeout=1000)
+```
+
 Now we should be able to use cmdstanr to install cmdstan
 ```{r, eval = FALSE}
 cmdstanr::install_cmdstan()
@@ -110,7 +115,7 @@ See the articles on
 [custom stratifications](articles/custom_stratification) for more details and 
 examples.
 
-Available species can be explore using the `search_species()` function.
+Available species can be explore using the `search_species()` function. Note: if you're just messing around with the package we recommend using range restricted species such as the Hepatic Tanager, Pacific Wren, Scissor-tailed Flycatcher and Cerulean Warbler.
 
 ### Prepare the data
 
@@ -141,12 +146,33 @@ is 4. In the interest of speed for this example, we are using much lower values,
 but note that this almost certainly will result in problems with our model.
 
 ```{r, eval = FALSE}
-m <- run_model(md, iter_sampling = 20, iter_warmup = 20, chains = 2)
+m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
 ```
 
-```{r, echo = FALSE}
-m <- pacific_wren_model
+OR you can skip this step for now, and test out package features using one of our finished models: HERE.
+```{r}
+m<-readRDS("HETA_bbs_usgs_gamye.rds")
 ```
+
+### A note on spatial models
+For spatial models there's two additional steps. You stratify and prepare the data as in the previous example, but you also prepare the map and the spatial data. An example is below.
+```{r}
+s <- stratify(by = "bbs_cws", species="Hepatic Tanager") 
+p <- prepare_data(s)
+
+#now the additional steps
+#load a map
+map<-load_map(stratify_by = "bbs_cws")
+#prepare the spatial data
+sp<-prepare_spatial(p,map)
+
+#then prepare the model with the spatial output
+mod <- prepare_model(sp, model = "first_diff",model_variant = "spatial")
+
+#then run the model as before
+m <- run_model(mod, iter_sampling = 100, iter_warmup = 500, chains = 2)
+```
+
 
 ### Explore the model outputs
 
@@ -195,13 +221,41 @@ We can plot these on a map
 plot_map(t)
 ```
 
+###Example models
+A model with a suitable number of iterations takes a long time to run (the barn swallow model below took 54 hours)! Below are three full models run with 1000 iterations and four chains. Use these to test out some of the features!
+
+Download the Barn Swallow GAMYE spatial model: <https://github.com/L-Daly/bbsbae/releases/tag/trial> click BASW_spatial_gamye.zip. Download the Hepatic Tanager GAMYE model, by clicking "Download" here: < <https://github.com/L-Daly/bbsbae/blob/25eeb0f974bcdf832b8375422a9ac57c046c62c2/data/HETA_bbs_usgs_gamye.rds> . Download the Hepatic Tanager model stratified by latitude/longitude by clicking "Download" here: <https://github.com/L-Daly/bbsbae/blob/25eeb0f974bcdf832b8375422a9ac57c046c62c2/data/HETA_latlong_gam.rds>.
+```{r}
+#First is a spatial GAMYE model for the Barn Swallow
+library(readr)
+basw <- read_rds(unzip(
+  "BASW_spatial_gamye.zip",
+  "BASW_spatial_gamye.rds"))
+#investigate model meta data
+basw$meta_data
+#length of run-time in seconds
+basw$model_fit$time()
+
+#Next we have a Hepatic Tanager gamye model
+heta_gamye<- readRDS("HETA_bbs_usgs_gamye.rds")
+heta_gamye$meta_data
+heta_gamye$model_fit$time()
+
+#lastly we have a Hepatic Tanager GAM model, stratified to latitude and longitude
+
+heta_gam <- readRDS("HETA_latlong_gam.rds")
+heta_gam$meta_data
+heta_gam$model_fit$time()
+```
+
+
 ```{r, include = FALSE}
 unlink(list.files(pattern = "^BBS_STAN_(\\w|\\d|-)+.(csv|rds)"))
 ```
+
 
 And there you have it!
 
 Check out the other [articles](/index.html) to explore more advanced usage or 
 the [function reference](../reference/) to see what functions are available and 
 how to use them in greater detail.
-

@@ -17,6 +17,8 @@ knitr::opts_chunk$set(
 ```{r setup, message = FALSE}
 library(bbsBayes2)
 library(ggplot2)
+library(dplyr)
+library(bayesplot)
 ```
 
 First make sure you have the BBS data downloaded
@@ -29,25 +31,25 @@ If not, install with `fetch_bbs_data()`
 fetch_bbs_data()
 ```
 
-Let's start by running a quick (and dirty) model looking at the Pacific Wren.
-
-```{r, eval = FALSE}
-m <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
-  prepare_data() %>%
-  prepare_model(model = "first_diff") %>%
-  run_model(iter_sampling = 20, iter_warmup = 20, chains = 2)
-
+Let's start by loading an example model, the Hepatic Tanager gamye model which has 1000 iterations and 4 chains. Download the Hepatic Tanager GAMYE model, by clicking "Download" here: <https://github.com/L-Daly/bbsbae/blob/25eeb0f974bcdf832b8375422a9ac57c046c62c2/data/HETA_bbs_usgs_gamye.rds> . 
+```{r}
+heta_gamye <-readRDS("HETA_bbs_usgs_gamye.rds")
 ```
 
-Or we can use the example model included in bbsBayes2, `pacific_wren_model`
+Here is the code to generate the above model. User beware, even though this species is range restricted, this model will take over 20 minutes to run!
+
 ```{r}
-m <- pacific_wren_model
+heta_gamye<-stratify(by="bbs_usgs",species="Hepatic Tanager")%>%
+  prepare_data()%>%
+  prepare_model(model="gamye",model_variant = "hier")%>%
+  run_model(chains=4,iter_warmup = 1000,iter_sampling = 1000)
 ```
 
 
 Now we can calculate our convergence metrics
 ```{r, warning=FALSE}
-conv <- get_convergence(m)
+conv <- get_convergence(heta_gamye)
+summary(conv)
 conv
 ```
 
@@ -68,14 +70,20 @@ We can also choose to extract only some variables. To see which ones are availab
 use the `get_model_vars()` function.
 
 ```{r}
-get_model_vars(m)
+get_model_vars(heta_gamye)
 ```
 
+We can then create density plots for different variables colored by chain
+
+```{r}
+#create array of model chains
+post<-as.array(heta_gamye$model_fit$draws())
+
+mcmc_dens_overlay(post,pars=c("STRATA","phi","retrans_obs","eta","nu","sdste"))
+```
 
 We can also extract summary information from the model via the helper function `get_summary()` (wrapper for  `cmdstanr::summary()`)
 
 ```{r, warning=FALSE}
-get_summary(m)
+get_summary(heta_gamye)
 ```
-
-
