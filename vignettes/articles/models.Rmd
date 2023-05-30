@@ -8,14 +8,12 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+knitr::opts_chunk$set(message=FALSE,
+                      warning=FALSE,
+                      results="hide")
 ```
 
 ```{r setup, message = FALSE}
-
 library(bbsBayes2)
 ```
 
@@ -23,7 +21,6 @@ There are 9 types of models that can be run with bbsBayes2. For a quick overview
 you can access the `bbs_models` data frame.
 
 ```{r}
-
 bbs_models
 ```
 

@@ -27,6 +27,7 @@ library(bbsBayes2)
 library(sf)       # Spatial data manipulations
 library(dplyr)    # General data manipulations
 library(ggplot2)  # Plotting
+library(patchwork) #Combining plots
 ```
 
 
@@ -122,6 +123,7 @@ ggplot(rindex) +
   geom_sf() +
   geom_sf_text(aes(label = strata_name))
 ```
+<img src= "figures/rindex-1.png" />
 
 It's a bit hard to see, but looks like strata < 50 and greater than 74 are in the
 east and the rest are in the west.
@@ -143,6 +145,7 @@ ggplot(data = rindex) +
   geom_sf(data = rindex, aes(fill = east_west), alpha = 0.5)
 
 ```
+<img src= "figures/rindex_2-1.png" />
 
 Now we'll create our indices and trends
 ```{r}
@@ -162,7 +165,6 @@ of plots.
 p <- plot_indices(i)
 names(p)
 
-library(patchwork)
 p[["east"]] + p[["west"]]
 ```
 
@@ -170,7 +172,6 @@ Finally we can even create geofaceted plots (which is only possible in our case
 because we assigned our strata to Provinces and States and calculated indices
 for these regions).
 ```{r}
-
 plot_geofacet(i, trends = t, multiple = TRUE)
 ```
 

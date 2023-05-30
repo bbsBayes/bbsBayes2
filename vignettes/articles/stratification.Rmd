@@ -7,11 +7,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{r setup,include=FALSE}
+knitr::opts_chunk$set(message=FALSE,
+                      warning=FALSE,
+                      results="hide")
 ```
 
 In this vignette we'll explore the various ways you can stratify your data in 
@@ -30,6 +29,7 @@ library(bbsBayes2)
 library(sf)       # Spatial data manipulations
 library(dplyr)    # General data manipulations
 library(ggplot2)  # Plotting
+library(patchwork) # mutli-plot
 ```
 
 Then we'll make sure we have the BBS data downloaded
@@ -55,7 +55,7 @@ ggplot(data = load_map("bbs_cws"), aes(fill = strata_name)) +
   geom_sf() +
   scale_fill_viridis_d(guide = "none")
 ```
-
+<img src= "figures/cws_map-1.png" />
 
 To stratify BBS data, you can use these existing stratifications by 
 specifying `by = "name"` in the `stratify()` function.
@@ -78,7 +78,7 @@ In addition to maps, stratifications are available as data frames in the
 
 ```{r}
 names(bbs_strata)
-bbs_strata[["bbs_cws"]]
+head(bbs_strata[["bbs_cws"]])
 ```
 
 We can now modify and use this data frame as we like.
@@ -98,7 +98,7 @@ We can see the strata included by looking at the `meta_strata`
 ```{r}
 print(s[["meta_strata"]], n = Inf)
 ```
-
+<img src = "figures/meta_strata-1.png" />
 
 
 ## Custom stratification - New map
@@ -123,20 +123,20 @@ To use this file in bbsBayes2, we need to load it as an sf object using the sf
 package.
 ```{r}
 map <- read_sf("WBPHS_stratum_boundaries_2019.shp")
-map
 ggplot(map, aes(fill = factor(STRAT))) + 
   geom_sf() +
   scale_fill_viridis_d(guide = "none")
 
 ```
+<img src="figures/custom_strata-1.png" />
 
 We see that it has one column that reflects the stratum names. First we'll
 rename this column to `strata_name` which is what `stratify()` requires.
 
 ```{r}
 map <- rename(map, strata_name = STRAT)
-map
 ```
+<img src="figures/custom_strata_renamed-1.png" />
 
 
 Now we have the spatial data and relevant information to pass to `stratify()`.
@@ -155,8 +155,12 @@ We can take a quick look at the output, by looking at the meta data and routes
 contained therein.
 ```{r}
 s[["meta_data"]]
+
 s[["routes_strata"]]
 ```
+<img src= "figures/meta-1.png" />
+
+<img src= "figures/route_meta-1.png" />
 
 To get a different look we can also plot this data on top of our map using
 ggplot2. Note that we use `factor()` to ensure the strata names are 
@@ -170,8 +174,9 @@ ggplot() +
   geom_sf(data = map, aes(fill = factor(strata_name)), alpha = 0.3) +
   geom_sf(data = r, aes(colour = factor(strata_name)), size = 1) +
   scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none")
-
 ```
+<img src= "figures/route_names-1.png" />
+
 
 Based on the message we received during stratification (`Omitting...`) and this
 map, it looks as if our custom stratification is excluding some BBS data.
@@ -183,6 +188,8 @@ s <- stratify(by = "WBPHS_2019", species = "Canada Jay", strata_custom = map,
               return_omitted = TRUE)
 s[["routes_omitted"]]
 ```
+<img src= "figures/routes_omitted-1.png" />
+
 
 Let's take a look at this visually.
 
@@ -194,8 +201,9 @@ ggplot() +
   geom_sf(data = map, aes(fill = factor(strata_name)), alpha = 0.3) +
   geom_sf(data = r, aes(colour = factor(strata_name)), size = 1, alpha = 0.5) +
   geom_sf(data = omitted, size = 0.75, alpha = 0.5) +
-  scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none") 
+  scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none")
 ```
+<img src= "figures/omitted_map-1.png" />
 
 
 We could also look at this visually by comparing the stratified data to the raw
@@ -215,6 +223,7 @@ ggplot() +
   geom_sf(data = bbs_routes, size = 0.5) +
   scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none") 
 ```
+< img src = "figures/route_map-1.png" />
 
 So either way, we can clearly see, spatially, which points have been omitted
 from our data.
@@ -257,7 +266,7 @@ ggplot() +
   geom_sf(data = map) +
   geom_sf(data = new_strata, aes(fill = strata_name), alpha = 1)
 ```
-
+<img src= "figures/og_crs-1.png" />
 
 Looks good! Let's use it in our stratification and take a look at the points 
 afterwards to ensure they've been categorized appropriately.
@@ -275,7 +284,7 @@ ggplot() +
   geom_sf(data = routes, aes(shape = strata_name))
 
 ```
-
+<img src= "figures/new_strata-1.png" />
 
 This outlies the various ways in which you can stratify your data. 
 For a more indepth look at how to use custom stratifications throughout the

@@ -412,7 +412,7 @@ gamye_plot = plot_indices(indices = gamye_ind,
 print(gamye_plot)
 ```
 
-<img src="man/figures/AMKE_gamye.png"/>
+<img src="man/figures/gamye_plot-1.png"/>
 
 ### firstdiff
 
@@ -424,20 +424,20 @@ Here we create a model for a 10 year period, using the minimum number of iterati
 
 stratified_data <- stratify(by = "bbs_usgs",species="Scissor-tailed Flycatcher")
     
-data_gam<- prepare_data(stratified_data, 
+data_first<- prepare_data(stratified_data, 
                               min_year = 2009, max_year=2019)
                               
-gamye_prep<-prepare_model(data_gam,model="gamye")
+first_prep<-prepare_model(data_gam_first,model="first_diff")
 
 #quick model with too few iterations
-gamye_mod <- run_model(gamye_prep,save_model=FALSE, iter_warmup=500,iter_sampling=100, chains=2)
+first_mod <- run_model(first_prep,save_model=FALSE, iter_warmup=500,iter_sampling=100, chains=2)
                                
-gamye_ind <- generate_indices(gamye_mod,regions = c("continent"))
+first_ind <- generate_indices(gamye_mod,regions = c("continent"))
   
-plot_indices(gamye_ind)   
+plot_indices(first_ind)   
 ```
 
-<img src="man/figures/AMKE_firstdiff.png"/>
+<img src="man/figures/first_ind-1.png"/>
 
 ## Alternate extra-Poisson error distributions
 
@@ -460,10 +460,13 @@ mod<-run_model(model_data=m,chains=2,iter_warmup = 500,iter_sampling = 100,save_
 
 #get heavy tailed plots
 heavy_t<-mod %>%
-generate_indices(regions="prov_state")%>%
-plot_indices()
+generate_indices(regions="prov_state")
+
+plot_indices(heavy_t)
 
 ```
+
+<img src = "figures/heavy_t-1.png">
 
 ## Alternate Annual Indices and Resulting Trends
 
@@ -571,6 +574,7 @@ fd_slope_trends_08_18 <- generate_trends(indices = firstdiff_ind,
 plot_map(fd_slope_trends_08_18,
          slope = TRUE)
 ```
+<img src = "figures/slope_map-1.png" />
 
 ### Percent Change and probability of change
 
@@ -588,6 +592,7 @@ fd_slope_trends_prob <- generate_trends(indices = firstdiff_ind,
                                              
 plot_map(fd_slope_trends_prob)                                                       
 ```
+< img src = "figures/prob_change-1.png" />
 
 ## Custom regional summaries
 
@@ -665,7 +670,8 @@ ggplot()+
   geom_sf(data=mmm,aes(fill=Trend))
   
 ```
-
+<img src = "figures/EW_strat-1.png" />
+ 
 ## Exporting the Stan model
 
 You can easily export any of the bbsBayes2 models to a text file.

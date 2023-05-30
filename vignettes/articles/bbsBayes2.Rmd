@@ -157,12 +157,12 @@ m<-readRDS("HETA_bbs_usgs_gamye.rds")
 ### A note on spatial models
 For spatial models there's two additional steps. You stratify and prepare the data as in the previous example, but you also prepare the map and the spatial data. An example is below.
 ```{r}
-s <- stratify(by = "bbs_cws", species="Hepatic Tanager") 
+s <- stratify(by = "bbs_usgs", species="Hepatic Tanager") 
 p <- prepare_data(s)
 
 #now the additional steps
 #load a map
-map<-load_map(stratify_by = "bbs_cws")
+map<-load_map(stratify_by = "bbs_usgs")
 #prepare the spatial data
 sp<-prepare_spatial(p,map)
 
@@ -205,9 +205,9 @@ names(p)
 We can plot them individually by pulling a plot out of the list
 
 ```{r}
-p[["continent"]]
-p[["CA_AB_10"]]
+p[["US_AZ_34"]]
 ```
+< img src= "figures/plot_index-1.png />
 
 Next we can calculate the specific trends based on these indices
 
@@ -220,6 +220,7 @@ We can plot these on a map
 ```{r}
 plot_map(t)
 ```
+<img src= "figures/plot_map-1.png" />
 
 ###Example models
 A model with a suitable number of iterations takes a long time to run (the barn swallow model below took 54 hours)! Below are three full models run with 1000 iterations and four chains. Use these to test out some of the features!
