@@ -6,16 +6,13 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-```{r setup,include=FALSE}
-knitr::opts_chunk$set(message=FALSE,
-                      warning=FALSE,
-                      results="hide")
-```
+
 ## Data prep
 
 ### Load packages
 
-```{r}
+
+```r
 library(bbsBayes2)
 library(patchwork)
 library(ggplot2)
@@ -23,40 +20,47 @@ library(ggplot2)
 
 ### Stratify
 
-```{r}
+
+```r
 s <- stratify(by = "bbs_usgs", species="Hepatic Tanager")
 ```
 
 ### Prepare counts
 Here we are making model for 2009-2019 to decrease model run time. The default is to use the full range of data available.
-```{r}
+
+```r
 p <- prepare_data(s, min_year=2009, max_year=2019)
 ```
 
 ### Prepare spatial
 
-```{r}
+
+```r
 map <- load_map("bbs_cws")
 ggplot(map, aes(fill = strata_name)) +
   geom_sf(show.legend = FALSE)
 ```
 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png)
+
 <img src="figures/usgs_strata-1.png" alt="Map of North America show the CWS spatial stratification divisions as different colours"  />
 
-```{r}
 
+```r
 n <- prepare_spatial(p, map)
 ```
 
 ### Prepare model
 
-```{r}
+
+```r
 md <- prepare_model(n, model = "first_diff", model_variant = "spatial")
 ```
 
 ## Run model
 A model with the minimum number of iterations and chains for speedy processing, at the expense of accuracy. We recommend using the defaults, 4 chains, 1000 iterations for both warmup and sampling, and assessing convergence.
-```{r}
+
+```r
 m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
 ```
 
@@ -65,14 +69,16 @@ m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
 ### Convergence
 
 
-```{r}
+
+```r
 conv <- get_convergence(m)
 conv
 ```
 
 ### Indices
 
-```{r}
+
+```r
 i <- generate_indices(model_output = m,
                       regions = c("continent",
                                   "country",
@@ -82,38 +88,53 @@ p <- plot_indices(i, add_observed_means = TRUE)
 ```
 
 
-```{r}
+
+```r
 patchwork::wrap_plots(p, ncol = 3)
 ```
+
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png)
 
 <img src="figures/first_spatial_index-1.png"  />
 
 ### Trends
 
-```{r}
+
+```r
 t <- generate_trends(indices = i)
 plot_map(trends = t)
 ```
+
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png)
 
 <img src="figures/first_spatial_trend-1.png" />
 
 
 ### Geofacet plots
 
-```{r}
+
+```r
 plot_geofacet(indices = i, trends = t)
 ```
+
+![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png)
 
 <img src="figures/first_spatial_geo-1.png"  />
 
 ## Reproducibility and Clean up
 
-```{r}
+
+```r
 list.files(pattern = "csv|rds")
 unlink(list.files(pattern = "csv|rds"))
 ```
 
 
-```{r}
+
+```r
 devtools::session_info()
+```
+
+```
+## Error in loadNamespace(x): there is no package called 'devtools'
 ```

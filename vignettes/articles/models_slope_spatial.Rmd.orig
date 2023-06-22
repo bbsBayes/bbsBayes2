@@ -7,58 +7,63 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  # For pre-compiling and pkgdown (relative to pkg home)
-  fig.path = "vignettes/articles/figures/slope_spatial_",
-  dpi = 150
-)
+```{r setup,include=FALSE}
+knitr::opts_chunk$set(message=FALSE,
+                      warning=FALSE,
+                      results="hide")
 ```
-
 ## Data prep
 
 ### Load packages
-```{r, message = FALSE}
+
+```{r}
 library(bbsBayes2)
 library(patchwork)
 library(ggplot2)
 ```
 
 ### Stratify
+Here we use a range restricted species to decrease run time.
 ```{r}
-s <- stratify(by = "bbs_cws", sample = TRUE)
+s <- stratify(by = "bbs_usgs", species= "Hepatic Tanager")
 ```
 
 ### Prepare counts
+Here we use 10 years of data to decrease run time. Models can be run using the full range of data using the defaults.
 ```{r}
-p <- prepare_data(s, min_max_route_years = 2)
+p <- prepare_data(s, min_year=2009, max_year=2019)
 ```
 
 ### Prepare spatial
-```{r, fig.cap = "", fig.alt="Map of North America show the CWS spatial stratification divisions as different colours"}
-map <- load_map("bbs_cws")
+
+```{r}
+map <- load_map("bbs_usgs")
 ggplot(map, aes(fill = strata_name)) +
   geom_sf(show.legend = FALSE)
+```
 
+<img src="figures/usgs_strata-1.png"   />
+
+```{r}
 n <- prepare_spatial(p, map)
 ```
 
 ### Prepare model
+
 ```{r}
 md <- prepare_model(n, model = "slope", model_variant = "spatial")
 ```
 
 ## Run model
+A model with the minimum number of iterations and chains for speedy processing, at the expense of accuracy. We recommend using the defaults, 4 chains, 1000 iterations for both warmup and sampling, and assessing convergence.
 ```{r}
-m <- run_model(md, iter_sampling = 10, iter_warmup = 10, chains = 2)
+m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
 ```
 
 ## Explore results
 
 ### Convergence
+
 
 ```{r}
 conv <- get_convergence(m)
@@ -66,37 +71,48 @@ conv
 ```
 
 ### Indices
+
 ```{r}
 i <- generate_indices(model_output = m,
                       regions = c("continent",
                                   "country",
                                   "prov_state",
                                   "stratum"))
-
 p <- plot_indices(i, add_observed_means = TRUE)
 ```
 
-```{r, fig.cap = "", fig.alt = "Grid of plots showing model indices over years for each regional division with blue lines and blue-grey ribbons to indicate the confidence intervals.", fig.width = 16, fig.asp = length(p)/3*3 / 12}
+
+```{r}
 patchwork::wrap_plots(p, ncol = 3)
 ```
 
+<img src="figures/slope_spatial_index-1.png"   />
+
 ### Trends
-```{r, fig.cap = "", fig.alt = "Map of North America showing the stratification areas colour-coded by trend.", fig.width = 10, fig.asp = 0.8}
+
+```{r}
 t <- generate_trends(indices = i)
 plot_map(trends = t)
 ```
 
+<img src="figures/slope_spatial_trend-1.png"  />
+
 
 ### Geofacet plots
-```{r, fig.width = 12, fig.asp = 0.7, fig.cap = "", fig.alt = "A grid of plots in the shap of North America, with one plot per province or state. Each plot shows the indices over time."}
+
+```{r}
 plot_geofacet(indices = i, trends = t)
 ```
 
+<img src="figures/slope_spatial_geo-1.png"   />
+
 ## Reproducibility and Clean up
+
 ```{r}
 list.files(pattern = "csv|rds")
 unlink(list.files(pattern = "csv|rds"))
 ```
+
 
 ```{r}
 devtools::session_info()
