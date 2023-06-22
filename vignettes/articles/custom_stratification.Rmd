@@ -27,6 +27,7 @@ library(bbsBayes2)
 library(sf)       # Spatial data manipulations
 library(dplyr)    # General data manipulations
 library(ggplot2)  # Plotting
+library(patchwork) #Combining plots
 ```
 
 
@@ -51,12 +52,9 @@ This is available from available from the US Fish and Wildlife Service Catalogue
 
 You can either download it by hand, or with the following code.
 ```{r, eval = !file.exists("WBPHS_stratum_boundaries_2019.zip")}
-z <- "WBPHS_stratum_boundaries_2019.zip"
 
-download.file(url = "https://ecos.fws.gov/ServCat/DownloadFile/213149",
-              destfile = z)
-unzip(z)  # Unzip
-unlink(z) # Remove the zipped file
+download.file(url = "https://ecos.fws.gov/ServCat/DownloadFile/213149", dest="WBPHS_2019.zip", mode="wb") 
+unzip ("WBPHS_2019.zip", exdir = "./")
 ```
 
 We'll load and prepare this data.
@@ -74,16 +72,17 @@ s <- stratify(by = "WBPHS_2019", species = "Canada Jay", strata_custom = map)
 > regarding the `stratify()` step.
 
 Once stratified, the next couple of steps are the same, regardless of whether 
-we're using a custom stratification or not.
+we're using a custom stratification or not. Here we run a model for 10 years of data, to speed things up.
 ```{r}
-p <- prepare_data(s)
+p <- prepare_data(s, min_year = 2009, max_year = 2019)
 ```
 
 Prepare and run the model (note this is not an appropriate model, as we're aiming for speed
-rather than accuracy).
+rather than accuracy). We recommend using the defaults, 4 chains, 1000 iterations for both warmup and sampling, and assessing convergence.
 ```{r}
+#a quick model with too few iterations
 m <- prepare_model(p, model = "first_diff") %>%
-  run_model(chains = 2, iter_sampling = 20, iter_warmup = 20)
+  run_model(chains = 2, iter_sampling = 100, iter_warmup = 500)
 ```
 
 
@@ -124,6 +123,7 @@ ggplot(rindex) +
   geom_sf() +
   geom_sf_text(aes(label = strata_name))
 ```
+<img src= "figures/rindex-1.png" />
 
 It's a bit hard to see, but looks like strata < 50 and greater than 74 are in the
 east and the rest are in the west.
@@ -145,6 +145,7 @@ ggplot(data = rindex) +
   geom_sf(data = rindex, aes(fill = east_west), alpha = 0.5)
 
 ```
+<img src= "figures/rindex_2-1.png" />
 
 Now we'll create our indices and trends
 ```{r}
@@ -160,12 +161,10 @@ We can plot each of these indices with `plot_indices()` which creates a list
 of plots. 
 
 ```{r}
-#| fig-asp: 0.5
-#| fig-width: 10
+
 p <- plot_indices(i)
 names(p)
 
-library(patchwork)
 p[["east"]] + p[["west"]]
 ```
 
@@ -173,8 +172,6 @@ Finally we can even create geofaceted plots (which is only possible in our case
 because we assigned our strata to Provinces and States and calculated indices
 for these regions).
 ```{r}
-#| fig-asp: 0.5
-#| fig-width: 12
 plot_geofacet(i, trends = t, multiple = TRUE)
 ```
 
