@@ -1,0 +1,346 @@
+---
+title: "Get Started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Get Started}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  message=FALSE,
+  warning=FALSE,
+  results="hide"
+)
+```
+
+Welcome! Let's get you started with bbsBayes2.
+
+First we'll make sure we have the right software installed, we'll fetch
+the BBS survey data, and then we'll run through some example
+workflows.
+
+## Install [cmdstanr](https://mc-stan.org/cmdstanr/)
+
+Because bbsBayes2 uses Stan to run the Bayesian models, we need to make
+sure we have cmdstanr and cmdstan both installed.
+
+It is recommended to run this is a fresh R session or restart your
+current session
+
+```{r, eval = FALSE}
+install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", 
+                                       getOption("repos")))
+```
+
+Now we should be able to use cmdstanr to install cmdstan
+
+```{r, eval = FALSE}
+cmdstanr::install_cmdstan()
+```
+
+Let's check that everything went as planned
+
+```{r, eval = TRUE}
+cmdstanr::check_cmdstan_toolchain()
+```
+
+> Problems? Check out cmdstanr's vignette on [Getting
+> Started](https://mc-stan.org/cmdstanr/articles/cmdstanr.html)
+
+### Special note for Windows users
+
+We strongly recommend that you install Linux on your Windows machine and
+take advantage of `cmdstanr` functions that run `Stan` models in Linux.
+This will likely cut the MCMC run-times by 30-50% for the `bbsBayes2`
+models. Installing [Windows Subsystem for Linux
+(WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) is a small
+hassle, but only needs to be done once. Follow the directions at the
+above link.
+
+Once the WSL installation is complete, re-install `cmdstan` using `cmdstanr::install_cmdstan(overwrite = TRUE, wsl = TRUE)`.
+Now, everytime you run a model using `cmdstan` (and therefore anytime you run a model using `bbsBayes2`), it will use the Linux installation to run Stan. It's seamless and you'll be very thankful you did it once it's done.
+
+## Download BBS data
+
+Now we'll fetch the BBS data using functions included in bbsBayes2.
+
+> Note that most bbsBayes2 functionality can be explored **without**
+> downloading BBS data by using the included sample data. Specify
+> `sample_data = TRUE` in the first `stratify()` step (see the next
+> section).
+
+First we'll load the package.
+
+```{r, message = FALSE}
+library(bbsBayes2)
+```
+
+There are (as of June 2023) four types of BBS data that can be downloaded:
+
+-   Two levels `state` and `stop` (only `state` works with bbsBayes2
+    models)
+-   Two releases `2020` and `2022` (more options will be added as annual releases occur)
+
+Unless you have a specific reason to need a different version, the
+defaults (level `state` and the most recent release) is what you want.
+However you can download all data sets and specify which one you wish to
+use in the `stratify()` step.
+
+### A note about BBS release names: 
+The releases are named for the year in which the annual dataset was released after going through QA-QC. So the `2022` release contains all surveys conducted up to and including the 2021 season.
+There is no release for 2021, because the BBS was cancelled during the COVID lockdowns of spring 2020 and there are no 2020 BBS data.
+
+```{r, eval = FALSE}
+fetch_bbs_data()                  # Default
+fetch_bbs_data(release = "2020")  # Specify a different release
+```
+
+```{r, echo = FALSE, eval = !have_bbs_data()}
+fetch_bbs_data()
+```
+
+## Workflow
+
+Now that you have cmdstanr installed and the BBS data downloaded, we'll
+walk through a general workflow for modelling species trends with
+bbsBayes2.
+
+### Stratify the data
+
+The first step in any bbsBayes2 analysis is to stratify the data. In
+this step we choose a stratification type as well as a species to
+explore.
+
+```{r, eval = have_bbs_data()}
+s <- stratify(by = "bbs_usgs", species = "Scissor-tailed Flycatcher")
+```
+
+We can also play around with the included sample data (Pacific Wrens)
+
+```{r}
+s <- stratify(by = "bbs_cws", sample_data = TRUE) # Only Pacific Wren
+```
+
+Stratifications included in bbsBayes2 are
+`r paste0(names(bbs_strata), collapse = ", ")`. See the articles on
+[stratifications](articles/stratification) and [custom
+stratifications](articles/custom_stratification) for more details and
+examples.
+
+Available species can be explore using the `search_species()` function.
+Note: if you're just messing around with the package we recommend using
+species with relatively small ranges (i.e., relatively few data) such as the Hepatic Tanager, Pacific Wren, Scissor-tailed Flycatcher and Cerulean Warbler.
+
+### Prepare the data
+
+Once we have stratified the data, we can now prepare it for use in a
+model. In this step data will be filtered to omit routes with too few
+samples, etc. See `prepare_data()` for more details on how you can
+customize this step.
+
+```{r}
+p <- prepare_data(s)
+```
+
+### Prepare the model
+
+Next we will prepare the model parameters and initialization values. See
+`prepare_model()` for more details on how you can customize this step.
+
+```{r}
+md <- prepare_model(p, model = "first_diff")
+```
+
+### Run model
+
+Now we can run the model.
+
+The default `iter_sampling` and `iter_warmup` are 1000 and the default
+`chains` is 4. In the interest of speed for this example, we are using
+much lower values, but note that this almost certainly will result in
+problems with our model.
+
+```{r, eval = FALSE}
+m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
+```
+
+
+### A note on spatial models
+
+For spatial models there's two additional steps. You stratify and
+prepare the data as in the previous example, but you also prepare the
+map and the spatial data. An example is below.
+
+```{r, eval=FALSE}
+s <- stratify(by = "bbs_usgs", species="Scissor-tailed Flycatcher") 
+p <- prepare_data(s)
+
+#now the additional steps
+#load a map
+map<-load_map(stratify_by = "bbs_usgs")
+#prepare the spatial data
+sp<-prepare_spatial(p,map)
+
+#then prepare the model with the spatial output
+mod <- prepare_model(sp, model = "gamye",model_variant = "spatial")
+
+#then run the model as before
+m <- run_model(mod)
+
+#optionally, save the model output as an .rds file
+saveRDS(m,"output/4430_gamye_spatial.rds")
+```
+
+### Explore the model outputs
+
+If you would prefer to skip the model fitting steps for now, you can download a fitted model object (the output of `run_model()` function) and test out the remaining package features.
+
+The outputs of the collection of functions required to fit a model are cumulative: each one retains the metadata from the previous step. As a result, the saved object from the `run_model()` function is a large list that includes the `cmdstanr` posterior samples object from the model fitting process, as well as all of the data and metadata necessary to understand and replicate the choices made to fit the model.  
+
+```{r}
+m<-readRDS("output/4430_gamye_spatial.rds")
+```
+
+First we will generate indices according to different regional
+categories. By default these are `continent` and `stratum`. Indices (annual indices of relative abundance) represent mean predicted annual counts of the species in a given region, on an average route, by an average observer. The pattern in the time-series of these annual indices for a given region represent the estimated population trajectory.  
+
+```{r}
+i <- generate_indices(model_output = m)
+```
+
+We can explore or extract these indices for saving as an external file, by accessing the `indices` item in
+the list. 
+
+```{r}
+i[["indices"]]
+```
+
+We can also plot these indices.
+
+```{r}
+p <- plot_indices(indices = i, add_observed_means = TRUE)
+```
+
+Note that we get one plot for each region and regional category, in this
+case that means one plot for the continent, and one for each stratum.
+
+```{r}
+names(p)
+```
+
+We can plot them individually by pulling a plot out of the list
+
+```{r}
+p[["continent"]]
+```
+
+Next we can calculate the specific trends based on these indices
+
+```{r}
+t <- generate_trends(i)
+```
+
+We can plot these on a map
+
+```{r}
+plot_map(t)
+```
+
+
+###Example models 
+
+A model with a suitable number of iterations takes a
+long time to run (the barn swallow model below took 54 hours)! Below are
+three full models run with 1000 iterations and four chains. Use these to
+test out some of the features!
+
+Download the Barn Swallow GAMYE spatial model:
+<https://github.com/L-Daly/bbsbae/releases/tag/trial> click
+BASW_spatial_gamye.zip. Download the Hepatic Tanager GAMYE model, by
+clicking "Download" here: \<
+<https://github.com/L-Daly/bbsbae/blob/25eeb0f974bcdf832b8375422a9ac57c046c62c2/data/HETA_bbs_usgs_gamye.rds>
+. Download the Hepatic Tanager model stratified by latitude/longitude by
+clicking "Download" here:
+<https://github.com/L-Daly/bbsbae/blob/25eeb0f974bcdf832b8375422a9ac57c046c62c2/data/HETA_latlong_gam.rds>.
+
+An example of the output from applying the spatial gamye model to Barn Swallow data.
+
+```{r}
+#First is a spatial GAMYE model for the Barn Swallow
+# library(readr)
+# BARS <- read_rds(unzip(
+#   "BASW_spatial_gamye.zip",
+#   "Barn_Swallow_gamye_spatial.rds"))
+
+BARS <- readRDS("output/Barn_Swallow_gamye_spatial.rds")
+#investigate model meta data
+BARS$meta_data
+#length of run-time in seconds
+BARS$model_fit$time()
+#length of run-time in hours
+BARS$model_fit$time()$total/3600
+
+BARS_indices <- generate_indices(BARS)
+
+BARS_index_plots <- plot_indices(BARS_indices,
+                                 add_observed_means = TRUE,
+                                 add_number_routes = TRUE)
+
+BARS_index_plots[["continent"]]
+```
+
+Above, we've plotted the full annual indices (i.e., the population trajectory) from the gamye model, which include the smooth component and the annual fluctuations. 
+We can also generate smooth annual indices representing the spline-based smooth component of the population trajectory, after removing the random annual fluctuations. These smooth trajectories are useful for trend estimates that vary less from year-to-year.
+
+```{r}
+BARS_smooth_indices <- generate_indices(BARS,
+                                 alternate_n = "n_smooth")
+BARS_trends <- generate_trends(BARS_smooth_indices)
+BARS_trend_map <- plot_map(BARS_trends)
+BARS_trend_map
+
+```
+
+We also have results for Hepatic Tanager from two different models and using different spatial stratifications. 
+
+```{r}
+
+#Next we have a Hepatic Tanager gamye model
+HETA_gamye<- readRDS("output/HETA_bbs_usgs_gamye.rds")
+HETA_gamye_indices <- generate_indices(HETA_gamye)
+HETA_gamye_trends <- generate_trends(HETA_gamye_indices)
+HETA_gamye_map <- plot_map(HETA_gamye_trends)
+HETA_gamye_map
+
+```
+
+
+```{r}
+
+#lastly we have a Hepatic Tanager GAM model, stratified to latitude and longitude
+
+HETA_gam_latlong <- readRDS("output/HETA_latlong_gam.rds")
+HETA_gam_latlong_indices <- generate_indices(HETA_gam_latlong)
+HETA_gam_latlong_trends <- generate_trends(HETA_gam_latlong_indices)
+HETA_gam_latlong_map <- plot_map(HETA_gam_latlong_trends)
+HETA_gam_latlong_map
+```
+
+
+
+```{r, include = FALSE}
+unlink(list.files(pattern = "^BBS_STAN_(\\w|\\d|-)+.(csv|rds)"))
+```
+
+And there you have it!
+
+Check out the other [articles](/index.html) to explore more advanced
+usage or the [function reference](../reference/) to see what functions
+are available and how to use them in greater detail.

@@ -7,13 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
 ## Data prep
 
 ### Load packages
 
-
-```r
+``` r
 library(bbsBayes2)
 library(patchwork)
 library(ggplot2)
@@ -21,29 +19,29 @@ library(ggplot2)
 
 ### Stratify
 
-
-```r
+``` r
 s <- stratify(by = "bbs_cws", sample = TRUE)
 ```
 
 ### Prepare counts
+
 Here we restrict the time period to speed up the process
 
-```r
+``` r
 p <- prepare_data(s,min_year=2009, max_year=2019)
 ```
 
 ### Prepare model
 
-
-```r
+``` r
 md <- prepare_model(p, model = "first_diff", model_variant = "hier")
 ```
 
 ## Run model
+
 A model with the minimum number of iterations and chains for speedy processing, at the expense of accuracy. We recommend using the defaults, 4 chains, 1000 iterations for both warmup and sampling, and assessing convergence.
 
-```r
+``` r
 m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
 ```
 
@@ -51,17 +49,14 @@ m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
 
 ### Convergence
 
-
-
-```r
+``` r
 conv <- get_convergence(m)
 conv
 ```
 
 ### Indices
 
-
-```r
+``` r
 i <- generate_indices(model_output = m,
                       regions = c("continent",
                                   "country",
@@ -70,54 +65,46 @@ i <- generate_indices(model_output = m,
 p <- plot_indices(i, add_observed_means = TRUE)
 ```
 
-
-
-```r
+``` r
 patchwork::wrap_plots(p, ncol = 3)
 ```
 
 ![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png)
 
-<img src="figures/first_index-1.png"  />
+<img src="figures/first_index-1.png"/>
 
 ### Trends
 
-
-```r
+``` r
 t <- generate_trends(indices = i)
 plot_map(trends = t)
 ```
 
 ![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png)
 
-<img src="figures/first_map-1.png" />
-
+<img src="figures/first_map-1.png"/>
 
 ### Geofacet plots
 
-
-```r
+``` r
 plot_geofacet(indices = i, trends = t)
 ```
 
 ![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png)
 
-<img src="figures/first_geo-1.png" alt="A grid of plots in the shap of North America, with one plot per province or state. Each plot shows the indices over time."  />
+<img src="figures/first_geo-1.png" alt="A grid of plots in the shap of North America, with one plot per province or state. Each plot shows the indices over time."/>
 
 ## Reproducibility and Clean up
 
-
-```r
+``` r
 list.files(pattern = "csv|rds")
 unlink(list.files(pattern = "csv|rds"))
 ```
 
-
-
-```r
+``` r
 devtools::session_info()
 ```
 
-```
+```         
 ## Error in loadNamespace(x): there is no package called 'devtools'
 ```

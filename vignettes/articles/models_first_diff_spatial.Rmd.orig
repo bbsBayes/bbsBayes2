@@ -6,11 +6,18 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-```{r setup,include=FALSE}
-knitr::opts_chunk$set(message=FALSE,
-                      warning=FALSE,
-                      results="hide")
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  # For pre-compiling and pkgdown (relative to pkg home)
+  fig.path = "vignettes/articles/figures/models_first_diff_spatial_",
+  dpi = 150
+
+)
 ```
+
 ## Data prep
 
 ### Load packages

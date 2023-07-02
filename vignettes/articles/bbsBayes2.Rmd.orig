@@ -10,7 +10,16 @@ editor_options:
     wrap: 72
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  # For pre-compiling and pkgdown (relative to pkg home)
+  fig.path = "vignettes/articles/figures/bbsBayes2_",
+  dpi = 150
 
+)
+```
 
 Welcome! Let's get started with bbsBayes2.
 
@@ -24,25 +33,21 @@ sure we have cmdstanr and cmdstan both installed.
 
 Run this is a fresh R session.
 
-
-```r
+```{r, eval = FALSE}
 install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/",
                                        getOption("repos")))
 ```
 
 Now we should be able to use cmdstanr to install cmdstan
 
-
-```r
+```{r, eval = FALSE}
 cmdstanr::install_cmdstan()
 ```
 
 Let's check that everything went as planned
 
-
-```r
+```{r, eval = TRUE}
 cmdstanr::check_cmdstan_toolchain()
-#> The C++ toolchain required for CmdStan is setup properly!
 ```
 
 > Problems? Check out cmdstanr's vignette on [Getting
@@ -76,8 +81,7 @@ Now we'll fetch the BBS data using functions included in bbsBayes2.
 
 First we'll load the package.
 
-
-```r
+```{r, message = FALSE}
 library(bbsBayes2)
 ```
 
@@ -102,13 +106,14 @@ surveys conducted up to and including the 2021 season. There is no
 release for 2021, because the BBS was cancelled during the COVID
 lockdowns of spring 2020 and there are no 2020 BBS data.
 
-
-```r
+```{r, eval = FALSE}
 fetch_bbs_data()                  # Default
 fetch_bbs_data(release = "2020")  # Specify a different release
 ```
 
-
+```{r, echo = FALSE, eval = !have_bbs_data()}
+fetch_bbs_data()
+```
 
 ## Workflow
 
@@ -122,31 +127,18 @@ The first step in any bbsBayes2 analysis is to stratify the data. In
 this step we choose a stratification type as well as a species to
 explore.
 
-
-```r
+```{r, eval = have_bbs_data()}
 s <- stratify(by = "bbs_usgs", species = "Scissor-tailed Flycatcher")
-#> Using 'bbs_usgs' (standard) stratification
-#> Loading BBS data...
-#> Filtering to species Scissor-tailed Flycatcher (4430)
-#> Stratifying data...
-#>   Renaming routes...
 ```
 
 We can also play around with the included sample data (Pacific Wrens)
 
-
-```r
+```{r}
 s <- stratify(by = "bbs_cws", sample_data = TRUE) # Only Pacific Wren
-#> Using 'bbs_cws' (standard) stratification
-#> Using sample BBS data...
-#> Using species Pacific Wren (sample data)
-#> Stratifying data...
-#>   Combining BCR 7 and NS and PEI...
-#>   Renaming routes...
 ```
 
 Stratifications included in bbsBayes2 are
-bbs_usgs, bbs_cws, bcr, latlong, prov_state. See the articles on
+`r paste0(names(bbs_strata), collapse = ", ")`. See the articles on
 [stratifications](articles/stratification) and [custom
 stratifications](articles/custom_stratification) for more details and
 examples.
@@ -164,8 +156,7 @@ model. In this step data will be filtered to omit routes with too few
 samples, etc. See `prepare_data()` for more details on how you can
 customize this step.
 
-
-```r
+```{r}
 p <- prepare_data(s)
 ```
 
@@ -174,8 +165,7 @@ p <- prepare_data(s)
 Next we will prepare the model parameters and initialization values. See
 `prepare_model()` for more details on how you can customize this step.
 
-
-```r
+```{r}
 md <- prepare_model(p, model = "first_diff")
 ```
 
@@ -188,8 +178,7 @@ The default `iter_sampling` and `iter_warmup` are 1000 and the default
 much lower values, but note that this almost certainly will result in
 problems with our model.
 
-
-```r
+```{r, eval = FALSE}
 m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
 ```
 
@@ -199,8 +188,7 @@ For spatial models there's two additional steps. You stratify and
 prepare the data as in the previous example, but you also prepare the
 map and the spatial data. An example is below.
 
-
-```r
+```{r, eval=FALSE}
 s <- stratify(by = "bbs_usgs", species="Scissor-tailed Flycatcher")
 p <- prepare_data(s)
 
@@ -233,8 +221,7 @@ that includes the `cmdstanr` posterior samples object from the model
 fitting process, as well as all of the data and metadata necessary to
 understand and replicate the choices made to fit the model.
 
-
-```r
+```{r}
 m<-readRDS("output/4430_gamye_spatial.rds")
 ```
 
@@ -245,79 +232,47 @@ counts of the species in a given region, on an average route, by an
 average observer. The pattern in the time-series of these annual indices
 for a given region represent the estimated population trajectory.
 
-
-```r
+```{r}
 i <- generate_indices(model_output = m)
-#> Processing region continent
-#> Processing region stratum
 ```
 
 We can explore or extract these indices for saving as an external file,
 by accessing the `indices` item in the list.
 
-
-```r
+```{r}
 i[["indices"]]
-#> # A tibble: 1,430 × 17
-#>     year region    region_type strata_included    strata_excluded index index_q_0.025 index_q_0.05 index_q_0.25 index_q_0.75
-#>    <dbl> <chr>     <chr>       <chr>              <chr>           <dbl>         <dbl>        <dbl>        <dbl>        <dbl>
-#>  1  1967 continent continent   US-AR-24 ; US-AR-… ""              12.7          11.4         11.6         12.2         13.2 
-#>  2  1968 continent continent   US-AR-24 ; US-AR-… ""              12.8          11.7         11.9         12.4         13.2 
-#>  3  1969 continent continent   US-AR-24 ; US-AR-… ""              13.0          12.0         12.2         12.6         13.3 
-#>  4  1970 continent continent   US-AR-24 ; US-AR-… ""              13.1          12.1         12.3         12.7         13.4 
-#>  5  1971 continent continent   US-AR-24 ; US-AR-… ""              12.9          12.1         12.3         12.6         13.3 
-#>  6  1972 continent continent   US-AR-24 ; US-AR-… ""              12.8          12.0         12.1         12.5         13.1 
-#>  7  1973 continent continent   US-AR-24 ; US-AR-… ""              11.6          10.9         11.0         11.4         11.9 
-#>  8  1974 continent continent   US-AR-24 ; US-AR-… ""              10.9          10.3         10.4         10.7         11.1 
-#>  9  1975 continent continent   US-AR-24 ; US-AR-… ""              10.3           9.62         9.72        10.0         10.5 
-#> 10  1976 continent continent   US-AR-24 ; US-AR-… ""               9.37          8.78         8.87         9.17         9.60
-#> # ℹ 1,420 more rows
-#> # ℹ 7 more variables: index_q_0.95 <dbl>, index_q_0.975 <dbl>, obs_mean <dbl>, n_routes <int>, n_routes_total <int>,
-#> #   n_non_zero <int>, backcast_flag <dbl>
 ```
 
 We can also plot these indices.
 
-
-```r
+```{r}
 p <- plot_indices(indices = i, add_observed_means = TRUE)
 ```
 
 Note that we get one plot for each region and regional category, in this
 case that means one plot for the continent, and one for each stratum.
 
-
-```r
+```{r}
 names(p)
-#>  [1] "continent" "US_AR_24"  "US_AR_25"  "US_AR_26"  "US_KS_18"  "US_KS_19"  "US_KS_22"  "US_LA_25"  "US_LA_37"  "US_MO_22" 
-#> [11] "US_MO_24"  "US_NM_18"  "US_NM_35"  "US_OK_18"  "US_OK_19"  "US_OK_21"  "US_OK_22"  "US_OK_25"  "US_TX_18"  "US_TX_19" 
-#> [21] "US_TX_20"  "US_TX_21"  "US_TX_25"  "US_TX_35"  "US_TX_36"  "US_TX_37"
 ```
 
 We can plot them individually by pulling a plot out of the list
 
-
-```r
+```{r, fig.cap = "", fig.alt = "Population trajectory graph, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts.", fig.width = 8, fig.asp = 0.8}
 print(p[["continent"]])
 ```
 
-<img src="figures/bbsBayes2_unnamed-chunk-19-1.png" alt="Population trajectory graph, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts."  />
-
 Next we can calculate the specific trends based on these indices
 
-
-```r
+```{r}
 t <- generate_trends(i)
 ```
 
 We can plot these on a map
 
-
-```r
+```{r, fig.cap = "", fig.alt = "Population trend map showing strata with increasing trends in blues and decreasing trends in reds.", fig.width = 8, fig.asp = 0.8}
 plot_map(t)
 ```
-
-<img src="figures/bbsBayes2_unnamed-chunk-21-1.png" alt="Population trend map showing strata with increasing trends in blues and decreasing trends in reds."  />
 
 ###Example models
 
@@ -338,8 +293,7 @@ clicking "Download" here:
 An example of the output from applying the spatial gamye model to Barn
 Swallow data.
 
-
-```r
+```{r, fig.cap = "", fig.alt = "Population trajectory graph for Barn Swallow, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts.", fig.width = 8, fig.asp = 0.8}
 #First is a spatial GAMYE model for the Barn Swallow
 # library(readr)
 # BARS <- read_rds(unzip(
@@ -349,53 +303,12 @@ Swallow data.
 BARS <- readRDS("output/Barn_Swallow_gamye_spatial.rds")
 #investigate model meta data
 BARS$meta_data
-#> $stratify_by
-#> [1] "bbs_cws"
-#> 
-#> $stratify_type
-#> [1] "standard"
-#> 
-#> $species
-#> [1] "Barn Swallow"
-#> 
-#> $model
-#> [1] "gamye"
-#> 
-#> $model_variant
-#> [1] "spatial"
-#> 
-#> $model_file
-#> [1] "C:/Users/SmithAC/AppData/Local/R/win-library/4.2/bbsBayes2/models/gamye_spatial_bbs_CV.stan"
-#> 
-#> $run_date
-#> [1] "2023-01-20 13:27:49 EST"
-#> 
-#> $bbsBayes2_version
-#> [1] "1.0.0"
-#> 
-#> $cmdstan_path
-#> [1] "C:/Users/SmithAC/Documents/.cmdstan/wsl-cmdstan-2.30.1"
-#> 
-#> $cmdstan_version
-#> [1] "2.30.1"
 #length of run-time in seconds
 BARS$model_fit$time()
-#> $total
-#> [1] 197011.7
-#> 
-#> $chains
-#>   chain_id   warmup sampling  total
-#> 1        1  82393.1  46100.9 128494
-#> 2        2  85907.6 111101.0 197009
-#> 3        3 113442.0  54516.1 167958
-#> 4        4 113073.0  54597.2 167670
 #length of run-time in hours
 BARS$model_fit$time()$total/3600
-#> [1] 54.72546
 
 BARS_indices <- generate_indices(BARS)
-#> Processing region continent
-#> Processing region stratum
 
 BARS_index_plots <- plot_indices(BARS_indices,
                                  add_observed_means = TRUE,
@@ -403,8 +316,6 @@ BARS_index_plots <- plot_indices(BARS_indices,
 
 BARS_index_plots[["continent"]]
 ```
-
-<img src="figures/bbsBayes2_unnamed-chunk-22-1.png" alt="Population trajectory graph for Barn Swallow, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts."  />
 
 Above, we've plotted the full annual indices (i.e., the population
 trajectory) from the gamye model, which include the smooth component and
@@ -414,52 +325,39 @@ trajectory, after removing the random annual fluctuations. These smooth
 trajectories are useful for trend estimates that vary less from
 year-to-year.
 
-
-```r
+```{r, fig.cap = "", fig.alt = "Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red", fig.width = 8, fig.asp = 0.8}
 BARS_smooth_indices <- generate_indices(BARS,
                                  alternate_n = "n_smooth")
-#> Processing region continent
-#> Processing region stratum
 BARS_trends <- generate_trends(BARS_smooth_indices)
 BARS_trend_map <- plot_map(BARS_trends)
 BARS_trend_map
-```
 
-<img src="figures/bbsBayes2_unnamed-chunk-23-1.png" alt="Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"  />
+```
 
 We also have results for Hepatic Tanager from two different models and
 using different spatial stratifications.
 
-
-```r
+```{r, fig.cap = "", fig.alt = "Population trend map for Hepatic Tanager from the gamye model with usgs_bbs stratification, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red", fig.width = 8, fig.asp = 0.8}
 
 #Next we have a Hepatic Tanager gamye model
 HETA_gamye<- readRDS("output/HETA_bbs_usgs_gamye.rds")
 HETA_gamye_indices <- generate_indices(HETA_gamye)
-#> Processing region continent
-#> Processing region stratum
 HETA_gamye_trends <- generate_trends(HETA_gamye_indices)
 HETA_gamye_map <- plot_map(HETA_gamye_trends)
 HETA_gamye_map
+
 ```
 
-<img src="figures/bbsBayes2_unnamed-chunk-24-1.png" alt="Population trend map for Hepatic Tanager from the gamye model with usgs_bbs stratification, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"  />
-
-
-```r
+```{r, fig.cap = "", fig.alt = "Population trend map for Hepatic Tanager from the gam model with latlong stratification, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red", fig.width = 8, fig.asp = 0.8}
 
 #lastly we have a Hepatic Tanager GAM model, stratified to latitude and longitude
 
 HETA_gam_latlong <- readRDS("output/HETA_latlong_gam.rds")
 HETA_gam_latlong_indices <- generate_indices(HETA_gam_latlong)
-#> Processing region continent
-#> Processing region stratum
 HETA_gam_latlong_trends <- generate_trends(HETA_gam_latlong_indices)
 HETA_gam_latlong_map <- plot_map(HETA_gam_latlong_trends)
 HETA_gam_latlong_map
 ```
-
-<img src="figures/bbsBayes2_unnamed-chunk-25-1.png" alt="Population trend map for Hepatic Tanager from the gam model with latlong stratification, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"  />
 
 
 And there you have it!

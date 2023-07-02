@@ -7,10 +7,15 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup,include=FALSE}
-knitr::opts_chunk$set(message=FALSE,
-                      warning=FALSE,
-                      results="hide")
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  # For pre-compiling and pkgdown (relative to pkg home)
+  fig.path = "vignettes/articles/figures/models_first_diff_nonhier_",
+  dpi = 150
+
+)
 ```
 ## Data prep
 
@@ -72,11 +77,9 @@ p <- plot_indices(i, add_observed_means = TRUE)
 ```
 
 
-```{r}
+```{r, fig.cap = "", fig.alt = "Population trajectory graphs, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts.", fig.width = 8, fig.asp = 0.8}
 patchwork::wrap_plots(p, ncol = 3)
 ```
-
-<img src="figures/first_nonhier-1.png" />
 
 ### Trends
 
@@ -85,16 +88,12 @@ t <- generate_trends(indices = i)
 plot_map(trends = t)
 ```
 
-<img src="figures/first_nonhier_trend-1.png"  />
-
 
 ### Geofacet plots
 
 ```{r}
 plot_geofacet(indices = i, trends = t)
 ```
-
-<img src="figures/first_nonhier_geo-1.png"  />
 
 ## Reproducibility and Clean up
 

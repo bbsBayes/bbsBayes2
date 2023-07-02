@@ -121,7 +121,7 @@ readRDS("cws_base_gamye.rds")
 
 ### Convergence
 
-Convergence should be checked for all models, and users should be concerned if Rhat <1.01 or ess_bulk <400. Convergence can also be checked visually, all chains should have similar distributions. If convergence fails, re-running the model with a longer burn-in and/or more posterior iterations or greater thinning rates may improve convergence. The seriousness of these convergence failures is something the user must interpret for themselves. In some cases some parameters of the model may not be separately estimable, but if there is no
+Convergence should be checked for all models, and users should be concerned if Rhat >1.01 or ess_bulk <400. Convergence can also be checked visually, all chains should have similar distributions. If convergence fails, re-running the model with a longer burn-in and/or more posterior iterations or greater thinning rates may improve convergence. The seriousness of these convergence failures is something the user must interpret for themselves. In some cases some parameters of the model may not be separately estimable, but if there is no
 direct inference drawn from those separate parameters, their convergence may not
 be necessary. If all or the vast majority of the n parameters have converged,
 then inference on population trajectories and trends from the model are
@@ -160,6 +160,54 @@ mcmc_dens_overlay(post,pars=c("STRATA","sdnoise","retrans_obs","eta","nu","sdste
 
 ```
 <img src= "figures/mcmc_density-1.png" />
+
+### Posterior Predictive Checks
+
+Posterior predictive checks are best done in R, after fitting the model. It is certainly possible to modify the Stan model to include posterior predictions of the individual BBS counts. However, using Stan to generate these predicted counts will almost double the size of the saved model object. 
+To generate the posterior distributions of predicted counts, you will need to extract the posterior samples of the parameter `E` in the bbsBayes2 models. Also, if you have used the negative binomial error distribution, then you will also need to extract the posterior samples for the parameter `phi` (the inverse negative binomial dispersion parameter).
+Here's an example, using the fitted model object for the Hepatic Tanager data fit to the `first_dif` model using the `latlong` stratification. 
+
+```{r}
+heta_usgs_gamye <- readRDS("output/HETA_bbs_usgs_gamye.rds")
+
+# tibble with one row for each posterior draw and one column for each parameter (i.e., each count)
+E <- posterior::as_draws_df(heta_usgs_gamye$model_fit) %>% 
+  select(matches("^E([[:punct:]])"),
+         .draw) 
+# tibble with 1 column for phi and one row for each posterior draw
+phi <- posterior::as_draws_df(heta_usgs_gamye$model_fit)%>% 
+  select(phi,
+         .draw)
+
+# join tibbles by draw
+E <- left_join(phi,E,
+               by = ".draw")
+# custom function to generate posterior predictive counts from negative binomial
+pred_counts_nb <- function(e_mu,phi_i){
+  n <- length(phi_i)
+  x <- rnbinom(n,mu = exp(e_mu),size = phi_i)
+  return(x)
+}
+
+y_rep <- E %>% 
+  mutate(across(matches("^E([[:punct:]])"),
+                          ~ pred_counts_nb(.x,phi))) %>% 
+  select(matches("^E([[:punct:]])")) %>% 
+  sample_n(.,500) 
+
+y_rep <- posterior::as_draws_matrix(y_rep)
+
+overplot <- bayesplot::ppc_ecdf_overlay(y = heta_usgs_gamye$raw_data$count,
+                                    yrep = y_rep)
+overplot <- overplot +
+  coord_cartesian(xlim = range(heta_usgs_gamye$raw_data$count))
+
+overplot
+
+
+```
+
+
 
 ## Model Predictions
 
