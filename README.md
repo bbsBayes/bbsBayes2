@@ -14,15 +14,31 @@ American Breeding Bird Survey (BBS) data. 'bbsBayes2' will run a full model
 analysis for one or more species that you choose, or you can take more control
 and specify how the data should be stratified, prepared for Stan, or modelled.
 
+bbsBayes2 is the successor to
+[bbsBayes](https://github.com/bbsBayes/bbsBayes), with a major shift in
+functionality. The MCMC backend is now *Stan* instead of *JAGS*, the
+workflow has been streamlined, the syntax has changed, and there are new
+functions. This vignette should help you get started with the package,
+and there are three others that should help explain some of the new
+features, choices, and more advanced uses:
+
 Installation instructions are below.
 
 See the [documentation](https://bbsBayes.github.io/bbsBayes2) for an overview of
 how to use bbsBayes2.
 
-Additional resources:
+In addition, there are four vignettes that will help users get familiar with the package and the new functionality.
 
-* [Introductory bbsBayes Workshop](https://github.com/AdamCSmithCWS/bbsBayes_Intro_Workshop)
-* [Journal Article with worked example](https://doi.org/10.5334/jors.329)
+-   [Getting Started vignette](./bbsBayes2.html) 
+
+-   [Stratification vignette](./stratification.html) The stratification
+    vignette explains the built-in options for spatial stratifications
+    as well as the workflow required to apply a custom stratification.
+
+-   [Models vignette](./models.html) The models vignette explains the four built-in models that differ in the way the temporal components are structured, and it also covers the built-in options for error distributions and the differences among the model variants (e.g., `model_variant = "spatial"`).
+
+-   [Advanced vignette](./advanced.html) The advanced vignette is helpful for users wanting to take the bbsBayes2 functionality further, including alternate calculations of population trend, customizing the Stan models, adding covariates, and even some experimental functions that allow for k-fold cross-validations to compare among models. 
+
 
 ## Installation
 

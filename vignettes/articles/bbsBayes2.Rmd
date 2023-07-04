@@ -17,11 +17,38 @@ knitr::opts_chunk$set(
   # For pre-compiling and pkgdown (relative to pkg home)
   fig.path = "vignettes/articles/figures/bbsBayes2_",
   dpi = 150
-
 )
+
+  library(bbsBayes2)
+  library(tidyverse)
 ```
 
-Welcome! Let's get started with bbsBayes2.
+# Welcome!
+
+bbsBayes2 is the successor to
+[bbsBayes](https://github.com/bbsBayes/bbsBayes), with a major shift in
+functionality. The MCMC backend is now *Stan* instead of *JAGS*, the
+workflow has been streamlined, the syntax has changed, and there are new
+functions. This vignette should help you get started with the package,
+and there are three others that should help explain some of the new
+features, choices, and more advanced uses:
+
+-   [Stratification vignette](./stratification.html) The stratification
+    vignette explains the built-in options for spatial stratifications
+    as well as the workflow required to apply a custom stratification.
+
+-   [Models vignette](./models.html) The models vignette explains the
+    four built-in models that differ in the way the temporal components
+    are structured, and it also covers the built-in options for error
+    distributions and the differences among the model variants (e.g.,
+    `model_variant = "spatial"`).
+
+-   [Advanced vignette](./advanced.html) The advanced vignette is
+    helpful for users wanting to take the bbsBayes2 functionality
+    further, including alternate calculations of population trend,
+    customizing the Stan models, adding covariates, and even some
+    experimental functions that allow for k-fold cross-validations to
+    compare among models.
 
 First we'll make sure we have the right software installed, we'll fetch
 the BBS survey data, and then we'll run through some example workflows.
@@ -72,34 +99,37 @@ done.
 
 ## Workflow overview
 
-
-We can visualize the bbsBayes2 workflow with this flow chart of functions.
+We can visualize the bbsBayes2 workflow with this flow chart of
+functions.
 
 The functions are colour coded by category:
 
-- BBS Data - Blue
-- Data Prep - Pink
-- Modelling - Green
-- Exploring model trends and indices - Purple
-- General helper functions - Orange
+-   BBS Data - Blue
+-   Data Prep - Pink
+-   Modelling - Green
+-   Exploring model trends and indices - Purple
+-   General helper functions - Orange
 
-Functions which are connected by a **solid, black** arrow, indicate that the
-output of the first function is required as input to the second. For example,
-the output of `stratify()` is required input for `prepare_data()`.
+Functions which are connected by a **solid, black** arrow, indicate that
+the output of the first function is required as input to the second. For
+example, the output of `stratify()` is required input for
+`prepare_data()`.
 
-Functions which are connected by a **solid, grey** arrow, indicate that the
-output of the first function is *optional* input to the second. For example, the
-output of `grenerate_trends()` is an option input for `plot_geofacet()`.
+Functions which are connected by a **solid, grey** arrow, indicate that
+the output of the first function is *optional* input to the second. For
+example, the output of `grenerate_trends()` is an option input for
+`plot_geofacet()`.
 
-Functions which are connected by a **dotted** arrow indicate that the first 
-function can be used to create input for the second, but not necessarily 
-directly. For example, `fetch_bbs_data()` downloads BBS data which is used by
-`stratify()`, but it isn't an input. Alternatively, `load_map()` can load
-a spatial data file for a specific stratification which can be modified by the
-user and then used as input to `prepare_spatial()` or `generate_indices()`. 
+Functions which are connected by a **dotted** arrow indicate that the
+first function can be used to create input for the second, but not
+necessarily directly. For example, `fetch_bbs_data()` downloads BBS data
+which is used by `stratify()`, but it isn't an input. Alternatively,
+`load_map()` can load a spatial data file for a specific stratification
+which can be modified by the user and then used as input to
+`prepare_spatial()` or `generate_indices()`.
 
-See the [Function Reference](../reference) for more details on how to use a
-particular function.
+See the [Function Reference](../reference) for more details on how to
+use a particular function.
 
 ```{r, echo = FALSE}
 library(DiagrammeR)
@@ -173,8 +203,6 @@ grViz("digraph functions {
 }")
 ```
 
-
-
 ## Download BBS data
 
 Now we'll fetch the BBS data using functions included in bbsBayes2.
@@ -220,7 +248,10 @@ fetch_bbs_data(release = "2020")  # Specify a different release
 fetch_bbs_data()
 ```
 
-## Workflow
+## Workflow to fit models
+
+Note: if you would prefer to skip the model-fitting process for now,
+skip down to [Workflow to explore the model outputs](#explore_output).
 
 Now that you have cmdstanr installed and the BBS data downloaded, we'll
 walk through a general workflow for modelling species trends with
@@ -313,7 +344,7 @@ m <- run_model(mod)
 saveRDS(m,"output/4430_gamye_spatial.rds")
 ```
 
-### Explore the model outputs
+## Workflow to explore the model outputs {#explore_output}
 
 If you would prefer to skip the model fitting steps for now, you can
 download a fitted model object (the output of `run_model()` function)
@@ -328,10 +359,18 @@ understand and replicate the choices made to fit the model.
 
 ```{r}
 m<-readRDS("output/4430_gamye_spatial.rds")
+names(m)
 ```
 
-First, we will investigate the model convergence and the parameter estimates of the model. There are two key helper functions in `bbsBayes2` that provide information on model convergence: `get_convergence()` calculates convergence diagnostics and `get_summary()` calculates the convergence diagnostics as well as summary statistics (mean, median, credible intervals) for all parameters in a fitted model. 
+### Convergence and parameter summaries
 
+First, we will investigate the model convergence and the parameter
+estimates of the model. There are two key helper functions in
+`bbsBayes2` that provide information on model convergence:
+`get_convergence()` calculates convergence diagnostics and
+`get_summary()` calculates the convergence diagnostics as well as
+summary statistics (mean, median, credible intervals) for all parameters
+in a fitted model.
 
 ```{r,eval=FALSE}
 # Convergence diagnostics for all parameters
@@ -346,9 +385,15 @@ converge_n_smooth
 
 ```
 
-Here we've sorted the convergence diagnostics by rhat values. Values of rhat > 1.05 indicate a problem with the convergence of some of the parameters in the model (i.e., there is more variation among the independent chains than within them) and values of ess_bulk < approximately 400 suggest an imprecise estimate of the parameter. 
-In some cases, refitting the model with more iterations (both warmup and sampling) may improve convergence.
-More advice on exploring Bayesian model convergence can be found [here](https://doi.org/10.1111/rssa.12378). 
+Here we've sorted the convergence diagnostics by rhat values. Values of
+rhat \> 1.05 indicate a problem with the convergence of some of the
+parameters in the model (i.e., there is more variation among the
+independent chains than within them) and values of ess_bulk \<
+approximately 400 suggest an imprecise estimate of the parameter. In
+some cases, refitting the model with more iterations (both warmup and
+sampling) may improve convergence. More advice on exploring Bayesian
+model convergence can be found
+[here](https://doi.org/10.1111/rssa.12378).
 
 ```{r, eval=FALSE}
 
@@ -357,8 +402,12 @@ m <- run_model(mod,
                iter_sampling = 2000)
 ```
 
-It is possible to thin the MCMC chains by passing arguments from `cmdstanr::sample()` into the run_model() function. The call below would result in the same number of posterior samples as `run_model()` defaults, but may improve the efficiency of the sampling (and of course would also increase the time required to fit the model by a factor of approximately 4).
-
+It is possible to thin the MCMC chains by passing arguments from
+`cmdstanr::sample()` into the run_model() function. The call below would
+result in the same number of posterior samples as `run_model()`
+defaults, but may improve the efficiency of the sampling (and of course
+would also increase the time required to fit the model by a factor of
+approximately 4).
 
 ```{r, eval=FALSE}
 m <- run_model(mod,
@@ -368,7 +417,8 @@ m <- run_model(mod,
 
 ```
 
-If you want summary statistics of the parameters, as well as convergence diagnostics, the function `get_summary()` may be more useful. 
+If you want summary statistics of the parameters, as well as convergence
+diagnostics, the function `get_summary()` may be more useful.
 
 ```{r, eval=FALSE}
 # Summary statistics and convergence diagnostics for all parameters
@@ -384,17 +434,22 @@ summary_stats_n_smooth
 ```
 
 
-To explore the model predictions of annual abundance and trends, we will generate indices according to different categories of regional summaries. By default these are `continent` and `stratum`. The collection of `stratum` or strata (plural) estimates form the basis of all other regional estimates in these models, and `continent` estimates represent the area- and abundance-weighted means across all strata.
-Indices (annual indices of relative abundance) represent mean predicted annual
-counts of the species in a given region, on an average route, by an
-average observer. The pattern in the time-series of these annual indices
-for a given region represent the estimated population trajectory.
+### Indices - predictions of annual relative abundance
+
+Indices (annual indices of relative abundance) represent mean predicted
+annual counts of the species in a given region, on an average route, by
+an average observer. The pattern in the time-series of these annual
+indices for a given region represent the estimated population
+trajectory.
+We generate indices according to different categories of regional
+summaries. All of the bbsBayes2 models are stratified based on geographic spatial units, and these categories of regions are either these strata (`generate_indices(region = "stratum")`), or some combination of strata. By default the selected regions for most model summaries are `continent` and `stratum`. The `continent` estimates represent the area- and abundance-weighted means across all strata, other regional summaries are built in for some stratifications that allow it (e.g., `region = "country"` for the stratifications `bbs_usgs`, `bbs_cws`, or `prov_state`).
+
 
 ```{r}
 i <- generate_indices(model_output = m)
 ```
 
-We can explore or extract these indices for saving as an external file,
+We can explore or extract these indices for saving as an external file (e.g., export to .csv),
 by accessing the `indices` item in the list.
 
 ```{r}
@@ -404,8 +459,9 @@ i[["indices"]]
 We can also generate time-series plots of these indices.
 
 ```{r}
-# generates a list of ggplot graphs
-p <- plot_indices(indices = i, add_observed_means = TRUE)
+# generates a list of ggplot graphs, one for each region
+p <- plot_indices(indices = i,
+                  add_observed_means = TRUE) # optional argument to show raw observed mean counts
 ```
 
 Note that we get one plot for each region and regional category, in this
@@ -421,33 +477,70 @@ We can plot them individually by pulling a plot out of the list
 print(p[["continent"]])
 ```
 
-Next we can calculate the specific trends based on these indices
+Each of these plots is a [ggplot2](https://github.com/tidyverse/ggplot2) object that can be modified like any other. For example, you can modify titles or axes.
+```{r, fig.cap = "", fig.alt = "Population trajectory graph, modified to show only the last 20 years of the time-series and remove the title", fig.width = 8, fig.asp = 0.8}
+p1_mod <- p[["continent"]]+
+  coord_cartesian(xlim = c(2000,NA))+ #subset of years
+  labs(title = "") # remove the title
+print(p1_mod)
+```
+
+
+### Trends - predictions of mean rates of change over time
+
+Next we can calculate the long-term trends based on these indices. Note all trends from bbsBayes2 models are derived from summaries of indices through time or between two points in time. 
 
 ```{r}
 t <- generate_trends(i)
+t
 ```
 
-We can plot these on a map
+We can generate trends for different periods of time, using any combination of a starting year `min_year` and ending year `max_year`.
+
+```{r}
+t_10 <- generate_trends(i,
+                        min_year = 2011,
+                        max_year = 2021)
+t_10
+```
+
+
+We can plot trend estimates on a map to visualise the spatial patterns in population change.
 
 ```{r, fig.cap = "", fig.alt = "Population trend map showing strata with increasing trends in blues and decreasing trends in reds.", fig.width = 8, fig.asp = 0.8}
-plot_map(t)
+trend_map <- plot_map(t)
+print(trend_map)
 ```
+
+The maps are also [ggplot2](https://github.com/tidyverse/ggplot2) objects that can be modified like any other. For example, you can zoom into a section of the map.
+
+```{r, fig.cap = "", fig.alt = "Population trend map zoomed in to show just the relevant regions", fig.width = 8, fig.asp = 0.8}
+strata_with_data <- t$meta_strata # meta data in trend object - strata information
+# load the original strata map used in the model fitting
+# then filter to just the strata with data for this species
+data_bounding_box <- load_map(stratify_by = t$meta_data$stratify_by) %>% 
+  filter(strata_name %in% strata_with_data$strata_name) %>% 
+  sf::st_bbox() # create a bounding box for x and y limits
+
+t_mod <- trend_map +
+  coord_sf(xlim = data_bounding_box[c("xmin","xmax")],
+           ylim = data_bounding_box[c("ymin","ymax")])
+  
+print(t_mod)
+
+```
+
 
 ###Example models
 
 A model with a suitable number of iterations takes a long time to run
-(the Barn Swallow model below took 54 hours). Below are three full
+(the Barn Swallow model, a species with many data and many strata, took 54 hours). Below are three full
 models run with 1000 iterations and four chains. Use these to test out
 some of the features!
 
 Download the Barn Swallow GAMYE spatial model:
 <https://github.com/L-Daly/bbsbae/releases/tag/trial> click
-BASW_spatial_gamye.zip. Download the Hepatic Tanager GAMYE model, by
-clicking "Download" here: \<
-<https://github.com/L-Daly/bbsbae/blob/25eeb0f974bcdf832b8375422a9ac57c046c62c2/data/HETA_bbs_usgs_gamye.rds>
-. Download the Hepatic Tanager model stratified by latitude/longitude by
-clicking "Download" here:
-<https://github.com/L-Daly/bbsbae/blob/25eeb0f974bcdf832b8375422a9ac57c046c62c2/data/HETA_latlong_gam.rds>.
+BASW_spatial_gamye.zip. 
 
 An example of the output from applying the spatial gamye model to Barn
 Swallow data.
@@ -473,16 +566,14 @@ BARS_index_plots <- plot_indices(BARS_indices,
                                  add_observed_means = TRUE,
                                  add_number_routes = TRUE)
 
-BARS_index_plots[["continent"]]
+BARS_continent <- BARS_index_plots[["continent"]]
+print(BARS_continent)
 ```
 
 Above, we've plotted the full annual indices (i.e., the population
-trajectory) from the gamye model, which include the smooth component and
-the annual fluctuations. We can also generate smooth annual indices
-representing the spline-based smooth component of the population
-trajectory, after removing the random annual fluctuations. These smooth
-trajectories are useful for trend estimates that vary less from
-year-to-year.
+trajectory) from the gamye model. In the *gamye* and *slope* models, the population trajectory can be decomposed into two components: the smooth component and the annual fluctuations around the smooth. The default estimate of the population trajectory uses the *full* version of the annual indices (`generate_indices(alternate_n = "n")`). For the gamye model the alternate population trajectory that represents only the semi-parametric smooth component can be accessed by choosing the `generate_indices(alternate_n = "n_smooth")` option. For the slope model the alternate population trajectory that represents the linear smooth only can be accessed by choosing the `generate_indices(alternate_n = "n_slope")` option. These smooth
+trajectories may be useful for trend estimates that vary less from
+year-to-year (gamye model) or for an overall linear trend from a slope model applied to a short time-frame (it's probably unlikely that a linear smooth is reasonable for long periods of time).
 
 ```{r, fig.cap = "", fig.alt = "Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red", fig.width = 8, fig.asp = 0.8}
 BARS_smooth_indices <- generate_indices(BARS,
@@ -493,33 +584,22 @@ BARS_trend_map
 
 ```
 
-We also have results for Hepatic Tanager from two different models and
-using different spatial stratifications.
+We can also add the smoothed annual indices to the plots of the full annual indices from above, taking advantage of the ggplot2 functions. 
 
-```{r, fig.cap = "", fig.alt = "Population trend map for Hepatic Tanager from the gamye model with usgs_bbs stratification, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red", fig.width = 8, fig.asp = 0.8}
+```{r, fig.cap = "", fig.alt = "Population trajectory graph for Barn Swallow, same as above plus the smoothed annual indices are added as a grey line", fig.width = 8, fig.asp = 0.8}
 
-#Next we have a Hepatic Tanager gamye model
-HETA_gamye<- readRDS("output/HETA_bbs_usgs_gamye.rds")
-HETA_gamye_indices <- generate_indices(HETA_gamye)
-HETA_gamye_trends <- generate_trends(HETA_gamye_indices)
-HETA_gamye_map <- plot_map(HETA_gamye_trends)
-HETA_gamye_map
+smooth_cont_indices <- BARS_smooth_indices$indices %>% 
+  filter(region == "continent")
+BARS_continent_both <- BARS_continent +
+  ggplot2::geom_line(data = smooth_cont_indices,
+                     ggplot2::aes(x = year, y = index),
+                     alpha = 0.5,
+                     linewidth = 1)+
+  ggplot2::labs(subtitle = "grey line represents the smoothed annual indices")
 
+print(BARS_continent_both)
 ```
 
-```{r, fig.cap = "", fig.alt = "Population trend map for Hepatic Tanager from the gam model with latlong stratification, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red", fig.width = 8, fig.asp = 0.8}
-
-#lastly we have a Hepatic Tanager GAM model, stratified to latitude and longitude
-
-HETA_gam_latlong <- readRDS("output/HETA_latlong_gam.rds")
-HETA_gam_latlong_indices <- generate_indices(HETA_gam_latlong)
-HETA_gam_latlong_trends <- generate_trends(HETA_gam_latlong_indices)
-HETA_gam_latlong_map <- plot_map(HETA_gam_latlong_trends)
-HETA_gam_latlong_map
-```
-
-
-And there you have it!
 
 Check out the other [articles](/index.html) to explore more advanced
 usage or the [function reference](../reference/) to see what functions

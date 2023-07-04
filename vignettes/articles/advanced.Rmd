@@ -11,171 +11,43 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE,
-  echo=FALSE
+  # For pre-compiling and pkgdown (relative to pkg home)
+  fig.path = "vignettes/articles/figures/advanced_",
+  dpi = 150
 )
+
+
 ```
 
 ```{r, message = FALSE}
-library(bbsBayes2)
-library(dplyr)
-library(ggplot2)
-```
-
-## Basic Status and Trend Analyses
-
-bbsBayes2 provides functions for every stage of Breeding Bird Survey data
-analysis.
-
-### Data Retrieval
-
-You can download BBS data by running `fetch_bbs_data`. This will save it to a
-package-specific directory on your computer. You must agree to the terms and
-conditions of the data usage before downloading. You only need run this function
-once for each annual update of the BBS database.
-
-``` {r, eval = !bbsBayes2::have_bbs_data()}
-fetch_bbs_data()
-```
-
-### Data Preparation
-
-#### Stratification
-
-Stratification plays an important role in trend analysis. Use the `stratify()`
-function for this job. Set the argument `by` to stratify by the following
-options:
-
-- `bbs_cws` -- Political region X Bird Conservation region intersection 
-  (Canadian Wildlife Service [CWS] method)
-- `bbs_usgs` -- Political region X Bird Conservation region intersection 
-  (United Status Geological Survey [USGS] method)
-- `bcr` -- Bird Conservation Region only
-- `state` -- Political Region only
-- `latlong` -- Degree blocks (1 degree of latitude X 1 degree of longitude)
-
-```{r}
-s <- stratify(by = "bbs_usgs", species = "Hepatic Tanager")
-```
-
-#### Stan Data
-
-Stan models require the data to be sent as a list depending on how the model is
-set up. `prepare_data()` subsets the stratified data based on species and
-wrangles relevant data to use for Stan models.To speed up the process we'll run the model on 10 years of data, the minimum amount of time for reliable estimates.
-
-```{r}
-p <- prepare_data(s, min_year = 2009,max_year = 2019)
-```
-
-#### Model Data
-
-To prepare to run the model, initialization parameters and other model
-parameters need to be calculated based on the model and model variant chosen.
-These are calculated in a separate step to provide more information for
-troubleshooting as well as to allow more advanced customizations of these
-parameters.
-
-```{r}
-md <- prepare_model(p, model = "gamye", heavy_tailed = TRUE)
-```
-
-
-### MCMC
-
-Once the data has been prepared for Stan, the model can be run. This example has a sub-optimal number of iterations and chains. We recommend using the defaults, 4 chains, 1000 iterations for both warmup and sampling, and assessing convergence. Note that this step usually takes a long time (e.g., 6-12 hours, or even days depending on the species and/or model).
-
-```{r, eval = FALSE}
-mod <- run_model(md, output_basename = "cws_base_gamye",
-                 iter_sampling = 100, iter_warmup = 500, chains = 2)
-```
-
-Alternatively, you can set how many iterations for sampling or warm up steps, 
-how many chains, and how many to run in parallel.
-
-``` {r, eval = FALSE}
-mod <- run_model(md, output_basename = "cws_base2_gamye",
-                 iter_sampling = 1000, iter_warmup = 1000, 
-                 chains = 4, parallel_chains = 2)
-```
-
-```{r, echo = FALSE}
-library(piggyback)
-pb_download("iris.tsv.gz", 
-            repo = "cboettig/piggyback-tests", 
-            dest = tempdir())
+  library(bbsBayes2)
+  library(dplyr)
+  library(ggplot2)
+  library(sf)
+  library(patchwork)
+  library(bayesplot) #to visually check convergence
 
 ```
 
+# Some more advanced options
 
-The `run_model()` function generates a large object that includes the posterior
-draws, convergence information, data, etc. By default, this a copy of this
-object is saved as an RDS file to your model directory (working directory unless
-`output_dir` is specified.
+For most of these examples, we will load
 
-You can load this in with
-```{r, eval = FALSE}
-readRDS("cws_base_gamye.rds")
-```
+## Posterior Predictive Checks
 
-
-### Convergence
-
-Convergence should be checked for all models, and users should be concerned if Rhat >1.01 or ess_bulk <400. Convergence can also be checked visually, all chains should have similar distributions. If convergence fails, re-running the model with a longer burn-in and/or more posterior iterations or greater thinning rates may improve convergence. The seriousness of these convergence failures is something the user must interpret for themselves. In some cases some parameters of the model may not be separately estimable, but if there is no
-direct inference drawn from those separate parameters, their convergence may not
-be necessary. If all or the vast majority of the n parameters have converged,
-then inference on population trajectories and trends from the model are
-reliable.
-
-Download the Hepatic Tanager model stratified by latitude/longitude by clicking "Download" here: <https://github.com/L-Daly/bbsbae/blob/25eeb0f974bcdf832b8375422a9ac57c046c62c2/data/HETA_latlong_gam.rds>.
-
-```{r, eval = FALSE}
-library(bayesplot) #to visually check convergence
-
-#load our Hepatic Tanager model, or create your own to test convergence
-mod<-readRDS("HETA_latlong_gam.rds")
-
-#Or run a model with fewer chains and iterations, for a 10 year period:
-mod<-stratify(by="bbs_cws",species="Hepatic Tanager")%>%
-  prepare_data(min_year=2009,max_year=2019)%>%
-  prepare_model(model_variant = "hier",model = "gam")%>%
-  run_model(chains=2, iter_warmup = 500, iter_sampling = 100)
-
-#get convergence information
-conv<-get_convergence(model_output = mod)
-head(conv)
-
-#get summaries
-summary(conv)
-
-#visually check convergence
-#create an array of mcmc runs
-post<-as.array(mod$model_fit$draws())
-
-##see model parameters
-get_model_vars(mod)
-
-#create density plots for any parameters, coloured by chain number
-mcmc_dens_overlay(post,pars=c("STRATA","sdnoise","retrans_obs","eta","nu","sdste"))
-
-```
-<img src= "figures/mcmc_density-1.png" />
-
-### Posterior Predictive Checks
-
-Posterior predictive checks are best done in R, after fitting the model. It is certainly possible to modify the Stan model to include posterior predictions of the individual BBS counts. However, using Stan to generate these predicted counts will almost double the size of the saved model object. 
-To generate the posterior distributions of predicted counts, you will need to extract the posterior samples of the parameter `E` in the bbsBayes2 models. Also, if you have used the negative binomial error distribution, then you will also need to extract the posterior samples for the parameter `phi` (the inverse negative binomial dispersion parameter).
+Posterior predictive checks are best done in R, after fitting the model. It is certainly possible to modify the Stan code to include posterior predictions of the individual BBS counts. However, using Stan to generate these predicted counts will almost double the size of the saved model object. 
+To generate the posterior distributions of predicted counts, you will need to extract the posterior samples of the parameter `E` in the bbsBayes2 models. Also, if you have used the negative binomial error distribution, then you will also need to extract the posterior samples for the parameter `phi` (the inverse negative binomial dispersion parameter). In the [Stan negative binomial distribution](https://mc-stan.org/docs/functions-reference/neg-binom-2-log.html), $\phi$ is the same parameter as `size` in `base::rnbinom()`, with arguments `mu = exp(E), size = phi`. 
 Here's an example, using the fitted model object for the Hepatic Tanager data fit to the `first_dif` model using the `latlong` stratification. 
 
 ```{r}
-heta_usgs_gamye <- readRDS("output/HETA_bbs_usgs_gamye.rds")
+STFL_gamye_spatial <- readRDS("output/4430_gamye_spatial.rds")
 
 # tibble with one row for each posterior draw and one column for each parameter (i.e., each count)
-E <- posterior::as_draws_df(heta_usgs_gamye$model_fit) %>% 
+E <- posterior::as_draws_df(STFL_gamye_spatial$model_fit) %>% 
   select(matches("^E([[:punct:]])"),
          .draw) 
 # tibble with 1 column for phi and one row for each posterior draw
-phi <- posterior::as_draws_df(heta_usgs_gamye$model_fit)%>% 
+phi <- posterior::as_draws_df(STFL_gamye_spatial$model_fit)%>% 
   select(phi,
          .draw)
 
@@ -197,170 +69,71 @@ y_rep <- E %>%
 
 y_rep <- posterior::as_draws_matrix(y_rep)
 
-overplot <- bayesplot::ppc_ecdf_overlay(y = heta_usgs_gamye$raw_data$count,
+ppc_overplot <- bayesplot::ppc_ecdf_overlay(y = STFL_gamye_spatial$raw_data$count,
                                     yrep = y_rep)
-overplot <- overplot +
-  coord_cartesian(xlim = range(heta_usgs_gamye$raw_data$count))
+ppc_overplot <- ppc_overplot +
+  coord_cartesian(xlim = range(STFL_gamye_spatial$raw_data$count))
 
-overplot
+print(ppc_overplot)
 
 
 ```
 
 
-
-## Model Predictions
-
-There are a number of tools available to summarize and visualize the posterior predictions from the model. 
-
-### Annual Indices of Abundance and Population Trajectories 
-
-The main monitored parameters are the annual indices of relative abundance within a stratum (i.e., parameters `n[strata,year]`). The time-series of these annual indices form the estimated population trajectories.
-
-```{r}
-indices <- generate_indices(mod)
-```
-
-By default, this function generates estimates for the continent (i.e., survey-wide) and for the individual strata. However, the user can also select summaries for composite regions (regions made up of collections of strata), such as countries, provinces/states, Bird Conservation Regions, etc. For display, the posterior medians are used for annual indices (instead of the posterior means) due to the asymetrical distributions caused by the log-linear retransformation.
-
-```{r}
-indices <- generate_indices(mod,
-                            regions = c("continent","stratum"))          #also"country","prov_state","bcr","bcr_by_country"
-#plot the indices
-p<-plot_indices(indices)
-pp<-patchwork::wrap_plots(p, ncol = 3)&theme(axis.title.y = element_blank()) 
-#make a multiplot, without y axis labels
-
-gt<-patchwork::patchworkGrob(pp)
-#get the plot as a grob so we can...
-gridExtra::grid.arrange(gt,left="Annual index of abundance /n (mean count)")
-#add one y axis!
-
-#or we could simply
-patchwork::wrap_plots(p, ncol = 3) #with multiple y axis titles
-```
-<img src = "figures/plot_indices-1.png" />
-
-### Population Trends
-
-Population trends can be calculated from the series of annual indices of abundance. The trends are expressed as geometric mean rates of change (%/year) between two points in time. $Trend = (\frac {n[minyear]}{n[maxyear]})^{(1/(maxyear-minyear))}$
-
-```{r}
-trends <- generate_trends(indices = indices)
-```
-
-The `generate_trends()` function returns a dataframe with 1 row for each unit of the region-types requested in the `generate_indices()` function (i.e., 1 for each stratum, 1 continental, etc.). The dataframe has at least 27 columns that report useful information related to each trend, including the start and end year of the trend, lists of included strata, total number of routes, number of strata, mean observed counts, and estimates of the % change in the population between the start and end years.
-
-The `generate_trends()` function includes some other arguments that allow the user to adjust the quantiles used to summarize uncertainty (e.g., interquartile range of the trend estiamtes, or the 67% CIs), as well as include additional calculations, such as the probability a population has declined (or increased) by \> X%.
-
-```{r}
-trends <- generate_trends(indices = indices,
-                          prob_decrease = c(0, 25, 30, 50),
-                          prob_increase = c(0, 33, 100))
-```
-
-## Visualizing Predictions
-
-### Population Trajectories
-
-Generate plots of the population trajectories through time. The `plot_indices()` function produces a list of ggplot figures that can be combined into a single pdf file, or printed to individual devices.
-
-```{r}
-tp <- plot_indices(indices = indices,
-                   add_observed_means = TRUE)
-
-tp[[1]]
-```
-
-<img src="figures/HETA_cont-1.png"/>
-
-```{r}
-tp[[2]]
-```
-
-<img src="man/figures/HETA_103-1.png"/> etc.
-
-### Trend Maps
-
-The trends can be mapped to produce strata maps coloured by species population trends.
-
-```{r}
-mp <- plot_map(trends, col_viridis = FALSE)
-mp
-```
-
-<img src="man/figures/HETA_trend-1.png"/>
-
-### Geofacet Trajectories
-
-Download the Barn Swallow GAMYE spatial model: <https://github.com/L-Daly/bbsbae/releases/tag/trial> click BARS_spatial_gamye.zip. 
-```{r, eval = FALSE}
-#load a model with prov_state in the regions to geofacet trajectories
-#read the RDS file from bbsBayes2 github
-library(readr)
-
-bars <- read_rds(unzip(
-  "BARS_spatial_gamye.zip",
-  "BARS_spatial_gamye.rds"))
-
-indices<-generate_indices(bars,regions=c("prov_state","country","stratum"))
-trends<-generate_trends(indices)
-gf <- plot_geofacet(indices=indices,
-                    trends = trends,
-                    multiple = TRUE,
-                    slope = FALSE)
-
-print(gf)
-```
-
-<img src="man/figures/BARS_geofacet.png"/>
 
 ## EXAMPLE - Replicating the CWS status and trend estimates (2018 version onwards)
 
-The CWS analysis, as of the 2018 BBS data-version, uses the GAMYE model. It also monitors two estimates of the population trajectory: \* one for visualizing the trajectory that includes the annual fluctuations estimated by the year-effects "n" \* and another for calculation trends using a trajectory that removes the annual fluctuations around the smooth "n_smooth".
+The CWS analysis, as of the 2018 BBS data-version, uses the gamye model. 
 
-The full script to run the CWS analysis for the 2018 BBS data version is accessible here: <https://github.com/AdamCSmithCWS/CWS_BBS_2021_Analyses>
+The full script to run the CWS analysis for the 2021 BBS data version is accessible [here](https://github.com/AdamCSmithCWS/CWS_BBS_2021_Analyses).
+Although these particular analyses were run before bbsBayes2 was released, the basic workflow can be replicated in bbsBayes2 for a given species as follows.
 
-``` {.r}
 
-species.eng = "Hepatic Tanager"
+```{r, eval=FALSE}
+
+species.eng = "Pacific Wren"
 
 stratified_data <- stratify(by = "bbs_cws",species=species.eng) #same as USGS but with BCR7 as one stratum and PEI and Nova Scotia combined into one stratum
 
+# to be included a stratum must have at least 3 routes on which the species has been observed
+# and at least one of those routes must have at least 2 years of observations
 d<- prepare_data(strata_data = stratified_data,
-                               min_max_route_years = 2
-                               )
+                 min_n_routes = 3,
+                 min_max_route_years = 2)
 
 m<-prepare_model(
   prepared_data = d,
   model="gamye",
-  heavy_tailed = TRUE,
-  model_variant="hier"
+  model_variant="hier", # non-spatial version used in 2021
+  use_pois = FALSE #negative binomial error distribution
 )
 
 mod_cws <- run_model( model_data = m,
-                  refresh=100,
+                  refresh=500,
                       iter_sampling = 1000,
                       iter_warmup = 1000,
                      chains = 3,
                      parallel_chains = 3)
 ```
 
-## EXAMPLE - Replicating (approximately) the earlier USGS status and trend estimates (2011 - 2017 data versions)
+## EXAMPLE - Similar analyses to the USGS status and trend estimates 2021 data version
 
-The USGS analysis, from 2011 through 2017, uses the SLOPE model. Future analyses from the USGS will likely use the first difference model (see, Link et al. 2017 <https://doi.org/10.1650/CONDOR-17-1.1>)
+The USGS analysis is not run using the bbsBayes2 package, nor have the analysts behind the USGS analyses confirmed that this example will replicate their analyses. Readers should be aware that this this example may not replicate the published version. 
 
-NOTE: the USGS analysis is not run using the bbsBayes2 package, and so this analysis may not exactly replicate the published version. However, any variations should be very minor.
+The USGS analyses, from 2018, uses one of two different models (either slope or first-difference) and with one of two different error distributions (Poisson with either heavy-tailed overdispersion or normally distributed overdispersion) (see, [Link et al. 2017](https://doi.org/10.1650/CONDOR-17-1.1) and [Link et al. 2020](https://doi.org/10.1002/eap.2137) for more details). 
 
-``` {.r}
+Here we provide data preparation and model options to approximate the 2021 USGS bbs analyses for a species that uses the heavy-tailed Poisson error distribution and the first-difference model. 
 
-species.eng = "Hepatic Tanager"
+```{r, eval=FALSE}
+
+species.eng = "Pacific Wren"
 stratified_data <- stratify(by = "bbs_usgs",species=species.eng) 
 #BCR by province/state/territory intersections
 
 d <- prepare_data(strata_data = stratified_data,
-                               min_max_route_years = 1,
-                               ) 
+                  min_n_routes = 3,
+                  min_max_route_years = 1) #slight difference in minimum data cut-offs
+
 m<-prepare_model(prepared_data = d,
   model="first_diff",
   model_variant = "nonhier", #no sharing of information among strata on abundance or trends
@@ -369,228 +142,28 @@ m<-prepare_model(prepared_data = d,
  calculate_nu = TRUE     # estimated the df parameter for the heavy-tailed t-distribution
 )
 
+# MCMC settings for the usgs analyses are not published, nor would they be relevant here
+# because the official analyses use JAGS and Gibbs Sampling and not Stan's HMC algorithm
+# mod <- run_model(model_data = m,
+#                  ...) 
 
-mod <- run_model(model_data = m,
-                      iter_sampling = 1000,
-                      iter_warmup = 1000,
-                      chains = 3,
-                     parallel_chains = 3)
 ```
 
 ## Advanced options and customized models
 
-## Alternative Models
 
-The package has (currently) four status and trend models that differ somewhat in the way they model the time-series of observations. The four model options are slope, gam, gamye, and firstdiff. <img src="man/figures/AMKE_all.png"/>
+## Alternate error distributions
 
-### slope
+Error distributions in the bbsBayes2 models can be accessed using a combination of three arguments in the `?prepare_model()` function. 
 
-The slope option estimates the time series as a log-linear regression with random year-effect terms that allow the trajectory to depart from the smooth regression line. It is the model used by the USGS and CWS to estimate bbs trends since 2011. The basic model was first described in 2002 (Link and Sauer 2002; [https://doi.org/10.1890/0012-9658(2002)083[2832:AHAOPC]2.0.CO;2](https://doi.org/10.1890/0012-9658(2002)083%5B2832:AHAOPC%5D2.0.CO;2){.uri}) and its application to the annual status and trend estimates is documented in Sauer and Link (2011; <https://doi.org/10.1525/auk.2010.09220>) and Smith et al. (2014; <https://doi.org/10.22621/cfn.v128i2.1565>).
+### Poisson vs negative binomial
 
+For all of the models, the BBS counts on a given route and year can be modeled using either an over-dispersed Poisson distribution or a negative binomial distribution. This selection is controlled using the `use_pois` argument. The negative binomial is the default `use_pois = FALSE`, because it greatly reduces memory requirements and the size of the object created using `run_model()`. If using the negative binomial distribution, no other arguments need to be set.
 
-Here we create a model for a 10 year period, using the minimum number of iterations. We recommend using the defaults, 4 chains, 1000 iterations for both warmup and sampling, and assessing convergence.
-``` {.r}
+If a user wishes to use the over-dispersed Poisson distribution to model the error distribution of BBS counts, then set `prepare_model(..., use_pois = TRUE)`. This approach generates a count-level random effect to account for extra-Poisson variance, following the approaches used in most of the official BBS analyses. These count-level parameter estimates are the reason for the increase in memory requirements and object size when fitting the model (i.e., they require monitoring an additional parameter for every observation in the dataset). If using the Poisson option, there are two additional arguments that the user can select to control some of the specifics of the over-dispersion. The first argument allows the user to select between a normal distribution (`heavy_tailed = FALSE`) to model the count-level random effects or the default heavier-tailed t-distribution (`heavy_tailed = TRUE`). Finally, if the heavy-tailed t-distribution is selected, then the user can choose to either estimate the degrees of freedom for the t-distribution `calculate_nu = TRUE` letting the model estimate the heaviness of the tails, or to have the t-distribution fixed at 3 `calculate_nu = FALSE` implying very heavy-tails relative to the normal. We have used the `calculate_nu = FALSE` as the default because for many species estimating the degrees of freedom greatly increases the model run-times. 
 
-#a quick slope model, for a 10 year period
-strat<- stratify(by="bbs_usgs",species="Hepatic Tanager")
 
-data<- prepare_data(strat,min_year=2009, max_year= 2019)
-prep<- prepare_model(data,model = "slope",use_pois = TRUE)
-  #for prepare_model must be "slope" and use_pois=TRUE
 
-#quick model, we recommend using the defaults, 4 chains, 1000 iterations for both warmup #and sampling, and assessing convergence
-slope_mod<-run_model(prep,chains=2,iter_warmup = 500,
-iter_sampling = 100,save_model = FALSE)
-
-
-slope_ind <- generate_indices(model_output = slope_mod,
-                              regions = c("continent")) 
-                              
-
-slope_plot<-plot_indices(indices = slope_ind,
-                          add_observed_means = TRUE)
-
-```
-
-<img src="figures/HETA_slope-1.png"/>
-
-### gam
-
-The gam option models the time series as a semiparametric smooth using a Generalized Additive Model (GAM) structure. See <https://github.com/AdamCSmithCWS/Smith_Edwards_GAM_BBS> for more information (full publication coming soon). 
-
-Here we create a model for a 10 year period, using the minimum number of iterations. We recommend using the defaults, 4 chains, 1000 iterations for both warmup and sampling, and assessing convergence.
-
-``` {.r}
-
-stratified_data <- stratify(by = "bbs_usgs",species="Scissor-tailed Flycatcher")
-    
-data_gam <- prepare_data(stratified_data, 
-                              min_year=2009, max_year=2019)
-                              
-gam_prep<-prepare_model(data_gam,model="gam")
-
-#quick model with too few iterations, we recommend using the defaults, 4 chains, 1000 iterations for both warmup and sampling, and assessing convergence.
-gam_mod <- run_model(gam_prep,save_model=FALSE, iter_warmup=500,iter_sampling=100, chains=2)
-                               
-gam_ind <- generate_indices(gam_mod,regions = c("continent"))
-  
-plot_indices(gam_ind)    
-```
-
-<img src="man/figures/GAM_ind-1.png"/>
-
-### gamye
-
-The gamye option includes the semiparametric smooth used in the gam option, but also includes random year-effect terms that track annual fluctuations around the smooth. This is the model that the Canadian Wildlife Service is now using for the annual status and trend estimates. 
-
-Here we create a model for a 10 year period, using the minimum number of iterations. We recommend using the defaults, 4 chains, 1000 iterations for both warmup and sampling, and assessing convergence.
-
-``` {.r}
-
-ye_strat<- stratify(by="bbs_usgs",species="Hepatic Tanager")
-ye_dat<- prepare_data(ye_strat,min_year=2009, max_year=2019)
-ye_prep<-  prepare_model(ye_dat,model = "gamye")
-ye_mod<- run_model(ye_prep, chains=3,iter_warmup = 100,iter_sampling = 500,save_model = FALSE)
-
-gamye_ind <- generate_indices(model_output=ye_mod,
-                              regions = c("continent"))
-gamye_plot = plot_indices(indices = gamye_ind,
-                          add_observed_means = TRUE)
-
-print(gamye_plot)
-```
-
-<img src="man/figures/gamye_plot-1.png"/>
-
-### firstdiff
-
-The firstdiff option models the time-series as a random-walk from the first year, so that the first-differences of the sequence of year-effects are random effects with mean = 0 and an estimated variance. This model has been described in Link et al. 2017 <https://doi.org/10.1650/CONDOR-17-1.1>
-
-Here we create a model for a 10 year period, using the minimum number of iterations. We recommend using the defaults, 4 chains, 1000 iterations for both warmup and sampling, and assessing convergence.
-
-``` {.r}
-
-stratified_data <- stratify(by = "bbs_usgs",species="Scissor-tailed Flycatcher")
-    
-data_first<- prepare_data(stratified_data, 
-                              min_year = 2009, max_year=2019)
-                              
-first_prep<-prepare_model(data_gam_first,model="first_diff")
-
-#quick model with too few iterations
-first_mod <- run_model(first_prep,save_model=FALSE, iter_warmup=500,iter_sampling=100, chains=2)
-                               
-first_ind <- generate_indices(gamye_mod,regions = c("continent"))
-  
-plot_indices(first_ind)   
-```
-
-<img src="man/figures/first_ind-1.png"/>
-
-## Alternate extra-Poisson error distributions
-
-For all of the models, the BBS counts on a given route and year are modeled as Poisson variables with over-dispersion. The over-dispersion approach used here is to add a count-level random effect that adds extra variance to the unit variance:mean ratio of the Poisson. In the `prepare_model` function, the user can choose between two distributions to model the extra-Poisson variance:
-
--   the default normal distribution (`heavy_tailed = FALSE`)
--   an alternative heavy-tailed t-distribution. (`heavy_tailed = TRUE`)
-
-The heavy-tailed version is well supported for many species, particularly species that are sometimes observed in large groups. Note: the heavy-tailed version can require significantly more time to converge (\~2-5 fold increase in processing time).
-
-Here we create a model for a 10 year period, using the minimum number of iterations. We recommend using the defaults, 4 chains, 1000 iterations for both warmup and sampling, and assessing convergence.
-
-``` {.r}
-
-strat<-stratify(by="bbs_usgs",species="Hepatic Tanager")
-d<-prepare_data(strat,min_year=2009, max_year=2019)
-m<-prepare_model(d,model = "first_diff",heavy_tailed = TRUE)
-mod<-run_model(model_data=m,chains=2,iter_warmup = 500,iter_sampling = 100,save_model = FALSE)
-
-
-#get heavy tailed plots
-heavy_t<-mod %>%
-generate_indices(regions="prov_state")
-
-plot_indices(heavy_t)
-
-```
-
-<img src = "figures/heavy_t-1.png">
-
-## Alternate Annual Indices and Resulting Trends
-
-In all the models, the default measure of the annual index of abundance (the yearly component of the population trajectory) is the derived parameter "n". The `run_model` function monitors n by default, because it is these parameters that form the basis of the estimated population trajectories and trends.
-
-### Alternate retransformations
-
-There are two ways of calculating these annual indices for each model. The two approaches differ in the way they calculate the retransformation from the log-scale model parameters to the count-scale predictions. The user can choose using the following arguments in `run_model()` and `generate_indices()`.
-
--   the default, estimates the mean of the expected counts from the existing combinations of observers and routes in a given stratum and year. This approach retransforms an annual prediction for every observer-route combination in the stratum and then averages across those predictions.
-
-``` {.r}
-
-mod <- run_model(... ,
-                 ... )
-indices <- generate_indices(... ,
-                            alternate_n = "n",
-                            ... )
-                            #or "n2", "n_smooth", "n_slope"
-```
-
--   the alternative, alternate_n = "n2", is actually the standard approach used in the USGS status and trend estimates. It estimates the the expected count from a new observer-route combination, assuming the distribution of observer-route effects is approximately normal. This approach uses a log-normal retransformation factor that adds half of the estimated variance of observer-route effects to the log-scale prediction for each year and stratum, then retransforms that log-scale prediction to the count-scale. This is the approach described in Sauer and Link (2011; <https://doi.org/10.1525/auk.2010.09220>).
-
-``` {.r}
-mod <- run_model(... ,
-                  ... )
-indices <- generate_indices(... ,
-                            alternate_n = "n2",
-                            ... )
-```
-
-The default approach alternate_n = "n" slightly underestimates the uncertainty of the annual indices (slightly narrower CI width). However, we have chosen this approach as the default because:
-
--   it much more accurately represents the observed mean counts, and so allows for an intuitive interpretation of the annual indices;
--   it more accurately represents the relative contribution of each stratum to the combined (e.g., continental or national) population trajectory and trends. The alternative n2 approach tends to overestimate the observed mean counts, and that bias varies among strata, which affects each strata's contribution to the combined regional estimates.
--   the small underestimate in the uncertainty of the annual indices, does not affect the uncertainty of the trend estimates.
-
-#### For example, in the figures below, the predicted annual indices (blue line and CI-band) are much more similar to the observed average counts (grey dots) for the Default n approach.
-
-<img src="man/figures/Alternate_n_all.png"/>
-
-### Decomposing the population trajectories for two of the models
-
-For two of the main model types `"slope" and "gamye"`, users can choose two different ways to calculate trajectories and population trends. With these two model types, the population trajectories are composed of two largely independent components, a long-term smooth and the random annual fluctuations around that smooth. Because the two components are largely independent, the population trajectory can be decomposed.\
-The default approach is to include the annual fluctuations around the linear (`slope`) or GAM-smooth (`gamye`) components of the trajectories. These trend estimates are more comprehensive in that they include the full estimated trajectory, but they will vary more between subsequent years (e.g., more variability between a 1970-2017 trend and a 1970-2018 trend), because they include the effects of the annual fluctuations.
-
-``` {.r}
-mod <- run_model(... ,
-                   ... )
-indices <- generate_indices(... ,
-                            alternate_n = "n",
-                            ... )
-```
-
-An alternative approach is to decompose the full trajectory and to exclude the annual fluctuations around the linear (`slope`) or smooth (`gamye`) components. In this case, the predicted trends will be much more stable between subsequent years. For the CWS status and trend analyses, the visualized population trajectories are calculated using the full trajectory, and the trend estimates are derived from the decomposed trajectory using only the smooth component.
-
-``` {.r}
-mod <- run_model(... ,
-                  ... )
-indices_visualize <- generate_indices(... ,
-                                      alternate_n = "n",
-                                      ... )
-indices_trend_calculation <- generate_indices(... ,
-                                              alternate_n = "n_smooth",
-                                              ... )
-```
-
-For example, the figure below (produced using a modified version of the standard plotting functions), shows the two kinds of trajectories for Pacific Wren from the 2018 CWS analysis. The light-blue trajectory is the visualized trajectory, including the yearly fluctuations. The orange trajectory is the one used for trend calculations, which includes only the GAM-smooth component. For the kinds of broad-scale status assessments that form the primary use of the published estimates of trends, this decomposition is a particularly useful feature of these two models.
-
-<img src="man/figures/PAWR_Canada.png"/>
-
-#### The figure below provides another example of the benefits of removing the year-effect annual fluctuations when calculating trends.
-
-Each point on the graph represents the 10-year trend estimate for Wood Thrush in Canada, ending in a given year (e.g., the points at 2015 represent the species national population trend from 2005-2015). The red and green points are the trend estimates from the default trend estimates derived from the full population trajectories for the gamye and slope models. The Blue points represent the trends calculated using the decomposed trajectory of the gamye model, including only the smooth component. When the annual fluctuations are included (SLOPE and GAMYE including Year Effects), the population trends surpass the IUCN trend-criterion, in some years (e.g., 2011) suggesting that if assessed in those years the species would be listed as Threatened (trend in the orange region). However, a more stable trend estimate from the decomposed trajectory (GAMYE - Smooth only in Blue) shows that the species is probably best thought of as in decline, but not surpassing the Threatened criterion.
-
-<img src="man/figures/WOTH_status_assessment.png"/>
 
 ## Alternate Measures of Trend and Population Change
 
@@ -598,13 +171,13 @@ The `generate_trends()` function produces much more than just the trend estimate
 
 ### Slope Trends
 
-The default trend calculation is an interval-specific estimate of the geometric mean annual change in the population. $Trend = (\frac {n[Minyear]}{n[Maxyear]})^{(1/(Maxyear-Minyear))}$ It relies on a comparison of the annual indices in the first and last years of the trend period to quantify the mean rate of population change. However, it ignores the pattern of change between the two end-points.
+The default trend calculation is an interval-specific estimate of the geometric mean annual change in the population. $Trend = (\frac {n[min_year]}{n[max_year]})^{(1/(max_year-min_year))}$ We refer to these as *end-point trends*. They rely on a comparison of the annual indices in the first and last years of the trend period to quantify the mean rate of population change. However, it ignores the pattern of change between the two end-points. The gamye model partly accounts for the influence of the annual fluctuations in the min_year and max_year when generating trends from `generate_indices(alternate_n = "n_smooth")`, however the package also includes alternate trend estimates that can be applied to any of the models to dampen the influence of the start and end years of trend. 
 
-The user can choose an alternative estimate of change that is calculated by fitting a log-linear slope to the series of all annual indices between the two end-points (e.g., all 11 years in a 10-year trend from 2008-2018). The slope of this line could be expressed as an average annual percent change across the time-period of interest. If working with estimates derived from a model with strong annual fluctuations and for which no decomposition is possible (e.g., "firstdiff" model), this slope-based trend may be a more comprehensive measure of the average population change, that is less dependent on the particular end-point years. These slope trends can be added to the trend output table by setting the `slope = TRUE` argument in `generate_trends()`. The standard trends are still calculated, but additional columns are added that include the alternate estimates. NOTE: the `plot_map()` function can map slope trends as well with the same `slope = TRUE` argument.
+The user can choose an alternative estimate of change that is calculated by fitting a log-linear slope to the series of all annual indices between the two end-points (e.g., all 11 years in a 10-year trend from 2011-2021). We refer to these trends as *slope-based trends*. The slope of this line could be expressed as an average annual percent change across the time-period of interest. If working with estimates derived from a model and or a species with strong annual fluctuations that the user wishes to account for the overall pattern of the annual fluctuations in the trend estimate, this slope-based trend may be a more comprehensive measure of the average population change, that is less dependent on the particular end-point years. These slope trends can be added to the trend output table by setting the `slope = TRUE` argument in `generate_trends()`. The default *end-point trends* are still calculated, but additional columns are added that include the alternate estimates. NOTE: the `plot_map()` function can map slope trends as well with the same `slope = TRUE` argument.
 
 Here we create a model for a 10 year period, using the minimum number of iterations. We recommend using the defaults, 4 chains, 1000 iterations for both warmup and sampling, and assessing convergence.
 
-``` {.r}
+``` {r}
 
 strat<- stratify(by="bbs_usgs",species = "Hepatic Tanager")
 p_dat<-prepare_data(strat, min_year=2009, max_year=2019)

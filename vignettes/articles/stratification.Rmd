@@ -47,6 +47,14 @@ fetch_bbs_data()
 The existing stratifications are 
 `r paste0(names(bbs_strata), collapse = ", ")`.
 
+- `bbs_cws` -- Political region X Bird Conservation region intersection 
+  (Canadian Wildlife Service [CWS] method)
+- `bbs_usgs` -- Political region X Bird Conservation region intersection 
+  (United Status Geological Survey [USGS] method)
+- `bcr` -- Bird Conservation Region only
+- `state` -- Political Region only
+- `latlong` -- Degree blocks (1 degree of latitude X 1 degree of longitude)
+
 You can take a look at how these stratify your data by looking at the maps 
 included in bbsBayes2 with `load_map()`.
 
