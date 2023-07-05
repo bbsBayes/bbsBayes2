@@ -29,29 +29,35 @@ you can access the `bbs_models` data frame.
 bbs_models
 ```
 
+More specifically, there are four models that each have two variants: `variant = "hier"` and `variant = "spatial"`. With the exception of the first-difference model, which has an additional non-hierarchical variant `variant = "nonhier"`. 
 
-For specifics on *how* to run the various models, see the articles on 
-[model runs](./index.html#model-runs).
-
-See the following for details regarding the *why* of these various models. 
-As well as the final section on Advanced Modelling techniques. All models can be hierarchical, non-hierarchical, or spatial. Hierarchical models share information on species abundance and trend over time, so that each time periods' estimates are pulled closer to the mean for that species across time. Non-hierarchical models have no sharing of information, and consider time periods and spatial strata as independent. Spatial models are both hierarchical and spatial, sharing information over time and space. This means that each stratum's estimates will be pulled closer to the mean of each its neighbors and to the species mean across time.
+Hierarchical models `variant = "hier"` are the default variants for each model. These variants share information on species abundance and population trends, so that estimates in each stratum are pulled *shrunk* closer to the mean across all strata. The non-hierarchical variant of the first-difference model does not share information among strata. It estimates abundance and population trends in each stratum independently of their estimates in all other strata. This variant is included to support an approximate replication of the USGS trend analyses. Spatial models are both hierarchical and spatial, sharing information among strata on the abundance and trends, and sharing in an explicitly spatial way. This means that each stratum's estimates will be pulled closer to the mean of its neighbors.
 
 ## 1. First Difference Models
 
-A first-difference model considers the time-series as a random-walk from the first year, so that the first-differences of the sequence of year-effects are random effects with mean = 0 and an estimated variance. This model has been described in Link et al. 2017 https://doi.org/10.1650/CONDOR-17-1.1
+A first-difference model considers the time-series as a random-walk forward and backwards in time from the mid-year of the time-series, so that the first-differences of the sequence of year-effects are random effects with mean = 0 and an estimated variance. The non-hierarchical variant of this model model has been described in Link et al. 2017 https://doi.org/10.1650/CONDOR-17-1.1, the hierarchical and spatial variants are described in this [pre-print](https://doi.org/10.32942/X2088D). 
 
 
 ## 2. Generalized Additive Models
-The GAM models the time series as a semiparametric smooth using a Generalized Additive Model (GAM) structure. See Smith & Edwards, 2021 https://doi.org/10.1093/ornithapp/duaa065. 
+The GAM models the time series as a semiparametric smooth using a Generalized Additive Model (GAM) structure. This model is unique among the bbsBayes2 models in that it does not model annual fluctuations, only smoothed changes in population size through time. As a result, it makes some very strong assumptions about population change. See [Smith & Edwards, 2021](https://doi.org/10.1093/ornithapp/duaa065) for the original formulation. The updated hierarchical and spatial variants of this model are described in this [pre-print](https://doi.org/10.32942/X2088D).
 
 ## 3. Generalized Additive Models with Year Effect
-The GAMYE includes the semiparametric smooth used in the gam option, but also includes random year-effect terms that track annual fluctuations around the smooth. This is the model that the Canadian Wildlife Service is now using for the annual status and trend estimates. See pre-print at Smith et al., 2023 https://doi.org/10.32942/X2088D.
+The GAMYE includes the semiparametric smooth used in the gam option, but also includes random year-effect terms that track annual fluctuations around the smooth. This is the model that the Canadian Wildlife Service is now using for the annual status and trend estimates. See this [pre-print](https://doi.org/10.32942/X2088D) for details on the original formulation and application of this model, see [Smith & Edwards, 2021](https://doi.org/10.1093/ornithapp/duaa065)
 
 ## 4. Slope
-The slope option estimates the time series as a log-linear regression with random year-effect terms that allow the trajectory to depart from the smooth regression line. It is the model used by the USGS and CWS to estimate BBS trends between 2011 and 2018. The basic model was first described in 2002 (Link and Sauer 2002; https://doi.org/10.1890/0012-9658(2002)083[2832:AHAOPC]2.0.CO;2) and its application to the annual status and trend estimates is documented in Sauer and Link (2011; https://doi.org/10.1525/auk.2010.09220) and Smith et al. (2014; https://doi.org/10.22621/cfn.v128i2.1565).
+The slope option estimates the time series as a log-linear regression with random year-effect terms that allow the trajectory to depart from the smooth regression line. It is the model used by the USGS and CWS to estimate BBS trends between 2011 and 2018. The basic model was first described in 2002 [Link and Sauer 2002](https://doi.org/10.1890/0012-9658(2002)083[2832:AHAOPC]2.0.CO;2) and its application to the annual status and trend estimates is documented in [Sauer and Link, 2011](https://doi.org/10.1525/auk.2010.09220) and [Smith et al., 2014](https://doi.org/10.22621/cfn.v128i2.1565).
 
 
-## Error distributions
+## One species, nine-models
 
-## Spatial vs Hierarchical vs Non-hierarchical models
+Here is an example application of all nine models and variants applied to the same data set. In this example, we've used data for the Scissor-tailed Flycatcher.
+
+You can download the fitted model results for all nine models in a zipped file attachement to the most recent package release.
+
+```{r}
+
+
+
+```
+
 
