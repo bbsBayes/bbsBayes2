@@ -15,11 +15,8 @@ articles:
 - title: Usage
   contents:
   - articles/bbsBayes2
-  - articles/workflow
   - articles/stratification
-  - articles/custom_stratification
   - articles/models
-  - articles/convergence
   - articles/advanced
 - title: Model runs
   desc: Articles to illustrate the various models and for testing
