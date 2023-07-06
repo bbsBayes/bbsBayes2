@@ -7,7 +7,7 @@
 generate_indices(
   model_output = NULL,
   quantiles = c(0.025, 0.05, 0.25, 0.75, 0.95, 0.975),
-  regions = c("stratum", "continent"),
+  regions = c("continent", "stratum"),
   regions_index = NULL,
   alternate_n = "n",
   start_year = NULL,
@@ -39,11 +39,27 @@ any custom regions defined as categories in other columns. See examples for
 more details.}
 
 \item{alternate_n}{Character. Indicating the name of the alternative annual
-index parameter in a model, Default is "n", alternatives are "n2" which
-involves a different way of scaling the annual indices, "n_smooth" for the
-gam and gamye models which show only the smooth component of the
-trajectory, and "n_slope" for the slope models which track only the linear
-slope component of the model.}
+index parameter in a model, Default is "n" which for all models represents
+an index of the estimated annual relative abundance, scaled as the expected
+mean count averaged across all BBS routes and observers in a given stratum
+and year. For some of the models included in bbsBayes2, alternatives exist
+that provide a partial decomposition of the time-series.
+For the "gamye" models, the parameter "n_smooth" represents the smooth-only
+version of the annual index of relative abundance (i.e., the component
+of the annual index estimated by the spline-based smooth of the GAM).
+This "n_smooth" is identical to the "n" values for the same model, but
+excludes the annual fluctuations. For the "gamye" models, this "n_smooth"
+parameter is likely the most natural parameter to use in estimating trends.
+A similar option exists for the "slope" models, where the parameter
+"n_slope" represents the component of the population trajectory estimated
+by the log-linear regression slope parameters in the model. Users should
+be particularly cautious about interpreting this "n_slope" values for
+relatively long time-series. As a continuous regression slope, it assumes
+interpreting it as an estimate of population trajectory and using it to
+generate trend estimates assumes that there is a single continuous rate of
+population change across the entire time-series. Biologically, this may be
+reasonable for 10-20 year periods, but will be less reasonable for longer
+time-periods.}
 
 \item{start_year}{Numeric. Trim the data record before calculating annual
 indices.}
