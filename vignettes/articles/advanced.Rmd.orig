@@ -5,8 +5,8 @@ vignette: >
   %\VignetteIndexEntry{Advanced Example}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: 72
 ---
 
@@ -34,7 +34,7 @@ knitr::opts_chunk$set(
 
 # Some more advanced options
 
-For most of these examples, we will load
+For most of these examples, we will be using a series of saved model outputs. These model outputs can be downloaded from this [Google Drive](https://drive.google.com/drive/folders/1v3Cb33Z8b-Ac4RXnMLpr8iqUbXoNioeK?usp=sharing)
 
 ## Posterior Predictive Checks
 
@@ -58,11 +58,11 @@ using the `latlong` stratification.
 STFL_gamye_spatial <- readRDS("output/4430_gamye_spatial.rds")
 
 # tibble with one row for each posterior draw and one column for each parameter (i.e., each count)
-E <- posterior::as_draws_df(STFL_gamye_spatial$model_fit) %>% 
+E <- posterior::as_draws_df(STFL_gamye_spatial$model_fit) %>%
   select(matches("^E([[:punct:]])"),
-         .draw) 
+         .draw)
 # tibble with 1 column for phi and one row for each posterior draw
-phi <- posterior::as_draws_df(STFL_gamye_spatial$model_fit)%>% 
+phi <- posterior::as_draws_df(STFL_gamye_spatial$model_fit)%>%
   select(phi,
          .draw)
 
@@ -76,11 +76,11 @@ pred_counts_nb <- function(e_mu,phi_i){
   return(x)
 }
 
-y_rep <- E %>% 
+y_rep <- E %>%
   mutate(across(matches("^E([[:punct:]])"),
-                          ~ pred_counts_nb(.x,phi))) %>% 
-  select(matches("^E([[:punct:]])")) %>% 
-  sample_n(.,500) 
+                          ~ pred_counts_nb(.x,phi))) %>%
+  select(matches("^E([[:punct:]])")) %>%
+  sample_n(.,500)
 
 y_rep <- posterior::as_draws_matrix(y_rep)
 
@@ -152,7 +152,7 @@ error distribution and the first-difference model.
 ```{r, eval=FALSE}
 
 species.eng = "Pacific Wren"
-stratified_data <- stratify(by = "bbs_usgs",species=species.eng) 
+stratified_data <- stratify(by = "bbs_usgs",species=species.eng)
 #BCR by province/state/territory intersections
 
 d <- prepare_data(strata_data = stratified_data,
@@ -170,7 +170,7 @@ m<-prepare_model(prepared_data = d,
 # MCMC settings for the usgs analyses are not published, nor would they be relevant here
 # because the official analyses use JAGS and Gibbs Sampling and not Stan's HMC algorithm
 # mod <- run_model(model_data = m,
-#                  ...) 
+#                  ...)
 
 ```
 
@@ -216,19 +216,14 @@ model run-times.
 ## Alternate Measures of Trend and Population Change
 
 The `generate_trends()` function produces much more than just the trend
-estimates.
+estimates. This section explains one alternate measure of trend (i.e., *slope trends*) and measures of population change, such as the percent change in the population between the first and last years of the trend and the probability that a population has decreased by a certain amount.
 
-```{r, fig.cap = "", fig.alt = "Population trajectory graph for Scissor-tailed Flycatcher", fig.width = 8, fig.asp = 0.8}
+```{r}
 # set of indices for demonstrating trend options
 m <- readRDS("output/4430_first_diff_spatial.rds") # Scissor-tailed Flycatcher
-i <- generate_indices(m) 
-
-trajectory_plots <- plot_indices(i, add_observed_means = TRUE)
-
-print(trajectory_plots[["continent"]])
+i <- generate_indices(m)
 ```
-
-### Slope Trends
+### The default trend estimate
 
 The default trend calculation is an interval-specific estimate of the
 geometric mean annual change in the population.
@@ -236,12 +231,7 @@ $Trend = (\frac {n[min-year]}{n[max-year]})^{(1/(max-year-min-year))}$
 We refer to these as *end-point trends*. They rely on a comparison of
 the annual indices in the first and last years of the trend period to
 quantify the mean rate of population change. However, it ignores the
-pattern of change between the two end-points. The gamye model partly
-accounts for the influence of the annual fluctuations in the min_year
-and max_year when generating trends from
-`generate_indices(alternate_n = "n_smooth")`, however the package also
-includes alternate trend estimates that can be applied to any of the
-models to dampen the influence of the start and end years of trend.
+pattern of change between the two end-points.
 
 ```{r, fig.cap = "", fig.alt = "Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the default end-point trend estimates", fig.width = 8, fig.asp = 0.8}
 t <- generate_trends(i,
@@ -251,17 +241,19 @@ t_map <- plot_map(t)
 print(t_map)
 ```
 
-The user can choose an alternative estimate of change that is calculated
+### Slope-based Trends
+
+bbsBayes includes an alternate trend estimate that can be applied to any of the
+models to dampen the influence of the start and end years of trend.
+The slope-based trends are calculated
 by fitting a log-linear slope to the series of all annual indices
 between the two end-points (e.g., all 11 years in a 10-year trend from
 2011-2021). We refer to these trends as *slope-based trends*. The slope
-of this line could be expressed as an average annual percent change
-across the time-period of interest. If working with estimates derived
-from a model and or a species with strong annual fluctuations that the
+of this line is transformed into an average annual percent change
+across the time-period of interest. F\This slope-based trend may be useful for estimates derived
+from a model and or a species with strong annual fluctuations when the
 user wishes to account for the overall pattern of the annual
-fluctuations in the trend estimate, this slope-based trend may be a more
-comprehensive measure of the average population change, that is less
-dependent on the particular end-point years. These slope trends can be
+fluctuations in the trend estimate without letting the trend be completely determined by the annual fluctuations in the particular end-point years. These slope trends can be
 added to the trend output table by setting the `slope = TRUE` argument
 in `generate_trends()`. The default *end-point trends* are still
 calculated, but additional columns are added that include the alternate
@@ -277,9 +269,9 @@ print(t_map_slope)
 
 ### Percent Change and probability of change
 
-The `generate_trends()` function also produces estimates of the overall
+The `generate_trends()` function produces estimates of the overall
 percent-change in the population between the first and last years of the
-trend-period. This calculation is often easier to interpret than an
+trend-period, by default. This calculation may be easier to interpret than an
 average annual rate of change. These percent change estimates have
 associated uncertainty bounds, and so can be helpful for deriving
 statements such as "between 2008 and 2018, the population has declined
@@ -293,12 +285,11 @@ t$trends[1,c("region","percent_change","percent_change_q_0.95")]
 ```
 
 In addition, the function can optionally calculate the posterior
-conditional probability that a population has changed by at least a
-certain amount, using the `prob_decrease` and `prob_increase` arguments.
+conditional probability that a population has changed more or less than some user-defined threshold(s), using the `prob_decrease` and `prob_increase` arguments. The calculate the conditional probability a species population has decreased, set the argument `prob_decrease = 0`. Similarly if you want to know the conditaional probability that the population has decreased by more than 50% use `prob_decrease = 50`.
 
 ```{r}
 t <- generate_trends(i,
-                     prob_decrease = c(0,50))
+                     prob_decrease = c(0,50)) # two thresholds
 
 t$trends[1,c("region","prob_decrease_0_percent","prob_decrease_50_percent")]
 
@@ -333,7 +324,7 @@ of our new composite regions (*North* or *South*)
 
 ```{r, fig.cap = "", fig.alt = "Population trajectories for Barn Swallow in the northern and southern parts of their range", fig.width = 8, fig.asp = 1}
 
-comp_regions <- BARS$meta_strata %>% 
+comp_regions <- BARS$meta_strata %>%
   mutate(north_south = ifelse(bcr < 15, "North","South"))
 
 i_BARS <- generate_indices(BARS,
@@ -370,8 +361,8 @@ prep<- prepare_model(...,
         model_file="gamye_hier_bbs_CV_COPY.stan",
          ...
           )
-          
-mod<-run_model(prep,...)          
+
+mod<-run_model(prep,...)
 ```
 
 ## Comparing Models
@@ -399,11 +390,11 @@ warnings:
 3.  Adding an observation-level log_likelihood calculation greatly
     increases the memory requirements and size of the saved model
     objects.
-    
+
 ```{r, eval = FALSE}
 md <- stratify(by = "bbs_usgs", species = "Hepatic Tanager", quiet = TRUE) %>%
   prepare_data(min_year= 2009, max_year = 2019) %>%
-  prepare_model("first_diff", calculate_log_lik = TRUE) %>% 
+  prepare_model("first_diff", calculate_log_lik = TRUE) %>%
   run_model(., iter_warmup = 200, iter_sampling = 100)
 
 # install.packages("loo")
@@ -427,13 +418,13 @@ prepare 10 test sets (K-folds, `cv_k`) using `obs_n` as the grouping
 variable (`cv_fold_groups`) and omitting groups with only single
 observations (`cv_omit_singles`).
 
-More detail coming.
+More details and examples coming.
 
 ```{r, eval=FALSE}
 #a model of counts from 2009-2019
 md <- stratify(by = "bbs_usgs", species = "Hepatic Tanager", quiet = TRUE) %>%
   prepare_data(min_year= 2009, max_year = 2019) %>%
-  prepare_model("first_diff", calculate_cv = TRUE, cv_k = 3) 
+  prepare_model("first_diff", calculate_cv = TRUE, cv_k = 3)
 ```
 
 Now our model data (`md`) has a list item called `folds` which contains
@@ -448,37 +439,4 @@ for(k in 1:3) {
 }
 ```
 
-AND NOW...
-
-### Customizing initial parameter values
-
-To customize the initial parameter values you can create the model data
-with `prepare_model()` and then either edit or overwrite the
-`init_values` item in the list.
-
-Here we create a relatively fast model with the minimum number of
-iterations, for 10 years, the minimum period of time that trends can be
-reasonably created.
-
-```{r, eval=FALSE}
-#Hepatic Tanager model for 2009-2019
-md <- stratify(by = "bbs_usgs", species="Hepatic Tanager", quiet = TRUE) %>%
-  prepare_data(min_year = 2009,max_year = 2019) %>%
-  prepare_model(model = "first_diff", model_variant = "hier")
-```
-
-Make some changes to the `init_values` and pass the `model_data` to
-`run_model()`.
-
-```{r, eval=FALSE}
-md[["init_values"]][["sdnoise"]] <- 0.5
-
-m <- run_model(md, iter_warmup = 100, iter_sampling = 100, chains = 2,save_model=FALSE)
-```
-
-Note that you can supply different init values for each chain. If you
-supply one set of init values (which is what `prepare_model()` outputs),
-`run_model()`, will duplicate them for each chain for you. If you supply
-a list of init values such that the length is the same as the number of
-chains, your input will be used as is.
 

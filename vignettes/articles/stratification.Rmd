@@ -300,6 +300,7 @@ name, we can pick out which are eastern and which western.
 
 
 ```r
+
 ggplot(rindex) +
   geom_sf(data = load_map(type = "North America")) +
   geom_sf() +
@@ -308,7 +309,7 @@ ggplot(rindex) +
 #> longitude/latitude data
 ```
 
-![plot of chunk unnamed-chunk-16](vignettes/articles/figures/stratification_unnamed-chunk-16-1.png)
+<img src="figures/stratification_unnamed-chunk-16-1.png"  />
 
 
 Let's add a column splitting the strata into eastern and western

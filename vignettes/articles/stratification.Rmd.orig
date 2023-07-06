@@ -219,8 +219,8 @@ rindex <- assign_prov_state(map, min_overlap = 0.6, plot = TRUE)
 Next we'll define the east/west divide by hand. If we plot the strata by 
 name, we can pick out which are eastern and which western.
 
-```{r}
-#| fig-width: 10
+```{r, fig.cap="", fig.alt= "", fig.width = 8, fig.asp = 0.8}
+
 ggplot(rindex) +
   geom_sf(data = load_map(type = "North America")) +
   geom_sf() +
