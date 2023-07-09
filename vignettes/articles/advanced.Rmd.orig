@@ -10,16 +10,26 @@ editor_options:
     wrap: 72
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  # For pre-compiling and pkgdown (relative to pkg home)
+  fig.path = "vignettes/articles/figures/advanced_",
+  dpi = 150
+)
 
 
+```
 
-```r
+```{r, message = FALSE}
   library(bbsBayes2)
   library(dplyr)
   library(ggplot2)
   library(sf)
   library(patchwork)
   library(bayesplot) #to visually check convergence
+
 ```
 
 # Some more advanced options
@@ -44,20 +54,17 @@ arguments `mu = exp(E), size = phi`. Here's an example, using the fitted
 model object for the Hepatic Tanager data fit to the `first_dif` model
 using the `latlong` stratification.
 
-
-```r
+```{r, fig.cap = "", fig.alt = "Posterior predictive check using overlaying the observed proportion of integer count values and the estimated proportion of count values", fig.width = 8, fig.asp = 0.8}
 STFL_gamye_spatial <- readRDS("output/4430_gamye_spatial.rds")
 
 # tibble with one row for each posterior draw and one column for each parameter (i.e., each count)
 E <- posterior::as_draws_df(STFL_gamye_spatial$model_fit) %>%
   select(matches("^E([[:punct:]])"),
          .draw)
-#> Warning: Dropping 'draws_df' class as required metadata was removed.
 # tibble with 1 column for phi and one row for each posterior draw
 phi <- posterior::as_draws_df(STFL_gamye_spatial$model_fit)%>%
   select(phi,
          .draw)
-#> Warning: Dropping 'draws_df' class as required metadata was removed.
 
 # join tibbles by draw
 E <- left_join(phi,E,
@@ -83,9 +90,9 @@ ppc_overplot <- ppc_overplot +
   coord_cartesian(xlim = range(STFL_gamye_spatial$raw_data$count))
 
 print(ppc_overplot)
-```
 
-<img src="figures/advanced_unnamed-chunk-3-1.png" alt="Posterior predictive check using overlaying the observed proportion of integer count values and the estimated proportion of count values"  />
+
+```
 
 ## EXAMPLE - Replicating the CWS status and trend estimates (2018 version onwards)
 
@@ -98,8 +105,7 @@ those particular analyses were run before bbsBayes2 was released, the
 basic workflow can be replicated in bbsBayes2 for a given species as
 follows.
 
-
-```r
+```{r, eval=FALSE}
 
 species.eng = "Pacific Wren"
 
@@ -143,8 +149,7 @@ Here we provide data preparation and model options to approximate the
 2021 USGS bbs analyses for a species that uses the heavy-tailed Poisson
 error distribution and the first-difference model.
 
-
-```r
+```{r, eval=FALSE}
 
 species.eng = "Pacific Wren"
 stratified_data <- stratify(by = "bbs_usgs",species=species.eng)
@@ -213,13 +218,10 @@ model run-times.
 The `generate_trends()` function produces much more than just the trend
 estimates. This section explains one alternate measure of trend (i.e., *slope trends*) and measures of population change, such as the percent change in the population between the first and last years of the trend and the probability that a population has decreased by a certain amount.
 
-
-```r
+```{r}
 # set of indices for demonstrating trend options
 m <- readRDS("output/4430_first_diff_spatial.rds") # Scissor-tailed Flycatcher
 i <- generate_indices(m)
-#> Processing region continent
-#> Processing region stratum
 ```
 ### The default trend estimate
 
@@ -231,16 +233,13 @@ the annual indices in the first and last years of the trend period to
 quantify the mean rate of population change. However, it ignores the
 pattern of change between the two end-points.
 
-
-```r
+```{r, fig.cap = "", fig.alt = "Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the default end-point trend estimates", fig.width = 8, fig.asp = 0.8}
 t <- generate_trends(i,
                      slope = TRUE,
                      min_year = 1980) #trends from 1980-2021
 t_map <- plot_map(t)
 print(t_map)
 ```
-
-<img src="figures/advanced_unnamed-chunk-7-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the default end-point trend estimates"  />
 
 ### Slope-based Trends
 
@@ -261,15 +260,12 @@ calculated, but additional columns are added that include the alternate
 estimates. NOTE: the `plot_map()` function can map slope trends as well
 with the same `slope = TRUE` argument.
 
-
-```r
+```{r, fig.cap = "", fig.alt = "Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the slope-based trend estimates", fig.width = 8, fig.asp = 0.8}
 
 t_map_slope <- plot_map(t,
                         slope = TRUE)
 print(t_map_slope)
 ```
-
-<img src="figures/advanced_unnamed-chunk-8-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the slope-based trend estimates"  />
 
 ### Percent Change and probability of change
 
@@ -282,30 +278,21 @@ statements such as "between 2008 and 2018, the population has declined
 by 20 percent, but that estimate is relatively uncertain and the true
 decline may be as little as 2 percent or as much as 50 percent"
 
-
-```r
+```{r}
 t <- generate_trends(i)
 
 t$trends[1,c("region","percent_change","percent_change_q_0.95")]
-#> # A tibble: 1 × 3
-#>   region    percent_change percent_change_q_0.95
-#>   <chr>              <dbl>                 <dbl>
-#> 1 continent          -46.8                 -39.8
 ```
 
 In addition, the function can optionally calculate the posterior
 conditional probability that a population has changed more or less than some user-defined threshold(s), using the `prob_decrease` and `prob_increase` arguments. The calculate the conditional probability a species population has decreased, set the argument `prob_decrease = 0`. Similarly if you want to know the conditaional probability that the population has decreased by more than 50% use `prob_decrease = 50`.
 
-
-```r
+```{r}
 t <- generate_trends(i,
                      prob_decrease = c(0,50)) # two thresholds
 
 t$trends[1,c("region","prob_decrease_0_percent","prob_decrease_50_percent")]
-#> # A tibble: 1 × 3
-#>   region    prob_decrease_0_percent prob_decrease_50_percent
-#>   <chr>                       <dbl>                    <dbl>
-#> 1 continent                       1                    0.208
+
 ```
 
 These values can be useful for deriving statements such as "the
@@ -325,18 +312,17 @@ northern and southern portions of the Barn Swallow's range.
 
 First we load a fitted model object for Barn Swallow.
 
-
-```r
+```{r}
 
 BARS <- readRDS("output/Barn_Swallow_first_diff_spatial.rds")
+
 ```
 
 Then we extract the strata list from the fitted model object and define
 a new column *north_south* that identifies which strata belong in each
 of our new composite regions (*North* or *South*)
 
-
-```r
+```{r, fig.cap = "", fig.alt = "Population trajectories for Barn Swallow in the northern and southern parts of their range", fig.width = 8, fig.asp = 1}
 
 comp_regions <- BARS$meta_strata %>%
   mutate(north_south = ifelse(bcr < 15, "North","South"))
@@ -344,20 +330,16 @@ comp_regions <- BARS$meta_strata %>%
 i_BARS <- generate_indices(BARS,
                            regions_index = comp_regions, # new data frame to identify which strata are in composite regions
                            regions = "north_south") # column in data frame with composite region names
-#> Processing region north_south
 
 trajectories <- plot_indices(i_BARS)
 print(trajectories[["North"]] / trajectories[["South"]])
 ```
 
-<img src="figures/advanced_unnamed-chunk-12-1.png" alt="Population trajectories for Barn Swallow in the northern and southern parts of their range"  />
-
 ## Exporting and modifying the Stan models
 
 You can easily export any of the bbsBayes2 models to a text file.
 
-
-```r
+```{r, eval=FALSE}
 
 copy_model_file(model="gamye",
                 model_variant = "hier",
@@ -373,8 +355,7 @@ modifications to the model, then re-save the file.
 After modifying the .stan file, you can use bbsBayes2 to fit the data to
 the modified model using the `model_file` argment in `prepare_model()`.
 
-
-```r
+```{r, eval=FALSE}
 
 prep<- prepare_model(...,
         model_file="gamye_hier_bbs_CV_COPY.stan",
@@ -410,8 +391,7 @@ warnings:
     increases the memory requirements and size of the saved model
     objects.
 
-
-```r
+```{r, eval = FALSE}
 md <- stratify(by = "bbs_usgs", species = "Hepatic Tanager", quiet = TRUE) %>%
   prepare_data(min_year= 2009, max_year = 2019) %>%
   prepare_model("first_diff", calculate_log_lik = TRUE) %>%
@@ -440,8 +420,7 @@ observations (`cv_omit_singles`).
 
 More details and examples coming.
 
-
-```r
+```{r, eval=FALSE}
 #a model of counts from 2009-2019
 md <- stratify(by = "bbs_usgs", species = "Hepatic Tanager", quiet = TRUE) %>%
   prepare_data(min_year= 2009, max_year = 2019) %>%
@@ -452,8 +431,7 @@ Now our model data (`md`) has a list item called `folds` which contains
 the fold groups assigned to each observation. To use this, you'll need
 to loop your model and specify the `k` iteration.
 
-
-```r
+```{r, eval=FALSE}
 #a quick model with too few iterations, not saving the example model
 for(k in 1:3) {
   run_model(md, k = k, chains = 2, iter_warmup = 500, iter_sampling = 100,

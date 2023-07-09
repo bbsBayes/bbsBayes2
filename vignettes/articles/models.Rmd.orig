@@ -7,10 +7,18 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  # For pre-compiling and pkgdown (relative to pkg home)
+  fig.path = "vignettes/articles/figures/models_",
+  dpi = 150
 
+)
+```
 
-
-```r
+```{r setup, message = FALSE}
 library(bbsBayes2)
 library(dplyr)
 library(ggplot2)
@@ -20,21 +28,8 @@ library(patchwork)
 There are 9 types of models that can be run with bbsBayes2. For a quick overview
 you can access the `bbs_models` data frame.
 
-
-```r
+```{r}
 bbs_models
-#> # A tibble: 9 × 3
-#>   model      variant file                          
-#>   <chr>      <chr>   <chr>                         
-#> 1 first_diff nonhier first_diff_nonhier_bbs_CV.stan
-#> 2 first_diff hier    first_diff_hier_bbs_CV.stan   
-#> 3 first_diff spatial first_diff_spatial_bbs_CV.stan
-#> 4 gam        hier    gam_hier_bbs_CV.stan          
-#> 5 gam        spatial gam_spatial_bbs_CV.stan       
-#> 6 gamye      hier    gamye_hier_bbs_CV.stan        
-#> 7 gamye      spatial gamye_spatial_bbs_CV.stan     
-#> 8 slope      hier    slope_hier_bbs_CV.stan        
-#> 9 slope      spatial slope_spatial_bbs_CV.stan
 ```
 
 More specifically, there are four models that each have two variants: `variant = "hier"` and `variant = "spatial"`. With the exception of the first-difference model, which has an additional non-hierarchical variant `variant = "nonhier"`. 
@@ -64,8 +59,7 @@ Here is an example application of all nine models and variants applied to the sa
 
 You can download the fitted model results for all nine models in a zipped file attachement to the most recent package release. The following code chunk loads each of the fitted model objects, calculates the annual indices and trends, then saves the continent population trajectories and the long-term (1966-2021) trend maps. 
 
-
-```r
+```{r, message=FALSE}
 saved_trajectories <- NULL
 saved_trend_maps <- vector("list",9)
 species <- "Scissor-tailed Flycatcher"
@@ -115,12 +109,12 @@ data_bounding_box <- load_map(stratify_by = t$meta_data$stratify_by) %>%
   saved_trend_maps[[j]] <- map 
     
 }
+
 ```
 
 This species has moderately rich data across much of its range (the portion of its range covered by the BBS surveys), so the estimated population trajectories are very similar across the different models.  
 
-
-```r
+```{r, fig.cap = "", fig.alt = "Population trajectory graphs for Scissor-tailed Flycatcher estimated using the 9 different models and their variants available in bbsBayes2", fig.width = 8, fig.asp = 2, message=FALSE}
 
 
 traj_panel <- ggplot(data = saved_trajectories,
@@ -137,21 +131,17 @@ traj_panel <- ggplot(data = saved_trajectories,
   scale_y_continuous(limits = c(0,NA))
 
 print(traj_panel)
-#> Warning: Removed 9 rows containing missing values (`geom_point()`).
-```
 
-<img src="figures/models_unnamed-chunk-4-1.png" alt="Population trajectory graphs for Scissor-tailed Flycatcher estimated using the 9 different models and their variants available in bbsBayes2"  />
+```
 
 Similarly, the long-term trend maps are generally similar across the different models and variants.
 
-
-```r
+```{r, fig.cap = "", fig.alt = "Population trend maps for Scissor-tailed Flycatcher estimated using the 9 different models and their variants available in bbsBayes2", fig.width = 8, fig.asp = 1}
 
 map_panel <- patchwork::wrap_plots(saved_trend_maps,
                                     ncol = 3,
                                     guides = "collect") 
 
 print(map_panel)
-```
 
-<img src="figures/models_unnamed-chunk-5-1.png" alt="Population trend maps for Scissor-tailed Flycatcher estimated using the 9 different models and their variants available in bbsBayes2"  />
+```
