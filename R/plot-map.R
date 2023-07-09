@@ -8,6 +8,10 @@
 #'   `generate_trends()`,  through the annual indices. Default `FALSE`.
 #' @param title Logical. Whether or not to include a title with species. Default
 #'   `TRUE`.
+#' @param strata_custom (`sf`) Data Frame. Data frame
+#'   of modified existing stratification, or a `sf` spatial data frame with
+#'   polygons defining the custom stratifications. See details on strata_custom
+#'   in `stratify()`.
 #'
 #' @inheritParams common_docs
 #' @family indices and trends functions
@@ -38,7 +42,8 @@
 plot_map <- function(trends,
                      slope = FALSE,
                      title = TRUE,
-                     col_viridis = FALSE) {
+                     col_viridis = FALSE,
+                     strata_custom = NULL) {
 
   # Checks
   check_data(trends)
@@ -51,8 +56,15 @@ plot_map <- function(trends,
   start_year <- min(trends$start_year)
   end_year <- min(trends$end_year)
 
+  stratify_by <- check_strata(stratify_by, custom = strata_custom)
 
+  if(!is.null(strata_custom)){
+    map <- strata_custom
+    map <- dplyr::select(map, "strata_name") %>%
+      dplyr::mutate(strata_name = as.character(.data$strata_name))
+  }else{
   map <- load_map(stratify_by)
+  }
 
   breaks <- c(-7, -4, -2, -1, -0.5, 0.5, 1, 2, 4, 7)
   labls <- c(paste0("< ", breaks[1]),
