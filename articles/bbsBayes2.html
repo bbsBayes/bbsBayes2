@@ -87,37 +87,115 @@
 
     
     
-<p>Welcome! Let’s get you started with bbsBayes2.</p>
-<p>First we’ll make sure we have the right software installed, we’ll
-fetch the breeding bird data, and then we’ll run through some example
-workflows.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bbsBayes/bbsBayes2" class="external-link">bbsBayes2</a></span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="install-cmdstanr">Install <a href="https://mc-stan.org/cmdstanr/" class="external-link">cmdstanr</a><a class="anchor" aria-label="anchor" href="#install-cmdstanr"></a>
+<h2 id="welcome">Welcome!<a class="anchor" aria-label="anchor" href="#welcome"></a>
 </h2>
+<p>bbsBayes2 is the successor to <a href="https://github.com/bbsBayes/bbsBayes" class="external-link">bbsBayes</a>, with a major
+shift in functionality. The MCMC backend is now <em>Stan</em> instead of
+<em>JAGS</em>, the workflow has been streamlined, the syntax has
+changed, and there are new functions. This vignette should help you get
+started with the package, and there are three others that should help
+explain some of the new features, choices, and more advanced uses:</p>
+<ul>
+<li><p><a href="./stratification.html">Stratification vignette</a> The
+stratification vignette explains the built-in options for spatial
+stratifications as well as the workflow required to apply a custom
+stratification.</p></li>
+<li><p><a href="./models.html">Models vignette</a> The models vignette
+explains the four built-in models that differ in the way the temporal
+components are structured, and it also covers the built-in options for
+error distributions and the differences among the model variants (e.g.,
+<code>model_variant = "spatial"</code>).</p></li>
+<li><p><a href="./advanced.html">Advanced vignette</a> The advanced
+vignette is helpful for users wanting to take the bbsBayes2
+functionality further, including alternate calculations of population
+trend, customizing the Stan models, adding covariates, and even some
+experimental functions that allow for k-fold cross-validations and
+approximate leave-one-out calculations to compare fit and predictive
+accuracy among models.</p></li>
+</ul>
+<p>First we’ll make sure we have the right software installed, we’ll
+fetch the BBS survey data, and then we’ll run through some example
+workflows.</p>
+<div class="section level3">
+<h3 id="install-cmdstanr">Install <a href="https://mc-stan.org/cmdstanr/" class="external-link">cmdstanr</a><a class="anchor" aria-label="anchor" href="#install-cmdstanr"></a>
+</h3>
 <p>Because bbsBayes2 uses Stan to run the Bayesian models, we need to
 make sure we have cmdstanr and cmdstan both installed.</p>
-<p>It is recommended to run this is a fresh R session or restart your
-current session</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"cmdstanr"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://mc-stan.org/r-packages/"</span>, </span>
+<p>Run this in a fresh R session.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"cmdstanr"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://mc-stan.org/r-packages/"</span>,</span>
 <span>                                       <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"repos"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Now we should be able to use cmdstanr to install cmdstan</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">cmdstanr</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/cmdstanr/reference/install_cmdstan.html" class="external-link">install_cmdstan</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Let’s check that everything went as planned</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">cmdstanr</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/cmdstanr/reference/set_cmdstan_path.html" class="external-link">cmdstan_path</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "/home/runner/.cmdstan/cmdstan-2.31.0"</span></span>
-<span><span class="fu">cmdstanr</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/cmdstanr/reference/set_cmdstan_path.html" class="external-link">cmdstan_version</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "2.31.0"</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">cmdstanr</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/cmdstanr/reference/install_cmdstan.html" class="external-link">check_cmdstan_toolchain</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; The C++ toolchain required for CmdStan is setup properly!</span></span></code></pre></div>
 <blockquote>
 <p>Problems? Check out cmdstanr’s vignette on <a href="https://mc-stan.org/cmdstanr/articles/cmdstanr.html" class="external-link">Getting
 Started</a></p>
 </blockquote>
+<div class="section level4">
+<h4 id="special-note-for-windows-users">Special note for Windows users<a class="anchor" aria-label="anchor" href="#special-note-for-windows-users"></a>
+</h4>
+<p>We strongly recommend that you install Linux on your Windows machine
+and take advantage of <code>cmdstanr</code> functions that run
+<code>Stan</code> models in Linux. This will likely cut the MCMC
+run-times by 30-50% for the <code>bbsBayes2</code> models. Installing <a href="https://learn.microsoft.com/en-us/windows/wsl/install" class="external-link">Windows
+Subsystem for Linux (WSL)</a> is a small hassle, but only needs to be
+done once. Follow the directions at the above link.</p>
+<p>Once the WSL installation is complete, re-install
+<code>cmdstan</code> using
+<code>cmdstanr::install_cmdstan(overwrite = TRUE, wsl = TRUE)</code>.
+Now, everytime you run a model using <code>cmdstan</code> (and therefore
+anytime you run a model using <code>bbsBayes2</code>), it will use the
+Linux installation to run Stan. It’s seamless and you’ll be very
+thankful you did it once it’s done.</p>
 </div>
-<div class="section level2">
-<h2 id="download-bbs-data">Download BBS data<a class="anchor" aria-label="anchor" href="#download-bbs-data"></a>
-</h2>
+</div>
+<div class="section level3">
+<h3 id="workflow-overview">Workflow overview<a class="anchor" aria-label="anchor" href="#workflow-overview"></a>
+</h3>
+<p>We can visualize the bbsBayes2 workflow with this flow chart of
+functions.</p>
+<p>The functions are colour coded by category:</p>
+<ul>
+<li>BBS Data - Blue</li>
+<li>Data Prep - Pink</li>
+<li>Modelling - Green</li>
+<li>Exploring model trends and indices - Purple</li>
+<li>General helper functions - Orange</li>
+</ul>
+<p>Functions which are connected by a <strong>solid, black</strong>
+arrow, indicate that the output of the first function is required as
+input to the second. For example, the output of <code><a href="../reference/stratify.html">stratify()</a></code>
+is required input for <code><a href="../reference/prepare_data.html">prepare_data()</a></code>.</p>
+<p>Functions which are connected by a <strong>solid, grey</strong>
+arrow, indicate that the output of the first function is
+<em>optional</em> input to the second. For example, the output of
+<code>grenerate_trends()</code> is an option input for
+<code><a href="../reference/plot_geofacet.html">plot_geofacet()</a></code>.</p>
+<p>Functions which are connected by a <strong>dotted</strong> arrow
+indicate that the first function can be used to create input for the
+second, but not necessarily directly. For example,
+<code><a href="../reference/fetch_bbs_data.html">fetch_bbs_data()</a></code> downloads BBS data which is used by
+<code><a href="../reference/stratify.html">stratify()</a></code>, but it isn’t an input. Alternatively,
+<code><a href="../reference/load_map.html">load_map()</a></code> can load a spatial data file for a specific
+stratification which can be modified by the user and then used as input
+to <code><a href="../reference/prepare_spatial.html">prepare_spatial()</a></code> or
+<code><a href="../reference/generate_indices.html">generate_indices()</a></code>.</p>
+<p>See the <a href="../reference">Function Reference</a> for more
+details on how to use a particular function.</p>
+<pre><code><span><span class="co">#&gt; Error in loadNamespace(name): there is no package called 'webshot'</span></span></code></pre>
+</div>
+<div class="section level3">
+<h3 id="download-bbs-data">Download BBS data<a class="anchor" aria-label="anchor" href="#download-bbs-data"></a>
+</h3>
 <p>Now we’ll fetch the BBS data using functions included in
 bbsBayes2.</p>
 <blockquote>
@@ -127,46 +205,58 @@ sample data. Specify <code>sample_data = TRUE</code> in the first
 <code><a href="../reference/stratify.html">stratify()</a></code> step (see the next section).</p>
 </blockquote>
 <p>First we’ll load the package.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bbsBayes/bbsBayes2" class="external-link">bbsBayes2</a></span><span class="op">)</span></span></code></pre></div>
-<p>There are four types of BBS data that can be downloaded:</p>
+<p>There are (as of June 2023) four types of BBS data that can be
+downloaded:</p>
 <ul>
 <li>Two levels <code>state</code> and <code>stop</code> (only
 <code>state</code> works with bbsBayes2 models)</li>
-<li>Two releases <code>2020</code> and <code>2022</code>
-</li>
+<li>Two releases <code>2020</code> and <code>2022</code> (more options
+will be added as annual releases occur)</li>
 </ul>
 <p>Unless you have a specific reason to need a different version, the
-default (level <code>state</code> and release <code>2022</code>) is
-likely the one you want. However you can download all data sets and
-specify which one you wish to use in the <code><a href="../reference/stratify.html">stratify()</a></code>
-step.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+defaults (level <code>state</code> and the most recent release) is what
+you want. However you can download all data sets and specify which one
+you wish to use in the <code><a href="../reference/stratify.html">stratify()</a></code> step.</p>
+<div class="section level4">
+<h4 id="a-note-about-bbs-release-names">A note about BBS release names:<a class="anchor" aria-label="anchor" href="#a-note-about-bbs-release-names"></a>
+</h4>
+<p>The releases are named for the year in which the annual dataset was
+released after going through QA-QC. So the <code>2022</code> release
+contains all surveys conducted up to and including the 2021 season.
+There is no release for 2021, because the BBS was cancelled during the
+COVID lockdowns of spring 2020 and there are no 2020 BBS data.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fetch_bbs_data.html">fetch_bbs_data</a></span><span class="op">(</span><span class="op">)</span>                  <span class="co"># Default</span></span>
 <span><span class="fu"><a href="../reference/fetch_bbs_data.html">fetch_bbs_data</a></span><span class="op">(</span>release <span class="op">=</span> <span class="st">"2020"</span><span class="op">)</span>  <span class="co"># Specify a different release</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
-</h2>
+</div>
+<div class="section level3">
+<h3 id="workflow-to-fit-models">Workflow to fit models<a class="anchor" aria-label="anchor" href="#workflow-to-fit-models"></a>
+</h3>
+<p>Note: if you would prefer to skip the model-fitting process for now,
+skip down to <a href="#explore_output">Workflow to explore the model
+outputs</a>.</p>
 <p>Now that you have cmdstanr installed and the BBS data downloaded,
 we’ll walk through a general workflow for modelling species trends with
 bbsBayes2.</p>
-<div class="section level3">
-<h3 id="stratify-the-data">Stratify the data<a class="anchor" aria-label="anchor" href="#stratify-the-data"></a>
-</h3>
+<div class="section level4">
+<h4 id="stratify-the-data">Stratify the data<a class="anchor" aria-label="anchor" href="#stratify-the-data"></a>
+</h4>
 <p>The first step in any bbsBayes2 analysis is to stratify the data. In
 this step we choose a stratification type as well as a species to
 explore.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>, species <span class="op">=</span> <span class="st">"Snowy Owl"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>, species <span class="op">=</span> <span class="st">"Scissor-tailed Flycatcher"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using 'bbs_usgs' (standard) stratification</span></span>
 <span><span class="co">#&gt; Loading BBS data...</span></span>
-<span><span class="co">#&gt; Filtering to species Snowy Owl (3760)</span></span>
+<span><span class="co">#&gt; Filtering to species Scissor-tailed Flycatcher (4430)</span></span>
 <span><span class="co">#&gt; Stratifying data...</span></span>
 <span><span class="co">#&gt;   Renaming routes...</span></span></code></pre></div>
 <p>We can also play around with the included sample data (Pacific
 Wrens)</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>, sample_data <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># Only Pacific Wren</span></span>
 <span><span class="co">#&gt; Using 'bbs_cws' (standard) stratification</span></span>
 <span><span class="co">#&gt; Using sample BBS data...</span></span>
@@ -175,104 +265,694 @@ Wrens)</p>
 <span><span class="co">#&gt;   Combining BCR 7 and NS and PEI...</span></span>
 <span><span class="co">#&gt;   Renaming routes...</span></span></code></pre></div>
 <p>Stratifications included in bbsBayes2 are bbs_usgs, bbs_cws, bcr,
-latlong, prov_state. See the articles on <a href="articles/stratification">stratifications</a> and <a href="articles/custom_stratification">custom stratifications</a> for
-more details and examples.</p>
+latlong, prov_state. See the article on <a href="articles/stratification">stratifications</a> for more details and
+examples.</p>
 <p>Available species can be explore using the
-<code><a href="../reference/search_species.html">search_species()</a></code> function.</p>
+<code><a href="../reference/search_species.html">search_species()</a></code> function. Many of the bbsBayes2 functions
+require identifying a species using English names; The
+<code><a href="../reference/search_species.html">search_species()</a></code> function allows the user to search up
+English names using Spanish, French, or Latin names.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/search_species.html">search_species</a></span><span class="op">(</span><span class="st">"Geai bleu"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 9</span></span>
+<span><span class="co">#&gt;     aou english  french    spanish             order         family   genus      species  unid_combined</span></span>
+<span><span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;               &lt;chr&gt;         &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;    &lt;lgl&gt;        </span></span>
+<span><span class="co">#&gt; 1  4770 Blue Jay Geai bleu Cyanocitta cristata Passeriformes Corvidae Cyanocitta cristata TRUE</span></span>
+<span><span class="fu"><a href="../reference/search_species.html">search_species</a></span><span class="op">(</span><span class="st">"Cyanocitta"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 2 × 9</span></span>
+<span><span class="co">#&gt;     aou english       french          spanish             order         family   genus     species unid_combined</span></span>
+<span><span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;           &lt;chr&gt;               &lt;chr&gt;         &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;   &lt;lgl&gt;        </span></span>
+<span><span class="co">#&gt; 1  4780 Steller's Jay Geai de Steller Cyanocitta stelleri Passeriformes Corvidae Cyanocit… stelle… TRUE         </span></span>
+<span><span class="co">#&gt; 2  4770 Blue Jay      Geai bleu       Cyanocitta cristata Passeriformes Corvidae Cyanocit… crista… TRUE</span></span>
+<span><span class="fu"><a href="../reference/search_species.html">search_species</a></span><span class="op">(</span><span class="st">"Corvidae"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 22 × 9</span></span>
+<span><span class="co">#&gt;      aou english                                         french spanish order family genus species unid_combined</span></span>
+<span><span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt;                                           &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;lgl&gt;        </span></span>
+<span><span class="co">#&gt;  1  4840 Canada Jay                                      Mésan… Periso… Pass… Corvi… Peri… canade… TRUE         </span></span>
+<span><span class="co">#&gt;  2  4830 Green Jay                                       Geai … Cyanoc… Pass… Corvi… Cyan… yncas   TRUE         </span></span>
+<span><span class="co">#&gt;  3  4920 Pinyon Jay                                      Geai … Gymnor… Pass… Corvi… Gymn… cyanoc… TRUE         </span></span>
+<span><span class="co">#&gt;  4  4780 Steller's Jay                                   Geai … Cyanoc… Pass… Corvi… Cyan… stelle… TRUE         </span></span>
+<span><span class="co">#&gt;  5  4770 Blue Jay                                        Geai … Cyanoc… Pass… Corvi… Cyan… crista… TRUE         </span></span>
+<span><span class="co">#&gt;  6  4790 Florida Scrub-Jay                               Geai … Aphelo… Pass… Corvi… Aphe… coerul… TRUE         </span></span>
+<span><span class="co">#&gt;  7  4811 Island Scrub-Jay                                Geai … Aphelo… Pass… Corvi… Aphe… insula… TRUE         </span></span>
+<span><span class="co">#&gt;  8  4812 California Scrub-Jay                            Geai … Aphelo… Pass… Corvi… Aphe… califo… TRUE         </span></span>
+<span><span class="co">#&gt;  9  4813 Woodhouse's Scrub-Jay                           Geai … Aphelo… Pass… Corvi… Aphe… woodho… TRUE         </span></span>
+<span><span class="co">#&gt; 10  4810 unid. California Scrub-Jay / Woodhouse's Scrub… unid … Aphelo… Pass… Corvi… Aphe… califo… TRUE         </span></span>
+<span><span class="co">#&gt; # ℹ 12 more rows</span></span></code></pre></div>
+<p>There are some taxonomic groupings of species-units in the BBS
+database that bbsBayes2 by default also combines into combined species
+forms. These represent groupings that make sense based on changes in
+taxonomy or potentially inconsistent distinctions among observers,
+routes, regions, or time.</p>
+<ul>
+<li>There are groupings that represent species considered distinct in
+the early portion of the BBS history that have been lumped into a single
+species at some point since then. For example, the Northern Flicker
+observations exist in the BBS database separately as Red-shafted Flicker
+(4130), Yellow-shafted Flicker (4120), unidentified Red/Yellow-shafted
+Flicker (4123) or hybrid Red x Yellow-shafted Flicker (4125). To provide
+an appropriate dataset to represent population trends of Northern
+Flicker, bbsBayes2 by default sums all of these observations into a new
+<em>species</em> called Northern Flicker (all forms), which replaces the
+(4123) unidentified category in the species database. The remaining
+original separate forms (Red, Yellow, and hybrid) are retained.</li>
+<li>Similar combined <em>species</em> are created for taxonomic splits
+that have occurred since the start of the BBS, such as Clark’s and
+Western Grebe, which are retained as their own separate species, but are
+also combined into Western Grebe (Clark’s/Western) (12).</li>
+</ul>
+<p>You can access a complete list of these combined <em>species</em>
+groups and the sub groups that make them up.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">species_forms</span></span>
+<span><span class="co">#&gt;    aou_unid                               english_original</span></span>
+<span><span class="co">#&gt; 1      2973              unid. Dusky Grouse / Sooty Grouse</span></span>
+<span><span class="co">#&gt; 2      5677                   (unid. race) Dark-eyed Junco</span></span>
+<span><span class="co">#&gt; 3      4123    (unid. Red/Yellow Shafted) Northern Flicker</span></span>
+<span><span class="co">#&gt; 4      5077      unid. Bullock's Oriole / Baltimore Oriole</span></span>
+<span><span class="co">#&gt; 5      3370                                Red-tailed Hawk</span></span>
+<span><span class="co">#&gt; 6      4022                                unid. sapsucker</span></span>
+<span><span class="co">#&gt; 7      1690                                     Snow Goose</span></span>
+<span><span class="co">#&gt; 8      6295       unid. Cassin's Vireo / Blue-headed Vireo</span></span>
+<span><span class="co">#&gt; 9      4665     unid. Alder Flycatcher / Willow Flycatcher</span></span>
+<span><span class="co">#&gt; 10     4642   unid. Cordilleran / Pacific-slope Flycatcher</span></span>
+<span><span class="co">#&gt; 11       12            unid. Western Grebe / Clark's Grebe</span></span>
+<span><span class="co">#&gt; 12     6556 (unid. Myrtle/Audubon's) Yellow-rumped Warbler</span></span>
+<span><span class="co">#&gt; 13     5275           unid. Common Redpoll / Hoary Redpoll</span></span>
+<span><span class="co">#&gt;                                                   english_combined</span></span>
+<span><span class="co">#&gt; 1                                        Blue Grouse (Dusky/Sooty)</span></span>
+<span><span class="co">#&gt; 2                                      Dark-eyed Junco (all forms)</span></span>
+<span><span class="co">#&gt; 3                                     Northern Flicker (all forms)</span></span>
+<span><span class="co">#&gt; 4                            Northern Oriole (Bullock's/Baltimore)</span></span>
+<span><span class="co">#&gt; 5                                      Red-tailed Hawk (all forms)</span></span>
+<span><span class="co">#&gt; 6  Sapsuckers (Yellow-bellied/Red-naped/Red-breasted/Williamson's)</span></span>
+<span><span class="co">#&gt; 7                                           Snow Goose (all forms)</span></span>
+<span><span class="co">#&gt; 8                            Solitary Vireo (Blue-headed/Cassin's)</span></span>
+<span><span class="co">#&gt; 9                               Traill's Flycatcher (Alder/Willow)</span></span>
+<span><span class="co">#&gt; 10                  Western Flycatcher (Cordilleran/Pacific-slope)</span></span>
+<span><span class="co">#&gt; 11                                 Western Grebe (Clark's/Western)</span></span>
+<span><span class="co">#&gt; 12                               Yellow-rumped Warbler (all forms)</span></span>
+<span><span class="co">#&gt; 13                                          Redpoll (Common/Hoary)</span></span>
+<span><span class="co">#&gt;                                                french_combined                       aou_id</span></span>
+<span><span class="co">#&gt; 1                            Tétras sombre (sombre/fuligineux)                   2970, 2971</span></span>
+<span><span class="co">#&gt; 2                            Junco ardoisé (toutes les formes) 5671, 5670, 5680, 5660, 5690</span></span>
+<span><span class="co">#&gt; 3                           Pic flamboyant (toutes les formes)             4125, 4120, 4130</span></span>
+<span><span class="co">#&gt; 4                     Oriole du Nord (de Bullock/de Baltimore)             5080, 5070, 5078</span></span>
+<span><span class="co">#&gt; 5                      Buse à queue rousse (toutes les formes)                         3380</span></span>
+<span><span class="co">#&gt; 6  Pics buveur de sève (maculé/à nuque rouge/à poitrine rouge)       4020, 4021, 4031, 4032</span></span>
+<span><span class="co">#&gt; 7                           Oie des neiges (toutes les formes)                         1691</span></span>
+<span><span class="co">#&gt; 8                  Viréo à tête bleue (à tête bleue/de Cassin)             6292, 6291, 6290</span></span>
+<span><span class="co">#&gt; 9               Moucherolle de Traill (des aulnes/ des saules)                   4661, 4660</span></span>
+<span><span class="co">#&gt; 10                     Moucherolle côtier (des ravins/ côtier)                   4641, 4640</span></span>
+<span><span class="co">#&gt; 11                      Grèbe élégant (à face blanche/élégant)                       10, 11</span></span>
+<span><span class="co">#&gt; 12               Paruline à croupion jaune (toutes les formes)                   6550, 6560</span></span>
+<span><span class="co">#&gt; 13                                 Sizerin (Flammé/Blanchâtre)                   5270, 5280</span></span></code></pre></div>
+<p>If you’re looking for a complete list of all species in the BBS
+database.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">all_species_bbs_database</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_bbs_data.html">load_bbs_data</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">species</span></span></code></pre></div>
+<p>Note: if you’re just exploring the package functionality, we
+recommend using species with relatively small ranges (i.e., relatively
+few data) such as the Hepatic Tanager, Pacific Wren, or Scissor-tailed
+Flycatcher.</p>
 </div>
-<div class="section level3">
-<h3 id="prepare-the-data">Prepare the data<a class="anchor" aria-label="anchor" href="#prepare-the-data"></a>
-</h3>
+<div class="section level4">
+<h4 id="prepare-the-data">Prepare the data<a class="anchor" aria-label="anchor" href="#prepare-the-data"></a>
+</h4>
 <p>Once we have stratified the data, we can now prepare it for use in a
 model. In this step data will be filtered to omit routes with too few
 samples, etc. See <code><a href="../reference/prepare_data.html">prepare_data()</a></code> for more details on how
 you can customize this step.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="prepare-the-model">Prepare the model<a class="anchor" aria-label="anchor" href="#prepare-the-model"></a>
-</h3>
+<div class="section level4">
+<h4 id="prepare-the-model">Prepare the model<a class="anchor" aria-label="anchor" href="#prepare-the-model"></a>
+</h4>
 <p>Next we will prepare the model parameters and initialization values.
 See <code><a href="../reference/prepare_model.html">prepare_model()</a></code> for more details on how you can
 customize this step.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="va">p</span>, model <span class="op">=</span> <span class="st">"first_diff"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="run-model">Run model<a class="anchor" aria-label="anchor" href="#run-model"></a>
-</h3>
+<div class="section level4">
+<h4 id="run-model">Run model<a class="anchor" aria-label="anchor" href="#run-model"></a>
+</h4>
 <p>Now we can run the model.</p>
 <p>The default <code>iter_sampling</code> and <code>iter_warmup</code>
 are 1000 and the default <code>chains</code> is 4. In the interest of
 speed for this example, we are using much lower values, but note that
 this almost certainly will result in problems with our model.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">md</span>, iter_sampling <span class="op">=</span> <span class="fl">20</span>, iter_warmup <span class="op">=</span> <span class="fl">20</span>, chains <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">md</span>, iter_sampling <span class="op">=</span> <span class="fl">100</span>, iter_warmup <span class="op">=</span> <span class="fl">500</span>, chains <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="a-note-on-spatial-models">A note on spatial models<a class="anchor" aria-label="anchor" href="#a-note-on-spatial-models"></a>
+</h4>
+<p>For spatial models there’s two additional steps. You stratify and
+prepare the data as in the previous example, but you also prepare the
+map and the spatial data. An example is below.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>, species<span class="op">=</span><span class="st">"Scissor-tailed Flycatcher"</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#now the additional steps</span></span>
+<span><span class="co">#load a map</span></span>
+<span><span class="va">map</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span>stratify_by <span class="op">=</span> <span class="st">"bbs_usgs"</span><span class="op">)</span></span>
+<span><span class="co">#prepare the spatial data</span></span>
+<span><span class="va">sp</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/prepare_spatial.html">prepare_spatial</a></span><span class="op">(</span><span class="va">p</span>,<span class="va">map</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#then prepare the model with the spatial output</span></span>
+<span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="va">sp</span>, model <span class="op">=</span> <span class="st">"gamye"</span>,model_variant <span class="op">=</span> <span class="st">"spatial"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#then run the model as before</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#optionally, save the model output as an .rds file</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">m</span>,<span class="st">"output/4430_gamye_spatial.rds"</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level3">
-<h3 id="explore-the-model-outputs">Explore the model outputs<a class="anchor" aria-label="anchor" href="#explore-the-model-outputs"></a>
+<h3 id="explore_output">Workflow to explore the model outputs<a class="anchor" aria-label="anchor" href="#explore_output"></a>
 </h3>
-<p>First we will generate indices according to different regional
-categories. By default these are <code>continent</code> and
-<code>stratum</code>.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p>If you would prefer to skip the model fitting steps for now, you can
+download a fitted model object (the output of <code><a href="../reference/run_model.html">run_model()</a></code>
+function) and test out the remaining package features.</p>
+<p>The outputs of the collection of functions required to fit a model
+are cumulative: each one retains the metadata from the previous step. As
+a result, the saved object from the <code><a href="../reference/run_model.html">run_model()</a></code> function is
+a large list that includes the <code>cmdstanr</code> posterior samples
+object from the model fitting process, as well as all of the data and
+metadata necessary to understand and replicate the choices made to fit
+the model.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/4430_gamye_spatial.rds"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "model_fit"   "model_data"  "meta_data"   "meta_strata" "raw_data"</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="convergence-and-parameter-summaries">Convergence and parameter summaries<a class="anchor" aria-label="anchor" href="#convergence-and-parameter-summaries"></a>
+</h4>
+<p>First, we will investigate the model convergence and the parameter
+estimates of the model. There are two key helper functions in
+<code>bbsBayes2</code> that provide information on model convergence:
+<code><a href="../reference/get_convergence.html">get_convergence()</a></code> calculates convergence diagnostics and
+<code><a href="../reference/get_summary.html">get_summary()</a></code> calculates the convergence diagnostics as
+well as summary statistics (mean, median, credible intervals) for all
+parameters in a fitted model.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Convergence diagnostics for all parameters</span></span>
+<span><span class="va">converge</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_convergence.html">get_convergence</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Convergence diagnostics for all smoothed annual indices</span></span>
+<span><span class="va">converge_n_smooth</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_convergence.html">get_convergence</a></span><span class="op">(</span><span class="va">m</span>,variables <span class="op">=</span> <span class="st">"n_smooth"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="op">-</span><span class="va">rhat</span><span class="op">)</span></span>
+<span><span class="va">converge_n_smooth</span></span>
+<span><span class="co">#&gt; # A tibble: 1,375 × 5</span></span>
+<span><span class="co">#&gt;    variable_type variable         rhat ess_bulk ess_tail</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;           &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 n_smooth      n_smooth[7,26]   1.00    5383.    3686.</span></span>
+<span><span class="co">#&gt;  2 n_smooth      n_smooth[7,25]   1.00    5384.    3618.</span></span>
+<span><span class="co">#&gt;  3 n_smooth      n_smooth[7,28]   1.00    5325.    3745.</span></span>
+<span><span class="co">#&gt;  4 n_smooth      n_smooth[7,24]   1.00    5137.    3545.</span></span>
+<span><span class="co">#&gt;  5 n_smooth      n_smooth[7,23]   1.00    5053.    3197.</span></span>
+<span><span class="co">#&gt;  6 n_smooth      n_smooth[9,35]   1.00    4546.    3433.</span></span>
+<span><span class="co">#&gt;  7 n_smooth      n_smooth[7,27]   1.00    5348.    3780.</span></span>
+<span><span class="co">#&gt;  8 n_smooth      n_smooth[12,54]  1.00    4279.    3348.</span></span>
+<span><span class="co">#&gt;  9 n_smooth      n_smooth[14,10]  1.00    4870.    3670.</span></span>
+<span><span class="co">#&gt; 10 n_smooth      n_smooth[12,53]  1.00    4317.    3549.</span></span>
+<span><span class="co">#&gt; # ℹ 1,365 more rows</span></span></code></pre></div>
+<p>Here we’ve sorted the convergence diagnostics by rhat values. Values
+of rhat &gt; 1.05 indicate a problem with the convergence of some of the
+parameters in the model (i.e., there is more variation among the
+independent chains than within them) and values of ess_bulk &lt;
+approximately 400 suggest an imprecise estimate of the parameter. In
+some cases, refitting the model with more iterations (both warmup and
+sampling) may improve convergence. More advice on exploring Bayesian
+model convergence can be found <a href="https://doi.org/10.1111/rssa.12378" class="external-link">here</a>.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">mod</span>,</span>
+<span>               iter_warmup <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>               iter_sampling <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span></code></pre></div>
+<p>It is possible to thin the MCMC chains by passing arguments from
+<code><a href="https://mc-stan.org/cmdstanr/reference/model-method-sample.html" class="external-link">cmdstanr::sample()</a></code> into the run_model() function. The call
+below would result in the same number of posterior samples as
+<code><a href="../reference/run_model.html">run_model()</a></code> defaults, but may improve the efficiency of the
+sampling (and of course would also increase the time required to fit the
+model by a factor of approximately 4).</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">mod</span>,</span>
+<span>               iter_warmup <span class="op">=</span> <span class="fl">4000</span>,</span>
+<span>               iter_sampling <span class="op">=</span> <span class="fl">4000</span>,</span>
+<span>               thin <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<p>If you want summary statistics of the parameters, as well as
+convergence diagnostics, the function <code><a href="../reference/get_summary.html">get_summary()</a></code> may be
+more useful.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Summary statistics and convergence diagnostics for all parameters</span></span>
+<span><span class="va">summary_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_summary.html">get_summary</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Summary statistics and convergence diagnostics for all smoothed annual indices</span></span>
+<span><span class="va">summary_stats_n_smooth</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_summary.html">get_summary</a></span><span class="op">(</span><span class="va">m</span>,variables <span class="op">=</span> <span class="st">"n_smooth"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="op">-</span><span class="va">rhat</span><span class="op">)</span></span>
+<span><span class="va">summary_stats_n_smooth</span></span>
+<span><span class="co">#&gt; # A tibble: 1,375 × 10</span></span>
+<span><span class="co">#&gt;    variable           mean  median     sd    mad      q5    q95  rhat ess_bulk ess_tail</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;             &lt;num&gt;   &lt;num&gt;  &lt;num&gt;  &lt;num&gt;   &lt;num&gt;  &lt;num&gt; &lt;num&gt;    &lt;num&gt;    &lt;num&gt;</span></span>
+<span><span class="co">#&gt;  1 n_smooth[7,26]   0.501   0.494  0.0909 0.0894  0.367   0.661  1.00    5383.    3686.</span></span>
+<span><span class="co">#&gt;  2 n_smooth[7,25]   0.512   0.504  0.0933 0.0917  0.374   0.675  1.00    5384.    3618.</span></span>
+<span><span class="co">#&gt;  3 n_smooth[7,28]   0.488   0.480  0.0869 0.0849  0.359   0.644  1.00    5325.    3745.</span></span>
+<span><span class="co">#&gt;  4 n_smooth[7,24]   0.528   0.520  0.0965 0.0947  0.385   0.694  1.00    5137.    3545.</span></span>
+<span><span class="co">#&gt;  5 n_smooth[7,23]   0.548   0.541  0.101  0.0992  0.400   0.718  1.00    5053.    3197.</span></span>
+<span><span class="co">#&gt;  6 n_smooth[9,35]   0.251   0.245  0.0470 0.0444  0.183   0.335  1.00    4546.    3433.</span></span>
+<span><span class="co">#&gt;  7 n_smooth[7,27]   0.494   0.487  0.0888 0.0866  0.361   0.649  1.00    5348.    3780.</span></span>
+<span><span class="co">#&gt;  8 n_smooth[12,54]  0.103   0.0963 0.0400 0.0338  0.0539  0.174  1.00    4279.    3348.</span></span>
+<span><span class="co">#&gt;  9 n_smooth[14,10] 25.0    25.0    1.69   1.71   22.4    27.9    1.00    4870.    3670.</span></span>
+<span><span class="co">#&gt; 10 n_smooth[12,53]  0.0984  0.0926 0.0354 0.0297  0.0545  0.163  1.00    4317.    3549.</span></span>
+<span><span class="co">#&gt; # ℹ 1,365 more rows</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="indices---predictions-of-annual-relative-abundance">Indices - predictions of annual relative abundance<a class="anchor" aria-label="anchor" href="#indices---predictions-of-annual-relative-abundance"></a>
+</h4>
+<p>Indices (annual indices of relative abundance) represent mean
+predicted annual counts of the species in a given region, on an average
+route, by an average observer. The pattern in the time-series of these
+annual indices for a given region represent the estimated population
+trajectory. We generate indices according to different categories of
+regional summaries. All of the bbsBayes2 models are stratified based on
+geographic spatial units, and these categories of regions are either
+these strata (<code>generate_indices(region = "stratum")</code>), or
+some combination of strata. By default the selected regions for most
+model summaries are <code>continent</code> and <code>stratum</code>. The
+<code>continent</code> estimates represent the area- and
+abundance-weighted means across all strata, other regional summaries are
+built in for some stratifications that allow it (e.g.,
+<code>region = "country"</code> for the stratifications
+<code>bbs_usgs</code>, <code>bbs_cws</code>, or
+<code>prov_state</code>).</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_indices.html">generate_indices</a></span><span class="op">(</span>model_output <span class="op">=</span> <span class="va">m</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Processing region continent</span></span>
 <span><span class="co">#&gt; Processing region stratum</span></span></code></pre></div>
-<p>We can visually explore these indices by accessing the
-<code>indices</code> item in the list</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<p>We can explore or extract these indices for saving as an external
+file (e.g., export to .csv), by accessing the <code>indices</code> item
+in the list.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">i</span><span class="op">[[</span><span class="st">"indices"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,080 × 17</span></span></span>
-<span><span class="co">#&gt;     year region    regio…¹ strat…² strat…³ index index…⁴ index…⁵ index…⁶ index…⁷</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">1</span>968 continent contin… CA-AB-… <span style="color: #949494;">""</span>       4.74    3.63    3.76    4.20    5.53</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">1</span>969 continent contin… CA-AB-… <span style="color: #949494;">""</span>       3.93    2.94    3.04    3.52    4.43</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">1</span>970 continent contin… CA-AB-… <span style="color: #949494;">""</span>       4.82    3.49    3.64    4.25    5.43</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">1</span>971 continent contin… CA-AB-… <span style="color: #949494;">""</span>       5.46    3.92    4.08    4.84    6.30</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">1</span>972 continent contin… CA-AB-… <span style="color: #949494;">""</span>       5.72    4.59    4.65    5.18    6.13</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">1</span>973 continent contin… CA-AB-… <span style="color: #949494;">""</span>       6.23    5.02    5.07    5.57    6.93</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">1</span>974 continent contin… CA-AB-… <span style="color: #949494;">""</span>       6.44    5.19    5.42    5.99    7.48</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">1</span>975 continent contin… CA-AB-… <span style="color: #949494;">""</span>       6.54    5.25    5.55    5.83    7.28</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">1</span>976 continent contin… CA-AB-… <span style="color: #949494;">""</span>       7.41    5.78    5.88    6.89    7.97</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">1</span>977 continent contin… CA-AB-… <span style="color: #949494;">""</span>       8.88    6.81    7.06    7.79    9.60</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 1,070 more rows, 7 more variables: index_q_0.95 &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   index_q_0.975 &lt;dbl&gt;, obs_mean &lt;dbl&gt;, n_routes &lt;int&gt;, n_routes_total &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   n_non_zero &lt;int&gt;, backcast_flag &lt;dbl&gt;, and abbreviated variable names</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ¹​region_type, ²​strata_included, ³​strata_excluded, ⁴​index_q_0.025,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ⁵​index_q_0.05, ⁶​index_q_0.25, ⁷​index_q_0.75</span></span></span></code></pre></div>
-<p>We can also plot these indicies.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_indices.html">plot_indices</a></span><span class="op">(</span>indices <span class="op">=</span> <span class="va">i</span>, add_observed_means <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 1,430 × 17</span></span>
+<span><span class="co">#&gt;     year region    region_type strata_included     strata_excluded index index_q_0.025 index_q_0.05 index_q_0.25</span></span>
+<span><span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;               &lt;chr&gt;           &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1  1967 continent continent   US-AR-24 ; US-AR-2… ""              12.7          11.4         11.6         12.2 </span></span>
+<span><span class="co">#&gt;  2  1968 continent continent   US-AR-24 ; US-AR-2… ""              12.8          11.7         11.9         12.4 </span></span>
+<span><span class="co">#&gt;  3  1969 continent continent   US-AR-24 ; US-AR-2… ""              13.0          12.0         12.2         12.6 </span></span>
+<span><span class="co">#&gt;  4  1970 continent continent   US-AR-24 ; US-AR-2… ""              13.1          12.1         12.3         12.7 </span></span>
+<span><span class="co">#&gt;  5  1971 continent continent   US-AR-24 ; US-AR-2… ""              12.9          12.1         12.3         12.6 </span></span>
+<span><span class="co">#&gt;  6  1972 continent continent   US-AR-24 ; US-AR-2… ""              12.8          12.0         12.1         12.5 </span></span>
+<span><span class="co">#&gt;  7  1973 continent continent   US-AR-24 ; US-AR-2… ""              11.6          10.9         11.0         11.4 </span></span>
+<span><span class="co">#&gt;  8  1974 continent continent   US-AR-24 ; US-AR-2… ""              10.9          10.3         10.4         10.7 </span></span>
+<span><span class="co">#&gt;  9  1975 continent continent   US-AR-24 ; US-AR-2… ""              10.3           9.62         9.72        10.0 </span></span>
+<span><span class="co">#&gt; 10  1976 continent continent   US-AR-24 ; US-AR-2… ""               9.37          8.78         8.87         9.17</span></span>
+<span><span class="co">#&gt; # ℹ 1,420 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 8 more variables: index_q_0.75 &lt;dbl&gt;, index_q_0.95 &lt;dbl&gt;, index_q_0.975 &lt;dbl&gt;, obs_mean &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   n_routes &lt;int&gt;, n_routes_total &lt;int&gt;, n_non_zero &lt;int&gt;, backcast_flag &lt;dbl&gt;</span></span></code></pre></div>
+<p>We can also generate time-series plots of these indices.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># generates a list of ggplot graphs, one for each region</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_indices.html">plot_indices</a></span><span class="op">(</span>indices <span class="op">=</span> <span class="va">i</span>,</span>
+<span>                  add_observed_means <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># optional argument to show raw observed mean counts</span></span></code></pre></div>
 <p>Note that we get one plot for each region and regional category, in
 this case that means one plot for the continent, and one for each
 stratum.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "continent" "CA_AB_10"  "CA_BC_10"  "CA_BC_4"   "CA_BC_5"   "CA_BC_9"  </span></span>
-<span><span class="co">#&gt;  [7] "US_AK_2"   "US_AK_4"   "US_AK_5"   "US_CA_15"  "US_CA_32"  "US_CA_5"  </span></span>
-<span><span class="co">#&gt; [13] "US_ID_10"  "US_MT_10"  "US_OR_10"  "US_OR_5"   "US_OR_9"   "US_WA_10" </span></span>
-<span><span class="co">#&gt; [19] "US_WA_5"   "US_WA_9"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "continent" "US_AR_24"  "US_AR_25"  "US_AR_26"  "US_KS_18"  "US_KS_19"  "US_KS_22"  "US_LA_25"  "US_LA_37" </span></span>
+<span><span class="co">#&gt; [10] "US_MO_22"  "US_MO_24"  "US_NM_18"  "US_NM_35"  "US_OK_18"  "US_OK_19"  "US_OK_21"  "US_OK_22"  "US_OK_25" </span></span>
+<span><span class="co">#&gt; [19] "US_TX_18"  "US_TX_19"  "US_TX_20"  "US_TX_21"  "US_TX_25"  "US_TX_35"  "US_TX_36"  "US_TX_37"</span></span></code></pre></div>
 <p>We can plot them individually by pulling a plot out of the list</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p</span><span class="op">[[</span><span class="st">"continent"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p><img src="bbsBayes2_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p</span><span class="op">[[</span><span class="st">"CA_AB_10"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p><img src="bbsBayes2_files/figure-html/unnamed-chunk-18-2.png" width="700"></p>
-<p>Next we can calculate the specific trends based on these indices</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span></code></pre></div>
-<p>We can plot these on a map</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span></span></code></pre></div>
-<p><img src="bbsBayes2_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
-<p>And there you have it!</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p</span><span class="op">[[</span><span class="st">"continent"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/bbsBayes2_unnamed-chunk-30-1.png" alt="Population trajectory graph, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts."></p>
+<p>Each of these plots is a <a href="https://github.com/tidyverse/ggplot2" class="external-link">ggplot2</a> object that can
+be modified like any other. For example, you can modify titles or
+axes.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1_mod</span> <span class="op">&lt;-</span> <span class="va">p</span><span class="op">[[</span><span class="st">"continent"</span><span class="op">]</span><span class="op">]</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2000</span>,<span class="cn">NA</span><span class="op">)</span><span class="op">)</span><span class="op">+</span> <span class="co">#subset of years</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">""</span><span class="op">)</span> <span class="co"># remove the title</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p1_mod</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/bbsBayes2_unnamed-chunk-31-1.png" alt="Population trajectory graph, modified to show only the last 20 years of the time-series and remove the title"></p>
+</div>
+<div class="section level4">
+<h4 id="trends---predictions-of-mean-rates-of-change-over-time">Trends - predictions of mean rates of change over time<a class="anchor" aria-label="anchor" href="#trends---predictions-of-mean-rates-of-change-over-time"></a>
+</h4>
+<p>Next we can calculate the long-term trends based on these indices.
+Note all trends from bbsBayes2 models are derived from summaries of
+indices through time or between two points in time.</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
+<span><span class="va">t</span></span>
+<span><span class="co">#&gt; $trends</span></span>
+<span><span class="co">#&gt; # A tibble: 26 × 27</span></span>
+<span><span class="co">#&gt;    start_year end_year region    region_type strata_included  strata_excluded   trend trend_q_0.025 trend_q_0.05</span></span>
+<span><span class="co">#&gt;         &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;            &lt;chr&gt;             &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1       1967     2021 continent continent   US-AR-24 ; US-A… ""              -1.09          -1.34        -1.30 </span></span>
+<span><span class="co">#&gt;  2       1967     2021 US-AR-24  stratum     US-AR-24         ""               4.58           3.09         3.35 </span></span>
+<span><span class="co">#&gt;  3       1967     2021 US-AR-25  stratum     US-AR-25         ""               0.0864        -0.664       -0.536</span></span>
+<span><span class="co">#&gt;  4       1967     2021 US-AR-26  stratum     US-AR-26         ""               4.88           2.54         2.94 </span></span>
+<span><span class="co">#&gt;  5       1967     2021 US-KS-18  stratum     US-KS-18         ""               2.64          -1.87        -1.23 </span></span>
+<span><span class="co">#&gt;  6       1967     2021 US-KS-19  stratum     US-KS-19         ""              -0.528         -1.32        -1.19 </span></span>
+<span><span class="co">#&gt;  7       1967     2021 US-KS-22  stratum     US-KS-22         ""              -0.199         -0.936       -0.806</span></span>
+<span><span class="co">#&gt;  8       1967     2021 US-LA-25  stratum     US-LA-25         ""              -1.70          -3.45        -3.16 </span></span>
+<span><span class="co">#&gt;  9       1967     2021 US-LA-37  stratum     US-LA-37         ""               0.357         -2.01        -1.58 </span></span>
+<span><span class="co">#&gt; 10       1967     2021 US-MO-22  stratum     US-MO-22         ""              -0.327         -2.64        -2.19 </span></span>
+<span><span class="co">#&gt; # ℹ 16 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 18 more variables: trend_q_0.25 &lt;dbl&gt;, trend_q_0.75 &lt;dbl&gt;, trend_q_0.95 &lt;dbl&gt;, trend_q_0.975 &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   percent_change &lt;dbl&gt;, percent_change_q_0.025 &lt;dbl&gt;, percent_change_q_0.05 &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   percent_change_q_0.25 &lt;dbl&gt;, percent_change_q_0.75 &lt;dbl&gt;, percent_change_q_0.95 &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   percent_change_q_0.975 &lt;dbl&gt;, width_of_95_percent_credible_interval &lt;dbl&gt;, rel_abundance &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   obs_rel_abundance &lt;dbl&gt;, n_routes &lt;dbl&gt;, mean_n_routes &lt;dbl&gt;, n_strata_included &lt;dbl&gt;, backcast_flag &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data</span></span>
+<span><span class="co">#&gt; $meta_data$stratify_by</span></span>
+<span><span class="co">#&gt; [1] "bbs_usgs"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$stratify_type</span></span>
+<span><span class="co">#&gt; [1] "standard"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$species</span></span>
+<span><span class="co">#&gt; [1] "Scissor-tailed Flycatcher"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$model</span></span>
+<span><span class="co">#&gt; [1] "gamye"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$model_variant</span></span>
+<span><span class="co">#&gt; [1] "spatial"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$model_file</span></span>
+<span><span class="co">#&gt; [1] "C:/Users/SmithAC/AppData/Local/R/win-library/4.2/bbsBayes2/models/gamye_spatial_bbs_CV.stan"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$run_date</span></span>
+<span><span class="co">#&gt; [1] "2023-02-13 07:24:57 EST"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$bbsBayes2_version</span></span>
+<span><span class="co">#&gt; [1] "1.0.0"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$cmdstan_path</span></span>
+<span><span class="co">#&gt; [1] "C:/Users/SmithAC/Documents/.cmdstan/wsl-cmdstan-2.30.1"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$cmdstan_version</span></span>
+<span><span class="co">#&gt; [1] "2.30.1"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$regions</span></span>
+<span><span class="co">#&gt; [1] "continent" "stratum"  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$start_year</span></span>
+<span><span class="co">#&gt; [1] 1967</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$n_years</span></span>
+<span><span class="co">#&gt; [1] 55</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_strata</span></span>
+<span><span class="co">#&gt; # A tibble: 25 × 5</span></span>
+<span><span class="co">#&gt;    strata_name strata area_sq_km continent stratum </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span><span class="co">#&gt;  1 US-AR-24         1     33232. continent US-AR-24</span></span>
+<span><span class="co">#&gt;  2 US-AR-25         2     65340. continent US-AR-25</span></span>
+<span><span class="co">#&gt;  3 US-AR-26         3     39366. continent US-AR-26</span></span>
+<span><span class="co">#&gt;  4 US-KS-18         4     37179. continent US-KS-18</span></span>
+<span><span class="co">#&gt;  5 US-KS-19         5    109390. continent US-KS-19</span></span>
+<span><span class="co">#&gt;  6 US-KS-22         6     66243. continent US-KS-22</span></span>
+<span><span class="co">#&gt;  7 US-LA-25         7     47075. continent US-LA-25</span></span>
+<span><span class="co">#&gt;  8 US-LA-37         8     24987. continent US-LA-37</span></span>
+<span><span class="co">#&gt;  9 US-MO-22         9     83079. continent US-MO-22</span></span>
+<span><span class="co">#&gt; 10 US-MO-24        10     87034. continent US-MO-24</span></span>
+<span><span class="co">#&gt; # ℹ 15 more rows</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $raw_data</span></span>
+<span><span class="co">#&gt; # A tibble: 12,626 × 23</span></span>
+<span><span class="co">#&gt;    country_num state_num state     rpid   bcr  year strata_name route   obs_n count n_routes non_zero_weight</span></span>
+<span><span class="co">#&gt;          &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;int&gt;           &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1         840         7 ARKANSAS   101    24  1967 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  2         840         7 ARKANSAS   101    24  1968 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  3         840         7 ARKANSAS   101    24  1969 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  4         840         7 ARKANSAS   101    24  1970 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  5         840         7 ARKANSAS   101    24  1971 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  6         840         7 ARKANSAS   101    24  1972 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  7         840         7 ARKANSAS   101    24  1973 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  8         840         7 ARKANSAS   101    24  1974 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  9         840         7 ARKANSAS   101    24  1975 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt; 10         840         7 ARKANSAS   101    24  1976 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt; # ℹ 12,616 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 11 more variables: first_year &lt;dbl&gt;, max_n_routes_year &lt;int&gt;, n_obs &lt;int&gt;, mean_obs &lt;dbl&gt;, year_num &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   strata &lt;dbl&gt;, observer &lt;int&gt;, site &lt;int&gt;, obs_route &lt;chr&gt;, obs_site &lt;int&gt;, n_obs_sites &lt;int&gt;</span></span></code></pre></div>
+<p>We can generate trends for different periods of time, using any
+combination of a starting year <code>min_year</code> and ending year
+<code>max_year</code>.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t_10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">i</span>,</span>
+<span>                        min_year <span class="op">=</span> <span class="fl">2011</span>,</span>
+<span>                        max_year <span class="op">=</span> <span class="fl">2021</span><span class="op">)</span></span>
+<span><span class="va">t_10</span></span>
+<span><span class="co">#&gt; $trends</span></span>
+<span><span class="co">#&gt; # A tibble: 26 × 27</span></span>
+<span><span class="co">#&gt;    start_year end_year region    region_type strata_included   strata_excluded  trend trend_q_0.025 trend_q_0.05</span></span>
+<span><span class="co">#&gt;         &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;             &lt;chr&gt;            &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1       2011     2021 continent continent   US-AR-24 ; US-AR… ""              -2.39          -3.21       -3.08 </span></span>
+<span><span class="co">#&gt;  2       2011     2021 US-AR-24  stratum     US-AR-24          ""               2.23          -1.56       -0.942</span></span>
+<span><span class="co">#&gt;  3       2011     2021 US-AR-25  stratum     US-AR-25          ""              -0.449         -3.07       -2.68 </span></span>
+<span><span class="co">#&gt;  4       2011     2021 US-AR-26  stratum     US-AR-26          ""               3.87          -2.70       -1.70 </span></span>
+<span><span class="co">#&gt;  5       2011     2021 US-KS-18  stratum     US-KS-18          ""               5.19          -3.53       -1.90 </span></span>
+<span><span class="co">#&gt;  6       2011     2021 US-KS-19  stratum     US-KS-19          ""               1.16          -2.15       -1.64 </span></span>
+<span><span class="co">#&gt;  7       2011     2021 US-KS-22  stratum     US-KS-22          ""              -4.42          -6.92       -6.53 </span></span>
+<span><span class="co">#&gt;  8       2011     2021 US-LA-25  stratum     US-LA-25          ""              -2.92         -10.1        -9.06 </span></span>
+<span><span class="co">#&gt;  9       2011     2021 US-LA-37  stratum     US-LA-37          ""               3.84          -4.79       -3.58 </span></span>
+<span><span class="co">#&gt; 10       2011     2021 US-MO-22  stratum     US-MO-22          ""               2.76          -5.91       -4.37 </span></span>
+<span><span class="co">#&gt; # ℹ 16 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 18 more variables: trend_q_0.25 &lt;dbl&gt;, trend_q_0.75 &lt;dbl&gt;, trend_q_0.95 &lt;dbl&gt;, trend_q_0.975 &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   percent_change &lt;dbl&gt;, percent_change_q_0.025 &lt;dbl&gt;, percent_change_q_0.05 &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   percent_change_q_0.25 &lt;dbl&gt;, percent_change_q_0.75 &lt;dbl&gt;, percent_change_q_0.95 &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   percent_change_q_0.975 &lt;dbl&gt;, width_of_95_percent_credible_interval &lt;dbl&gt;, rel_abundance &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   obs_rel_abundance &lt;dbl&gt;, n_routes &lt;dbl&gt;, mean_n_routes &lt;dbl&gt;, n_strata_included &lt;dbl&gt;, backcast_flag &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data</span></span>
+<span><span class="co">#&gt; $meta_data$stratify_by</span></span>
+<span><span class="co">#&gt; [1] "bbs_usgs"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$stratify_type</span></span>
+<span><span class="co">#&gt; [1] "standard"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$species</span></span>
+<span><span class="co">#&gt; [1] "Scissor-tailed Flycatcher"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$model</span></span>
+<span><span class="co">#&gt; [1] "gamye"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$model_variant</span></span>
+<span><span class="co">#&gt; [1] "spatial"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$model_file</span></span>
+<span><span class="co">#&gt; [1] "C:/Users/SmithAC/AppData/Local/R/win-library/4.2/bbsBayes2/models/gamye_spatial_bbs_CV.stan"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$run_date</span></span>
+<span><span class="co">#&gt; [1] "2023-02-13 07:24:57 EST"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$bbsBayes2_version</span></span>
+<span><span class="co">#&gt; [1] "1.0.0"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$cmdstan_path</span></span>
+<span><span class="co">#&gt; [1] "C:/Users/SmithAC/Documents/.cmdstan/wsl-cmdstan-2.30.1"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$cmdstan_version</span></span>
+<span><span class="co">#&gt; [1] "2.30.1"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$regions</span></span>
+<span><span class="co">#&gt; [1] "continent" "stratum"  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$start_year</span></span>
+<span><span class="co">#&gt; [1] 1967</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_data$n_years</span></span>
+<span><span class="co">#&gt; [1] 55</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $meta_strata</span></span>
+<span><span class="co">#&gt; # A tibble: 25 × 5</span></span>
+<span><span class="co">#&gt;    strata_name strata area_sq_km continent stratum </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;   </span></span>
+<span><span class="co">#&gt;  1 US-AR-24         1     33232. continent US-AR-24</span></span>
+<span><span class="co">#&gt;  2 US-AR-25         2     65340. continent US-AR-25</span></span>
+<span><span class="co">#&gt;  3 US-AR-26         3     39366. continent US-AR-26</span></span>
+<span><span class="co">#&gt;  4 US-KS-18         4     37179. continent US-KS-18</span></span>
+<span><span class="co">#&gt;  5 US-KS-19         5    109390. continent US-KS-19</span></span>
+<span><span class="co">#&gt;  6 US-KS-22         6     66243. continent US-KS-22</span></span>
+<span><span class="co">#&gt;  7 US-LA-25         7     47075. continent US-LA-25</span></span>
+<span><span class="co">#&gt;  8 US-LA-37         8     24987. continent US-LA-37</span></span>
+<span><span class="co">#&gt;  9 US-MO-22         9     83079. continent US-MO-22</span></span>
+<span><span class="co">#&gt; 10 US-MO-24        10     87034. continent US-MO-24</span></span>
+<span><span class="co">#&gt; # ℹ 15 more rows</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $raw_data</span></span>
+<span><span class="co">#&gt; # A tibble: 12,626 × 23</span></span>
+<span><span class="co">#&gt;    country_num state_num state     rpid   bcr  year strata_name route   obs_n count n_routes non_zero_weight</span></span>
+<span><span class="co">#&gt;          &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;int&gt;           &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1         840         7 ARKANSAS   101    24  1967 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  2         840         7 ARKANSAS   101    24  1968 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  3         840         7 ARKANSAS   101    24  1969 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  4         840         7 ARKANSAS   101    24  1970 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  5         840         7 ARKANSAS   101    24  1971 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  6         840         7 ARKANSAS   101    24  1972 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  7         840         7 ARKANSAS   101    24  1973 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  8         840         7 ARKANSAS   101    24  1974 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt;  9         840         7 ARKANSAS   101    24  1975 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt; 10         840         7 ARKANSAS   101    24  1976 US-AR-24    7-20  1190020     0       12               1</span></span>
+<span><span class="co">#&gt; # ℹ 12,616 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 11 more variables: first_year &lt;dbl&gt;, max_n_routes_year &lt;int&gt;, n_obs &lt;int&gt;, mean_obs &lt;dbl&gt;, year_num &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   strata &lt;dbl&gt;, observer &lt;int&gt;, site &lt;int&gt;, obs_route &lt;chr&gt;, obs_site &lt;int&gt;, n_obs_sites &lt;int&gt;</span></span></code></pre></div>
+<p>We can plot trend estimates on a map to visualise the spatial
+patterns in population change.</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">trend_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">trend_map</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/bbsBayes2_unnamed-chunk-34-1.png" alt="Population trend map showing strata with increasing trends in blues and decreasing trends in reds."></p>
+<p>The maps are also <a href="https://github.com/tidyverse/ggplot2" class="external-link">ggplot2</a> objects that can
+be modified like any other. For example, you can zoom into a section of
+the map.</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">strata_with_data</span> <span class="op">&lt;-</span> <span class="va">t</span><span class="op">$</span><span class="va">meta_strata</span> <span class="co"># meta data in trend object - strata information</span></span>
+<span><span class="co"># load the original strata map used in the model fitting</span></span>
+<span><span class="co"># then filter to just the strata with data for this species</span></span>
+<span><span class="va">data_bounding_box</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span>stratify_by <span class="op">=</span> <span class="va">t</span><span class="op">$</span><span class="va">meta_data</span><span class="op">$</span><span class="va">stratify_by</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">strata_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">strata_with_data</span><span class="op">$</span><span class="va">strata_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># create a bounding box for x and y limits</span></span>
+<span></span>
+<span><span class="va">t_mod</span> <span class="op">&lt;-</span> <span class="va">trend_map</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="va">data_bounding_box</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"xmin"</span>,<span class="st">"xmax"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>           ylim <span class="op">=</span> <span class="va">data_bounding_box</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ymin"</span>,<span class="st">"ymax"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">t_mod</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/bbsBayes2_unnamed-chunk-35-1.png" alt="Population trend map zoomed in to show just the relevant regions"></p>
+<p>###Example models</p>
+<p>A model with a suitable number of iterations takes a long time to run
+(the Barn Swallow model, a species with many data and many strata, took
+54 hours). Below are three full models run with 1000 iterations and four
+chains. Use these to test out some of the features!</p>
+<p>Download the Barn Swallow GAMYE spatial model: <a href="https://github.com/L-Daly/bbsbae/releases/tag/trial" class="external-link uri">https://github.com/L-Daly/bbsbae/releases/tag/trial</a>
+click BASW_spatial_gamye.zip.</p>
+<p>An example of the output from applying the spatial gamye model to
+Barn Swallow data.</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#First is a spatial GAMYE model for the Barn Swallow</span></span>
+<span><span class="co"># library(readr)</span></span>
+<span><span class="co"># BARS &lt;- read_rds(unzip(</span></span>
+<span><span class="co">#   "BASW_spatial_gamye.zip",</span></span>
+<span><span class="co">#   "Barn_Swallow_gamye_spatial.rds"))</span></span>
+<span></span>
+<span><span class="va">BARS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/Barn_Swallow_gamye_spatial.rds"</span><span class="op">)</span></span>
+<span><span class="co">#investigate model meta data</span></span>
+<span><span class="va">BARS</span><span class="op">$</span><span class="va">meta_data</span></span>
+<span><span class="co">#&gt; $stratify_by</span></span>
+<span><span class="co">#&gt; [1] "bbs_cws"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $stratify_type</span></span>
+<span><span class="co">#&gt; [1] "standard"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $species</span></span>
+<span><span class="co">#&gt; [1] "Barn Swallow"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $model</span></span>
+<span><span class="co">#&gt; [1] "gamye"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $model_variant</span></span>
+<span><span class="co">#&gt; [1] "spatial"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $model_file</span></span>
+<span><span class="co">#&gt; [1] "C:/Users/SmithAC/AppData/Local/R/win-library/4.2/bbsBayes2/models/gamye_spatial_bbs_CV.stan"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $run_date</span></span>
+<span><span class="co">#&gt; [1] "2023-01-20 13:27:49 EST"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $bbsBayes2_version</span></span>
+<span><span class="co">#&gt; [1] "1.0.0"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $cmdstan_path</span></span>
+<span><span class="co">#&gt; [1] "C:/Users/SmithAC/Documents/.cmdstan/wsl-cmdstan-2.30.1"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $cmdstan_version</span></span>
+<span><span class="co">#&gt; [1] "2.30.1"</span></span>
+<span><span class="co">#length of run-time in seconds</span></span>
+<span><span class="va">BARS</span><span class="op">$</span><span class="va">model_fit</span><span class="op">$</span><span class="fu">time</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $total</span></span>
+<span><span class="co">#&gt; [1] 197011.7</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $chains</span></span>
+<span><span class="co">#&gt;   chain_id   warmup sampling  total</span></span>
+<span><span class="co">#&gt; 1        1  82393.1  46100.9 128494</span></span>
+<span><span class="co">#&gt; 2        2  85907.6 111101.0 197009</span></span>
+<span><span class="co">#&gt; 3        3 113442.0  54516.1 167958</span></span>
+<span><span class="co">#&gt; 4        4 113073.0  54597.2 167670</span></span>
+<span><span class="co">#length of run-time in hours</span></span>
+<span><span class="va">BARS</span><span class="op">$</span><span class="va">model_fit</span><span class="op">$</span><span class="fu">time</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">total</span><span class="op">/</span><span class="fl">3600</span></span>
+<span><span class="co">#&gt; [1] 54.72546</span></span>
+<span></span>
+<span><span class="va">BARS_indices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_indices.html">generate_indices</a></span><span class="op">(</span><span class="va">BARS</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Processing region continent</span></span>
+<span><span class="co">#&gt; Processing region stratum</span></span>
+<span></span>
+<span><span class="va">BARS_index_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_indices.html">plot_indices</a></span><span class="op">(</span><span class="va">BARS_indices</span>,</span>
+<span>                                 add_observed_means <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                                 add_number_routes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">BARS_continent</span> <span class="op">&lt;-</span> <span class="va">BARS_index_plots</span><span class="op">[[</span><span class="st">"continent"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">BARS_continent</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/bbsBayes2_unnamed-chunk-36-1.png" alt="Population trajectory graph for Barn Swallow, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts."></p>
+<p>Above, we’ve plotted the full annual indices (i.e., the population
+trajectory) from the gamye model. In the <em>gamye</em> and
+<em>slope</em> models, the population trajectory can be decomposed into
+two components: the smooth component and the annual fluctuations around
+the smooth. The default estimate of the population trajectory uses the
+<em>full</em> version of the annual indices
+(<code>generate_indices(alternate_n = "n")</code>). For the gamye model
+the alternate population trajectory that represents only the
+semi-parametric smooth component can be accessed by choosing the
+<code>generate_indices(alternate_n = "n_smooth")</code> option. For the
+slope model the alternate population trajectory that represents the
+linear smooth only can be accessed by choosing the
+<code>generate_indices(alternate_n = "n_slope")</code> option. These
+smooth trajectories may be useful for trend estimates that vary less
+from year-to-year (gamye model) or for an overall linear trend from a
+slope model applied to a short time-frame (it’s probably unlikely that a
+linear smooth is reasonable for long periods of time).</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">BARS_smooth_indices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_indices.html">generate_indices</a></span><span class="op">(</span><span class="va">BARS</span>,</span>
+<span>                                 alternate_n <span class="op">=</span> <span class="st">"n_smooth"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Processing region continent</span></span>
+<span><span class="co">#&gt; Processing region stratum</span></span>
+<span><span class="va">BARS_trends</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">BARS_smooth_indices</span><span class="op">)</span></span>
+<span><span class="va">BARS_trend_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">BARS_trends</span><span class="op">)</span></span>
+<span><span class="va">BARS_trend_map</span></span></code></pre></div>
+<p><img src="figures/bbsBayes2_unnamed-chunk-37-1.png" alt="Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"></p>
+<p>We can also add the smoothed annual indices to the plots of the full
+annual indices from above, taking advantage of the ggplot2
+functions.</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">smooth_cont_indices</span> <span class="op">&lt;-</span> <span class="va">BARS_smooth_indices</span><span class="op">$</span><span class="va">indices</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">region</span> <span class="op">==</span> <span class="st">"continent"</span><span class="op">)</span></span>
+<span><span class="va">BARS_continent_both</span> <span class="op">&lt;-</span> <span class="va">BARS_continent</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">smooth_cont_indices</span>,</span>
+<span>                     <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">year</span>, y <span class="op">=</span> <span class="va">index</span><span class="op">)</span>,</span>
+<span>                     alpha <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>                     linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>subtitle <span class="op">=</span> <span class="st">"grey line represents the smoothed annual indices"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">BARS_continent_both</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/bbsBayes2_unnamed-chunk-38-1.png" alt="Population trajectory graph for Barn Swallow, same as above plus the smoothed annual indices are added as a grey line"></p>
 <p>Check out the other <a href="/index.html">articles</a> to explore
 more advanced usage or the <a href="../reference/">function
 reference</a> to see what functions are available and how to use them in
 greater detail.</p>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

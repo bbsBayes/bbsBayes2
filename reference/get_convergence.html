@@ -101,48 +101,11 @@ calculate metrics. If <code>NULL</code> (default) all variables are returned.</p
 <span class="r-in"><span><span class="co"># Using the example model for Pacific Wrens</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">get_convergence</span><span class="op">(</span><span class="va">pacific_wren_model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10,495 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    variable_type variable       rhat ess_bulk ess_tail</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> lp__          lp__          1.03      21.9     49.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> strata_raw    strata_raw[1] 1.01      64.1     56.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> strata_raw    strata_raw[2] 1.01      64.1     17.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> strata_raw    strata_raw[3] 0.987     43.2     22.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> strata_raw    strata_raw[4] 1.05      31.2     56.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> strata_raw    strata_raw[5] 0.959     64.1     49.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> strata_raw    strata_raw[6] 1.02      49.0     43.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> strata_raw    strata_raw[7] 0.978     64.1     56.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> strata_raw    strata_raw[8] 1.08      63.6     23.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> strata_raw    strata_raw[9] 1.00      64.1     49.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 10,485 more rows</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assert_valid_draws_format(format):</span> could not find function "assert_valid_draws_format"</span>
 <span class="r-in"><span><span class="fu">get_convergence</span><span class="op">(</span><span class="va">pacific_wren_model</span>, variables <span class="op">=</span> <span class="st">"strata_raw"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 19 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    variable_type variable        rhat ess_bulk ess_tail</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> strata_raw    strata_raw[1]  1.01     64.1      56.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> strata_raw    strata_raw[2]  1.01     64.1      17.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> strata_raw    strata_raw[3]  0.987    43.2      22.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> strata_raw    strata_raw[4]  1.05     31.2      56.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> strata_raw    strata_raw[5]  0.959    64.1      49.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> strata_raw    strata_raw[6]  1.02     49.0      43.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> strata_raw    strata_raw[7]  0.978    64.1      56.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> strata_raw    strata_raw[8]  1.08     63.6      23.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> strata_raw    strata_raw[9]  1.00     64.1      49.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> strata_raw    strata_raw[10] 1.02     56.7      49.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> strata_raw    strata_raw[11] 0.994    64.1      40.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> strata_raw    strata_raw[12] 1.00     64.1      49.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> strata_raw    strata_raw[13] 1.08     64.1      56.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> strata_raw    strata_raw[14] 1.00     64.1      56.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> strata_raw    strata_raw[15] 1.03     64.1      23.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> strata_raw    strata_raw[16] 1.04     64.1      56.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> strata_raw    strata_raw[17] 0.997    64.1      32.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> strata_raw    strata_raw[18] 1.01     61.6      28.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span> strata_raw    strata_raw[19] 1.22      9.52     49.6</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assert_valid_draws_format(format):</span> could not find function "assert_valid_draws_format"</span>
 <span class="r-in"><span><span class="fu">get_convergence</span><span class="op">(</span><span class="va">pacific_wren_model</span>, variables <span class="op">=</span> <span class="st">"strata_raw[9]"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   variable_type variable       rhat ess_bulk ess_tail</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> strata_raw    strata_raw[9]  1.00     64.1     49.6</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assert_valid_draws_format(format):</span> could not find function "assert_valid_draws_format"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restore warnings</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">opts</span><span class="op">)</span></span></span>

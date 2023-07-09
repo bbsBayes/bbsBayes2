@@ -66,7 +66,7 @@ species, and to estimate trends.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">generate_indices</span><span class="op">(</span></span>
 <span>  model_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.05</span>, <span class="fl">0.25</span>, <span class="fl">0.75</span>, <span class="fl">0.95</span>, <span class="fl">0.975</span><span class="op">)</span>,</span>
-<span>  regions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stratum"</span>, <span class="st">"continent"</span><span class="op">)</span>,</span>
+<span>  regions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"continent"</span>, <span class="st">"stratum"</span><span class="op">)</span>,</span>
 <span>  regions_index <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  alternate_n <span class="op">=</span> <span class="st">"n"</span>,</span>
 <span>  start_year <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -109,11 +109,27 @@ more details.</p></dd>
 
 <dt>alternate_n</dt>
 <dd><p>Character. Indicating the name of the alternative annual
-index parameter in a model, Default is "n", alternatives are "n2" which
-involves a different way of scaling the annual indices, "n_smooth" for the
-gam and gamye models which show only the smooth component of the
-trajectory, and "n_slope" for the slope models which track only the linear
-slope component of the model.</p></dd>
+index parameter in a model, Default is "n" which for all models represents
+an index of the estimated annual relative abundance, scaled as the expected
+mean count averaged across all BBS routes and observers in a given stratum
+and year. For some of the models included in bbsBayes2, alternatives exist
+that provide a partial decomposition of the time-series.
+For the "gamye" models, the parameter "n_smooth" represents the smooth-only
+version of the annual index of relative abundance (i.e., the component
+of the annual index estimated by the spline-based smooth of the GAM).
+This "n_smooth" is identical to the "n" values for the same model, but
+excludes the annual fluctuations. For the "gamye" models, this "n_smooth"
+parameter is likely the most natural parameter to use in estimating trends.
+A similar option exists for the "slope" models, where the parameter
+"n_slope" represents the component of the population trajectory estimated
+by the log-linear regression slope parameters in the model. Users should
+be particularly cautious about interpreting this "n_slope" values for
+relatively long time-series. As a continuous regression slope, it assumes
+interpreting it as an estimate of population trajectory and using it to
+generate trend estimates assumes that there is a single continuous rate of
+population change across the entire time-series. Biologically, this may be
+reasonable for 10-20 year periods, but will be less reasonable for longer
+time-periods.</p></dd>
 
 
 <dt>start_year</dt>
@@ -205,12 +221,11 @@ exclusion of many strata, consider trimming the early years by specifying a
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Generate the continental and stratum indices</span></span></span>
 <span class="r-in"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu">generate_indices</span><span class="op">(</span><span class="va">pacific_wren_model</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region continent</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region stratum</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assert_valid_draws_format(format):</span> could not find function "assert_valid_draws_format"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Generate only country indices</span></span></span>
 <span class="r-in"><span><span class="va">i_nat</span> <span class="op">&lt;-</span> <span class="fu">generate_indices</span><span class="op">(</span><span class="va">pacific_wren_model</span>, regions <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region country</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assert_valid_draws_format(format):</span> could not find function "assert_valid_draws_format"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use a custom region specification (dummy example)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
@@ -231,9 +246,7 @@ exclusion of many strata, consider trimming the early years by specifying a
 <span class="r-in"><span>  <span class="va">pacific_wren_model</span>,</span></span>
 <span class="r-in"><span>  regions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"country"</span>, <span class="st">"prov_state"</span>, <span class="st">"my_region"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  regions_index <span class="op">=</span> <span class="va">ri</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region country</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region prov_state</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region my_region</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assert_valid_draws_format(format):</span> could not find function "assert_valid_draws_format"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

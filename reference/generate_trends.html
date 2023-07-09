@@ -101,7 +101,23 @@ distribution. Defaults to <code>c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)</co
 <dt>slope</dt>
 <dd><p>Logical. Whether to calculate an alternative trend metric, the
 slope of a log-linear regression through the annual indices. Default
-<code>FALSE</code>.</p></dd>
+<code>FALSE</code>, which estimates the trend as the geometric mean annual rate of
+change between <code>min_year</code> and <code>max_year</code>. This is the end-point definition
+of trend that only directly incorporates information from the two years, and
+therefore closely tracks the annual population fluctuations in those
+particular years. Conceptually, this metric of trend tracks the difference
+between the two years. If <code>TRUE</code>, trend represents the slope of a linear
+regression through the log-transformed annual indices of abundance for all
+years between <code>min_year</code> and <code>max_year</code>. This definition of trend is less
+sensitive to the particular annual fluctuations of a given <code>min_year</code> and
+<code>max_year</code>. Either metric may be more or less appropriate given the user's
+desired inference. The appropriate choice of metric may also depend on the
+model and the <code>alternate_n</code> choice made in <code>generate_indices</code>. For example
+if the fitted model was one of the "gamye" alternatives, and the
+<code>alternate_n = "nsmooth"</code>, then the default <code>slope = FALSE</code> option will
+represent the end-point difference of the smooth component, which already
+excludes the annual fluctuations and so has similar inferential properties as
+the <code>slope = TRUE</code> option from the "first_diff" model.</p></dd>
 
 
 <dt>prob_decrease</dt>
@@ -210,17 +226,19 @@ less than half of the population remains) over the period of the trend.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Generate the continental and stratum indices</span></span></span>
 <span class="r-in"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate_indices.html">generate_indices</a></span><span class="op">(</span><span class="va">pacific_wren_model</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region continent</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region stratum</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assert_valid_draws_format(format):</span> could not find function "assert_valid_draws_format"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Now, generate the trends</span></span></span>
 <span class="r-in"><span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu">generate_trends</span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'i' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use the slope method</span></span></span>
 <span class="r-in"><span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu">generate_trends</span><span class="op">(</span><span class="va">i</span>, slope <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'i' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Calculate probability of the population declining by 50%</span></span></span>
 <span class="r-in"><span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu">generate_trends</span><span class="op">(</span><span class="va">i</span>, prob_decrease <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'i' not found</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

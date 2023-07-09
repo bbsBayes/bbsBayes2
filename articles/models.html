@@ -88,413 +88,201 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bbsBayes/bbsBayes2" class="external-link">bbsBayes2</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bbsBayes/bbsBayes2" class="external-link">bbsBayes2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span></code></pre></div>
 <p>There are 9 types of models that can be run with bbsBayes2. For a
 quick overview you can access the <code>bbs_models</code> data
 frame.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bbs_models</span></span>
-<span><span class="co">#&gt;        model variant                           file</span></span>
+<span><span class="co">#&gt; # A tibble: 9 × 3</span></span>
+<span><span class="co">#&gt;   model      variant file                          </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;                         </span></span>
 <span><span class="co">#&gt; 1 first_diff nonhier first_diff_nonhier_bbs_CV.stan</span></span>
-<span><span class="co">#&gt; 2 first_diff    hier    first_diff_hier_bbs_CV.stan</span></span>
+<span><span class="co">#&gt; 2 first_diff hier    first_diff_hier_bbs_CV.stan   </span></span>
 <span><span class="co">#&gt; 3 first_diff spatial first_diff_spatial_bbs_CV.stan</span></span>
-<span><span class="co">#&gt; 4        gam    hier           gam_hier_bbs_CV.stan</span></span>
-<span><span class="co">#&gt; 5        gam spatial        gam_spatial_bbs_CV.stan</span></span>
-<span><span class="co">#&gt; 6      gamye    hier         gamye_hier_bbs_CV.stan</span></span>
-<span><span class="co">#&gt; 7      gamye spatial      gamye_spatial_bbs_CV.stan</span></span>
-<span><span class="co">#&gt; 8      slope    hier         slope_hier_bbs_CV.stan</span></span>
-<span><span class="co">#&gt; 9      slope spatial      slope_spatial_bbs_CV.stan</span></span></code></pre></div>
-<p>For specifics on <em>how</em> to run the various models, see the
-articles on <a href="./index.html#model-runs">model runs</a>.</p>
-<p>See the following for details regarding the <em>why</em> of these
-various models. As well as the final section on Advanced Modelling
-techniques.</p>
+<span><span class="co">#&gt; 4 gam        hier    gam_hier_bbs_CV.stan          </span></span>
+<span><span class="co">#&gt; 5 gam        spatial gam_spatial_bbs_CV.stan       </span></span>
+<span><span class="co">#&gt; 6 gamye      hier    gamye_hier_bbs_CV.stan        </span></span>
+<span><span class="co">#&gt; 7 gamye      spatial gamye_spatial_bbs_CV.stan     </span></span>
+<span><span class="co">#&gt; 8 slope      hier    slope_hier_bbs_CV.stan        </span></span>
+<span><span class="co">#&gt; 9 slope      spatial slope_spatial_bbs_CV.stan</span></span></code></pre></div>
+<p>More specifically, there are four models that each have two variants:
+<code>variant = "hier"</code> and <code>variant = "spatial"</code>. With
+the exception of the first-difference model, which has an additional
+non-hierarchical variant <code>variant = "nonhier"</code>.</p>
+<p>Hierarchical models <code>variant = "hier"</code> are the default
+variants for each model. These variants share information on species
+abundance and population trends, so that estimates in each stratum are
+pulled <em>shrunk</em> closer to the mean across all strata. The
+non-hierarchical variant of the first-difference model does not share
+information among strata. It estimates abundance and population trends
+in each stratum independently of their estimates in all other strata.
+This variant is included to support an approximate replication of the
+USGS trend analyses. Spatial models are both hierarchical and spatial,
+sharing information among strata on the abundance and trends, and
+sharing in an explicitly spatial way. This means that each stratum’s
+estimates will be pulled closer to the mean of its neighbors.</p>
+<p>The four model options vary in the way they estimate the parameters
+that are most important for understanding the status and trends of bird
+populations. That is, they vary in the way they estimate the relative
+abundance and the temporal-changes in relative abundance (population
+trends), within and among strata. They all share the same set of
+parameters designed to adjust estimates for variations among observers,
+first-year observer start-up effects. For more details on these
+observer-effects and the development of these Bayesian hierarchical
+models for the BBS, see <a href="https://doi.org/10.1890/0012-9658(2002)083%5B2832:AHAOPC%5D2.0.CO;2" class="external-link">Link
+and Sauer 2002</a>, <a href="https://doi.org/10.1525/auk.2010.09220" class="external-link">Sauer and Link, 2011</a>,
+<a href="https://doi.org/10.22621/cfn.v128i2.1565" class="external-link">Smith et al.,
+2014</a>, <a href="https://doi.org/10.1650/CONDOR-17-1.1" class="external-link">Link et al.,
+2017</a>, <a href="https://doi.org/10.1002/eap.2137" class="external-link">Link et
+al. 2020</a>, <a href="https://doi.org/10.1093/ornithapp/duaa065" class="external-link">Smith
+&amp; Edwards, 2021</a>, <a href="https://doi.org/10.32942/X2088D" class="external-link">Smith
+et al., 2023 pre-print</a>.</p>
 <div class="section level2">
 <h2 id="first-difference-models">1. First Difference Models<a class="anchor" aria-label="anchor" href="#first-difference-models"></a>
 </h2>
-<div class="section level3">
-<h3 id="non-hierarchical">Non-hierarchical<a class="anchor" aria-label="anchor" href="#non-hierarchical"></a>
-</h3>
-</div>
-<div class="section level3">
-<h3 id="hierarchical">Hierarchical<a class="anchor" aria-label="anchor" href="#hierarchical"></a>
-</h3>
-</div>
-<div class="section level3">
-<h3 id="spatial">Spatial<a class="anchor" aria-label="anchor" href="#spatial"></a>
-</h3>
-</div>
+<p>A first-difference model considers the time-series as a random-walk
+forward and backwards in time from the mid-year of the time-series, so
+that the first-differences of the sequence of year-effects are random
+effects with mean = 0 and an estimated variance. The non-hierarchical
+variant of this model model has been described in <a href="https://doi.org/10.1650/CONDOR-17-1.1" class="external-link">Link et al., 2017</a> the
+hierarchical and spatial variants are described in <a href="https://doi.org/10.32942/X2088D" class="external-link">Smith et al., 2023
+pre-print</a>.</p>
 </div>
 <div class="section level2">
-<h2 id="general-additive-models">2. General Additive Models<a class="anchor" aria-label="anchor" href="#general-additive-models"></a>
+<h2 id="generalized-additive-models">2. Generalized Additive Models<a class="anchor" aria-label="anchor" href="#generalized-additive-models"></a>
 </h2>
-<div class="section level3">
-<h3 id="hierarchical-1">Hierarchical<a class="anchor" aria-label="anchor" href="#hierarchical-1"></a>
-</h3>
-</div>
-<div class="section level3">
-<h3 id="spatial-1">Spatial<a class="anchor" aria-label="anchor" href="#spatial-1"></a>
-</h3>
-</div>
+<p>The GAM models the time series as a semiparametric smooth using a
+Generalized Additive Model (GAM) structure. This model is unique among
+the bbsBayes2 models in that it does not model annual fluctuations, only
+smoothed changes in population size through time. As a result, it makes
+some very strong assumptions about population change. See <a href="https://doi.org/10.1093/ornithapp/duaa065" class="external-link">Smith &amp; Edwards,
+2021</a> for the original formulation. The updated hierarchical and
+spatial variants of this model are described in this <a href="https://doi.org/10.32942/X2088D" class="external-link">Smith et al., 2023
+pre-print</a>.</p>
 </div>
 <div class="section level2">
-<h2 id="general-additive-models-year-effect">3. General Additive Models Year Effect<a class="anchor" aria-label="anchor" href="#general-additive-models-year-effect"></a>
+<h2 id="generalized-additive-models-with-year-effect">3. Generalized Additive Models with Year Effect<a class="anchor" aria-label="anchor" href="#generalized-additive-models-with-year-effect"></a>
 </h2>
-<div class="section level3">
-<h3 id="hierarchical-2">Hierarchical<a class="anchor" aria-label="anchor" href="#hierarchical-2"></a>
-</h3>
-</div>
-<div class="section level3">
-<h3 id="spatial-2">Spatial<a class="anchor" aria-label="anchor" href="#spatial-2"></a>
-</h3>
-</div>
+<p>The GAMYE includes the semiparametric smooth used in the gam option,
+but also includes random year-effect terms that track annual
+fluctuations around the smooth. This is the model that the Canadian
+Wildlife Service is now using for the annual status and trend estimates.
+See this <a href="https://doi.org/10.32942/X2088D" class="external-link">Smith et al., 2023
+pre-print</a> for details on the original formulation and application of
+this model, see <a href="https://doi.org/10.1093/ornithapp/duaa065" class="external-link">Smith &amp; Edwards,
+2021</a></p>
 </div>
 <div class="section level2">
 <h2 id="slope">4. Slope<a class="anchor" aria-label="anchor" href="#slope"></a>
 </h2>
-<div class="section level3">
-<h3 id="hierarchical-3">Hierarchical<a class="anchor" aria-label="anchor" href="#hierarchical-3"></a>
-</h3>
-</div>
-<div class="section level3">
-<h3 id="spatial-3">Spatial<a class="anchor" aria-label="anchor" href="#spatial-3"></a>
-</h3>
-</div>
+<p>The slope model estimates the time series as a log-linear regression
+with random year-effect terms that allow the trajectory to depart from
+the smooth regression line. It is the model used by the USGS and CWS to
+estimate BBS trends between 2011 and 2018. The basic model was first
+described in 2002 <a href="https://doi.org/10.1890/0012-9658(2002)083%5B2832:AHAOPC%5D2.0.CO;2" class="external-link">Link
+and Sauer 2002</a> and its application to the annual status and trend
+estimates is documented in <a href="https://doi.org/10.1525/auk.2010.09220" class="external-link">Sauer and Link, 2011</a>
+and <a href="https://doi.org/10.22621/cfn.v128i2.1565" class="external-link">Smith et al.,
+2014</a>.</p>
 </div>
 <div class="section level2">
-<h2 id="advanced-modelling">Advanced Modelling<a class="anchor" aria-label="anchor" href="#advanced-modelling"></a>
+<h2 id="one-species-nine-models">One species, nine-models<a class="anchor" aria-label="anchor" href="#one-species-nine-models"></a>
 </h2>
-<div class="section level3">
-<h3 id="cross-fold-validation">Cross-fold Validation<a class="anchor" aria-label="anchor" href="#cross-fold-validation"></a>
-</h3>
-<p>For cross fold validation, you’ll need to define which observations
-are part of a test set and which are part of a training set.</p>
-<p>To use the method implemented by bbsBayes2, we’ll specify
-<code>calculate_cv</code> as <code>TRUE</code> during the
-<code><a href="../reference/prepare_model.html">prepare_model()</a></code> step. By default, this will prepare 10 test
-sets (K-folds, <code>cv_k</code>) using <code>obs_n</code> as the
-grouping variable (<code>cv_fold_groups</code>) and omitting groups with
-only single observations (<code>cv_omit_singles</code>).</p>
-<p>MORE DETAILS ON HOW CHOSEN</p>
+<p>Here is an example application of all nine models and variants
+applied to the same data set. In this example, we’ve used data for the
+Scissor-tailed Flycatcher.</p>
+<p>You can download the fitted model results for all nine models in a
+zipped file attachement to the most recent package release. The
+following code chunk loads each of the fitted model objects, calculates
+the annual indices and trends, then saves the continent population
+trajectories and the long-term (1966-2021) trend maps.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>, sample_data <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>min_max_route_years <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="st">"first_diff"</span>, calculate_cv <span class="op">=</span> <span class="cn">TRUE</span>, cv_k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> </span>
-<span><span class="co">#&gt; Note that bbsBayes2 cross validation is experimental!</span></span></code></pre></div>
-<p>Now our model data (<code>md</code>) has a list item called
-<code>folds</code> which contains the fold groups assigned to each
-observation. To use this, you’ll need to loop your model and specify the
-<code>k</code> iteration.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">md</span>, k <span class="op">=</span> <span class="va">k</span>, chains <span class="op">=</span> <span class="fl">2</span>, iter_warmup <span class="op">=</span> <span class="fl">10</span>, iter_sampling <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="co">#&gt; One set of `init` values supplied, duplicating for each chain.</span></span>
-<span><span class="co">#&gt; Running MCMC with 2 chains, at most 4 in parallel...</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Chain 1 WARNING: No variance estimation is </span></span>
-<span><span class="co">#&gt; Chain 1          performed for num_warmup &lt; 20 </span></span>
-<span><span class="co">#&gt; Chain 1 Iteration:  1 / 20 [  5%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Log location parameter[1] is inf, but must be finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 2 WARNING: No variance estimation is </span></span>
-<span><span class="co">#&gt; Chain 2          performed for num_warmup &lt; 20 </span></span>
-<span><span class="co">#&gt; Chain 2 Iteration:  1 / 20 [  5%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Log location parameter[1] is inf, but must be finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Iteration: 11 / 20 [ 55%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 1 Iteration: 11 / 20 [ 55%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 2 Iteration: 20 / 20 [100%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 1 Iteration: 20 / 20 [100%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 2 finished in 20.8 seconds.</span></span>
-<span><span class="co">#&gt; Chain 1 finished in 21.2 seconds.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Both chains finished successfully.</span></span>
-<span><span class="co">#&gt; Mean chain execution time: 21.0 seconds.</span></span>
-<span><span class="co">#&gt; Total execution time: 21.3 seconds.</span></span>
-<span><span class="co">#&gt; Warning: 2 of 2 chains had an E-BFMI less than 0.2.</span></span>
-<span><span class="co">#&gt; See https://mc-stan.org/misc/warnings for details.</span></span>
-<span><span class="co">#&gt; Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/vignettes/articles/BBS_STAN_first_diff_hier_2023-02-27_k1.rds</span></span>
-<span><span class="co">#&gt; One set of `init` values supplied, duplicating for each chain.</span></span>
-<span><span class="co">#&gt; Running MCMC with 2 chains, at most 4 in parallel...</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Chain 1 WARNING: No variance estimation is </span></span>
-<span><span class="co">#&gt; Chain 1          performed for num_warmup &lt; 20 </span></span>
-<span><span class="co">#&gt; Chain 1 Iteration:  1 / 20 [  5%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Log location parameter[1] is -nan, but must be finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 2 WARNING: No variance estimation is </span></span>
-<span><span class="co">#&gt; Chain 2          performed for num_warmup &lt; 20 </span></span>
-<span><span class="co">#&gt; Chain 2 Iteration:  1 / 20 [  5%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Log location parameter[1] is -nan, but must be finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 1 Iteration: 11 / 20 [ 55%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 2 Iteration: 11 / 20 [ 55%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 1 Iteration: 20 / 20 [100%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 2 Iteration: 20 / 20 [100%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 1 finished in 20.2 seconds.</span></span>
-<span><span class="co">#&gt; Chain 2 finished in 21.1 seconds.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Both chains finished successfully.</span></span>
-<span><span class="co">#&gt; Mean chain execution time: 20.6 seconds.</span></span>
-<span><span class="co">#&gt; Total execution time: 21.2 seconds.</span></span>
-<span><span class="co">#&gt; Warning: 1 of 2 chains had an E-BFMI less than 0.2.</span></span>
-<span><span class="co">#&gt; See https://mc-stan.org/misc/warnings for details.</span></span>
-<span><span class="co">#&gt; Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/vignettes/articles/BBS_STAN_first_diff_hier_2023-02-27_k2.rds</span></span>
-<span><span class="co">#&gt; One set of `init` values supplied, duplicating for each chain.</span></span>
-<span><span class="co">#&gt; Running MCMC with 2 chains, at most 4 in parallel...</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Chain 1 WARNING: No variance estimation is </span></span>
-<span><span class="co">#&gt; Chain 1          performed for num_warmup &lt; 20 </span></span>
-<span><span class="co">#&gt; Chain 1 Iteration:  1 / 20 [  5%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Log location parameter[1] is -nan, but must be finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 2 WARNING: No variance estimation is </span></span>
-<span><span class="co">#&gt; Chain 2          performed for num_warmup &lt; 20 </span></span>
-<span><span class="co">#&gt; Chain 2 Iteration:  1 / 20 [  5%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Log location parameter[1] is -nan, but must be finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 1 Iteration: 11 / 20 [ 55%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 2 Iteration: 11 / 20 [ 55%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 1 Iteration: 20 / 20 [100%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 2 Iteration: 20 / 20 [100%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 1 finished in 21.1 seconds.</span></span>
-<span><span class="co">#&gt; Chain 2 finished in 21.8 seconds.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Both chains finished successfully.</span></span>
-<span><span class="co">#&gt; Mean chain execution time: 21.5 seconds.</span></span>
-<span><span class="co">#&gt; Total execution time: 21.9 seconds.</span></span>
-<span><span class="co">#&gt; Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/vignettes/articles/BBS_STAN_first_diff_hier_2023-02-27_k3.rds</span></span></code></pre></div>
-<p>AND NOW…</p>
-</div>
-<div class="section level3">
-<h3 id="customizing-initial-parameter-values">Customizing initial parameter values<a class="anchor" aria-label="anchor" href="#customizing-initial-parameter-values"></a>
-</h3>
-<p>To customize the initial parameter values you can create the model
-data with <code><a href="../reference/prepare_model.html">prepare_model()</a></code> and then either edit or overwrite
-the <code>init_values</code> item in the list.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>, sample_data <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>min_max_route_years <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"first_diff"</span>, model_variant <span class="op">=</span> <span class="st">"hier"</span><span class="op">)</span></span></code></pre></div>
-<p>Make some changes to the <code>init_values</code> and pass the
-<code>model_data</code> to <code><a href="../reference/run_model.html">run_model()</a></code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">md</span><span class="op">[[</span><span class="st">"init_values"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"sdnoise"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.5</span></span>
+<code class="sourceCode R"><span><span class="va">saved_trajectories</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span><span class="va">saved_trend_maps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">vector</a></span><span class="op">(</span><span class="st">"list"</span>,<span class="fl">9</span><span class="op">)</span></span>
+<span><span class="va">species</span> <span class="op">&lt;-</span> <span class="st">"Scissor-tailed Flycatcher"</span></span>
+<span><span class="co"># extract the unique numerical identifier for this species in the BBS database</span></span>
+<span><span class="va">species_number</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_species.html">search_species</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">aou</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">md</span>, iter_warmup <span class="op">=</span> <span class="fl">20</span>, iter_sampling <span class="op">=</span> <span class="fl">20</span>, chains <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; One set of `init` values supplied, duplicating for each chain.</span></span>
-<span><span class="co">#&gt; Running MCMC with 2 chains, at most 4 in parallel...</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Chain 1 WARNING: There aren't enough warmup iterations to fit the </span></span>
-<span><span class="co">#&gt; Chain 1          three stages of adaptation as currently configured. </span></span>
-<span><span class="co">#&gt; Chain 1          Reducing each adaptation stage to 15%/75%/10% of </span></span>
-<span><span class="co">#&gt; Chain 1          the given number of warmup iterations: </span></span>
-<span><span class="co">#&gt; Chain 1            init_buffer = 3 </span></span>
-<span><span class="co">#&gt; Chain 1            adapt_window = 15 </span></span>
-<span><span class="co">#&gt; Chain 1            term_buffer = 2 </span></span>
-<span><span class="co">#&gt; Chain 1 Iteration:  1 / 40 [  2%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 2 WARNING: There aren't enough warmup iterations to fit the </span></span>
-<span><span class="co">#&gt; Chain 2          three stages of adaptation as currently configured. </span></span>
-<span><span class="co">#&gt; Chain 2          Reducing each adaptation stage to 15%/75%/10% of </span></span>
-<span><span class="co">#&gt; Chain 2          the given number of warmup iterations: </span></span>
-<span><span class="co">#&gt; Chain 2            init_buffer = 3 </span></span>
-<span><span class="co">#&gt; Chain 2            adapt_window = 15 </span></span>
-<span><span class="co">#&gt; Chain 2            term_buffer = 2 </span></span>
-<span><span class="co">#&gt; Chain 2 Iteration:  1 / 40 [  2%]  (Warmup)</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is inf, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 1 Exception: neg_binomial_2_log_lpmf: Precision parameter is inf, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 1</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span></span>
-<span><span class="co">#&gt; Chain 2 Exception: neg_binomial_2_log_lpmf: Precision parameter is 0, but must be positive finite! (in '/tmp/RtmpckhWyR/model-28fd40c6b54e.stan', line 227, column 3 to column 40)</span></span>
-<span><span class="co">#&gt; Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span></span>
-<span><span class="co">#&gt; Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span></span>
-<span><span class="co">#&gt; Chain 2</span></span>
-<span><span class="co">#&gt; Chain 2 Iteration: 21 / 40 [ 52%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 1 Iteration: 21 / 40 [ 52%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 2 Iteration: 40 / 40 [100%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 2 finished in 102.3 seconds.</span></span>
-<span><span class="co">#&gt; Chain 1 Iteration: 40 / 40 [100%]  (Sampling) </span></span>
-<span><span class="co">#&gt; Chain 1 finished in 120.1 seconds.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Both chains finished successfully.</span></span>
-<span><span class="co">#&gt; Mean chain execution time: 111.2 seconds.</span></span>
-<span><span class="co">#&gt; Total execution time: 120.2 seconds.</span></span>
-<span><span class="co">#&gt; Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/vignettes/articles/BBS_STAN_first_diff_hier_2023-02-27.rds</span></span></code></pre></div>
-<p>Note that you can supply different init values for each chain. If you
-supply one set of init values (which is what
-<code><a href="../reference/prepare_model.html">prepare_model()</a></code> outputs), <code><a href="../reference/run_model.html">run_model()</a></code>, will
-duplicate them for each chain for you. If you supply a list of init
-values such that the length is the same as the number of chains, your
-input will be used as is.</p>
-</div>
-<div class="section level3">
-<h3 id="customize-stan-model-file">Customize Stan Model File<a class="anchor" aria-label="anchor" href="#customize-stan-model-file"></a>
-</h3>
-<p>Copy model file (and modify by hand in text editor)</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">new_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/copy_model_file.html">copy_model_file</a></span><span class="op">(</span><span class="st">"first_diff"</span>, <span class="st">"hier"</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Copying model file first_diff_hier_bbs_CV.stan to /tmp/RtmpCWFfFS/first_diff_hier_bbs_CV_COPY.stan</span></span>
-<span><span class="va">new_model</span></span>
-<span><span class="co">#&gt; [1] "/tmp/RtmpCWFfFS/first_diff_hier_bbs_CV_COPY.stan"</span></span></code></pre></div>
-<p>Then give the file path of this new file to
-<code><a href="../reference/prepare_model.html">prepare_model()</a></code></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>, sample_data <span class="op">=</span> <span class="cn">TRUE</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>min_max_route_years <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"first_diff"</span>, model_variant <span class="op">=</span> <span class="st">"hier"</span>,</span>
-<span>                model_file <span class="op">=</span> <span class="va">new_model</span><span class="op">)</span></span></code></pre></div>
-</div>
+<span></span>
+<span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">bbs_models</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"output/"</span>,</span>
+<span>                      <span class="va">species_number</span>,</span>
+<span>                      <span class="st">"_"</span>,</span>
+<span>                      <span class="va">bbs_models</span><span class="op">[</span><span class="va">j</span>,<span class="st">"model"</span><span class="op">]</span>,</span>
+<span>                      <span class="st">"_"</span>,</span>
+<span>                      <span class="va">bbs_models</span><span class="op">[</span><span class="va">j</span>,<span class="st">"variant"</span><span class="op">]</span>,</span>
+<span>                      <span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_indices.html">generate_indices</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">trajs</span> <span class="op">&lt;-</span> <span class="va">i</span><span class="op">$</span><span class="va">indices</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">region</span> <span class="op">==</span> <span class="st">"continent"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">bbs_models</span><span class="op">[</span><span class="va">j</span>,<span class="st">"model"</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>           variant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">bbs_models</span><span class="op">[</span><span class="va">j</span>,<span class="st">"variant"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">saved_trajectories</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">saved_trajectories</span>,</span>
+<span>                        <span class="va">trajs</span><span class="op">)</span></span>
+<span>  </span>
+<span> </span>
+<span>  </span>
+<span>  <span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">strata_with_data</span> <span class="op">&lt;-</span> <span class="va">t</span><span class="op">$</span><span class="va">meta_strata</span> <span class="co"># meta data in trend object - strata information</span></span>
+<span><span class="co"># load the original strata map used in the model fitting</span></span>
+<span><span class="co"># then filter to just the strata with data for this species</span></span>
+<span><span class="va">data_bounding_box</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span>stratify_by <span class="op">=</span> <span class="va">t</span><span class="op">$</span><span class="va">meta_data</span><span class="op">$</span><span class="va">stratify_by</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">strata_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">strata_with_data</span><span class="op">$</span><span class="va">strata_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># create a bounding box for x and y limits</span></span>
+<span></span>
+<span>  <span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">bbs_models</span><span class="op">[</span><span class="va">j</span>,<span class="st">"model"</span><span class="op">]</span>,</span>
+<span>                       <span class="va">bbs_models</span><span class="op">[</span><span class="va">j</span>,<span class="st">"variant"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="va">data_bounding_box</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"xmin"</span>,<span class="st">"xmax"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>           ylim <span class="op">=</span> <span class="va">data_bounding_box</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ymin"</span>,<span class="st">"ymax"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span>   </span>
+<span>  <span class="va">saved_trend_maps</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">map</span> </span>
+<span>    </span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>This species has moderately rich data across much of its range (the
+portion of its range covered by the BBS surveys), so the estimated
+population trajectories are very similar across the different
+models.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="va">traj_panel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">saved_trajectories</span>,</span>
+<span>                     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">year</span>, y <span class="op">=</span> <span class="va">index</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">index_q_0.025</span>,</span>
+<span>                  ymax <span class="op">=</span> <span class="va">index_q_0.975</span>,</span>
+<span>                  fill <span class="op">=</span> <span class="va">variant</span><span class="op">)</span>,</span>
+<span>              alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="va">variant</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">year</span>, y <span class="op">=</span> <span class="va">obs_mean</span><span class="op">)</span>,</span>
+<span>             alpha <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_colour_viridis_d</a></span><span class="op">(</span>aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"colour"</span>,<span class="st">"fill"</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/vars.html" class="external-link">vars</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">traj_panel</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 9 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
+<p><img src="figures/models_unnamed-chunk-4-1.png" alt="Population trajectory graphs for Scissor-tailed Flycatcher estimated using the 9 different models and their variants available in bbsBayes2"></p>
+<p>Similarly, the long-term trend maps are generally similar across the
+different models and variants.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">map_panel</span> <span class="op">&lt;-</span> <span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">wrap_plots</a></span><span class="op">(</span><span class="va">saved_trend_maps</span>,</span>
+<span>                                    ncol <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>                                    guides <span class="op">=</span> <span class="st">"collect"</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map_panel</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/models_unnamed-chunk-5-1.png" alt="Population trend maps for Scissor-tailed Flycatcher estimated using the 9 different models and their variants available in bbsBayes2"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

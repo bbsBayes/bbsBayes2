@@ -87,43 +87,57 @@
 
     
     
-<p>In this vignette we’ll explore the various ways you can stratify your
-data in preparation for running the models.</p>
-<p>You can use existing, pre-defined strata, subset an existing strata,
-or create your own custom stratification, either using a completely new
-set of spatial data, or by modifying the spatial polygons of an existing
-strata.</p>
-<p>Let’s get started!</p>
-<p>First, we’ll load the packages we need.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bbsBayes/bbsBayes2" class="external-link">bbsBayes2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>       <span class="co"># Spatial data manipulations</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>    <span class="co"># General data manipulations</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>  <span class="co"># Plotting</span></span></code></pre></div>
-<p>Then we’ll make sure we have the BBS data downloaded</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/have_bbs_data.html">have_bbs_data</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Expected BBS state data 2022: '/home/runner/.local/share/R/bbsBayes2/bbs_state_data_2022.rds'</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>If not, install with <code><a href="../reference/fetch_bbs_data.html">fetch_bbs_data()</a></code></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/fetch_bbs_data.html">fetch_bbs_data</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>  <span class="co"># Plotting</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span> <span class="co"># mutli-plot</span></span></code></pre></div>
+<p>In this vignette we’ll explore the various ways you can stratify the
+BBS data in preparation for running the models.</p>
+<p>You can use existing, pre-defined stratifications, subset an existing
+stratification, or load your own custom stratification, either using a
+completely new set of spatial data, or by modifying the spatial polygons
+of an existing strata.</p>
+<p>This vignette assumes that the BBS data have already been downloaded
+and that you are familiar with the <a href="./bbsBayes2.html">basics of
+the bbsBayes2 workflow</a></p>
 <div class="section level2">
-<h2 id="stratifying-with-existing-categories">Stratifying with existing categories<a class="anchor" aria-label="anchor" href="#stratifying-with-existing-categories"></a>
+<h2 id="stratifying-with-built-in-stratifications">Stratifying with built-in stratifications<a class="anchor" aria-label="anchor" href="#stratifying-with-built-in-stratifications"></a>
 </h2>
-<p>The existing stratifications are bbs_usgs, bbs_cws, bcr, latlong,
+<p>The built-in stratifications are bbs_usgs, bbs_cws, bcr, latlong,
 prov_state.</p>
-<p>You can take a look at how these stratify your data by looking at the
-maps included in bbsBayes2 with <code><a href="../reference/load_map.html">load_map()</a></code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span><span class="st">"bbs_cws"</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">strata_name</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<ul>
+<li>
+<code>bbs_cws</code> – Intersections of Political regions X Bird
+Conservation Regions (Stratification used by the Canadian Wildlife
+Service [CWS] for national status reporting)</li>
+<li>
+<code>bbs_usgs</code> – Intersections of Political regions X Bird
+Conservation Regions (Stratification used by the United Status
+Geological Survey [USGS] for national status reporting)</li>
+<li>
+<code>bcr</code> – Bird Conservation Regions only</li>
+<li>
+<code>prov_state</code> – Political regions only - states,
+provinces, and territories</li>
+<li>
+<code>latlong</code> – Grid-cells of 1 degree of latitude X 1 degree
+of longitude, aka “degree-blocks”. These are the original survey design
+strata for the BBS. Routes are established at randomized locations
+within these degree-blocks.</li>
+</ul>
+<p>You can visualize these stratifications by looking at the maps
+included in bbsBayes2 with <code><a href="../reference/load_map.html">load_map()</a></code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span><span class="st">"bbs_usgs"</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">strata_name</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span>guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="stratification_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p><img src="figures/stratification_unnamed-chunk-2-1.png" alt="Map of the BBS USGS stratification showing the regions that represent spatial intersections of Bird Conservation Regions with political jurisdictions (Provinces, Territories, States)"></p>
 <p>To stratify BBS data, you can use these existing stratifications by
 specifying <code>by = "name"</code> in the <code><a href="../reference/stratify.html">stratify()</a></code>
 function.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>, species <span class="op">=</span> <span class="st">"Canada Jay"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using 'bbs_usgs' (standard) stratification</span></span>
 <span><span class="co">#&gt; Loading BBS data...</span></span>
@@ -132,170 +146,45 @@ function.</p>
 <span><span class="co">#&gt;   Renaming routes...</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="subsetting-an-existing-stratification">Subsetting an existing stratification<a class="anchor" aria-label="anchor" href="#subsetting-an-existing-stratification"></a>
+<h2 id="custom-stratifications">Custom stratifications<a class="anchor" aria-label="anchor" href="#custom-stratifications"></a>
 </h2>
-<p>But what if you want to use the BBS CWS stratification, but only
-really want to look at Canadian regions?</p>
-<p>In this case you’ll subset the BBS CWS stratification and give
-<code><a href="../reference/stratify.html">stratify()</a></code> that data set in addition to the
-specification.</p>
-<p>In addition to maps, stratifications are available as data frames in
-the <code>bbs_strata</code> object.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">bbs_strata</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "bbs_usgs"   "bbs_cws"    "bcr"        "latlong"    "prov_state"</span></span>
-<span><span class="va">bbs_strata</span><span class="op">[[</span><span class="st">"bbs_cws"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 207 × 7</span></span></span>
-<span><span class="co">#&gt;    strata_name area_sq_km country country_code prov_state   bcr bcr_by_country</span></span>
-<span><span class="co">#&gt;  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> CA-AB-10        <span style="text-decoration: underline;">52</span>565. Canada  CA           AB            10 Canada-BCR_10 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> CA-AB-11       <span style="text-decoration: underline;">149</span>352. Canada  CA           AB            11 Canada-BCR_11 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> CA-AB-6        <span style="text-decoration: underline;">445</span>135. Canada  CA           AB             6 Canada-BCR_6  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> CA-AB-8          <span style="text-decoration: underline;">6</span>987. Canada  CA           AB             8 Canada-BCR_8  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> CA-BC-10       <span style="text-decoration: underline;">383</span>006. Canada  CA           BC            10 Canada-BCR_10 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> CA-BC-4        <span style="text-decoration: underline;">193</span>180. Canada  CA           BC             4 Canada-BCR_4  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> CA-BC-5        <span style="text-decoration: underline;">199</span>820. Canada  CA           BC             5 Canada-BCR_5  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> CA-BC-6        <span style="text-decoration: underline;">106</span>917. Canada  CA           BC             6 Canada-BCR_6  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> CA-BC-9         <span style="text-decoration: underline;">59</span>939. Canada  CA           BC             9 Canada-BCR_9  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> CA-BCR7-7     1<span style="text-decoration: underline;">743</span>744. Canada  CA           BCR7           7 Canada-BCR_7  </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 197 more rows</span></span></span></code></pre></div>
-<p>We can now modify and use this data frame as we like.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_cws</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bbs_strata</span><span class="op">[[</span><span class="st">"bbs_cws"</span><span class="op">]</span><span class="op">]</span>, <span class="va">country</span> <span class="op">==</span> <span class="st">"Canada"</span><span class="op">)</span></span>
-<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>, species <span class="op">=</span> <span class="st">"Canada Jay"</span>, strata_custom <span class="op">=</span> <span class="va">my_cws</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Using 'bbs_cws' (subset) stratification</span></span>
-<span><span class="co">#&gt; Loading BBS data...</span></span>
-<span><span class="co">#&gt; Filtering to species Canada Jay (4840)</span></span>
-<span><span class="co">#&gt; Stratifying data...</span></span>
-<span><span class="co">#&gt;   Combining BCR 7 and NS and PEI...</span></span>
-<span><span class="co">#&gt;   Renaming routes...</span></span>
-<span><span class="co">#&gt;   Omitting 101,474/119,567 route-years that do not match a stratum.</span></span>
-<span><span class="co">#&gt;     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span></span></code></pre></div>
-<p>Note that the stratification is now “bbs_cws” and “subset”</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">s</span><span class="op">[[</span><span class="st">"meta_data"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; $stratify_by</span></span>
-<span><span class="co">#&gt; [1] "bbs_cws"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $stratify_type</span></span>
-<span><span class="co">#&gt; [1] "subset"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $species</span></span>
-<span><span class="co">#&gt; [1] "Canada Jay"</span></span></code></pre></div>
-<p>We can see the strata included by looking at the
-<code>meta_strata</code></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="st">"meta_strata"</span><span class="op">]</span><span class="op">]</span>, n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 × 7</span></span></span>
-<span><span class="co">#&gt;    strata_name area_sq_km country country_code prov_state   bcr bcr_by_country</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> CA-AB-10        <span style="text-decoration: underline;">52</span>565. Canada  CA           AB            10 Canada-BCR_10 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> CA-AB-11       <span style="text-decoration: underline;">149</span>352. Canada  CA           AB            11 Canada-BCR_11 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> CA-AB-6        <span style="text-decoration: underline;">445</span>135. Canada  CA           AB             6 Canada-BCR_6  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> CA-BC-10       <span style="text-decoration: underline;">383</span>006. Canada  CA           BC            10 Canada-BCR_10 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> CA-BC-4        <span style="text-decoration: underline;">193</span>180. Canada  CA           BC             4 Canada-BCR_4  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> CA-BC-5        <span style="text-decoration: underline;">199</span>820. Canada  CA           BC             5 Canada-BCR_5  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> CA-BC-6        <span style="text-decoration: underline;">106</span>917. Canada  CA           BC             6 Canada-BCR_6  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> CA-BC-9         <span style="text-decoration: underline;">59</span>939. Canada  CA           BC             9 Canada-BCR_9  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> CA-BCR7-7     1<span style="text-decoration: underline;">743</span>744. Canada  CA           BCR7           7 Canada-BCR_7  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> CA-MB-11        <span style="text-decoration: underline;">70</span>101. Canada  CA           MB            11 Canada-BCR_11 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> CA-MB-12        <span style="text-decoration: underline;">15</span>312. Canada  CA           MB            12 Canada-BCR_12 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> CA-MB-6        <span style="text-decoration: underline;">127</span>190. Canada  CA           MB             6 Canada-BCR_6  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> CA-MB-8        <span style="text-decoration: underline;">234</span>151. Canada  CA           MB             8 Canada-BCR_8  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> CA-NB-14        <span style="text-decoration: underline;">72</span>991. Canada  CA           NB            14 Canada-BCR_14 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> CA-NL-8        <span style="text-decoration: underline;">157</span>083. Canada  CA           NL             8 Canada-BCR_8  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> CA-NSPE-14      <span style="text-decoration: underline;">61</span>502. Canada  CA           NSPE          14 Canada-BCR_14 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> CA-NT-3        <span style="text-decoration: underline;">394</span>769. Canada  CA           NT             3 Canada-BCR_3  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> CA-NT-6        <span style="text-decoration: underline;">509</span>423. Canada  CA           NT             6 Canada-BCR_6  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> CA-NU-3       1<span style="text-decoration: underline;">969</span>549. Canada  CA           NU             3 Canada-BCR_3  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> CA-ON-12       <span style="text-decoration: underline;">206</span>181. Canada  CA           ON            12 Canada-BCR_12 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">21</span> CA-ON-13        <span style="text-decoration: underline;">83</span>859. Canada  CA           ON            13 Canada-BCR_13 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">22</span> CA-ON-8        <span style="text-decoration: underline;">435</span>545. Canada  CA           ON             8 Canada-BCR_8  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">23</span> CA-QC-12       <span style="text-decoration: underline;">174</span>314. Canada  CA           QC            12 Canada-BCR_12 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">24</span> CA-QC-13        <span style="text-decoration: underline;">28</span>409. Canada  CA           QC            13 Canada-BCR_13 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">25</span> CA-QC-14        <span style="text-decoration: underline;">67</span>711. Canada  CA           QC            14 Canada-BCR_14 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">26</span> CA-QC-8        <span style="text-decoration: underline;">470</span>310. Canada  CA           QC             8 Canada-BCR_8  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">27</span> CA-SK-11       <span style="text-decoration: underline;">241</span>315. Canada  CA           SK            11 Canada-BCR_11 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">28</span> CA-SK-6        <span style="text-decoration: underline;">177</span>763. Canada  CA           SK             6 Canada-BCR_6  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">29</span> CA-SK-8        <span style="text-decoration: underline;">188</span>615. Canada  CA           SK             8 Canada-BCR_8  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">30</span> CA-YT-4        <span style="text-decoration: underline;">435</span>349. Canada  CA           YT             4 Canada-BCR_4</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="custom-stratification---new-map">Custom stratification - New map<a class="anchor" aria-label="anchor" href="#custom-stratification---new-map"></a>
-</h2>
+<div class="section level3">
+<h3 id="load-a-custom-stratification-map">Load a custom stratification map<a class="anchor" aria-label="anchor" href="#load-a-custom-stratification-map"></a>
+</h3>
 <p>To define a completely different stratification, you’ll need to
 provide a spatial data object with polygons defining your strata.</p>
 <p>In our example we’ll use WBPHS stratum boundaries for 2019. This is
 available from available from the US Fish and Wildlife Service
 Catalogue: <a href="https://ecos.fws.gov/ServCat/Reference/Profile/142628" class="external-link uri">https://ecos.fws.gov/ServCat/Reference/Profile/142628</a></p>
 <p>You can either download it by hand, or with the following code.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="st">"WBPHS_stratum_boundaries_2019.zip"</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="st">"output/WBPHS_Stratum_Boundaries_2019.zip"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"https://ecos.fws.gov/ServCat/DownloadFile/213149"</span>,</span>
-<span>              destfile <span class="op">=</span> <span class="va">z</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html" class="external-link">unzip</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span>  <span class="co"># Unzip</span></span>
+<span>              destfile <span class="op">=</span> <span class="va">z</span>,</span>
+<span>              cacheOK <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html" class="external-link">unzip</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span>  <span class="co"># Unzip - if you get a file is corrupt message, download it manually</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="co"># Remove the zipped file</span></span></code></pre></div>
 <p>To use this file in bbsBayes2, we need to load it as an sf object
 using the sf package.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="st">"WBPHS_stratum_boundaries_2019.shp"</span><span class="op">)</span></span>
-<span><span class="va">map</span></span>
-<span><span class="co">#&gt; Simple feature collection with 81 features and 1 field</span></span>
-<span><span class="co">#&gt; Geometry type: POLYGON</span></span>
-<span><span class="co">#&gt; Dimension:     XY</span></span>
-<span><span class="co">#&gt; Bounding box:  xmin: -166.8897 ymin: 41.95304 xmax: -52.61347 ymax: 70.26563</span></span>
-<span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 81 × 2</span></span></span>
-<span><span class="co">#&gt;    STRAT                                                                geometry</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>                                                           <span style="color: #949494; font-style: italic;">&lt;POLYGON [°]&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>    10 ((-165.2478 65.9118, -165.4129 65.9136, -165.5941 65.92889, -165.7198 …</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>    10 ((-165.666 65.21061, -165.6339 65.226, -165.5973 65.22971, -165.534 65…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>    11 ((-159.1616 66.1132, -159.2357 66.1137, -159.2907 66.1165, -159.3785 6…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     9 ((-161.8425 59.61546, -161.8578 59.61984, -161.8837 59.63493, -161.907…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>    10 ((-162.0134 64.7124, -162.049 64.71309, -162.0833 64.71751, -162.1213 …</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>    10 ((-160.881 64.70971, -160.9209 64.7151, -160.9496 64.73389, -160.9629 …</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     6 ((-158.4808 64.28549, -158.5828 64.2881, -158.6513 64.29482, -158.7074…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     5 ((-159.7113 61.94699, -159.7341 61.9489, -159.7628 61.95391, -159.8032…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     3 ((-153.8148 64.6944, -153.8857 64.6792, -153.9843 64.65071, -154.1057 …</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     4 ((-144.2179 65.86969, -144.3817 65.87701, -144.4698 65.88491, -144.537…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 71 more rows</span></span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="st">"output/WBPHS_stratum_boundaries_2019.shp"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">map</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">STRAT</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span>guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="stratification_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<p><img src="figures/stratification_unnamed-chunk-5-1.png" alt="Map of the strata used in the Waterfowl Breeding Population and Habitat Surveys"></p>
 <p>We see that it has one column that reflects the stratum names. First
 we’ll rename this column to <code>strata_name</code> which is what
 <code><a href="../reference/stratify.html">stratify()</a></code> requires.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="va">map</span>, strata_name <span class="op">=</span> <span class="va">STRAT</span><span class="op">)</span></span>
-<span><span class="va">map</span></span>
-<span><span class="co">#&gt; Simple feature collection with 81 features and 1 field</span></span>
-<span><span class="co">#&gt; Geometry type: POLYGON</span></span>
-<span><span class="co">#&gt; Dimension:     XY</span></span>
-<span><span class="co">#&gt; Bounding box:  xmin: -166.8897 ymin: 41.95304 xmax: -52.61347 ymax: 70.26563</span></span>
-<span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 81 × 2</span></span></span>
-<span><span class="co">#&gt;    strata_name                                                          geometry</span></span>
-<span><span class="co">#&gt;          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>                                                     <span style="color: #949494; font-style: italic;">&lt;POLYGON [°]&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>          10 ((-165.2478 65.9118, -165.4129 65.9136, -165.5941 65.92889, -165…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>          10 ((-165.666 65.21061, -165.6339 65.226, -165.5973 65.22971, -165.…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>          11 ((-159.1616 66.1132, -159.2357 66.1137, -159.2907 66.1165, -159.…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>           9 ((-161.8425 59.61546, -161.8578 59.61984, -161.8837 59.63493, -1…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>          10 ((-162.0134 64.7124, -162.049 64.71309, -162.0833 64.71751, -162…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>          10 ((-160.881 64.70971, -160.9209 64.7151, -160.9496 64.73389, -160…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>           6 ((-158.4808 64.28549, -158.5828 64.2881, -158.6513 64.29482, -15…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>           5 ((-159.7113 61.94699, -159.7341 61.9489, -159.7628 61.95391, -15…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>           3 ((-153.8148 64.6944, -153.8857 64.6792, -153.9843 64.65071, -154…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>           4 ((-144.2179 65.86969, -144.3817 65.87701, -144.4698 65.88491, -1…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 71 more rows</span></span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="va">map</span>, strata_name <span class="op">=</span> <span class="va">STRAT</span><span class="op">)</span></span></code></pre></div>
 <p>Now we have the spatial data and relevant information to pass to
 <code><a href="../reference/stratify.html">stratify()</a></code>.</p>
 <p>When using a custom stratification, the <code>by</code> argument
 becomes the name you want to apply. Let’s use something informative, but
 short (although there’s no limit). We also need to give the function our
 map.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"WBPHS_2019"</span>, species <span class="op">=</span> <span class="st">"Canada Jay"</span>, strata_custom <span class="op">=</span> <span class="va">map</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using 'wbphs_2019' (custom) stratification</span></span>
 <span><span class="co">#&gt; Loading BBS data...</span></span>
@@ -314,7 +203,7 @@ consistency.</p>
 </blockquote>
 <p>We can take a quick look at the output, by looking at the meta data
 and routes contained therein.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span><span class="op">[[</span><span class="st">"meta_data"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $stratify_by</span></span>
 <span><span class="co">#&gt; [1] "wbphs_2019"</span></span>
@@ -324,46 +213,45 @@ and routes contained therein.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $species</span></span>
 <span><span class="co">#&gt; [1] "Canada Jay"</span></span>
+<span></span>
 <span><span class="va">s</span><span class="op">[[</span><span class="st">"routes_strata"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 19,412 × 33</span></span></span>
-<span><span class="co">#&gt;    strata_n…¹ count…² state…³ route route…⁴ active latit…⁵ longi…⁶   bcr route…⁷</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 3              840       3 3-8   TOWER …      1    63.6   -<span style="color: #BB0000;">144.</span>     4       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 3              840       3 3-8   TOWER …      1    63.6   -<span style="color: #BB0000;">144.</span>     4       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 3              840       3 3-8   TOWER …      1    63.6   -<span style="color: #BB0000;">144.</span>     4       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 3              840       3 3-8   TOWER …      1    63.6   -<span style="color: #BB0000;">144.</span>     4       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 3              840       3 3-8   TOWER …      1    63.6   -<span style="color: #BB0000;">144.</span>     4       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 3              840       3 3-8   TOWER …      1    63.6   -<span style="color: #BB0000;">144.</span>     4       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 3              840       3 3-8   TOWER …      1    63.6   -<span style="color: #BB0000;">144.</span>     4       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 3              840       3 3-8   TOWER …      1    63.6   -<span style="color: #BB0000;">144.</span>     4       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 3              840       3 3-8   TOWER …      1    63.6   -<span style="color: #BB0000;">144.</span>     4       1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 3              840       3 3-8   TOWER …      1    63.6   -<span style="color: #BB0000;">144.</span>     4       1</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 19,402 more rows, 23 more variables: route_type_detail_id &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   route_data_id &lt;dbl&gt;, rpid &lt;dbl&gt;, year &lt;dbl&gt;, month &lt;dbl&gt;, day &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   obs_n &lt;dbl&gt;, total_spp &lt;dbl&gt;, start_temp &lt;dbl&gt;, end_temp &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   temp_scale &lt;chr&gt;, start_wind &lt;dbl&gt;, end_wind &lt;dbl&gt;, start_sky &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   end_sky &lt;dbl&gt;, start_time &lt;dbl&gt;, end_time &lt;dbl&gt;, assistant &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   quality_current_id &lt;dbl&gt;, run_type &lt;dbl&gt;, state &lt;chr&gt;, st_abrev &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   country &lt;chr&gt;, and abbreviated variable names ¹​strata_name, ²​country_num, …</span></span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 19,412 × 33</span></span>
+<span><span class="co">#&gt;    strata_name country_num state_num route route_name   active latitude longitude   bcr route_type_id</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
+<span><span class="co">#&gt;  2 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
+<span><span class="co">#&gt;  3 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
+<span><span class="co">#&gt;  4 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
+<span><span class="co">#&gt;  5 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
+<span><span class="co">#&gt;  6 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
+<span><span class="co">#&gt;  7 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
+<span><span class="co">#&gt;  8 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
+<span><span class="co">#&gt;  9 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
+<span><span class="co">#&gt; 10 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
+<span><span class="co">#&gt; # ℹ 19,402 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 23 more variables: route_type_detail_id &lt;dbl&gt;, route_data_id &lt;dbl&gt;, rpid &lt;dbl&gt;, year &lt;dbl&gt;, month &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   day &lt;dbl&gt;, obs_n &lt;dbl&gt;, total_spp &lt;dbl&gt;, start_temp &lt;dbl&gt;, end_temp &lt;dbl&gt;, temp_scale &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   start_wind &lt;dbl&gt;, end_wind &lt;dbl&gt;, start_sky &lt;dbl&gt;, end_sky &lt;dbl&gt;, start_time &lt;dbl&gt;, end_time &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   assistant &lt;dbl&gt;, quality_current_id &lt;dbl&gt;, run_type &lt;dbl&gt;, state &lt;chr&gt;, st_abrev &lt;chr&gt;, country &lt;chr&gt;</span></span></code></pre></div>
 <p>To get a different look we can also plot this data on top of our map
 using ggplot2. Note that we use <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor()</a></code> to ensure the
 strata names are categorical.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">[[</span><span class="st">"routes_strata"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rts</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">[[</span><span class="st">"routes_strata"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"longitude"</span>, <span class="st">"latitude"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">map</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">r</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">rts</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span>aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"colour"</span>, <span class="st">"fill"</span><span class="op">)</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="stratification_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
+<p><img src="figures/stratification_unnamed-chunk-9-1.png"></p>
 <p>Based on the message we received during stratification
 (<code>Omitting...</code>) and this map, it looks as if our custom
 stratification is excluding some BBS data.</p>
 <p>We can re-run the stratification with
 <code>return_omitted = TRUE</code> which will attach a data frame of
 omitted strata to the output.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"WBPHS_2019"</span>, species <span class="op">=</span> <span class="st">"Canada Jay"</span>, strata_custom <span class="op">=</span> <span class="va">map</span>,</span>
 <span>              return_omitted <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using 'wbphs_2019' (custom) stratification</span></span>
@@ -378,62 +266,241 @@ omitted strata to the output.</p>
 <span><span class="co">#&gt;   Omitting 100,155/119,567 route-years that do not match a stratum.</span></span>
 <span><span class="co">#&gt;     Returning omitted routes.</span></span>
 <span><span class="va">s</span><span class="op">[[</span><span class="st">"routes_omitted"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 100,155 × 11</span></span></span>
-<span><span class="co">#&gt;     year strata_name country state   route route_…¹ latit…² longi…³   bcr  obs_n</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">1</span>967 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-1   ST FLOR…    34.9   -<span style="color: #BB0000;">87.6</span>    27 1.14<span style="color: #949494;">e</span>6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">1</span>969 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-1   ST FLOR…    34.9   -<span style="color: #BB0000;">87.6</span>    27 9.90<span style="color: #949494;">e</span>5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">1</span>970 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-1   ST FLOR…    34.9   -<span style="color: #BB0000;">87.6</span>    27 9.90<span style="color: #949494;">e</span>5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">1</span>971 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-1   ST FLOR…    34.9   -<span style="color: #BB0000;">87.6</span>    27 9.90<span style="color: #949494;">e</span>5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">1</span>972 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-1   ST FLOR…    34.9   -<span style="color: #BB0000;">87.6</span>    27 9.90<span style="color: #949494;">e</span>5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">1</span>973 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-1   ST FLOR…    34.9   -<span style="color: #BB0000;">87.6</span>    27 1.06<span style="color: #949494;">e</span>6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">1</span>974 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-1   ST FLOR…    34.9   -<span style="color: #BB0000;">87.6</span>    27 1.06<span style="color: #949494;">e</span>6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">1</span>975 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-1   ST FLOR…    34.9   -<span style="color: #BB0000;">87.6</span>    27 1.06<span style="color: #949494;">e</span>6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">1</span>976 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-1   ST FLOR…    34.9   -<span style="color: #BB0000;">87.6</span>    27 1.06<span style="color: #949494;">e</span>6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">1</span>977 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-1   ST FLOR…    34.9   -<span style="color: #BB0000;">87.6</span>    27 1.06<span style="color: #949494;">e</span>6</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 100,145 more rows, 1 more variable: total_spp &lt;dbl&gt;, and abbreviated</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   variable names ¹​route_name, ²​latitude, ³​longitude</span></span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 100,155 × 11</span></span>
+<span><span class="co">#&gt;     year strata_name country state   route route_name latitude longitude   bcr   obs_n total_spp</span></span>
+<span><span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1  1967 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1140018        56</span></span>
+<span><span class="co">#&gt;  2  1969 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27  990062        52</span></span>
+<span><span class="co">#&gt;  3  1970 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27  990062        52</span></span>
+<span><span class="co">#&gt;  4  1971 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27  990062        56</span></span>
+<span><span class="co">#&gt;  5  1972 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27  990062        54</span></span>
+<span><span class="co">#&gt;  6  1973 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        52</span></span>
+<span><span class="co">#&gt;  7  1974 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        55</span></span>
+<span><span class="co">#&gt;  8  1975 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        59</span></span>
+<span><span class="co">#&gt;  9  1976 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        56</span></span>
+<span><span class="co">#&gt; 10  1977 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        51</span></span>
+<span><span class="co">#&gt; # ℹ 100,145 more rows</span></span></code></pre></div>
 <p>Let’s take a look at this visually.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">omitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="st">"routes_omitted"</span><span class="op">]</span><span class="op">]</span>, coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"longitude"</span>, <span class="st">"latitude"</span><span class="op">)</span>, </span>
 <span>                    crs<span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">map</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">r</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">rts</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">omitted</span>, size <span class="op">=</span> <span class="fl">0.75</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span>aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"colour"</span>, <span class="st">"fill"</span><span class="op">)</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="stratification_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
-<p>We could also look at this visually by comparing the stratified data
-to the raw BBS data.</p>
-<p>First we load the raw routes data, then we’ll add it to our plot.</p>
-<p>This plot may take a little while to run!</p>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span>aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"colour"</span>, <span class="st">"fill"</span><span class="op">)</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/stratification_unnamed-chunk-11-1.png"></p>
+<p>The map shows that most of the omitted routes are routes that are
+clearly outside of our desired stratification. It does also show that
+there are some BBS route start-points that are just outside of the
+strata (e.g., some routes in Nova Scotia and Alaska). The user can
+decide what to do with these sorts of minor overlap issues. For example,
+buffering the original stratification map might make sense in some
+situations.</p>
+<p>To fit the model, we follow the standard workflow using our
+stratified data.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">s</span>,</span>
+<span>                  min_year <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>                  max_year <span class="op">=</span> <span class="fl">2021</span><span class="op">)</span> <span class="co">#subset a shorter time-span to speed model-fit</span></span>
+<span><span class="va">mp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="va">p</span>,model <span class="op">=</span> <span class="st">"slope"</span>,</span>
+<span>                   model_variant <span class="op">=</span> <span class="st">"hier"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">mp</span>,</span>
+<span>               iter_warmup <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>               iter_sampling <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="looking-at-indices-and-trends">Looking at indices and trends<a class="anchor" aria-label="anchor" href="#looking-at-indices-and-trends"></a>
+</h4>
+<p>Now we can start to look at the indices and trends related to our
+model.</p>
+<p><code><a href="../reference/generate_indices.html">generate_indices()</a></code> creates indices at different regional
+levels. By default these are “continent” and “stratum”, but you can add
+“prov_state”, “bcr”, “bcr_by_country” (where appropriate). You can also
+create your own regional divisions and provide them as a
+<code>regions_index</code> data frame.</p>
+<p>For example, let’s imagine we would like to calculate regional
+indices for each stratum, country, province/state, as well as for a
+custom division of east vs. west.</p>
+<p>First we’ll need to tell the function which strata belong to which
+province or state, and then which belong to the ‘east’ and which to the
+’west.</p>
+<p>We’ll start by using a helper function
+<code><a href="../reference/assign_prov_state.html">assign_prov_state()</a></code>. This function takes a map of strata
+and assigns each strata to a province or state depending on the amount
+of overlap. By default it will warn if the amount of overlap is less
+than 75%, but in this case, we will lower that cutoff to 60%. The plot
+gives us a chance to make a quick assessment of whether we’re happy with
+how the various strata have been assigned.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rindex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assign_prov_state.html">assign_prov_state</a></span><span class="op">(</span><span class="va">map</span>, min_overlap <span class="op">=</span> <span class="fl">0.6</span>, plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/stratification_unnamed-chunk-15-1.png"></p>
+<p>Next we’ll define the east/west divide by hand. If we plot the strata
+by name, we can pick out which are eastern and which western.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">rindex</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"North America"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">strata_name</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not give correct results for</span></span>
+<span><span class="co">#&gt; longitude/latitude data</span></span></code></pre></div>
+<p><img src="figures/stratification_unnamed-chunk-16-1.png"></p>
+<p>Let’s add a column splitting the strata into eastern and western</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rindex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>  <span class="va">rindex</span>, </span>
+<span>  east_west <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">50</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">74</span>,</span>
+<span>                      <span class="st">"west"</span>, </span>
+<span>                      <span class="st">"east"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>And now double check!</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">rindex</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"North America"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">rindex</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">east_west</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/stratification_unnamed-chunk-18-1.png"></p>
+<p>Now we’ll create our indices and trends</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">bbs_routes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_bbs_data.html">load_bbs_data</a></span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">"routes"</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"longitude"</span>, <span class="st">"latitude"</span><span class="op">)</span>, crs<span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_indices.html">generate_indices</a></span><span class="op">(</span></span>
+<span>  <span class="va">m</span>, </span>
+<span>  regions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stratum"</span>, <span class="st">"country"</span>, <span class="st">"prov_state"</span>, <span class="st">"east_west"</span><span class="op">)</span>,</span>
+<span>  regions_index <span class="op">=</span> <span class="va">rindex</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Processing region stratum</span></span>
+<span><span class="co">#&gt; Processing region country</span></span>
+<span><span class="co">#&gt; Processing region prov_state</span></span>
+<span><span class="co">#&gt; Processing region east_west</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">map</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">r</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bbs_routes</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span>aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"colour"</span>, <span class="st">"fill"</span><span class="op">)</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="stratification_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
-<p>So either way, we can clearly see, spatially, which points have been
-omitted from our data.</p>
+<span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># currently, only the built-in stratifications can be used with </span></span>
+<span><span class="co"># the plot_map() function</span></span>
+<span><span class="co"># trend_map &lt;- plot_map(t)</span></span></code></pre></div>
+<p>We can plot each of these indices with <code><a href="../reference/plot_indices.html">plot_indices()</a></code>
+which creates a list of plots.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_indices.html">plot_indices</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] "1"                        "14"                       "17"                       "18"                      </span></span>
+<span><span class="co">#&gt;  [5] "2"                        "22"                       "23"                       "24"                      </span></span>
+<span><span class="co">#&gt;  [9] "26"                       "3"                        "31"                       "44"                      </span></span>
+<span><span class="co">#&gt; [13] "50"                       "51"                       "52"                       "56"                      </span></span>
+<span><span class="co">#&gt; [17] "62"                       "63"                       "64"                       "66"                      </span></span>
+<span><span class="co">#&gt; [21] "67"                       "68"                       "69"                       "71"                      </span></span>
+<span><span class="co">#&gt; [25] "72"                       "75"                       "76"                       "77"                      </span></span>
+<span><span class="co">#&gt; [29] "Canada"                   "United_States_of_America" "AB"                       "AK"                      </span></span>
+<span><span class="co">#&gt; [33] "MB"                       "ME"                       "NB"                       "NL"                      </span></span>
+<span><span class="co">#&gt; [37] "NS"                       "NT"                       "ON"                       "QC"                      </span></span>
+<span><span class="co">#&gt; [41] "SD"                       "SK"                       "east"                     "west"</span></span>
+<span></span>
+<span><span class="va">p</span><span class="op">[[</span><span class="st">"east"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="va">p</span><span class="op">[[</span><span class="st">"west"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<p><img src="figures/stratification_unnamed-chunk-20-1.png"></p>
+<p>Finally we can even create geofaceted plots (which is only possible
+in our case because we assigned our strata to Provinces and States and
+calculated indices for these regions).</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_geofacet.html">plot_geofacet</a></span><span class="op">(</span><span class="va">i</span>, trends <span class="op">=</span> <span class="va">t</span>, multiple <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/stratification_unnamed-chunk-21-1.png"></p>
 </div>
-<div class="section level2">
-<h2 id="custom-stratification---modifying-existing-bbs-maps">Custom stratification - Modifying existing BBS maps<a class="anchor" aria-label="anchor" href="#custom-stratification---modifying-existing-bbs-maps"></a>
-</h2>
+</div>
+<div class="section level3">
+<h3 id="subsetting-an-existing-stratification">Subsetting an existing stratification<a class="anchor" aria-label="anchor" href="#subsetting-an-existing-stratification"></a>
+</h3>
+<p>But what if you want to use the BBS CWS stratification, but only
+really want to look at Canadian regions?</p>
+<p>In this case you’ll subset the BBS CWS stratification and give
+<code><a href="../reference/stratify.html">stratify()</a></code> that data set in addition to the
+specification.</p>
+<p>In addition to maps, stratifications are available as data frames in
+the <code>bbs_strata</code> object.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">bbs_strata</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "bbs_usgs"   "bbs_cws"    "bcr"        "latlong"    "prov_state"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bbs_strata</span><span class="op">[[</span><span class="st">"bbs_cws"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 7</span></span>
+<span><span class="co">#&gt;   strata_name area_sq_km country country_code prov_state   bcr bcr_by_country</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;         </span></span>
+<span><span class="co">#&gt; 1 CA-AB-10        52565. Canada  CA           AB            10 Canada-BCR_10 </span></span>
+<span><span class="co">#&gt; 2 CA-AB-11       149352. Canada  CA           AB            11 Canada-BCR_11 </span></span>
+<span><span class="co">#&gt; 3 CA-AB-6        445135. Canada  CA           AB             6 Canada-BCR_6  </span></span>
+<span><span class="co">#&gt; 4 CA-AB-8          6987. Canada  CA           AB             8 Canada-BCR_8  </span></span>
+<span><span class="co">#&gt; 5 CA-BC-10       383006. Canada  CA           BC            10 Canada-BCR_10 </span></span>
+<span><span class="co">#&gt; 6 CA-BC-4        193180. Canada  CA           BC             4 Canada-BCR_4</span></span></code></pre></div>
+<p>We can now modify and use this data frame as we like.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">my_cws</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bbs_strata</span><span class="op">[[</span><span class="st">"bbs_cws"</span><span class="op">]</span><span class="op">]</span>, <span class="va">country</span> <span class="op">==</span> <span class="st">"Canada"</span><span class="op">)</span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>, species <span class="op">=</span> <span class="st">"Canada Jay"</span>, strata_custom <span class="op">=</span> <span class="va">my_cws</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Using 'bbs_cws' (subset) stratification</span></span>
+<span><span class="co">#&gt; Loading BBS data...</span></span>
+<span><span class="co">#&gt; Filtering to species Canada Jay (4840)</span></span>
+<span><span class="co">#&gt; Stratifying data...</span></span>
+<span><span class="co">#&gt;   Combining BCR 7 and NS and PEI...</span></span>
+<span><span class="co">#&gt;   Renaming routes...</span></span>
+<span><span class="co">#&gt;   Omitting 101,474/119,567 route-years that do not match a stratum.</span></span>
+<span><span class="co">#&gt;     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span></span></code></pre></div>
+<p>Note that the stratification is now “bbs_cws” and “subset”</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">s</span><span class="op">[[</span><span class="st">"meta_data"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">#&gt; $stratify_by</span></span>
+<span><span class="co">#&gt; [1] "bbs_cws"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $stratify_type</span></span>
+<span><span class="co">#&gt; [1] "subset"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $species</span></span>
+<span><span class="co">#&gt; [1] "Canada Jay"</span></span></code></pre></div>
+<p>We can see the strata included by looking at the
+<code>meta_strata</code></p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="st">"meta_strata"</span><span class="op">]</span><span class="op">]</span>, n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 30 × 7</span></span>
+<span><span class="co">#&gt;    strata_name area_sq_km country country_code prov_state   bcr bcr_by_country</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;         </span></span>
+<span><span class="co">#&gt;  1 CA-AB-10        52565. Canada  CA           AB            10 Canada-BCR_10 </span></span>
+<span><span class="co">#&gt;  2 CA-AB-11       149352. Canada  CA           AB            11 Canada-BCR_11 </span></span>
+<span><span class="co">#&gt;  3 CA-AB-6        445135. Canada  CA           AB             6 Canada-BCR_6  </span></span>
+<span><span class="co">#&gt;  4 CA-BC-10       383006. Canada  CA           BC            10 Canada-BCR_10 </span></span>
+<span><span class="co">#&gt;  5 CA-BC-4        193180. Canada  CA           BC             4 Canada-BCR_4  </span></span>
+<span><span class="co">#&gt;  6 CA-BC-5        199820. Canada  CA           BC             5 Canada-BCR_5  </span></span>
+<span><span class="co">#&gt;  7 CA-BC-6        106917. Canada  CA           BC             6 Canada-BCR_6  </span></span>
+<span><span class="co">#&gt;  8 CA-BC-9         59939. Canada  CA           BC             9 Canada-BCR_9  </span></span>
+<span><span class="co">#&gt;  9 CA-BCR7-7     1743744. Canada  CA           BCR7           7 Canada-BCR_7  </span></span>
+<span><span class="co">#&gt; 10 CA-MB-11        70101. Canada  CA           MB            11 Canada-BCR_11 </span></span>
+<span><span class="co">#&gt; 11 CA-MB-12        15312. Canada  CA           MB            12 Canada-BCR_12 </span></span>
+<span><span class="co">#&gt; 12 CA-MB-6        127190. Canada  CA           MB             6 Canada-BCR_6  </span></span>
+<span><span class="co">#&gt; 13 CA-MB-8        234151. Canada  CA           MB             8 Canada-BCR_8  </span></span>
+<span><span class="co">#&gt; 14 CA-NB-14        72991. Canada  CA           NB            14 Canada-BCR_14 </span></span>
+<span><span class="co">#&gt; 15 CA-NL-8        157083. Canada  CA           NL             8 Canada-BCR_8  </span></span>
+<span><span class="co">#&gt; 16 CA-NSPE-14      61502. Canada  CA           NSPE          14 Canada-BCR_14 </span></span>
+<span><span class="co">#&gt; 17 CA-NT-3        394769. Canada  CA           NT             3 Canada-BCR_3  </span></span>
+<span><span class="co">#&gt; 18 CA-NT-6        509423. Canada  CA           NT             6 Canada-BCR_6  </span></span>
+<span><span class="co">#&gt; 19 CA-NU-3       1969549. Canada  CA           NU             3 Canada-BCR_3  </span></span>
+<span><span class="co">#&gt; 20 CA-ON-12       206181. Canada  CA           ON            12 Canada-BCR_12 </span></span>
+<span><span class="co">#&gt; 21 CA-ON-13        83859. Canada  CA           ON            13 Canada-BCR_13 </span></span>
+<span><span class="co">#&gt; 22 CA-ON-8        435545. Canada  CA           ON             8 Canada-BCR_8  </span></span>
+<span><span class="co">#&gt; 23 CA-QC-12       174314. Canada  CA           QC            12 Canada-BCR_12 </span></span>
+<span><span class="co">#&gt; 24 CA-QC-13        28409. Canada  CA           QC            13 Canada-BCR_13 </span></span>
+<span><span class="co">#&gt; 25 CA-QC-14        67711. Canada  CA           QC            14 Canada-BCR_14 </span></span>
+<span><span class="co">#&gt; 26 CA-QC-8        470310. Canada  CA           QC             8 Canada-BCR_8  </span></span>
+<span><span class="co">#&gt; 27 CA-SK-11       241315. Canada  CA           SK            11 Canada-BCR_11 </span></span>
+<span><span class="co">#&gt; 28 CA-SK-6        177763. Canada  CA           SK             6 Canada-BCR_6  </span></span>
+<span><span class="co">#&gt; 29 CA-SK-8        188615. Canada  CA           SK             8 Canada-BCR_8  </span></span>
+<span><span class="co">#&gt; 30 CA-YT-4        435349. Canada  CA           YT             4 Canada-BCR_4</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="modifying-existing-bbs-maps">Modifying existing BBS maps<a class="anchor" aria-label="anchor" href="#modifying-existing-bbs-maps"></a>
+</h3>
 <p>Stratify by custom stratification, using sf map object. For example,
 let’s look at an east/west divide of southern Canada with BBS CWS
 strata.</p>
 <p>First we’ll start with the CWS BBS data</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span><span class="st">"bbs_cws"</span><span class="op">)</span></span></code></pre></div>
 <p>We’ll modify this by first looking only at provinces (omitting the
 northern territories), transforming to the GPS CRS (4326), and ensuring
 the resulting polygons are valid.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">new_map</span> <span class="op">&lt;-</span> <span class="va">map</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">country_code</span> <span class="op">==</span> <span class="st">"CA"</span>, <span class="op">!</span><span class="va">prov_state</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NT"</span>, <span class="st">"NU"</span>, <span class="st">"YT"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span><span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -441,28 +508,26 @@ the resulting polygons are valid.</p>
 <p>Now we can crop this map to make a western and an eastern portion,
 defined by longitude and latitude (which is why we first transformed to
 the GPS CRS).</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">west</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html" class="external-link">st_crop</a></span><span class="op">(</span><span class="va">new_map</span>, xmin <span class="op">=</span> <span class="op">-</span><span class="fl">140</span>, ymin <span class="op">=</span> <span class="fl">42</span>, xmax <span class="op">=</span> <span class="op">-</span><span class="fl">95</span>, ymax <span class="op">=</span> <span class="fl">68</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>strata_name <span class="op">=</span> <span class="st">"west"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout</span></span>
-<span><span class="co">#&gt; all geometries</span></span>
+<span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout all geometries</span></span>
 <span><span class="va">east</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html" class="external-link">st_crop</a></span><span class="op">(</span><span class="va">new_map</span>, xmin <span class="op">=</span> <span class="op">-</span><span class="fl">95</span>, ymin <span class="op">=</span> <span class="fl">42</span>, xmax <span class="op">=</span> <span class="op">-</span><span class="fl">52</span>, ymax <span class="op">=</span> <span class="fl">68</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>strata_name <span class="op">=</span> <span class="st">"east"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout</span></span>
-<span><span class="co">#&gt; all geometries</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout all geometries</span></span></code></pre></div>
 <p>Now we’ll bind these together and transform back to the original
 CRS</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">new_strata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">west</span>, <span class="va">east</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">st_transform</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">map</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">new_strata</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">strata_name</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="stratification_files/figure-html/unnamed-chunk-22-1.png" width="700"></p>
+<p><img src="figures/stratification_unnamed-chunk-29-1.png"></p>
 <p>Looks good! Let’s use it in our stratification and take a look at the
 points afterwards to ensure they’ve been categorized appropriately.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"canada_ew"</span>, species <span class="op">=</span> <span class="st">"Canada Jay"</span>, </span>
 <span>              strata_custom <span class="op">=</span> <span class="va">new_strata</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using 'canada_ew' (custom) stratification</span></span>
@@ -492,11 +557,8 @@ points afterwards to ensure they’ve been categorized appropriately.</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">new_strata</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">strata_name</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">routes</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">strata_name</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="stratification_files/figure-html/unnamed-chunk-23-1.png" width="700"></p>
-<p>This outlies the various ways in which you can stratify your data.
-For a more indepth look at how to use custom stratifications throughout
-the entire workflow, see the <a href="./custom_stratification.html">Custom Stratifications
-article</a>.</p>
+<p><img src="figures/stratification_unnamed-chunk-30-1.png"></p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
