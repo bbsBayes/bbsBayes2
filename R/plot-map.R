@@ -56,14 +56,14 @@ plot_map <- function(trends,
   start_year <- min(trends$start_year)
   end_year <- min(trends$end_year)
 
-  stratify_by <- check_strata(stratify_by, custom = strata_custom)
+  stratify_by <- check_strata(stratify_by,custom = strata_custom)
 
   if(!is.null(strata_custom)){
     map <- strata_custom
     map <- dplyr::select(map, "strata_name") %>%
       dplyr::mutate(strata_name = as.character(.data$strata_name))
   }else{
-  map <- load_map(stratify_by)
+  map <- load_map(stratify_by[1])
   }
 
   breaks <- c(-7, -4, -2, -1, -0.5, 0.5, 1, 2, 4, 7)
