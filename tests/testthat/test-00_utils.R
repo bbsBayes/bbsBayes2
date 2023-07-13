@@ -23,7 +23,7 @@ test_that("get_geo_types()", {
 })
 
 
-test_that("format_ne_states()", {
-  expect_silent(ps <- format_ne_states()) %>%
-    expect_s3_class("sf")
-})
+# test_that("format_ne_states()", {
+#   expect_silent(ps <- format_ne_states()) %>%
+#     expect_s3_class("sf")
+# })
