@@ -221,11 +221,12 @@ exclusion of many strata, consider trimming the early years by specifying a
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Generate the continental and stratum indices</span></span></span>
 <span class="r-in"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu">generate_indices</span><span class="op">(</span><span class="va">pacific_wren_model</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assert_valid_draws_format(format):</span> could not find function "assert_valid_draws_format"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region continent</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region stratum</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Generate only country indices</span></span></span>
 <span class="r-in"><span><span class="va">i_nat</span> <span class="op">&lt;-</span> <span class="fu">generate_indices</span><span class="op">(</span><span class="va">pacific_wren_model</span>, regions <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assert_valid_draws_format(format):</span> could not find function "assert_valid_draws_format"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region country</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use a custom region specification (dummy example)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
@@ -246,7 +247,9 @@ exclusion of many strata, consider trimming the early years by specifying a
 <span class="r-in"><span>  <span class="va">pacific_wren_model</span>,</span></span>
 <span class="r-in"><span>  regions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"country"</span>, <span class="st">"prov_state"</span>, <span class="st">"my_region"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  regions_index <span class="op">=</span> <span class="va">ri</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assert_valid_draws_format(format):</span> could not find function "assert_valid_draws_format"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region country</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region prov_state</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region my_region</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
