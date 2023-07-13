@@ -18,30 +18,30 @@ library(ggplot2)  # Plotting
 library(patchwork) # mutli-plot
 ```
 
-In this vignette we'll explore the various ways you can stratify the BBS data in 
-preparation for running the models. 
+In this vignette we'll explore the various ways you can stratify the BBS data in
+preparation for running the models.
 
 You can use existing, pre-defined stratifications, subset an existing stratification, or load
 your own custom stratification, either using a completely new set of spatial
 data, or by modifying the spatial polygons of an existing strata.
 
-This vignette assumes that the BBS data have already been downloaded and that you are familiar with the [basics of the bbsBayes2 workflow](./bbsBayes2.html)  
- 
+This vignette assumes that the BBS data have already been downloaded and that you are familiar with the [basics of the bbsBayes2 workflow](./bbsBayes2.html)
+
 
 ## Stratifying with built-in stratifications
 
-The built-in stratifications are 
+The built-in stratifications are
 bbs_usgs, bbs_cws, bcr, latlong, prov_state.
 
-- `bbs_cws` -- Intersections of Political regions X Bird Conservation Regions 
+- `bbs_cws` -- Intersections of Political regions X Bird Conservation Regions
   (Stratification used by the Canadian Wildlife Service [CWS] for national status reporting)
-- `bbs_usgs` -- Intersections of Political regions X Bird Conservation Regions 
+- `bbs_usgs` -- Intersections of Political regions X Bird Conservation Regions
   (Stratification used by the United Status Geological Survey [USGS] for national status reporting)
 - `bcr` -- Bird Conservation Regions only
 - `prov_state` -- Political regions only - states, provinces, and territories
 - `latlong` -- Grid-cells of 1 degree of latitude X 1 degree of longitude, aka "degree-blocks". These are the original survey design strata for the BBS. Routes are established at randomized locations within these degree-blocks.
 
-You can visualize these stratifications by looking at the maps 
+You can visualize these stratifications by looking at the maps
 included in bbsBayes2 with `load_map()`.
 
 
@@ -53,7 +53,7 @@ ggplot(data = load_map("bbs_usgs"), aes(fill = strata_name)) +
 
 <img src="figures/stratification_unnamed-chunk-2-1.png" alt="Map of the BBS USGS stratification showing the regions that represent spatial intersections of Bird Conservation Regions with political jurisdictions (Provinces, Territories, States)"  />
 
-To stratify BBS data, you can use these existing stratifications by 
+To stratify BBS data, you can use these existing stratifications by
 specifying `by = "name"` in the `stratify()` function.
 
 
@@ -72,7 +72,7 @@ s <- stratify(by = "bbs_usgs", species = "Canada Jay")
 
 ### Load a custom stratification map
 
-To define a completely different stratification, you'll need to provide a 
+To define a completely different stratification, you'll need to provide a
 spatial data object with polygons defining your strata.
 
 In our example we'll use WBPHS stratum boundaries for 2019.
@@ -91,12 +91,12 @@ unlink(z) # Remove the zipped file
 ```
 
 
-To use this file in bbsBayes2, we need to load it as an sf object using the sf 
+To use this file in bbsBayes2, we need to load it as an sf object using the sf
 package.
 
 ```r
 map <- sf::read_sf("output/WBPHS_stratum_boundaries_2019.shp")
-ggplot(map, aes(fill = factor(STRAT))) + 
+ggplot(map, aes(fill = factor(STRAT))) +
   geom_sf() +
   scale_fill_viridis_d(guide = "none")
 ```
@@ -134,7 +134,7 @@ s <- stratify(by = "WBPHS_2019", species = "Canada Jay", strata_custom = map)
 #>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
 ```
 
-> Note that strata names are automatically put into lower case for consistency. 
+> Note that strata names are automatically put into lower case for consistency.
 
 We can take a quick look at the output, by looking at the meta data and routes
 contained therein.
@@ -172,7 +172,7 @@ s[["routes_strata"]]
 ```
 
 To get a different look we can also plot this data on top of our map using
-ggplot2. Note that we use `factor()` to ensure the strata names are 
+ggplot2. Note that we use `factor()` to ensure the strata names are
 categorical.
 
 
@@ -231,7 +231,7 @@ Let's take a look at this visually.
 
 
 ```r
-omitted <- st_as_sf(s[["routes_omitted"]], coords = c("longitude", "latitude"), 
+omitted <- st_as_sf(s[["routes_omitted"]], coords = c("longitude", "latitude"),
                     crs= 4326)
 
 ggplot() +
@@ -269,33 +269,61 @@ m <- run_model(mp,
 
 Now we can start to look at the indices and trends related to our model.
 
+We can apply the `generate_indices()` and `generate_trends()` functions to the output from our model, the same as we would with the built-in stratifications.
+
+
+```r
+i <- generate_indices(m)
+#> Processing region continent
+#> Processing region stratum
+
+t <- generate_trends(i)
+```
+And with one additional argument, we can also use the `plot_map()` function.
+
+
+```r
+trend_map <- plot_map(t, strata_custom = map)
+trend_map
+```
+
+<img src="figures/stratification_unnamed-chunk-16-1.png"  />
+
 `generate_indices()` creates indices at different regional levels. By default
 these are "continent" and "stratum", but you can add "prov_state", "bcr",
 "bcr_by_country" (where appropriate). You can also create your own regional
 divisions and provide them as a `regions_index` data frame.
 
-For example, let's imagine we would like to calculate regional indices for 
-each stratum, country, province/state, as well as for a custom division of 
-east vs. west. 
+For example, let's imagine we would like to calculate regional indices for
+each stratum, country, province/state, as well as for a custom division of
+east vs. west.
 
-First we'll need to tell the function which strata belong to which province or 
+First we'll need to tell the function which strata belong to which province or
 state, and then which belong to the 'east' and which to the 'west.
 
 We'll start by using a helper function `assign_prov_state()`. This function
 takes a map of strata and assigns each strata to a province or state
 depending on the amount of overlap. By default it will warn if the amount of
 overlap is less than 75%, but in this case, we will lower that cutoff to 60%.
-The plot gives us a chance to make a quick assessment of whether we're happy 
+The plot gives us a chance to make a quick assessment of whether we're happy
 with how the various strata have been assigned.
 
 
 ```r
 rindex <- assign_prov_state(map, min_overlap = 0.6, plot = TRUE)
+#> The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
+#> which was just loaded, will retire in October 2023.
+#> Please refer to R-spatial evolution reports for details, especially
+#> https://r-spatial.org/r/2023/05/15/evolution4.html.
+#> It may be desirable to make the sf package available;
+#> package maintainers should consider adding sf to Suggests:.
+#> The sp package is now running under evolution status 2
+#>      (status 2 uses the sf package in place of rgdal)
 ```
 
-<img src="figures/stratification_unnamed-chunk-15-1.png"  />
+<img src="figures/stratification_unnamed-chunk-17-1.png"  />
 
-Next we'll define the east/west divide by hand. If we plot the strata by 
+Next we'll define the east/west divide by hand. If we plot the strata by
 name, we can pick out which are eastern and which western.
 
 
@@ -309,16 +337,16 @@ ggplot(rindex) +
 #> longitude/latitude data
 ```
 
-<img src="figures/stratification_unnamed-chunk-16-1.png"  />
+<img src="figures/stratification_unnamed-chunk-18-1.png"  />
 
 
 Let's add a column splitting the strata into eastern and western
 
 ```r
 rindex <- mutate(
-  rindex, 
+  rindex,
   east_west = if_else(as.numeric(strata_name) < 50 | as.numeric(strata_name) > 74,
-                      "west", 
+                      "west",
                       "east"))
 ```
 
@@ -331,13 +359,13 @@ ggplot(data = rindex) +
   geom_sf(data = rindex, aes(fill = east_west), alpha = 0.5)
 ```
 
-<img src="figures/stratification_unnamed-chunk-18-1.png"  />
+<img src="figures/stratification_unnamed-chunk-20-1.png"  />
 
 Now we'll create our indices and trends
 
 ```r
 i <- generate_indices(
-  m, 
+  m,
   regions = c("stratum", "country", "prov_state", "east_west"),
   regions_index = rindex)
 #> Processing region stratum
@@ -346,14 +374,10 @@ i <- generate_indices(
 #> Processing region east_west
 
 t <- generate_trends(i)
-
-# currently, only the built-in stratifications can be used with 
-# the plot_map() function
-# trend_map <- plot_map(t)
 ```
 
 We can plot each of these indices with `plot_indices()` which creates a list
-of plots. 
+of plots.
 
 
 ```r
@@ -375,7 +399,7 @@ names(p)
 p[["east"]] + p[["west"]]
 ```
 
-<img src="figures/stratification_unnamed-chunk-20-1.png"  />
+<img src="figures/stratification_unnamed-chunk-22-1.png"  />
 
 Finally we can even create geofaceted plots (which is only possible in our case
 because we assigned our strata to Provinces and States and calculated indices
@@ -385,7 +409,7 @@ for these regions).
 plot_geofacet(i, trends = t, multiple = TRUE)
 ```
 
-<img src="figures/stratification_unnamed-chunk-21-1.png"  />
+<img src="figures/stratification_unnamed-chunk-23-1.png"  />
 
 
 
@@ -396,9 +420,9 @@ But what if you want to use the BBS CWS stratification, but only really want
 to look at Canadian regions?
 
 In this case you'll subset the BBS CWS stratification and give `stratify()` that
-data set in addition to the specification. 
+data set in addition to the specification.
 
-In addition to maps, stratifications are available as data frames in the 
+In addition to maps, stratifications are available as data frames in the
 `bbs_strata` object.
 
 
@@ -509,7 +533,7 @@ new_map <- map %>%
   st_make_valid()
 ```
 
-Now we can crop this map to make a western and an eastern portion, defined by 
+Now we can crop this map to make a western and an eastern portion, defined by
 longitude and latitude (which is why we first transformed to the GPS CRS).
 
 ```r
@@ -533,14 +557,14 @@ ggplot() +
   geom_sf(data = new_strata, aes(fill = strata_name), alpha = 1)
 ```
 
-<img src="figures/stratification_unnamed-chunk-29-1.png"  />
+<img src="figures/stratification_unnamed-chunk-31-1.png"  />
 
-Looks good! Let's use it in our stratification and take a look at the points 
+Looks good! Let's use it in our stratification and take a look at the points
 afterwards to ensure they've been categorized appropriately.
 
 
 ```r
-s <- stratify(by = "canada_ew", species = "Canada Jay", 
+s <- stratify(by = "canada_ew", species = "Canada Jay",
               strata_custom = new_strata)
 #> Using 'canada_ew' (custom) stratification
 #> Loading BBS data...
@@ -571,7 +595,7 @@ ggplot() +
   geom_sf(data = routes, aes(shape = strata_name))
 ```
 
-<img src="figures/stratification_unnamed-chunk-30-1.png"  />
+<img src="figures/stratification_unnamed-chunk-32-1.png"  />
 
 
 
