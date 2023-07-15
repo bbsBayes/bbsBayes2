@@ -135,7 +135,7 @@ which can be modified by the user and then used as input to
 See the [Function Reference](../reference) for more details on how to
 use a particular function.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.cap = "", fig.alt = "", fig.width = 8, fig.asp = 1}
 library(DiagrammeR)
 grViz("digraph functions {
 

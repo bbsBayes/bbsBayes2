@@ -131,10 +131,7 @@ which can be modified by the user and then used as input to
 See the [Function Reference](../reference) for more details on how to
 use a particular function.
 
-
-```
-#> Error in loadNamespace(name): there is no package called 'webshot'
-```
+<img src="figures/bbsBayes2_unnamed-chunk-6-1.png"  />
 
 ## Download BBS data
 
@@ -246,16 +243,16 @@ search_species("Corvidae")
 #> # A tibble: 22 × 9
 #>      aou english                                         french spanish order family genus species unid_combined
 #>    <dbl> <chr>                                           <chr>  <chr>   <chr> <chr>  <chr> <chr>   <lgl>        
-#>  1  4840 Canada Jay                                      Mésan… Periso… Pass… Corvi… Peri… canade… TRUE         
-#>  2  4830 Green Jay                                       Geai … Cyanoc… Pass… Corvi… Cyan… yncas   TRUE         
-#>  3  4920 Pinyon Jay                                      Geai … Gymnor… Pass… Corvi… Gymn… cyanoc… TRUE         
-#>  4  4780 Steller's Jay                                   Geai … Cyanoc… Pass… Corvi… Cyan… stelle… TRUE         
-#>  5  4770 Blue Jay                                        Geai … Cyanoc… Pass… Corvi… Cyan… crista… TRUE         
-#>  6  4790 Florida Scrub-Jay                               Geai … Aphelo… Pass… Corvi… Aphe… coerul… TRUE         
-#>  7  4811 Island Scrub-Jay                                Geai … Aphelo… Pass… Corvi… Aphe… insula… TRUE         
-#>  8  4812 California Scrub-Jay                            Geai … Aphelo… Pass… Corvi… Aphe… califo… TRUE         
-#>  9  4813 Woodhouse's Scrub-Jay                           Geai … Aphelo… Pass… Corvi… Aphe… woodho… TRUE         
-#> 10  4810 unid. California Scrub-Jay / Woodhouse's Scrub… unid … Aphelo… Pass… Corvi… Aphe… califo… TRUE         
+#>  1  4840 Canada Jay                                      "M\u0… Periso… Pass… Corvi… Peri… canade… TRUE         
+#>  2  4830 Green Jay                                       "Geai… Cyanoc… Pass… Corvi… Cyan… yncas   TRUE         
+#>  3  4920 Pinyon Jay                                      "Geai… Gymnor… Pass… Corvi… Gymn… cyanoc… TRUE         
+#>  4  4780 Steller's Jay                                   "Geai… Cyanoc… Pass… Corvi… Cyan… stelle… TRUE         
+#>  5  4770 Blue Jay                                        "Geai… Cyanoc… Pass… Corvi… Cyan… crista… TRUE         
+#>  6  4790 Florida Scrub-Jay                               "Geai… Aphelo… Pass… Corvi… Aphe… coerul… TRUE         
+#>  7  4811 Island Scrub-Jay                                "Geai… Aphelo… Pass… Corvi… Aphe… insula… TRUE         
+#>  8  4812 California Scrub-Jay                            "Geai… Aphelo… Pass… Corvi… Aphe… califo… TRUE         
+#>  9  4813 Woodhouse's Scrub-Jay                           "Geai… Aphelo… Pass… Corvi… Aphe… woodho… TRUE         
+#> 10  4810 unid. California Scrub-Jay / Woodhouse's Scrub… "unid… Aphelo… Pass… Corvi… Aphe… califo… TRUE         
 #> # ℹ 12 more rows
 ```
 
@@ -304,20 +301,20 @@ species_forms
 #> 11                                 Western Grebe (Clark's/Western)
 #> 12                               Yellow-rumped Warbler (all forms)
 #> 13                                          Redpoll (Common/Hoary)
-#>                                                french_combined                       aou_id
-#> 1                            Tétras sombre (sombre/fuligineux)                   2970, 2971
-#> 2                            Junco ardoisé (toutes les formes) 5671, 5670, 5680, 5660, 5690
-#> 3                           Pic flamboyant (toutes les formes)             4125, 4120, 4130
-#> 4                     Oriole du Nord (de Bullock/de Baltimore)             5080, 5070, 5078
-#> 5                      Buse à queue rousse (toutes les formes)                         3380
+#>                                                    french_combined                       aou_id
+#> 1                               Tétras sombre (sombre/fuligineux)                   2970, 2971
+#> 2                               Junco ardoisé (toutes les formes) 5671, 5670, 5680, 5660, 5690
+#> 3                               Pic flamboyant (toutes les formes)             4125, 4120, 4130
+#> 4                         Oriole du Nord (de Bullock/de Baltimore)             5080, 5070, 5078
+#> 5                         Buse à queue rousse (toutes les formes)                         3380
 #> 6  Pics buveur de sève (maculé/à nuque rouge/à poitrine rouge)       4020, 4021, 4031, 4032
-#> 7                           Oie des neiges (toutes les formes)                         1691
-#> 8                  Viréo à tête bleue (à tête bleue/de Cassin)             6292, 6291, 6290
-#> 9               Moucherolle de Traill (des aulnes/ des saules)                   4661, 4660
-#> 10                     Moucherolle côtier (des ravins/ côtier)                   4641, 4640
-#> 11                      Grèbe élégant (à face blanche/élégant)                       10, 11
-#> 12               Paruline à croupion jaune (toutes les formes)                   6550, 6560
-#> 13                                 Sizerin (Flammé/Blanchâtre)                   5270, 5280
+#> 7                               Oie des neiges (toutes les formes)                         1691
+#> 8                 Viréo à tête bleue (à tête bleue/de Cassin)             6292, 6291, 6290
+#> 9                   Moucherolle de Traill (des aulnes/ des saules)                   4661, 4660
+#> 10                       Moucherolle côtier (des ravins/ côtier)                   4641, 4640
+#> 11                    Grèbe élégant (à face blanche/élégant)                       10, 11
+#> 12                  Paruline à croupion jaune (toutes les formes)                   6550, 6560
+#> 13                                   Sizerin (Flammé/Blanchâtre)                   5270, 5280
 ```
     
 If you're looking for a complete list of all species in the BBS database.
