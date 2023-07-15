@@ -29,15 +29,15 @@ how to use bbsBayes2.
 
 In addition, there are four vignettes that will help users get familiar with the package and the new functionality.
 
--   [Getting Started vignette](./bbsBayes2.html) 
+-   [Getting Started vignette](https://bbsbayes.github.io/bbsBayes2/articles/bbsBayes2.html) 
 
--   [Stratification vignette](./stratification.html) The stratification
+-   [Stratification vignette](https://bbsbayes.github.io/bbsBayes2/articles/stratification.html) The stratification
     vignette explains the built-in options for spatial stratifications
     as well as the workflow required to apply a custom stratification.
 
--   [Models vignette](./models.html) The models vignette explains the four built-in models that differ in the way the temporal components are structured, and it also covers the built-in options for error distributions and the differences among the model variants (e.g., `model_variant = "spatial"`).
+-   [Models vignette](https://bbsbayes.github.io/bbsBayes2/articles/models.html) The models vignette explains the four built-in models that differ in the way the temporal components are structured, and it also covers the built-in options for error distributions and the differences among the model variants (e.g., `model_variant = "spatial"`).
 
--   [Advanced vignette](./advanced.html) The advanced vignette is helpful for users wanting to take the bbsBayes2 functionality further, including alternate calculations of population trend, customizing the Stan models, adding covariates, and even some experimental functions that allow for k-fold cross-validations to compare among models. 
+-   [Advanced vignette](https://bbsbayes.github.io/bbsBayes2/articles/advanced.html) The advanced vignette is helpful for users wanting to take the bbsBayes2 functionality further, including alternate calculations of population trend, customizing the Stan models, adding covariates, and even some experimental functions that allow for k-fold cross-validations to compare among models. 
 
 
 ## Installation
