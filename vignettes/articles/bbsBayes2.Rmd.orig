@@ -135,7 +135,7 @@ which can be modified by the user and then used as input to
 See the [Function Reference](../reference) for more details on how to
 use a particular function.
 
-```{r, echo = FALSE, fig.cap = "", fig.alt = "", fig.width = 8, fig.asp = 1}
+```{r, echo = FALSE, fig.cap = "", fig.alt = "", fig.width = 8, fig.asp = 0.65}
 library(DiagrammeR)
 grViz("digraph functions {
 
@@ -143,13 +143,13 @@ grViz("digraph functions {
   graph [overlap = true, fontsize = 10 compound = true, ranksep = 0.5]
 
   # several 'node' statements
-  node [shape = rectangle, fontname = 'Courier New', 
+  node [shape = rectangle, fontname = 'Courier New',
         fixedsize = false, style=filled, fillcolor=white]
-        
+
   fetch [label = 'fetch_bbs_data()', fillcolor=lightblue]
   remove [label = 'remove_cache()', fillcolor=orange]
   loadbbs [label = 'load_bbs_data()', fillcolor=lightblue]
-  
+
   search [label = 'search_species()', fillcolor=orange]
   strat [label = 'stratify()', fillcolor=lightpink]
   prepdata [label = 'prepare_data()', fillcolor=lightpink]
@@ -160,48 +160,48 @@ grViz("digraph functions {
 
   runmodel [label = 'run_model()', fillcolor=darkolivegreen3]
   modelfile [label = 'copy_model_file()', fillcolor=darkolivegreen3]
-  
+
   conv[label = 'save_model_run()\nget_convergence()\nget_model_vars()\nget_summary()', fillcolor=darkolivegreen3]
-  
+
   genind [label = 'generate_indices()', fillcolor=thistle]
   gentre [label = 'generate_trends()', fillcolor=thistle]
   geo [label = 'plot_geofacet()', fillcolor=thistle]
   plotind [label = 'plot_indices()', fillcolor=thistle]
   genmap [label = 'plot_map()', fillcolor=thistle]
-  
+
 
   # several 'edge' statements
   edge []
   fetch->remove [style=dashed]
   fetch->loadbbs [style=dashed]
   fetch->strat [style=dashed]
-  
+
   runmodel->remove [style=dashed]
-  
+
   modelfile->prepmodel [style=dashed]
-  
+
   search->strat [style=dashed]
   strat->prepdata
   prepdata->prepspatial
   prepdata->prepmodel [color=grey50]
   prepspatial->prepmodel [color=grey50]
   prepmodel->runmodel
-  
-  
+
+
   runmodel->conv
   runmodel->genind
   genind->gentre
 
-  loadmap->assign_ps  [style=dashed] 
-  loadmap->genind [style=dashed] 
-  loadmap->prepspatial [style=dashed] 
-  loadmap->strat [style=dashed] 
-  
+  loadmap->assign_ps  [style=dashed]
+  loadmap->genind [style=dashed]
+  loadmap->prepspatial [style=dashed]
+  loadmap->strat [style=dashed]
+
   genind->plotind
   genind->geo
   gentre->geo [color=grey50]
   gentre->genmap
-  
+
   # Invisible edges for arranging
   prepspatial->conv [style=invis]
 }")
@@ -209,29 +209,29 @@ grViz("digraph functions {
 
 ## Download BBS data
 
-Now we'll fetch the BBS data using functions included in bbsBayes2.
+Now we'll fetch the BBS data using the `fetch_bbs_data()` function.
+
+```{r, message = FALSE, eval=FALSE}
+library(bbsBayes2)
+fetch_bbs_data() #
+```
+This will save the data to a package-specific directory on your computer. You must agree to the terms and conditions of the data usage before the download will run (type `yes` at the prompt). The message also includes the key metadata for the dataset, including the citation, acknowledgements, and the release-version (below). You only need run this function once for each annual update of the BBS database (these updates usually occur in the summer, approximately 1-year following the data collection).
 
 > Note that most bbsBayes2 functionality can be explored **without**
 > downloading BBS data by using the included sample data. Specify
 > `sample_data = TRUE` in the first `stratify()` step (see the next
 > section).
 
-First we'll load the package.
 
-```{r, message = FALSE}
-library(bbsBayes2)
-```
-
-There are (as of June 2023) four types of BBS data that can be
-downloaded:
+There are (as of June 2023) two types of BBS data that can be
+downloaded, and two release-versions:
 
 -   Two levels `state` and `stop` (only `state` works with bbsBayes2
-    models)
+    models, the `stop` option is provided to facilitate custom projects and models)
 -   Two releases `2020` and `2022` (more options will be added as annual
     releases occur)
 
-Unless you have a specific reason to need a different version, the
-defaults (level `state` and the most recent release) is what you want.
+The defaults (level `state` and the most recent release) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
 However you can download all data sets and specify which one you wish to
 use in the `stratify()` step.
 
@@ -239,9 +239,10 @@ use in the `stratify()` step.
 
 The releases are named for the year in which the annual dataset was
 released after going through QA-QC. So the `2022` release contains all
-surveys conducted up to and including the 2021 season. There is no
-release for 2021, because the BBS was cancelled during the COVID
-lockdowns of spring 2020 and there are no 2020 BBS data.
+surveys conducted up to and including the 2021 field season.
+There is no
+`release = 2021`, because the BBS was cancelled during the COVID
+lockdowns of spring 2020 so no data were collected and there was no updated data to release the following year.
 
 ```{r, eval = FALSE}
 fetch_bbs_data()                  # Default
@@ -282,16 +283,18 @@ Stratifications included in bbsBayes2 are
 [stratifications](articles/stratification) for more details and
 examples.
 
-Available species can be explore using the `search_species()` function.
-Many of the bbsBayes2 functions require identifying a species using
-English names; The `search_species()` function allows the user to search
-up English names using Spanish, French, or Latin names.
+### Species names in bbsBayes2
+
+A brief step out of the workflow to explain important information about species names in bbsBayes2
+All of the models in the package are species-specific. So the species is a fundamental aspect of any analysis.
+The `search_species()` function allows the user to search up the species names in the BBS database, using text from the English, Spanish, French, or Latin names. The English names for each species will be retained in the metadata at every step of the workflow.
 
 ```{r}
 search_species("Geai bleu")
 search_species("Cyanocitta")
 search_species("Corvidae")
 ```
+#### Species groupings
 
 There are some taxonomic groupings of species-units in the BBS database
 that bbsBayes2 by default also combines into combined species forms. These
@@ -302,22 +305,22 @@ potentially inconsistent distinctions among observers, routes, regions, or time.
     the early portion of the BBS history that have been lumped into a
     single species at some point since then. For example, the Northern
     Flicker observations exist in the BBS database separately as
-    Red-shafted Flicker (4130), Yellow-shafted Flicker (4120), unidentified Red/Yellow-shafted Flicker (4123) or hybrid Red x Yellow-shafted Flicker (4125). To provide an appropriate dataset to represent population trends of Northern Flicker, bbsBayes2 by default sums all of these observations into a new *species* called Northern Flicker (all forms), which replaces the (4123) unidentified category in the species database. The remaining original separate forms (Red, Yellow, and hybrid) are retained. 
--   Similar combined *species* are created for taxonomic splits that have occurred since the start of the BBS, such as Clark's and Western Grebe, which are retained as their own separate species, but are also combined into Western Grebe (Clark's/Western) (12). 
+    Red-shafted Flicker (4130), Yellow-shafted Flicker (4120), unidentified Red/Yellow-shafted Flicker (4123) or hybrid Red x Yellow-shafted Flicker (4125). To provide an appropriate dataset to represent population trends of Northern Flicker, bbsBayes2 by default sums all of these observations into a new *species* called Northern Flicker (all forms), which replaces the (4123) unidentified category in the species database. The remaining original separate forms (Red, Yellow, and hybrid) are retained.
+-   Similar combined *species* are created for taxonomic splits that have occurred since the start of the BBS, such as Clark's and Western Grebe, which are retained as their own separate species, but are also combined into Western Grebe (Clark's/Western) (12).
 
 You can access a complete list of these combined *species* groups and the sub groups that make them up.
 
 ```{r}
 species_forms
 ```
-    
+
 If you're looking for a complete list of all species in the BBS database.
 ```{r}
 all_species_bbs_database <- load_bbs_data()$species
 ```
 
 
-Note: if you're just exploring the package functionality, we recommend
+Note: if you're exploring the package functionality, we recommend
 using species with relatively small ranges (i.e., relatively few data)
 such as the Hepatic Tanager, Pacific Wren, or Scissor-tailed Flycatcher.
 
@@ -360,7 +363,7 @@ For spatial models there's two additional steps. You stratify and
 prepare the data as in the previous example, but you also prepare the
 map and the spatial data. An example is below.
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 s <- stratify(by = "bbs_usgs", species="Scissor-tailed Flycatcher")
 p <- prepare_data(s)
 
@@ -369,7 +372,9 @@ p <- prepare_data(s)
 map<-load_map(stratify_by = "bbs_usgs")
 #prepare the spatial data
 sp<-prepare_spatial(p,map)
-
+```
+Then the remaining steps are the same but setting `model_variant = "spatial"` in the `prepare_model()`.
+```{r, eval=FALSE}
 #then prepare the model with the spatial output
 mod <- prepare_model(sp, model = "gamye",model_variant = "spatial")
 
@@ -378,6 +383,13 @@ m <- run_model(mod)
 
 #optionally, save the model output as an .rds file
 saveRDS(m,"output/4430_gamye_spatial.rds")
+```
+The spatial aspects of the spatial model variants use an intrinsic Conditional Autoregressive structure (iCAR) to share information among neighbouring strata on the population abundance and trend parameter [Besag et al. 1991](https://doi.org/10.1007/BF00116466), [ver Hoef et al. 2018](http://doi.wiley.com/10.1002/ecm.1283), [Morris et al. 2019](https://doi.org/10.1016/j.sste.2019.100301). For more information about the bbsBayes2 models and the spatial models see the [models vignette](./models.html) and [Smith et al., 2023 pre-print](https://doi.org/10.32942/X2088D).
+
+The prepared spatial data object includes a map of the spatial neighbourhood relationships for a given species and stratification.
+
+```{r, fig.cap = "", fig.alt = "Map showing the strata and neighbourhood relationships among them for Scissor-tailed Flycatcher", fig.width = 8, fig.asp = 0.8}
+print(sp$spatial_data$map)
 ```
 
 ## Workflow to explore the model outputs {#explore_output}
@@ -415,7 +427,7 @@ converge <- get_convergence(m)
 
 ```{r}
 # Convergence diagnostics for all smoothed annual indices
-converge_n_smooth <- get_convergence(m,variables = "n_smooth") %>% 
+converge_n_smooth <- get_convergence(m,variables = "n_smooth") %>%
   arrange(-rhat)
 converge_n_smooth
 
@@ -463,7 +475,7 @@ summary_stats <- get_summary(m)
 
 ```{r}
 # Summary statistics and convergence diagnostics for all smoothed annual indices
-summary_stats_n_smooth <- get_summary(m,variables = "n_smooth") %>% 
+summary_stats_n_smooth <- get_summary(m,variables = "n_smooth") %>%
   arrange(-rhat)
 summary_stats_n_smooth
 
@@ -566,14 +578,14 @@ into a section of the map.
 strata_with_data <- t$meta_strata # meta data in trend object - strata information
 # load the original strata map used in the model fitting
 # then filter to just the strata with data for this species
-data_bounding_box <- load_map(stratify_by = t$meta_data$stratify_by) %>% 
-  filter(strata_name %in% strata_with_data$strata_name) %>% 
+data_bounding_box <- load_map(stratify_by = t$meta_data$stratify_by) %>%
+  filter(strata_name %in% strata_with_data$strata_name) %>%
   sf::st_bbox() # create a bounding box for x and y limits
 
 t_mod <- trend_map +
   coord_sf(xlim = data_bounding_box[c("xmin","xmax")],
            ylim = data_bounding_box[c("ymin","ymax")])
-  
+
 print(t_mod)
 
 ```
@@ -648,7 +660,7 @@ annual indices from above, taking advantage of the ggplot2 functions.
 
 ```{r, fig.cap = "", fig.alt = "Population trajectory graph for Barn Swallow, same as above plus the smoothed annual indices are added as a grey line", fig.width = 8, fig.asp = 0.8}
 
-smooth_cont_indices <- BARS_smooth_indices$indices %>% 
+smooth_cont_indices <- BARS_smooth_indices$indices %>%
   filter(region == "continent")
 BARS_continent_both <- BARS_continent +
   ggplot2::geom_line(data = smooth_cont_indices,

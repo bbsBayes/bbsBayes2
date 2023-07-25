@@ -34,7 +34,7 @@ knitr::opts_chunk$set(
 
 # Some more advanced options
 
-For most of these examples, we will be using a series of saved model outputs. These model outputs can be downloaded from this [Google Drive](https://drive.google.com/drive/folders/1v3Cb33Z8b-Ac4RXnMLpr8iqUbXoNioeK?usp=sharing)
+For most of these examples, we will be using a series of saved model outputs. These model outputs can be downloaded from this [Google Drive](https://drive.google.com/drive/folders/1EMPqmRYjcw7aQ9rPfFoGFtgI0ELHY4Ga?usp=sharing)
 
 ## Posterior Predictive Checks
 
@@ -243,7 +243,7 @@ print(t_map)
 
 ### Slope-based Trends
 
-bbsBayes includes an alternate trend estimate that can be applied to any of the
+bbsBayes2 includes an alternate trend estimate that can be applied to any of the
 models to dampen the influence of the start and end years of trend.
 The slope-based trends are calculated
 by fitting a log-linear slope to the series of all annual indices

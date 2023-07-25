@@ -65,6 +65,15 @@ specifying `by = "name"` in the `stratify()` function.
 s <- stratify(by = "bbs_usgs", species = "Canada Jay")
 ```
 
+### The latlong stratification
+
+The latlong stratification `by = "latlong"` is the finest-scale stratification built into the package, and so it divides the BBS data into many more strata-units than other stratifications.  Therefore, you may wish to adjust the minimum data inclusion criteria when preparing the data. Specifically, setting `min_n_routes = 1` ensures that every grid-cell with at least one BBS route can be included. There are many degree-blocks that have only one route, as this is the original sampling design goal of the BBS (at least one route within each degree-block).
+
+```{r}
+s <- stratify(by = "latlong", species = "Canada Jay")
+p <- prepare_data(s, min_n_routes = 1)
+
+```
 
 ## Custom stratifications
 
