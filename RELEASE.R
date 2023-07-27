@@ -55,7 +55,7 @@ unlink("vignettes/articles/figures/", recursive = TRUE) # Clean up old figs
 source("vignettes/_PRECOMPILE.R")
 
 # Preview precompiled vignettes (click on link and hit enter)
-pkgdown::build_article("articles/models_first_diff_nonhier")
+pkgdown::build_article("articles/models")
 
 
 
@@ -66,13 +66,13 @@ m <- stratify(by = "bbs_cws", species = "Barn Swallow") %>%
   run_model(output_basename = "cws_basw_gamye")
 
 # Create Tag on GitHub Repo
-piggyback::pb_new_release("bbsBayes/bbsBayes2", "v3.0.0")
+piggyback::pb_new_release("bbsBayes/bbsBayes2", "v1.0.0")
 
 # Save model output
 
 piggyback::pb_upload("cws_basw_gamye",
                      repo = "bbsBayes/bbsBayes2",
-                     tag = "v3.0.0")
+                     tag = "v1.0.0")
 
 
 # Release --------------------------------------
@@ -100,7 +100,7 @@ usethis::use_github_release()
 # Compile articles and website
 # (only for checking! GitHub Actions will build automatically)
 pkgdown::build_site(lazy = TRUE)
-pkgdown::build_article("articles/models_first_diff_nonhier")
+pkgdown::build_article("articles/models")
 
 # Good practice checks -------------------------------------------------------
 checks <- goodpractice::all_checks()
