@@ -80,7 +80,8 @@ Otherwise, they are identical in that they all share the same set of parameters 
 
 Here is an example application of all nine models and variants applied to the same data set. In this example, we've used data for the Scissor-tailed Flycatcher.
 
-You can download the fitted model results for all nine models in a zipped file attachement to the most recent package release. The following code chunk loads each of the fitted model objects, calculates the annual indices and trends, then saves the continent population trajectories and the long-term (1966-2021) trend maps.
+You can download the fitted model results for all nine models in a zipped file [here](https://drive.google.com/file/d/1zF8xOIn_ZuORmjNDHAu5YCJjIx4j-MHC/view?usp=sharing). Unzip the file and save the *.rds* files in a sub-directory of your working directory called *output* to replicate our code below.
+The following code chunk loads each of the fitted model objects, calculates the annual indices and trends, then saves the continent population trajectories and the long-term (1966-2021) trend maps.
 
 
 ```r

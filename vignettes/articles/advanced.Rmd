@@ -25,7 +25,7 @@ editor_options:
 
 # Some more advanced options
 
-For most of these examples, we will be using a series of saved model outputs. These model outputs can be downloaded from this [Google Drive](https://drive.google.com/drive/folders/1EMPqmRYjcw7aQ9rPfFoGFtgI0ELHY4Ga?usp=sharing)
+For most of these examples, we will be using a series of saved model outputs. These model outputs can be downloaded from this [Google Drive](https://drive.google.com/drive/folders/1EMPqmRYjcw7aQ9rPfFoGFtgI0ELHY4Ga?usp=sharing). In the example code here, we have unzipped these saved model outputs and stored the *.rds* files in a local sub-directory called *output*.
 
 ## Posterior Predictive Checks
 
@@ -362,7 +362,7 @@ You can easily export any of the bbsBayes2 models to a text file.
 
 copy_model_file(model="gamye",
                 model_variant = "hier",
-                dir=tempdir())
+                dir = getwd()) #writes the stan file to working directory
 
 ```
 
@@ -370,6 +370,9 @@ Then, you can modify the model text (e.g., try a different prior) and
 run the modified model. To modify the model, you can open the saved
 .stan file (RStudio has good support for Stan model syntax), make
 modifications to the model, then re-save the file.
+
+If you are not familiar with writing Stan code, you will want to be very careful modifying the bbsBayes2 models; The model files are relatively long and include some complicated components (conditional statements, transformed parameters and transformed data). However, there are excellent [online sources for getting comfortable with working in Stan](https://mc-stan.org/users/documentation/tutorials), and this package exists in a large part to allow users to explore, modify, elaborate, and understand these models.
+So be brave, be careful, be open, and contact the package authors if you get stuck. We promise to be friendly and to do our best to help.
 
 After modifying the .stan file, you can use bbsBayes2 to fit the data to
 the modified model using the `model_file` argment in `prepare_model()`.

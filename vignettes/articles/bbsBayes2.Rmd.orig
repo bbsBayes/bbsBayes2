@@ -433,15 +433,16 @@ converge_n_smooth
 
 ```
 
-Here we've sorted the convergence diagnostics by rhat values. Values of
-rhat \> 1.05 indicate a problem with the convergence of some of the
+Here we've sorted the convergence diagnostics by rhat values (highest values at the top to highlight any problems). Cut-offs for rhat statistics are somewhat arbitrary and recommendations vary in the literature, but values of
+rhat \> 1.1 indicate a *serious* problem with the convergence of some of the
 parameters in the model (i.e., there is more variation among the
 independent chains than within them) and values of ess_bulk \<
 approximately 400 suggest an imprecise estimate of the parameter. In
 some cases, refitting the model with more iterations (both warmup and
 sampling) may improve convergence. More advice on exploring Bayesian
 model convergence can be found
-[here](https://doi.org/10.1111/rssa.12378).
+[here](https://doi.org/10.1111/rssa.12378). bbsBayes2 relies on functions in the packages `cmdstanr` and `posterior` to calculate rhat values following [Vehtari et al. 2021](https://doi.org/10.1214/20-BA1221).
+
 
 ```{r, eval=FALSE}
 
@@ -480,8 +481,9 @@ summary_stats_n_smooth <- get_summary(m,variables = "n_smooth") %>%
 summary_stats_n_smooth
 
 ```
+### Model predictions
 
-### Indices - predictions of annual relative abundance
+#### Indices - predictions of annual relative abundance
 
 Indices (annual indices of relative abundance) represent mean predicted
 annual counts of the species in a given region, on an average route, by
@@ -541,7 +543,7 @@ p1_mod <- p[["continent"]]+
 print(p1_mod)
 ```
 
-### Trends - predictions of mean rates of change over time
+#### Trends - predictions of mean rates of change over time
 
 Next we can calculate the long-term trends based on these indices. Note
 all trends from bbsBayes2 models are derived from summaries of indices
@@ -590,26 +592,23 @@ print(t_mod)
 
 ```
 
-###Example models
+### Example models
 
 A model with a suitable number of iterations takes a long time to run
 (the Barn Swallow model, a species with many data and many strata, took
 54 hours). Below are three full models run with 1000 iterations and four
 chains. Use these to test out some of the features!
 
-Download the Barn Swallow GAMYE spatial model:
-<https://github.com/L-Daly/bbsbae/releases/tag/trial> click
-BASW_spatial_gamye.zip.
+You can download a zip-file with a saved model output for Barn Swallow here.
 
-An example of the output from applying the spatial gamye model to Barn
-Swallow data.
+[An example of the output from applying the spatial gamye model to Barn
+Swallow data](https://drive.google.com/file/d/1RNbM312_isopRN7Lb-jP1-wK4UvRKkHE/view?usp=sharing).
+
+Unzip the file and store it in a local directory. For example, below we've placed it in a sub-directory of our working directory called *output*.
 
 ```{r, fig.cap = "", fig.alt = "Population trajectory graph for Barn Swallow, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts.", fig.width = 8, fig.asp = 0.8}
 #First is a spatial GAMYE model for the Barn Swallow
-# library(readr)
-# BARS <- read_rds(unzip(
-#   "BASW_spatial_gamye.zip",
-#   "Barn_Swallow_gamye_spatial.rds"))
+
 
 BARS <- readRDS("output/Barn_Swallow_gamye_spatial.rds")
 #investigate model meta data
