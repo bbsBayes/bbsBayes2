@@ -139,7 +139,7 @@ check_basis <- function(basis) {
 check_init <- function(init, chains) {
   if(inherits(init, "list")) {
     if(length(init) != chains) {
-      message("One set of `init` values supplied, duplicating for each chain.")
+      #message("One set of `init` values supplied, duplicating for each chain.")
       orig <- init
       init <- list()
       for(n in seq_len(chains)) init[[n]] <- orig
