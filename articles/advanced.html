@@ -93,13 +93,16 @@
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span> <span class="co">#to visually check convergence</span></span></code></pre></div>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span> <span class="co">#to visually check convergence</span></span>
+<span><span class="co">#&gt; Warning: package 'bayesplot' was built under R version 4.3.1</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="some-more-advanced-options">Some more advanced options<a class="anchor" aria-label="anchor" href="#some-more-advanced-options"></a>
 </h2>
 <p>For most of these examples, we will be using a series of saved model
-outputs. These model outputs can be downloaded from this <a href="https://drive.google.com/drive/folders/1v3Cb33Z8b-Ac4RXnMLpr8iqUbXoNioeK?usp=sharing" class="external-link">Google
-Drive</a></p>
+outputs. These model outputs can be downloaded from this <a href="https://drive.google.com/drive/folders/1EMPqmRYjcw7aQ9rPfFoGFtgI0ELHY4Ga?usp=sharing" class="external-link">Google
+Drive</a>. In the example code here, we have unzipped these saved model
+outputs and stored the <em>.rds</em> files in a local sub-directory
+called <em>output</em>.</p>
 <div class="section level3">
 <h3 id="posterior-predictive-checks">Posterior Predictive Checks<a class="anchor" aria-label="anchor" href="#posterior-predictive-checks"></a>
 </h3>
@@ -317,7 +320,7 @@ pattern of change between the two end-points.</p>
 <div class="section level4">
 <h4 id="slope-based-trends">Slope-based Trends<a class="anchor" aria-label="anchor" href="#slope-based-trends"></a>
 </h4>
-<p>bbsBayes includes an alternate trend estimate that can be applied to
+<p>bbsBayes2 includes an alternate trend estimate that can be applied to
 any of the models to dampen the influence of the start and end years of
 trend. The slope-based trends are calculated by fitting a log-linear
 slope to the series of all annual indices between the two end-points
@@ -425,11 +428,21 @@ belong in each of our new composite regions (<em>North</em> or
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/copy_model_file.html">copy_model_file</a></span><span class="op">(</span>model<span class="op">=</span><span class="st">"gamye"</span>,</span>
 <span>                model_variant <span class="op">=</span> <span class="st">"hier"</span>,</span>
-<span>                dir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>                dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co">#writes the stan file to working directory</span></span></code></pre></div>
 <p>Then, you can modify the model text (e.g., try a different prior) and
 run the modified model. To modify the model, you can open the saved
 .stan file (RStudio has good support for Stan model syntax), make
 modifications to the model, then re-save the file.</p>
+<p>If you are not familiar with writing Stan code, you will want to be
+very careful modifying the bbsBayes2 models; The model files are
+relatively long and include some complicated components (conditional
+statements, transformed parameters and transformed data). However, there
+are excellent <a href="https://mc-stan.org/users/documentation/tutorials" class="external-link">online sources
+for getting comfortable with working in Stan</a>, and this package
+exists in a large part to allow users to explore, modify, elaborate, and
+understand these models. So be brave, be careful, be open, and contact
+the package authors if you get stuck. We promise to be friendly and to
+do our best to help.</p>
 <p>After modifying the .stan file, you can use bbsBayes2 to fit the data
 to the modified model using the <code>model_file</code> argment in
 <code><a href="../reference/prepare_model.html">prepare_model()</a></code>.</p>

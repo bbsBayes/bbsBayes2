@@ -113,37 +113,14 @@ frame.</p>
 <code>variant = "hier"</code> and <code>variant = "spatial"</code>. With
 the exception of the first-difference model, which has an additional
 non-hierarchical variant <code>variant = "nonhier"</code>.</p>
-<p>Hierarchical models <code>variant = "hier"</code> are the default
-variants for each model. These variants share information on species
-abundance and population trends, so that estimates in each stratum are
-pulled <em>shrunk</em> closer to the mean across all strata. The
-non-hierarchical variant of the first-difference model does not share
-information among strata. It estimates abundance and population trends
-in each stratum independently of their estimates in all other strata.
-This variant is included to support an approximate replication of the
-USGS trend analyses. Spatial models are both hierarchical and spatial,
-sharing information among strata on the abundance and trends, and
-sharing in an explicitly spatial way. This means that each stratum’s
-estimates will be pulled closer to the mean of its neighbors.</p>
-<p>The four model options vary in the way they estimate the parameters
-that are most important for understanding the status and trends of bird
-populations. That is, they vary in the way they estimate the relative
-abundance and the temporal-changes in relative abundance (population
-trends), within and among strata. They all share the same set of
-parameters designed to adjust estimates for variations among observers,
-first-year observer start-up effects. For more details on these
-observer-effects and the development of these Bayesian hierarchical
-models for the BBS, see <a href="https://doi.org/10.1890/0012-9658(2002)083%5B2832:AHAOPC%5D2.0.CO;2" class="external-link">Link
-and Sauer 2002</a>, <a href="https://doi.org/10.1525/auk.2010.09220" class="external-link">Sauer and Link, 2011</a>,
-<a href="https://doi.org/10.22621/cfn.v128i2.1565" class="external-link">Smith et al.,
-2014</a>, <a href="https://doi.org/10.1650/CONDOR-17-1.1" class="external-link">Link et al.,
-2017</a>, <a href="https://doi.org/10.1002/eap.2137" class="external-link">Link et
-al. 2020</a>, <a href="https://doi.org/10.1093/ornithapp/duaa065" class="external-link">Smith
-&amp; Edwards, 2021</a>, <a href="https://doi.org/10.32942/X2088D" class="external-link">Smith
-et al., 2023 pre-print</a>.</p>
 <div class="section level2">
-<h2 id="first-difference-models">1. First Difference Models<a class="anchor" aria-label="anchor" href="#first-difference-models"></a>
+<h2 id="the-models">The models<a class="anchor" aria-label="anchor" href="#the-models"></a>
 </h2>
+<p>The four models differ in the way they estimate the time-series
+components.</p>
+<div class="section level3">
+<h3 id="first-difference-models">1. First Difference Models<a class="anchor" aria-label="anchor" href="#first-difference-models"></a>
+</h3>
 <p>A first-difference model considers the time-series as a random-walk
 forward and backwards in time from the mid-year of the time-series, so
 that the first-differences of the sequence of year-effects are random
@@ -152,9 +129,9 @@ variant of this model model has been described in <a href="https://doi.org/10.16
 hierarchical and spatial variants are described in <a href="https://doi.org/10.32942/X2088D" class="external-link">Smith et al., 2023
 pre-print</a>.</p>
 </div>
-<div class="section level2">
-<h2 id="generalized-additive-models">2. Generalized Additive Models<a class="anchor" aria-label="anchor" href="#generalized-additive-models"></a>
-</h2>
+<div class="section level3">
+<h3 id="generalized-additive-models">2. Generalized Additive Models<a class="anchor" aria-label="anchor" href="#generalized-additive-models"></a>
+</h3>
 <p>The GAM models the time series as a semiparametric smooth using a
 Generalized Additive Model (GAM) structure. This model is unique among
 the bbsBayes2 models in that it does not model annual fluctuations, only
@@ -164,30 +141,99 @@ some very strong assumptions about population change. See <a href="https://doi.o
 spatial variants of this model are described in this <a href="https://doi.org/10.32942/X2088D" class="external-link">Smith et al., 2023
 pre-print</a>.</p>
 </div>
-<div class="section level2">
-<h2 id="generalized-additive-models-with-year-effect">3. Generalized Additive Models with Year Effect<a class="anchor" aria-label="anchor" href="#generalized-additive-models-with-year-effect"></a>
-</h2>
+<div class="section level3">
+<h3 id="generalized-additive-models-with-year-effect">3. Generalized Additive Models with Year Effect<a class="anchor" aria-label="anchor" href="#generalized-additive-models-with-year-effect"></a>
+</h3>
 <p>The GAMYE includes the semiparametric smooth used in the gam option,
 but also includes random year-effect terms that track annual
 fluctuations around the smooth. This is the model that the Canadian
 Wildlife Service is now using for the annual status and trend estimates.
 See this <a href="https://doi.org/10.32942/X2088D" class="external-link">Smith et al., 2023
-pre-print</a> for details on the original formulation and application of
-this model, see <a href="https://doi.org/10.1093/ornithapp/duaa065" class="external-link">Smith &amp; Edwards,
-2021</a></p>
+pre-print</a> for details on the Stan version of this model and see <a href="https://doi.org/10.1093/ornithapp/duaa065" class="external-link">Smith &amp; Edwards,
+2021</a> for the original formulation.</p>
 </div>
-<div class="section level2">
-<h2 id="slope">4. Slope<a class="anchor" aria-label="anchor" href="#slope"></a>
-</h2>
+<div class="section level3">
+<h3 id="slope">4. Slope<a class="anchor" aria-label="anchor" href="#slope"></a>
+</h3>
 <p>The slope model estimates the time series as a log-linear regression
 with random year-effect terms that allow the trajectory to depart from
-the smooth regression line. It is the model used by the USGS and CWS to
-estimate BBS trends between 2011 and 2018. The basic model was first
-described in 2002 <a href="https://doi.org/10.1890/0012-9658(2002)083%5B2832:AHAOPC%5D2.0.CO;2" class="external-link">Link
+the smooth log-linear regression line. It is the model used by the USGS
+and CWS to estimate BBS trends between 2011 and 2018. The basic model
+was first described in 2002 <a href="https://doi.org/10.1890/0012-9658(2002)083%5B2832:AHAOPC%5D2.0.CO;2" class="external-link">Link
 and Sauer 2002</a> and its application to the annual status and trend
 estimates is documented in <a href="https://doi.org/10.1525/auk.2010.09220" class="external-link">Sauer and Link, 2011</a>
 and <a href="https://doi.org/10.22621/cfn.v128i2.1565" class="external-link">Smith et al.,
 2014</a>.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="the-variants">The variants<a class="anchor" aria-label="anchor" href="#the-variants"></a>
+</h2>
+<p>The variants differ in the way they treat the variation among strata
+in the abundance and trend components of the models.</p>
+<div class="section level3">
+<h3 id="hierarchical-variants">Hierarchical variants<a class="anchor" aria-label="anchor" href="#hierarchical-variants"></a>
+</h3>
+<p>Hierarchical variants <code>variant = "hier"</code> are the default
+variants for each model. These variants share information on species
+abundance and population trends, so that estimates in each stratum are
+pulled <em>shrunk</em> closer to the mean across all strata. The
+abundance and trend parameters are estimated as <em>hierarchical</em>
+effects (also sometimes called <em>random effects</em> or <em>partial
+pooling</em>) where the strata are treated as the groups and parameters
+are allowed to vary among groups. The among-strata variation is modeled
+as a relatively simple normal distribution with an estimated mean and
+standard deviation.</p>
+</div>
+<div class="section level3">
+<h3 id="spatial-variants">Spatial variants<a class="anchor" aria-label="anchor" href="#spatial-variants"></a>
+</h3>
+<p>Spatial variants <code>variant = "spatial"</code> are both
+hierarchical and spatial, sharing information among strata on the
+abundance and trends, and sharing in an explicitly spatial way. This
+means that each stratum’s estimates will be pulled closer to the mean of
+its neighbors. The spatial components are estimated using an intrinsic
+Conditional Autoregressive (iCAR) structure <a href="https://doi.org/10.1007/BF00116466" class="external-link">Besag et al. 1991</a>, <a href="http://doi.wiley.com/10.1002/ecm.1283" class="external-link">ver Hoef et al. 2018</a>,
+using Stan code derived from <a href="https://doi.org/10.1016/j.sste.2019.100301" class="external-link">Morris et
+al. 2019</a></p>
+</div>
+<div class="section level3">
+<h3 id="non-hierarchical-variant-first-difference-only">Non-hierarchical variant (first-difference only)<a class="anchor" aria-label="anchor" href="#non-hierarchical-variant-first-difference-only"></a>
+</h3>
+<p>The non-hierarchical variant of the first-difference model
+<code>model = "first_diff", variant = "nonhier"</code> does not share
+information among strata on the abundance and trends components. It is
+included to support an approximate replication of the USGS trend
+analyses. It estimates abundance and population trends in each stratum
+independently of their estimates in all other strata. Importantly,
+although we refer to this model as non-hierarchical, that only refers to
+the among-strata sharing of information. It is a <em>hierarchical</em>
+model; It uses hierarchical structures to model the variation among
+routes and observers, and the annual differences in populations within
+strata are also modeled as hierarchical effects.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="more-background-reading">More background reading<a class="anchor" aria-label="anchor" href="#more-background-reading"></a>
+</h2>
+<p>The models in bbsBayes2 are best described and contrasted here <a href="https://doi.org/10.32942/X2088D" class="external-link">Smith et al., 2023
+pre-print</a>.</p>
+<p>The models and variants differ in the way they estimate the
+parameters that are most important for understanding the status and
+trends of bird populations. That is, they vary in the way they estimate
+the relative abundance and the temporal-changes in relative abundance
+(population trends), within and among strata. Otherwise, they are
+identical in that they all share the same set of parameters designed to
+adjust estimates for variations among observers, routes, and first-year
+observer start-up effects. For more details on the development of these
+Bayesian hierarchical models for the BBS and the observer-effects, see
+<a href="https://doi.org/10.1890/0012-9658(2002)083%5B2832:AHAOPC%5D2.0.CO;2" class="external-link">Link
+and Sauer 2002</a>, <a href="https://doi.org/10.1525/auk.2010.09220" class="external-link">Sauer and Link, 2011</a>,
+<a href="https://doi.org/10.22621/cfn.v128i2.1565" class="external-link">Smith et al.,
+2014</a>, <a href="https://doi.org/10.1650/CONDOR-17-1.1" class="external-link">Link et al.,
+2017</a>, <a href="https://doi.org/10.1002/eap.2137" class="external-link">Link et
+al. 2020</a>, <a href="https://doi.org/10.1093/ornithapp/duaa065" class="external-link">Smith
+&amp; Edwards, 2021</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="one-species-nine-models">One species, nine-models<a class="anchor" aria-label="anchor" href="#one-species-nine-models"></a>
@@ -196,17 +242,19 @@ and <a href="https://doi.org/10.22621/cfn.v128i2.1565" class="external-link">Smi
 applied to the same data set. In this example, we’ve used data for the
 Scissor-tailed Flycatcher.</p>
 <p>You can download the fitted model results for all nine models in a
-zipped file attachement to the most recent package release. The
-following code chunk loads each of the fitted model objects, calculates
-the annual indices and trends, then saves the continent population
-trajectories and the long-term (1966-2021) trend maps.</p>
+zipped file <a href="https://drive.google.com/file/d/1zF8xOIn_ZuORmjNDHAu5YCJjIx4j-MHC/view?usp=sharing" class="external-link">here</a>.
+Unzip the file and save the <em>.rds</em> files in a sub-directory of
+your working directory called <em>output</em> to replicate our code
+below. The following code chunk loads each of the fitted model objects,
+calculates the annual indices and trends, then saves the continent
+population trajectories and the long-term (1966-2021) trend maps.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">saved_trajectories</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span><span class="va">saved_trend_maps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">vector</a></span><span class="op">(</span><span class="st">"list"</span>,<span class="fl">9</span><span class="op">)</span></span>
 <span><span class="va">species</span> <span class="op">&lt;-</span> <span class="st">"Scissor-tailed Flycatcher"</span></span>
 <span><span class="co"># extract the unique numerical identifier for this species in the BBS database</span></span>
-<span><span class="va">species_number</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_species.html">search_species</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">aou</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span><span class="va">species_number</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_species.html">search_species</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">aou</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -219,25 +267,25 @@ trajectories and the long-term (1966-2021) trend maps.</p>
 <span>                      <span class="st">"_"</span>,</span>
 <span>                      <span class="va">bbs_models</span><span class="op">[</span><span class="va">j</span>,<span class="st">"variant"</span><span class="op">]</span>,</span>
 <span>                      <span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_indices.html">generate_indices</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">trajs</span> <span class="op">&lt;-</span> <span class="va">i</span><span class="op">$</span><span class="va">indices</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">region</span> <span class="op">==</span> <span class="st">"continent"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span></span>
+<span>  <span class="va">trajs</span> <span class="op">&lt;-</span> <span class="va">i</span><span class="op">$</span><span class="va">indices</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">region</span> <span class="op">==</span> <span class="st">"continent"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">bbs_models</span><span class="op">[</span><span class="va">j</span>,<span class="st">"model"</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>           variant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">bbs_models</span><span class="op">[</span><span class="va">j</span>,<span class="st">"variant"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">saved_trajectories</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">saved_trajectories</span>,</span>
 <span>                        <span class="va">trajs</span><span class="op">)</span></span>
-<span>  </span>
-<span> </span>
-<span>  </span>
+<span></span>
+<span></span>
+<span></span>
 <span>  <span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="va">strata_with_data</span> <span class="op">&lt;-</span> <span class="va">t</span><span class="op">$</span><span class="va">meta_strata</span> <span class="co"># meta data in trend object - strata information</span></span>
 <span><span class="co"># load the original strata map used in the model fitting</span></span>
 <span><span class="co"># then filter to just the strata with data for this species</span></span>
-<span><span class="va">data_bounding_box</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span>stratify_by <span class="op">=</span> <span class="va">t</span><span class="op">$</span><span class="va">meta_data</span><span class="op">$</span><span class="va">stratify_by</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">strata_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">strata_with_data</span><span class="op">$</span><span class="va">strata_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
+<span><span class="va">data_bounding_box</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span>stratify_by <span class="op">=</span> <span class="va">t</span><span class="op">$</span><span class="va">meta_data</span><span class="op">$</span><span class="va">stratify_by</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">strata_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">strata_with_data</span><span class="op">$</span><span class="va">strata_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># create a bounding box for x and y limits</span></span>
 <span></span>
 <span>  <span class="va">map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">+</span></span>
@@ -246,9 +294,9 @@ trajectories and the long-term (1966-2021) trend maps.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="va">data_bounding_box</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"xmin"</span>,<span class="st">"xmax"</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>           ylim <span class="op">=</span> <span class="va">data_bounding_box</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ymin"</span>,<span class="st">"ymax"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span><span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span>   </span>
-<span>  <span class="va">saved_trend_maps</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">map</span> </span>
-<span>    </span>
+<span></span>
+<span>  <span class="va">saved_trend_maps</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">map</span></span>
+<span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>This species has moderately rich data across much of its range (the
 portion of its range covered by the BBS surveys), so the estimated
@@ -279,7 +327,7 @@ different models and variants.</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">map_panel</span> <span class="op">&lt;-</span> <span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">wrap_plots</a></span><span class="op">(</span><span class="va">saved_trend_maps</span>,</span>
 <span>                                    ncol <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                                    guides <span class="op">=</span> <span class="st">"collect"</span><span class="op">)</span> </span>
+<span>                                    guides <span class="op">=</span> <span class="st">"collect"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map_panel</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/models_unnamed-chunk-5-1.png" alt="Population trend maps for Scissor-tailed Flycatcher estimated using the 9 different models and their variants available in bbsBayes2"></p>
