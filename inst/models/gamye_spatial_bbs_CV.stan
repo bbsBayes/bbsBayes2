@@ -217,10 +217,10 @@ model {
 
 
   obs_raw ~ std_normal(); // ~ student_t(3,0,1);//observer effects
-  //sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint isn't useful here
+  sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint may not be necessary
 
   ste_raw ~ std_normal();//site effects
-  //sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint isn't useful here
+  sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint may not be necessary
 
  for(s in 1:n_strata){
 
