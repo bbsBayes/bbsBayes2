@@ -139,8 +139,8 @@ transformed parameters {
 // first half of time-series - runs backwards from fixed_year
   for(t in Iy1){
     beta[,t] = (sdbeta * beta_raw[,t]) + BETA[t];
-    yeareffect[,t] = yeareffect[,t+1] + beta[,t];
-    YearEffect[t] = YearEffect[t+1] + BETA[t]; // hyperparameter trajectory interesting to monitor but no direct inference
+    yeareffect[,t] = yeareffect[,t+1] - beta[,t];
+    YearEffect[t] = YearEffect[t+1] - BETA[t]; // hyperparameter trajectory interesting to monitor but no direct inference
   }
 // second half of time-series - runs forwards from fixed_year
    for(t in Iy2){

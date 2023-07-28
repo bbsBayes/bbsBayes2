@@ -140,14 +140,12 @@ for(s in 1:n_strata){
 // first half of time-series - runs backwards from fixed_year
   for(t in Iy1){
     beta[s,t] = (sdbeta[s] * beta_raw[s,t]);// + BETA[t];
-    yeareffect[s,t] = yeareffect[s,t+1] + beta[s,t];
-  //  YearEffect[t] = YearEffect[t+1] + BETA[t]; // hyperparameter trajectory interesting to monitor but no direct inference
+    yeareffect[s,t] = yeareffect[s,t+1] - beta[s,t];
   }
 // second half of time-series - runs forwards from fixed_year
    for(t in Iy2){
     beta[s,t] = (sdbeta[s] * beta_raw[s,t-1]);// + BETA[t-1];//t-1 indicators to match dimensionality
     yeareffect[s,t] = yeareffect[s,t-1] + beta[s,t];
-   // YearEffect[t] = YearEffect[t-1] + BETA[t-1];
   }
 }
    strata = (sdstrata*strata_raw) + STRATA;
