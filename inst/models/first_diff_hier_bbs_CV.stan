@@ -139,8 +139,8 @@ transformed parameters {
 // first half of time-series - runs backwards from fixed_year
   for(t in Iy1){
     beta[,t] = (sdbeta * beta_raw[,t]) + BETA[t];
-    yeareffect[,t] = yeareffect[,t+1] + beta[,t];
-    YearEffect[t] = YearEffect[t+1] + BETA[t]; // hyperparameter trajectory interesting to monitor but no direct inference
+    yeareffect[,t] = yeareffect[,t+1] - beta[,t];
+    YearEffect[t] = YearEffect[t+1] - BETA[t]; // hyperparameter trajectory interesting to monitor but no direct inference
   }
 // second half of time-series - runs forwards from fixed_year
    for(t in Iy2){
@@ -191,15 +191,15 @@ model {
   }
   sdobs ~ normal(0,0.3); // informative prior on scale of observer effects - suggests observer variation larger than 3-4-fold differences is unlikely
   sdste ~ student_t(3,0,1); //prior on sd of site effects
-  sdbeta ~ student_t(3,0,0.1); // prior on sd of differences among strata
+  sdbeta ~ student_t(3,0,0.2); // prior on sd of differences among strata
   sdBETA ~ student_t(3,0,0.1); // prior on sd of mean hyperparameter differences
 
 
-  obs_raw ~ std_normal();//observer effects
-  //sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint isn't useful here
+  obs_raw ~ std_normal(); // ~ student_t(3,0,1);//observer effects
+  sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint may not be necessary
 
   ste_raw ~ std_normal();//site effects
-  //sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint isn't useful here
+  sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint may not be necessary
 
 
   BETA_raw ~ std_normal();// prior on fixed effect mean intercept
