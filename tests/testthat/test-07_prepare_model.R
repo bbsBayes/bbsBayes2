@@ -109,7 +109,8 @@ test_that("prepare_model() first_diff / slope", {
 
   for(i in seq_len(nrow(m))) {
 
-    if(m$variant[i] == "nonhier") ex <- expect_warning else ex <- expect_silent
+    #if(m$variant[i] == "nonhier") ex <- expect_warning else
+    ex <- expect_silent
     ex(md <- prepare_model(p,
                            model = m$model[!!i],
                            model_variant = m$variant[!!i],
