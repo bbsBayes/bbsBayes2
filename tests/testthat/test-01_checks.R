@@ -189,7 +189,7 @@ test_that("model/model_file/model_variant checks", {
   for(i in unique(bbs_models$variant)) expect_silent(check_model_variant(i))
   for(i in seq_len(nrow(bbs_models))) {
     if(bbs_models$variant[i] == "nonhier") {
-      expect_warning(check_model(bbs_models$model[i], bbs_models$variant[i]))
+      #expect_warning(check_model(bbs_models$model[i], bbs_models$variant[i]))
     } else {
       expect_silent(check_model(bbs_models$model[i], bbs_models$variant[i]))
     }

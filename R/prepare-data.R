@@ -56,7 +56,7 @@ prepare_data <- function(strata_data,
   check_numeric(min_n_routes, min_max_route_years, min_mean_route_years)
   check_logical(quiet)
   #warning if stratification == latlong and min_n_routes > 1
-  if(s$meta_data$stratify_by == "latlong" & min_n_routes == 3){
+  if(strata_data$meta_data$stratify_by == "latlong" & min_n_routes == 3){
     warning("Many strata with data may have been excluded ",
             "With latlong stratification, most strata have ",
             "only 1 route. You may wish to set min_n_routes = 1",
