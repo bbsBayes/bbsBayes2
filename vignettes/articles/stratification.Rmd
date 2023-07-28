@@ -66,6 +66,22 @@ s <- stratify(by = "bbs_usgs", species = "Canada Jay")
 #>   Renaming routes...
 ```
 
+### The latlong stratification
+
+The latlong stratification `by = "latlong"` is the finest-scale stratification built into the package, and so it divides the BBS data into many more strata-units than other stratifications.  Therefore, you may wish to adjust the minimum data inclusion criteria when preparing the data. Specifically, setting `min_n_routes = 1` ensures that every grid-cell with at least one BBS route can be included. There are many degree-blocks that have only one route, as this is the original sampling design goal of the BBS (at least one route within each degree-block).
+
+
+```r
+s <- stratify(by = "latlong", species = "Canada Jay")
+#> Using 'latlong' (standard) stratification
+#> Loading BBS data...
+#> Filtering to species Canada Jay (4840)
+#> Stratifying data...
+#>   Renaming routes...
+#>   Omitting 80/119,567 route-years that do not match a stratum.
+#>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
+p <- prepare_data(s, min_n_routes = 1)
+```
 
 ## Custom stratifications
 
@@ -81,7 +97,7 @@ This is available from available from the US Fish and Wildlife Service Catalogue
 You can either download it by hand, or with the following code.
 
 ```r
-z <- "output/WBPHS_Stratum_Boundaries_2019.zip"
+z <- "output/WBPHS_Stratum_Boundaries_2019.zip" #
 
 download.file(url = "https://ecos.fws.gov/ServCat/DownloadFile/213149",
               destfile = z,
@@ -89,7 +105,7 @@ download.file(url = "https://ecos.fws.gov/ServCat/DownloadFile/213149",
 unzip(z)  # Unzip - if you get a file is corrupt message, download it manually
 unlink(z) # Remove the zipped file
 ```
-
+The zip file is also available in this [Google Drive](https://drive.google.com/file/d/1pWPC2Eh5VBP7RIC173gazdAmtHfx4KdF/view?usp=sharing)
 
 To use this file in bbsBayes2, we need to load it as an sf object using the sf
 package.
@@ -101,7 +117,7 @@ ggplot(map, aes(fill = factor(STRAT))) +
   scale_fill_viridis_d(guide = "none")
 ```
 
-<img src="figures/stratification_unnamed-chunk-5-1.png" alt="Map of the strata used in the Waterfowl Breeding Population and Habitat Surveys"  />
+<img src="figures/stratification_unnamed-chunk-6-1.png" alt="Map of the strata used in the Waterfowl Breeding Population and Habitat Surveys"  />
 
 We see that it has one column that reflects the stratum names. First we'll
 rename this column to `strata_name` which is what `stratify()` requires.
@@ -186,7 +202,7 @@ ggplot() +
   scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none")
 ```
 
-<img src="figures/stratification_unnamed-chunk-9-1.png"  />
+<img src="figures/stratification_unnamed-chunk-10-1.png"  />
 
 
 Based on the message we received during stratification (`Omitting...`) and this
@@ -241,7 +257,7 @@ ggplot() +
   scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none")
 ```
 
-<img src="figures/stratification_unnamed-chunk-11-1.png"  />
+<img src="figures/stratification_unnamed-chunk-12-1.png"  />
 
 
 The map shows that most of the omitted routes are routes that are clearly outside of our desired stratification. It does also show that there are some BBS route start-points that are just outside of the strata (e.g., some routes in Nova Scotia and Alaska). The user can decide what to do with these sorts of minor overlap issues. For example, buffering the original stratification map might make sense in some situations.
@@ -287,7 +303,7 @@ trend_map <- plot_map(t, strata_custom = map)
 trend_map
 ```
 
-<img src="figures/stratification_unnamed-chunk-16-1.png"  />
+<img src="figures/stratification_unnamed-chunk-17-1.png"  />
 
 `generate_indices()` creates indices at different regional levels. By default
 these are "continent" and "stratum", but you can add "prov_state", "bcr",
@@ -311,17 +327,9 @@ with how the various strata have been assigned.
 
 ```r
 rindex <- assign_prov_state(map, min_overlap = 0.6, plot = TRUE)
-#> The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
-#> which was just loaded, will retire in October 2023.
-#> Please refer to R-spatial evolution reports for details, especially
-#> https://r-spatial.org/r/2023/05/15/evolution4.html.
-#> It may be desirable to make the sf package available;
-#> package maintainers should consider adding sf to Suggests:.
-#> The sp package is now running under evolution status 2
-#>      (status 2 uses the sf package in place of rgdal)
 ```
 
-<img src="figures/stratification_unnamed-chunk-17-1.png"  />
+<img src="figures/stratification_unnamed-chunk-18-1.png"  />
 
 Next we'll define the east/west divide by hand. If we plot the strata by
 name, we can pick out which are eastern and which western.
@@ -337,7 +345,7 @@ ggplot(rindex) +
 #> longitude/latitude data
 ```
 
-<img src="figures/stratification_unnamed-chunk-18-1.png"  />
+<img src="figures/stratification_unnamed-chunk-19-1.png"  />
 
 
 Let's add a column splitting the strata into eastern and western
@@ -359,7 +367,7 @@ ggplot(data = rindex) +
   geom_sf(data = rindex, aes(fill = east_west), alpha = 0.5)
 ```
 
-<img src="figures/stratification_unnamed-chunk-20-1.png"  />
+<img src="figures/stratification_unnamed-chunk-21-1.png"  />
 
 Now we'll create our indices and trends
 
@@ -399,7 +407,7 @@ names(p)
 p[["east"]] + p[["west"]]
 ```
 
-<img src="figures/stratification_unnamed-chunk-22-1.png"  />
+<img src="figures/stratification_unnamed-chunk-23-1.png"  />
 
 Finally we can even create geofaceted plots (which is only possible in our case
 because we assigned our strata to Provinces and States and calculated indices
@@ -409,7 +417,7 @@ for these regions).
 plot_geofacet(i, trends = t, multiple = TRUE)
 ```
 
-<img src="figures/stratification_unnamed-chunk-23-1.png"  />
+<img src="figures/stratification_unnamed-chunk-24-1.png"  />
 
 
 
@@ -557,7 +565,7 @@ ggplot() +
   geom_sf(data = new_strata, aes(fill = strata_name), alpha = 1)
 ```
 
-<img src="figures/stratification_unnamed-chunk-31-1.png"  />
+<img src="figures/stratification_unnamed-chunk-32-1.png"  />
 
 Looks good! Let's use it in our stratification and take a look at the points
 afterwards to ensure they've been categorized appropriately.
@@ -595,7 +603,7 @@ ggplot() +
   geom_sf(data = routes, aes(shape = strata_name))
 ```
 
-<img src="figures/stratification_unnamed-chunk-32-1.png"  />
+<img src="figures/stratification_unnamed-chunk-33-1.png"  />
 
 
 
