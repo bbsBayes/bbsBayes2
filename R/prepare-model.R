@@ -114,6 +114,11 @@ prepare_model <- function(prepared_data,
   check_in(cv_fold_groups, c("obs_n", "route"))
 
   model_data <- prepared_data[["model_data"]]
+  raw_years <- prepared_data[["raw_data"]] %>%
+    dplyr::select(year,year_num) %>%
+    dplyr::distinct() %>%
+    dplyr::arrange(year_num)
+
 
   if(model_variant == "spatial") check_spatial(prepared_data)
 
@@ -131,7 +136,8 @@ prepare_model <- function(prepared_data,
     year = model_data[["year"]],
     n_counts = model_data[["n_counts"]],
     basis, n_knots, heavy_tailed, use_pois,
-    calculate_nu, calculate_log_lik)
+    calculate_nu, calculate_log_lik,
+    raw_years = raw_years)
 
   # Create master parameter list
   model_data <- append(model_data, params)
@@ -172,7 +178,8 @@ prepare_model <- function(prepared_data,
 
 model_params <- function(model, n_strata, year, n_counts,
                          basis, n_knots, heavy_tailed, use_pois,
-                         calculate_nu, calculate_log_lik) {
+                         calculate_nu, calculate_log_lik,
+                         raw_years) {
 
 
   params <- list()
@@ -196,6 +203,8 @@ model_params <- function(model, n_strata, year, n_counts,
   ymax <- max(year)
   n_years <- length(ymin:ymax)
   years <- ymin:ymax
+  years_data <- unique(year)
+  n_years_data <- length(years_data)
 
 
   if(model %in% c("slope", "first_diff")) {
@@ -215,6 +224,14 @@ model_params <- function(model, n_strata, year, n_counts,
     params[["n_Iy1"]] <- n_Iy1
     params[["Iy2"]] <- Iy2
     params[["n_Iy2"]] <- n_Iy2
+
+    if(n_years > n_years_data){
+      y_2020 <- years[-which(years %in% years_data)]
+      params[["y_2020"]] <- y_2020
+    }else{
+      y_2020 <- 0
+      params[["y_2020"]] <- y_2020
+      }
   }
 
 

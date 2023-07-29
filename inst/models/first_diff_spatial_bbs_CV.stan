@@ -25,7 +25,7 @@ data {
   int<lower=1> n_counts;
   int<lower=1> n_years;
   int<lower=1> fixed_year; //middle year of the time-series scaled to ~(n_years/2)
-
+  int<lower=0> y_2020; //year indicator for 2020 - year with no BBS data
 
   array[n_counts] int<lower=0> count;              // count observations
   array[n_counts] int<lower=1> strat;               // strata indicators
@@ -101,6 +101,11 @@ transformed data {
      array[n_test] int observer_te = observer[test];
 
      int<lower=1> n_years_m1 = n_years-1;
+     array[n_years_m1] int tt;
+     for(t in 1:n_years_m1){
+       tt[t] = abs(t-(y_2020-1));
+     }
+
 
 
 
@@ -228,7 +233,13 @@ model {
 
 
 for(t in 1:(n_years_m1)){
+
+  if(tt[t]){ // all years not equal to 2020
     beta_raw[,t] ~ icar_normal(n_strata, node1, node2);
+  }else{ //if year is 2020
+    beta_raw[,t] ~ std_normal(); //non-spatial substitute for year with no data
+    sum(beta_raw[,t]) ~ normal(0,0.001*n_strata);
+  }
 }
 
    strata_raw ~ icar_normal(n_strata, node1, node2);
@@ -344,7 +355,7 @@ for(y in 1:n_years){
           // 2 - assumes that the distribution of site-effects is normal
         // As a result, these annual indices reflect predictions of mean annual abundance within strata of the routes that are included in the stratum
         // if(calc_n2){
-        // n2[s,y] = non_zero_weight[s] * exp(strata + beta[s]*(y-fixed_year) + retrans_ste + yeareffect[s,y] + retrans_noise + retrans_obs);//mean of exponentiated predictions across sites in a stratum
+        // n2[s,y] = non_zero_weight[s] * exp(strata + yeareffect[s,y] + retrans_noise + retrans_ste + retrans_obs);//mean of exponentiated predictions across sites in a stratum
         // }
       Hyper_N[y] = exp(STRATA + YearEffect[y] + retrans_noise + 0.5*sdobs^2 + 0.5*sdste^2);
 
