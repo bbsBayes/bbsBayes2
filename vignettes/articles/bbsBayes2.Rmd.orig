@@ -565,7 +565,13 @@ through time or between two points in time.
 
 ```{r}
 t <- generate_trends(i)
-t
+```
+
+We can explore or extract these trends for saving as an external file
+(e.g., export to .csv), by accessing the `trends` item in the list.
+
+```{r}
+t[["trends"]]
 ```
 
 We can generate trends for different periods of time, using any
