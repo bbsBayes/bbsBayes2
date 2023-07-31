@@ -168,23 +168,24 @@ s[["meta_data"]]
 
 s[["routes_strata"]]
 #> # A tibble: 19,412 × 33
-#>    strata_name country_num state_num route route_name   active latitude longitude   bcr route_type_id
-#>    <chr>             <dbl>     <dbl> <chr> <chr>         <dbl>    <dbl>     <dbl> <dbl>         <dbl>
-#>  1 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1
-#>  2 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1
-#>  3 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1
-#>  4 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1
-#>  5 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1
-#>  6 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1
-#>  7 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1
-#>  8 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1
-#>  9 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1
-#> 10 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1
+#>    strata_name country_num state_num route route_name  active latitude longitude   bcr route_type_id
+#>    <chr>             <dbl>     <dbl> <chr> <chr>        <dbl>    <dbl>     <dbl> <dbl>         <dbl>
+#>  1 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
+#>  2 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
+#>  3 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
+#>  4 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
+#>  5 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
+#>  6 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
+#>  7 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
+#>  8 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
+#>  9 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
+#> 10 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
 #> # ℹ 19,402 more rows
-#> # ℹ 23 more variables: route_type_detail_id <dbl>, route_data_id <dbl>, rpid <dbl>, year <dbl>, month <dbl>,
-#> #   day <dbl>, obs_n <dbl>, total_spp <dbl>, start_temp <dbl>, end_temp <dbl>, temp_scale <chr>,
-#> #   start_wind <dbl>, end_wind <dbl>, start_sky <dbl>, end_sky <dbl>, start_time <dbl>, end_time <dbl>,
-#> #   assistant <dbl>, quality_current_id <dbl>, run_type <dbl>, state <chr>, st_abrev <chr>, country <chr>
+#> # ℹ 23 more variables: route_type_detail_id <dbl>, route_data_id <dbl>, rpid <dbl>, year <dbl>,
+#> #   month <dbl>, day <dbl>, obs_n <dbl>, total_spp <dbl>, start_temp <dbl>, end_temp <dbl>,
+#> #   temp_scale <chr>, start_wind <dbl>, end_wind <dbl>, start_sky <dbl>, end_sky <dbl>,
+#> #   start_time <dbl>, end_time <dbl>, assistant <dbl>, quality_current_id <dbl>, run_type <dbl>,
+#> #   state <chr>, st_abrev <chr>, country <chr>
 ```
 
 To get a different look we can also plot this data on top of our map using
@@ -341,8 +342,8 @@ ggplot(rindex) +
   geom_sf(data = load_map(type = "North America")) +
   geom_sf() +
   geom_sf_text(aes(label = strata_name))
-#> Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not give correct results for
-#> longitude/latitude data
+#> Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not give correct results
+#> for longitude/latitude data
 ```
 
 <img src="figures/stratification_unnamed-chunk-19-1.png"  />
@@ -392,17 +393,21 @@ of plots.
 
 p <- plot_indices(i)
 names(p)
-#>  [1] "1"                        "14"                       "17"                       "18"                      
-#>  [5] "2"                        "22"                       "23"                       "24"                      
-#>  [9] "26"                       "3"                        "31"                       "44"                      
-#> [13] "50"                       "51"                       "52"                       "56"                      
-#> [17] "62"                       "63"                       "64"                       "66"                      
-#> [21] "67"                       "68"                       "69"                       "71"                      
-#> [25] "72"                       "75"                       "76"                       "77"                      
-#> [29] "Canada"                   "United_States_of_America" "AB"                       "AK"                      
-#> [33] "MB"                       "ME"                       "NB"                       "NL"                      
-#> [37] "NS"                       "NT"                       "ON"                       "QC"                      
-#> [41] "SD"                       "SK"                       "east"                     "west"
+#>  [1] "1"                        "14"                       "17"                      
+#>  [4] "18"                       "2"                        "22"                      
+#>  [7] "23"                       "24"                       "26"                      
+#> [10] "3"                        "31"                       "44"                      
+#> [13] "50"                       "51"                       "52"                      
+#> [16] "56"                       "62"                       "63"                      
+#> [19] "64"                       "66"                       "67"                      
+#> [22] "68"                       "69"                       "71"                      
+#> [25] "72"                       "75"                       "76"                      
+#> [28] "77"                       "Canada"                   "United_States_of_America"
+#> [31] "AB"                       "AK"                       "MB"                      
+#> [34] "ME"                       "NB"                       "NL"                      
+#> [37] "NS"                       "NT"                       "ON"                      
+#> [40] "QC"                       "SD"                       "SK"                      
+#> [43] "east"                     "west"
 
 p[["east"]] + p[["west"]]
 ```

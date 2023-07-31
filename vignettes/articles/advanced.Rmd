@@ -15,6 +15,7 @@ editor_options:
 
 ```r
   library(bbsBayes2)
+#> Warning: package 'bbsBayes2' was built under R version 4.3.1
   library(dplyr)
   library(ggplot2)
   library(sf)
