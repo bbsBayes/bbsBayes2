@@ -21,9 +21,9 @@ knitr::opts_chunk$set(
 
 ```
 
-```{r}
-  library(bbsBayes2)
-  library(tidyverse)
+```{r, message = FALSE}
+library(bbsBayes2)
+library(tidyverse)
 ```
 
 # Welcome!
@@ -56,6 +56,19 @@ features, choices, and more advanced uses:
 
 First we'll make sure we have the right software installed, we'll fetch
 the BBS survey data, and then we'll run through some example workflows.
+
+
+## Install [bbsbayes2](https://github.com/bbsBayes/bbsBayes2)
+
+If you haven't already, install bbsBayes2 from the R-Universe.
+
+```{r, eval = FALSE}
+install.packages("bbsBayes2", repos = c(bbsbayes = "https://bbsbayes.r-universe.dev",
+                                        CRAN = getOption("repos")))
+```
+
+Note that due to non-CRAN dependencies, bbsBayes2 is not available on CRAN and 
+must be installed from GitHub or the R-Universe.
 
 ## Install [cmdstanr](https://mc-stan.org/cmdstanr/)
 
@@ -100,6 +113,52 @@ everytime you run a model using `cmdstan` (and therefore anytime you run
 a model using `bbsBayes2`), it will use the Linux installation to run
 Stan. It's seamless and you'll be very thankful you did it once it's
 done.
+
+## Download BBS data
+
+Now we'll fetch the BBS data using the `fetch_bbs_data()` function.
+
+```{r, message = FALSE, eval=FALSE}
+library(bbsBayes2)
+fetch_bbs_data() #
+```
+This will save the data to a package-specific directory on your computer. You must agree to the terms and conditions of the data usage before the download will run (type `yes` at the prompt). The message also includes the key metadata for the dataset, including the citation, acknowledgements, and the release-version (below). You only need run this function once for each annual update of the BBS database (these updates usually occur in the summer, approximately 1-year following the data collection).
+
+> Note: Most bbsBayes2 functionality can be explored **without**
+> downloading BBS data by using the included sample data. Specify
+> `sample_data = TRUE` in the first `stratify()` step (see the next
+> section).
+
+
+There are (as of June 2023) two types of BBS data that can be
+downloaded, and two release-versions:
+
+-   Two levels `state` and `stop` (only `state` works with bbsBayes2
+    models, the `stop` option is provided to facilitate custom projects and models)
+-   Two releases `2020` and `2022` (more options will be added as annual
+    releases occur)
+
+The defaults (level `state` and the most recent release) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
+However you can download all data sets and specify which one you wish to
+use in the `stratify()` step.
+
+### A note about BBS release names:
+
+The releases are named for the year in which the annual dataset was
+released after going through QA-QC. So the `2022` release contains all
+surveys conducted up to and including the 2021 field season.
+There is no
+`release = 2021`, because the BBS was cancelled during the COVID
+lockdowns of spring 2020 so no data were collected and there was no updated data to release the following year.
+
+```{r, eval = FALSE}
+fetch_bbs_data()                  # Default
+fetch_bbs_data(release = "2020")  # Specify a different release
+```
+
+```{r, echo = FALSE, eval = !have_bbs_data()}
+fetch_bbs_data()
+```
 
 ## Workflow overview
 
@@ -207,55 +266,9 @@ grViz("digraph functions {
 }")
 ```
 
-## Download BBS data
-
-Now we'll fetch the BBS data using the `fetch_bbs_data()` function.
-
-```{r, message = FALSE, eval=FALSE}
-library(bbsBayes2)
-fetch_bbs_data() #
-```
-This will save the data to a package-specific directory on your computer. You must agree to the terms and conditions of the data usage before the download will run (type `yes` at the prompt). The message also includes the key metadata for the dataset, including the citation, acknowledgements, and the release-version (below). You only need run this function once for each annual update of the BBS database (these updates usually occur in the summer, approximately 1-year following the data collection).
-
-> Note that most bbsBayes2 functionality can be explored **without**
-> downloading BBS data by using the included sample data. Specify
-> `sample_data = TRUE` in the first `stratify()` step (see the next
-> section).
-
-
-There are (as of June 2023) two types of BBS data that can be
-downloaded, and two release-versions:
-
--   Two levels `state` and `stop` (only `state` works with bbsBayes2
-    models, the `stop` option is provided to facilitate custom projects and models)
--   Two releases `2020` and `2022` (more options will be added as annual
-    releases occur)
-
-The defaults (level `state` and the most recent release) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
-However you can download all data sets and specify which one you wish to
-use in the `stratify()` step.
-
-### A note about BBS release names:
-
-The releases are named for the year in which the annual dataset was
-released after going through QA-QC. So the `2022` release contains all
-surveys conducted up to and including the 2021 field season.
-There is no
-`release = 2021`, because the BBS was cancelled during the COVID
-lockdowns of spring 2020 so no data were collected and there was no updated data to release the following year.
-
-```{r, eval = FALSE}
-fetch_bbs_data()                  # Default
-fetch_bbs_data(release = "2020")  # Specify a different release
-```
-
-```{r, echo = FALSE, eval = !have_bbs_data()}
-fetch_bbs_data()
-```
-
 ## Workflow to fit models
 
-Note: if you would prefer to skip the model-fitting process for now,
+> Note: If you would prefer to skip the model-fitting process for now,
 skip down to [Workflow to explore the model outputs](#explore_output).
 
 Now that you have cmdstanr installed and the BBS data downloaded, we'll
@@ -285,7 +298,8 @@ examples.
 
 ### Species names in bbsBayes2
 
-A brief step out of the workflow to explain important information about species names in bbsBayes2
+Let's first take a brief step out of the workflow to explain important information about species names in bbsBayes2. 
+
 All of the models in the package are species-specific. So the species is a fundamental aspect of any analysis.
 The `search_species()` function allows the user to search up the species names in the BBS database, using text from the English, Spanish, French, or Latin names. The English names for each species will be retained in the metadata at every step of the workflow.
 
@@ -320,7 +334,8 @@ all_species_bbs_database <- load_bbs_data()$species
 ```
 
 
-Note: if you're exploring the package functionality, we recommend
+> Note: Because models can take hours to days to run, 
+if you're exploring the package functionality, we recommend
 using species with relatively small ranges (i.e., relatively few data)
 such as the Hepatic Tanager, Pacific Wren, or Scissor-tailed Flycatcher.
 
@@ -359,32 +374,34 @@ m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
 
 ### A note on spatial models
 
-For spatial models there's two additional steps. You stratify and
+For spatial models there are two additional steps. You stratify and
 prepare the data as in the previous example, but you also prepare the
 map and the spatial data. An example is below.
 
 ```{r, eval=TRUE}
 s <- stratify(by = "bbs_usgs", species="Scissor-tailed Flycatcher")
 p <- prepare_data(s)
-
-#now the additional steps
-#load a map
-map<-load_map(stratify_by = "bbs_usgs")
-#prepare the spatial data
-sp<-prepare_spatial(p,map)
 ```
-Then the remaining steps are the same but setting `model_variant = "spatial"` in the `prepare_model()`.
-```{r, eval=FALSE}
-#then prepare the model with the spatial output
-mod <- prepare_model(sp, model = "gamye",model_variant = "spatial")
 
-#then run the model as before
+And now the additional steps...
+```{r, eval = TRUE}
+# Load a map
+map <- load_map(stratify_by = "bbs_usgs")
+# Prepare the spatial data
+sp <- prepare_spatial(p, map)
+```
+Then the remaining steps are the same but we use `model_variant = "spatial"` in  `prepare_model()`.
+```{r, eval=FALSE}
+# Then prepare the model with the spatial output
+mod <- prepare_model(sp, model = "gamye", model_variant = "spatial")
+
+# Then run the model as before
 m <- run_model(mod)
 
-#optionally, save the model output as an .rds file
-saveRDS(m,"output/4430_gamye_spatial.rds")
+# Optionally, save the model output as an .rds file
+saveRDS(m, "output/4430_gamye_spatial.rds")
 ```
-The spatial aspects of the spatial model variants use an intrinsic Conditional Autoregressive structure (iCAR) to share information among neighbouring strata on the population abundance and trend parameter [Besag et al. 1991](https://doi.org/10.1007/BF00116466), [ver Hoef et al. 2018](http://doi.wiley.com/10.1002/ecm.1283), [Morris et al. 2019](https://doi.org/10.1016/j.sste.2019.100301). For more information about the bbsBayes2 models and the spatial models see the [models vignette](./models.html) and [Smith et al., 2023 pre-print](https://doi.org/10.32942/X2088D).
+The spatial aspects of the spatial model variants use an intrinsic Conditional Autoregressive structure (iCAR) to share information among neighbouring strata on the population abundance and trend parameter ([Besag et al. 1991](https://doi.org/10.1007/BF00116466), [ver Hoef et al. 2018](http://doi.wiley.com/10.1002/ecm.1283), [Morris et al. 2019](https://doi.org/10.1016/j.sste.2019.100301)). For more information about the bbsBayes2 models and the spatial models see the [models vignette](./models.html) and [Smith et al., 2023 pre-print](https://doi.org/10.32942/X2088D).
 
 The prepared spatial data object includes a map of the spatial neighbourhood relationships for a given species and stratification.
 
@@ -406,7 +423,7 @@ fitting process, as well as all of the data and metadata necessary to
 understand and replicate the choices made to fit the model.
 
 ```{r}
-m<-readRDS("output/4430_gamye_spatial.rds")
+m <- readRDS("output/4430_gamye_spatial.rds")
 names(m)
 ```
 
@@ -427,32 +444,30 @@ converge <- get_convergence(m)
 
 ```{r}
 # Convergence diagnostics for all smoothed annual indices
-converge_n_smooth <- get_convergence(m,variables = "n_smooth") %>%
+converge_n_smooth <- get_convergence(m, variables = "n_smooth") %>%
   arrange(-rhat)
 converge_n_smooth
-
 ```
 
 Here we've sorted the convergence diagnostics by rhat values (highest values at the top to highlight any problems). Cut-offs for rhat statistics are somewhat arbitrary and recommendations vary in the literature, but values of
 rhat \> 1.1 indicate a *serious* problem with the convergence of some of the
 parameters in the model (i.e., there is more variation among the
 independent chains than within them) and values of ess_bulk \<
-approximately 400 suggest an imprecise estimate of the parameter. In
+~400 suggest an imprecise estimate of the parameter. In
 some cases, refitting the model with more iterations (both warmup and
 sampling) may improve convergence. More advice on exploring Bayesian
 model convergence can be found
-[here](https://doi.org/10.1111/rssa.12378). bbsBayes2 relies on functions in the packages `cmdstanr` and `posterior` to calculate rhat values following [Vehtari et al. 2021](https://doi.org/10.1214/20-BA1221).
+in [Gabry et al., 2019](https://doi.org/10.1111/rssa.12378). bbsBayes2 relies on functions in the packages `cmdstanr` and `posterior` to calculate rhat values following [Vehtari et al. 2021](https://doi.org/10.1214/20-BA1221).
 
 
 ```{r, eval=FALSE}
-
 m <- run_model(mod,
                iter_warmup = 2000,
                iter_sampling = 2000)
 ```
 
 It is possible to thin the MCMC chains by passing arguments from
-`cmdstanr::sample()` into the run_model() function. The call below would
+`cmdstanr::sample()` into the `run_model()` function. The call below would
 result in the same number of posterior samples as `run_model()`
 defaults, but may improve the efficiency of the sampling (and of course
 would also increase the time required to fit the model by a factor of
@@ -463,7 +478,6 @@ m <- run_model(mod,
                iter_warmup = 4000,
                iter_sampling = 4000,
                thin = 4)
-
 ```
 
 If you want summary statistics of the parameters, as well as convergence
@@ -476,11 +490,11 @@ summary_stats <- get_summary(m)
 
 ```{r}
 # Summary statistics and convergence diagnostics for all smoothed annual indices
-summary_stats_n_smooth <- get_summary(m,variables = "n_smooth") %>%
+summary_stats_n_smooth <- get_summary(m, variables = "n_smooth") %>%
   arrange(-rhat)
 summary_stats_n_smooth
-
 ```
+
 ### Model predictions
 
 #### Indices - predictions of annual relative abundance
@@ -537,6 +551,8 @@ object that can be modified like any other. For example, you can modify
 titles or axes.
 
 ```{r, fig.cap = "", fig.alt = "Population trajectory graph, modified to show only the last 20 years of the time-series and remove the title", fig.width = 8, fig.asp = 0.8}
+library(ggplot2)
+
 p1_mod <- p[["continent"]]+
   coord_cartesian(xlim = c(2000,NA))+ #subset of years
   labs(title = "") # remove the title
@@ -551,7 +567,13 @@ through time or between two points in time.
 
 ```{r}
 t <- generate_trends(i)
-t
+```
+
+We can explore or extract these trends for saving as an external file
+(e.g., export to .csv), by accessing the `trends` item in the list.
+
+```{r}
+t[["trends"]]
 ```
 
 We can generate trends for different periods of time, using any
@@ -577,8 +599,12 @@ objects that can be modified like any other. For example, you can zoom
 into a section of the map.
 
 ```{r, fig.cap = "", fig.alt = "Population trend map zoomed in to show just the relevant regions", fig.width = 8, fig.asp = 0.8}
-strata_with_data <- t$meta_strata # meta data in trend object - strata information
-# load the original strata map used in the model fitting
+library(ggplot2)
+
+# Get the meta data in trend object - strata information
+strata_with_data <- t$meta_strata 
+
+# Load the original strata map used in the model fitting
 # then filter to just the strata with data for this species
 data_bounding_box <- load_map(stratify_by = t$meta_data$stratify_by) %>%
   filter(strata_name %in% strata_with_data$strata_name) %>%
@@ -604,19 +630,29 @@ You can download a zip-file with a saved model output for Barn Swallow here.
 [An example of the output from applying the spatial gamye model to Barn
 Swallow data](https://drive.google.com/file/d/1RNbM312_isopRN7Lb-jP1-wK4UvRKkHE/view?usp=sharing).
 
-Unzip the file and store it in a local directory. For example, below we've placed it in a sub-directory of our working directory called *output*.
+Unzip the file and store it in a local directory. 
+In this example we've placed it in a sub-directory of our working directory called *output*.
 
-```{r, fig.cap = "", fig.alt = "Population trajectory graph for Barn Swallow, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts.", fig.width = 8, fig.asp = 0.8}
-#First is a spatial GAMYE model for the Barn Swallow
+Let's take a look at the spatial GAMYE model for the Barn Swallow.
 
-
+First we load the data
+```{r}
 BARS <- readRDS("output/Barn_Swallow_gamye_spatial.rds")
-#investigate model meta data
+```
+
+We can investigate the model meta data
+```{r}
 BARS$meta_data
-#length of run-time in seconds
+```
+
+See the length of the run in seconds or hours
+```{r}
 BARS$model_fit$time()
-#length of run-time in hours
 BARS$model_fit$time()$total/3600
+```
+
+Now create the indices and trends
+```{r, fig.cap = "", fig.alt = "Population trajectory graph for Barn Swallow, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts.", fig.width = 8, fig.asp = 0.8}
 
 BARS_indices <- generate_indices(BARS)
 
@@ -647,7 +683,7 @@ linear smooth is reasonable for long periods of time).
 
 ```{r, fig.cap = "", fig.alt = "Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red", fig.width = 8, fig.asp = 0.8}
 BARS_smooth_indices <- generate_indices(BARS,
-                                 alternate_n = "n_smooth")
+                                        alternate_n = "n_smooth")
 BARS_trends <- generate_trends(BARS_smooth_indices)
 BARS_trend_map <- plot_map(BARS_trends)
 BARS_trend_map
@@ -655,18 +691,20 @@ BARS_trend_map
 ```
 
 We can also add the smoothed annual indices to the plots of the full
-annual indices from above, taking advantage of the ggplot2 functions.
+annual indices from above, taking advantage of the [ggplot2](https://github.com/tidyverse/ggplot2) functions such as `geom_line()`.
 
 ```{r, fig.cap = "", fig.alt = "Population trajectory graph for Barn Swallow, same as above plus the smoothed annual indices are added as a grey line", fig.width = 8, fig.asp = 0.8}
+library(ggplot2)
 
 smooth_cont_indices <- BARS_smooth_indices$indices %>%
   filter(region == "continent")
+
 BARS_continent_both <- BARS_continent +
-  ggplot2::geom_line(data = smooth_cont_indices,
-                     ggplot2::aes(x = year, y = index),
-                     alpha = 0.5,
-                     linewidth = 1)+
-  ggplot2::labs(subtitle = "grey line represents the smoothed annual indices")
+  geom_line(data = smooth_cont_indices,
+            aes(x = year, y = index),
+            alpha = 0.5,
+            linewidth = 1)+
+  labs(subtitle = "grey line represents the smoothed annual indices")
 
 print(BARS_continent_both)
 ```
