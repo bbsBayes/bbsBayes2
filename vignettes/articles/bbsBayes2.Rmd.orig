@@ -114,6 +114,52 @@ a model using `bbsBayes2`), it will use the Linux installation to run
 Stan. It's seamless and you'll be very thankful you did it once it's
 done.
 
+## Download BBS data
+
+Now we'll fetch the BBS data using the `fetch_bbs_data()` function.
+
+```{r, message = FALSE, eval=FALSE}
+library(bbsBayes2)
+fetch_bbs_data() #
+```
+This will save the data to a package-specific directory on your computer. You must agree to the terms and conditions of the data usage before the download will run (type `yes` at the prompt). The message also includes the key metadata for the dataset, including the citation, acknowledgements, and the release-version (below). You only need run this function once for each annual update of the BBS database (these updates usually occur in the summer, approximately 1-year following the data collection).
+
+> Note that most bbsBayes2 functionality can be explored **without**
+> downloading BBS data by using the included sample data. Specify
+> `sample_data = TRUE` in the first `stratify()` step (see the next
+> section).
+
+
+There are (as of June 2023) two types of BBS data that can be
+downloaded, and two release-versions:
+
+-   Two levels `state` and `stop` (only `state` works with bbsBayes2
+    models, the `stop` option is provided to facilitate custom projects and models)
+-   Two releases `2020` and `2022` (more options will be added as annual
+    releases occur)
+
+The defaults (level `state` and the most recent release) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
+However you can download all data sets and specify which one you wish to
+use in the `stratify()` step.
+
+### A note about BBS release names:
+
+The releases are named for the year in which the annual dataset was
+released after going through QA-QC. So the `2022` release contains all
+surveys conducted up to and including the 2021 field season.
+There is no
+`release = 2021`, because the BBS was cancelled during the COVID
+lockdowns of spring 2020 so no data were collected and there was no updated data to release the following year.
+
+```{r, eval = FALSE}
+fetch_bbs_data()                  # Default
+fetch_bbs_data(release = "2020")  # Specify a different release
+```
+
+```{r, echo = FALSE, eval = !have_bbs_data()}
+fetch_bbs_data()
+```
+
 ## Workflow overview
 
 We can visualize the bbsBayes2 workflow with this flow chart of
@@ -218,52 +264,6 @@ grViz("digraph functions {
   # Invisible edges for arranging
   prepspatial->conv [style=invis]
 }")
-```
-
-## Download BBS data
-
-Now we'll fetch the BBS data using the `fetch_bbs_data()` function.
-
-```{r, message = FALSE, eval=FALSE}
-library(bbsBayes2)
-fetch_bbs_data() #
-```
-This will save the data to a package-specific directory on your computer. You must agree to the terms and conditions of the data usage before the download will run (type `yes` at the prompt). The message also includes the key metadata for the dataset, including the citation, acknowledgements, and the release-version (below). You only need run this function once for each annual update of the BBS database (these updates usually occur in the summer, approximately 1-year following the data collection).
-
-> Note that most bbsBayes2 functionality can be explored **without**
-> downloading BBS data by using the included sample data. Specify
-> `sample_data = TRUE` in the first `stratify()` step (see the next
-> section).
-
-
-There are (as of June 2023) two types of BBS data that can be
-downloaded, and two release-versions:
-
--   Two levels `state` and `stop` (only `state` works with bbsBayes2
-    models, the `stop` option is provided to facilitate custom projects and models)
--   Two releases `2020` and `2022` (more options will be added as annual
-    releases occur)
-
-The defaults (level `state` and the most recent release) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
-However you can download all data sets and specify which one you wish to
-use in the `stratify()` step.
-
-### A note about BBS release names:
-
-The releases are named for the year in which the annual dataset was
-released after going through QA-QC. So the `2022` release contains all
-surveys conducted up to and including the 2021 field season.
-There is no
-`release = 2021`, because the BBS was cancelled during the COVID
-lockdowns of spring 2020 so no data were collected and there was no updated data to release the following year.
-
-```{r, eval = FALSE}
-fetch_bbs_data()                  # Default
-fetch_bbs_data(release = "2020")  # Specify a different release
-```
-
-```{r, echo = FALSE, eval = !have_bbs_data()}
-fetch_bbs_data()
 ```
 
 ## Workflow to fit models
