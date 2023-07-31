@@ -57,6 +57,19 @@ features, choices, and more advanced uses:
 First we'll make sure we have the right software installed, we'll fetch
 the BBS survey data, and then we'll run through some example workflows.
 
+
+## Install [bbsbayes2](https://github.com/bbsBayes/bbsBayes2)
+
+If you haven't already, install bbsBayes2 from the R-Universe.
+
+```{r, eval = FALSE}
+install.packages("bbsBayes2", repos = c(bbsbayes = "https://bbsbayes.r-universe.dev",
+                                        CRAN = getOption("repos")))
+```
+
+Note that due to non-CRAN dependencies, bbsBayes2 is not available on CRAN and 
+must be installed from GitHub or the R-Universe.
+
 ## Install [cmdstanr](https://mc-stan.org/cmdstanr/)
 
 Because bbsBayes2 uses Stan to run the Bayesian models, we need to make
