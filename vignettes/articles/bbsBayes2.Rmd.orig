@@ -298,7 +298,8 @@ examples.
 
 ### Species names in bbsBayes2
 
-A brief step out of the workflow to explain important information about species names in bbsBayes2
+Let's first take a brief step out of the workflow to explain important information about species names in bbsBayes2. 
+
 All of the models in the package are species-specific. So the species is a fundamental aspect of any analysis.
 The `search_species()` function allows the user to search up the species names in the BBS database, using text from the English, Spanish, French, or Latin names. The English names for each species will be retained in the metadata at every step of the workflow.
 
@@ -373,21 +374,23 @@ m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
 
 ### A note on spatial models
 
-For spatial models there's two additional steps. You stratify and
+For spatial models there are two additional steps. You stratify and
 prepare the data as in the previous example, but you also prepare the
 map and the spatial data. An example is below.
 
 ```{r, eval=TRUE}
 s <- stratify(by = "bbs_usgs", species="Scissor-tailed Flycatcher")
 p <- prepare_data(s)
-
-#now the additional steps
-#load a map
-map<-load_map(stratify_by = "bbs_usgs")
-#prepare the spatial data
-sp<-prepare_spatial(p,map)
 ```
-Then the remaining steps are the same but setting `model_variant = "spatial"` in the `prepare_model()`.
+
+And now the additional steps...
+```{r, eval = TRUE}
+# Load a map
+map <- load_map(stratify_by = "bbs_usgs")
+# Prepare the spatial data
+sp <- prepare_spatial(p, map)
+```
+Then the remaining steps are the same but we use `model_variant = "spatial"` in  `prepare_model()`.
 ```{r, eval=FALSE}
 # Then prepare the model with the spatial output
 mod <- prepare_model(sp, model = "gamye", model_variant = "spatial")
@@ -398,7 +401,7 @@ m <- run_model(mod)
 # Optionally, save the model output as an .rds file
 saveRDS(m, "output/4430_gamye_spatial.rds")
 ```
-The spatial aspects of the spatial model variants use an intrinsic Conditional Autoregressive structure (iCAR) to share information among neighbouring strata on the population abundance and trend parameter [Besag et al. 1991](https://doi.org/10.1007/BF00116466), [ver Hoef et al. 2018](http://doi.wiley.com/10.1002/ecm.1283), [Morris et al. 2019](https://doi.org/10.1016/j.sste.2019.100301). For more information about the bbsBayes2 models and the spatial models see the [models vignette](./models.html) and [Smith et al., 2023 pre-print](https://doi.org/10.32942/X2088D).
+The spatial aspects of the spatial model variants use an intrinsic Conditional Autoregressive structure (iCAR) to share information among neighbouring strata on the population abundance and trend parameter ([Besag et al. 1991](https://doi.org/10.1007/BF00116466), [ver Hoef et al. 2018](http://doi.wiley.com/10.1002/ecm.1283), [Morris et al. 2019](https://doi.org/10.1016/j.sste.2019.100301)). For more information about the bbsBayes2 models and the spatial models see the [models vignette](./models.html) and [Smith et al., 2023 pre-print](https://doi.org/10.32942/X2088D).
 
 The prepared spatial data object includes a map of the spatial neighbourhood relationships for a given species and stratification.
 
@@ -450,11 +453,11 @@ Here we've sorted the convergence diagnostics by rhat values (highest values at 
 rhat \> 1.1 indicate a *serious* problem with the convergence of some of the
 parameters in the model (i.e., there is more variation among the
 independent chains than within them) and values of ess_bulk \<
-approximately 400 suggest an imprecise estimate of the parameter. In
+~400 suggest an imprecise estimate of the parameter. In
 some cases, refitting the model with more iterations (both warmup and
 sampling) may improve convergence. More advice on exploring Bayesian
 model convergence can be found
-[here](https://doi.org/10.1111/rssa.12378). bbsBayes2 relies on functions in the packages `cmdstanr` and `posterior` to calculate rhat values following [Vehtari et al. 2021](https://doi.org/10.1214/20-BA1221).
+in [Gabry et al., 2019](https://doi.org/10.1111/rssa.12378). bbsBayes2 relies on functions in the packages `cmdstanr` and `posterior` to calculate rhat values following [Vehtari et al. 2021](https://doi.org/10.1214/20-BA1221).
 
 
 ```{r, eval=FALSE}
@@ -615,19 +618,29 @@ You can download a zip-file with a saved model output for Barn Swallow here.
 [An example of the output from applying the spatial gamye model to Barn
 Swallow data](https://drive.google.com/file/d/1RNbM312_isopRN7Lb-jP1-wK4UvRKkHE/view?usp=sharing).
 
-Unzip the file and store it in a local directory. For example, below we've placed it in a sub-directory of our working directory called *output*.
+Unzip the file and store it in a local directory. 
+In this example we've placed it in a sub-directory of our working directory called *output*.
 
-```{r, fig.cap = "", fig.alt = "Population trajectory graph for Barn Swallow, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts.", fig.width = 8, fig.asp = 0.8}
-#First is a spatial GAMYE model for the Barn Swallow
+Let's take a look at the spatial GAMYE model for the Barn Swallow.
 
-
+First we load the data
+```{r}
 BARS <- readRDS("output/Barn_Swallow_gamye_spatial.rds")
-#investigate model meta data
+```
+
+We can investigate the model meta data
+```{r}
 BARS$meta_data
-#length of run-time in seconds
+```
+
+See the length of the run in seconds or hours
+```{r}
 BARS$model_fit$time()
-#length of run-time in hours
 BARS$model_fit$time()$total/3600
+```
+
+Now create the indices and trends
+```{r, fig.cap = "", fig.alt = "Population trajectory graph for Barn Swallow, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts.", fig.width = 8, fig.asp = 0.8}
 
 BARS_indices <- generate_indices(BARS)
 
