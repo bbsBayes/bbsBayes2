@@ -21,9 +21,9 @@ knitr::opts_chunk$set(
 
 ```
 
-```{r}
-  library(bbsBayes2)
-  library(tidyverse)
+```{r, message = FALSE}
+library(bbsBayes2)
+library(tidyverse)
 ```
 
 # Welcome!
@@ -124,7 +124,7 @@ fetch_bbs_data() #
 ```
 This will save the data to a package-specific directory on your computer. You must agree to the terms and conditions of the data usage before the download will run (type `yes` at the prompt). The message also includes the key metadata for the dataset, including the citation, acknowledgements, and the release-version (below). You only need run this function once for each annual update of the BBS database (these updates usually occur in the summer, approximately 1-year following the data collection).
 
-> Note that most bbsBayes2 functionality can be explored **without**
+> Note: Most bbsBayes2 functionality can be explored **without**
 > downloading BBS data by using the included sample data. Specify
 > `sample_data = TRUE` in the first `stratify()` step (see the next
 > section).
@@ -268,7 +268,7 @@ grViz("digraph functions {
 
 ## Workflow to fit models
 
-Note: if you would prefer to skip the model-fitting process for now,
+> Note: If you would prefer to skip the model-fitting process for now,
 skip down to [Workflow to explore the model outputs](#explore_output).
 
 Now that you have cmdstanr installed and the BBS data downloaded, we'll
@@ -333,7 +333,8 @@ all_species_bbs_database <- load_bbs_data()$species
 ```
 
 
-Note: if you're exploring the package functionality, we recommend
+> Note: Because models can take hours to days to run, 
+if you're exploring the package functionality, we recommend
 using species with relatively small ranges (i.e., relatively few data)
 such as the Hepatic Tanager, Pacific Wren, or Scissor-tailed Flycatcher.
 
@@ -388,14 +389,14 @@ sp<-prepare_spatial(p,map)
 ```
 Then the remaining steps are the same but setting `model_variant = "spatial"` in the `prepare_model()`.
 ```{r, eval=FALSE}
-#then prepare the model with the spatial output
-mod <- prepare_model(sp, model = "gamye",model_variant = "spatial")
+# Then prepare the model with the spatial output
+mod <- prepare_model(sp, model = "gamye", model_variant = "spatial")
 
-#then run the model as before
+# Then run the model as before
 m <- run_model(mod)
 
-#optionally, save the model output as an .rds file
-saveRDS(m,"output/4430_gamye_spatial.rds")
+# Optionally, save the model output as an .rds file
+saveRDS(m, "output/4430_gamye_spatial.rds")
 ```
 The spatial aspects of the spatial model variants use an intrinsic Conditional Autoregressive structure (iCAR) to share information among neighbouring strata on the population abundance and trend parameter [Besag et al. 1991](https://doi.org/10.1007/BF00116466), [ver Hoef et al. 2018](http://doi.wiley.com/10.1002/ecm.1283), [Morris et al. 2019](https://doi.org/10.1016/j.sste.2019.100301). For more information about the bbsBayes2 models and the spatial models see the [models vignette](./models.html) and [Smith et al., 2023 pre-print](https://doi.org/10.32942/X2088D).
 
@@ -419,7 +420,7 @@ fitting process, as well as all of the data and metadata necessary to
 understand and replicate the choices made to fit the model.
 
 ```{r}
-m<-readRDS("output/4430_gamye_spatial.rds")
+m <- readRDS("output/4430_gamye_spatial.rds")
 names(m)
 ```
 
@@ -440,10 +441,9 @@ converge <- get_convergence(m)
 
 ```{r}
 # Convergence diagnostics for all smoothed annual indices
-converge_n_smooth <- get_convergence(m,variables = "n_smooth") %>%
+converge_n_smooth <- get_convergence(m, variables = "n_smooth") %>%
   arrange(-rhat)
 converge_n_smooth
-
 ```
 
 Here we've sorted the convergence diagnostics by rhat values (highest values at the top to highlight any problems). Cut-offs for rhat statistics are somewhat arbitrary and recommendations vary in the literature, but values of
@@ -458,14 +458,13 @@ model convergence can be found
 
 
 ```{r, eval=FALSE}
-
 m <- run_model(mod,
                iter_warmup = 2000,
                iter_sampling = 2000)
 ```
 
 It is possible to thin the MCMC chains by passing arguments from
-`cmdstanr::sample()` into the run_model() function. The call below would
+`cmdstanr::sample()` into the `run_model()` function. The call below would
 result in the same number of posterior samples as `run_model()`
 defaults, but may improve the efficiency of the sampling (and of course
 would also increase the time required to fit the model by a factor of
@@ -476,7 +475,6 @@ m <- run_model(mod,
                iter_warmup = 4000,
                iter_sampling = 4000,
                thin = 4)
-
 ```
 
 If you want summary statistics of the parameters, as well as convergence
@@ -489,11 +487,11 @@ summary_stats <- get_summary(m)
 
 ```{r}
 # Summary statistics and convergence diagnostics for all smoothed annual indices
-summary_stats_n_smooth <- get_summary(m,variables = "n_smooth") %>%
+summary_stats_n_smooth <- get_summary(m, variables = "n_smooth") %>%
   arrange(-rhat)
 summary_stats_n_smooth
-
 ```
+
 ### Model predictions
 
 #### Indices - predictions of annual relative abundance
@@ -660,7 +658,7 @@ linear smooth is reasonable for long periods of time).
 
 ```{r, fig.cap = "", fig.alt = "Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red", fig.width = 8, fig.asp = 0.8}
 BARS_smooth_indices <- generate_indices(BARS,
-                                 alternate_n = "n_smooth")
+                                        alternate_n = "n_smooth")
 BARS_trends <- generate_trends(BARS_smooth_indices)
 BARS_trend_map <- plot_map(BARS_trends)
 BARS_trend_map
@@ -668,12 +666,13 @@ BARS_trend_map
 ```
 
 We can also add the smoothed annual indices to the plots of the full
-annual indices from above, taking advantage of the ggplot2 functions.
+annual indices from above, taking advantage of the [ggplot2](https://github.com/tidyverse/ggplot2) functions such as `geom_line()`.
 
 ```{r, fig.cap = "", fig.alt = "Population trajectory graph for Barn Swallow, same as above plus the smoothed annual indices are added as a grey line", fig.width = 8, fig.asp = 0.8}
 
 smooth_cont_indices <- BARS_smooth_indices$indices %>%
   filter(region == "continent")
+
 BARS_continent_both <- BARS_continent +
   ggplot2::geom_line(data = smooth_cont_indices,
                      ggplot2::aes(x = year, y = index),
