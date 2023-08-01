@@ -60,7 +60,7 @@ install.packages("bbsBayes2", repos = c(bbsbayes = "https://bbsbayes.r-universe.
                                         CRAN = getOption("repos")))
 ```
 
-Note that due to non-CRAN dependencies, bbsBayes2 is not available on CRAN and 
+Note that due to non-CRAN dependencies, bbsBayes2 is not available on CRAN and
 must be installed from GitHub or the R-Universe.
 
 ## Install [cmdstanr](https://mc-stan.org/cmdstanr/)
@@ -243,7 +243,7 @@ examples.
 
 ### Species names in bbsBayes2
 
-Let's first take a brief step out of the workflow to explain important information about species names in bbsBayes2. 
+Let's first take a brief step out of the workflow to explain important information about species names in bbsBayes2.
 
 All of the models in the package are species-specific. So the species is a fundamental aspect of any analysis.
 The `search_species()` function allows the user to search up the species names in the BBS database, using text from the English, Spanish, French, or Latin names. The English names for each species will be retained in the metadata at every step of the workflow.
@@ -347,7 +347,7 @@ all_species_bbs_database <- load_bbs_data()$species
 ```
 
 
-> Note: Because models can take hours to days to run, 
+> Note: Because models can take hours to days to run,
 if you're exploring the package functionality, we recommend
 using species with relatively small ranges (i.e., relatively few data)
 such as the Hepatic Tanager, Pacific Wren, or Scissor-tailed Flycatcher.
@@ -451,7 +451,7 @@ print(sp$spatial_data$map)
 ## Workflow to explore the model outputs {#explore_output}
 
 If you would prefer to skip the model fitting steps for now, you can
-download a fitted model object (the output of `run_model()` function)
+[download a fitted model](https://drive.google.com/file/d/1zF8xOIn_ZuORmjNDHAu5YCJjIx4j-MHC/view?usp=drive_link) object (the output of `run_model()` function)
 and test out the remaining package features.
 
 The outputs of the collection of functions required to fit a model are
@@ -834,7 +834,7 @@ into a section of the map.
 library(ggplot2)
 
 # Get the meta data in trend object - strata information
-strata_with_data <- t$meta_strata 
+strata_with_data <- t$meta_strata
 
 # Load the original strata map used in the model fitting
 # then filter to just the strata with data for this species
@@ -855,15 +855,14 @@ print(t_mod)
 
 A model with a suitable number of iterations takes a long time to run
 (the Barn Swallow model, a species with many data and many strata, took
-54 hours). Below are three full models run with 1000 iterations and four
-chains. Use these to test out some of the features!
+54 hours).
 
-You can download a zip-file with a saved model output for Barn Swallow here.
+You can download a zip-file with a saved model output for Barn Swallow here:
 
 [An example of the output from applying the spatial gamye model to Barn
 Swallow data](https://drive.google.com/file/d/1RNbM312_isopRN7Lb-jP1-wK4UvRKkHE/view?usp=sharing).
 
-Unzip the file and store it in a local directory. 
+Unzip the file and store it in a local directory.
 In this example we've placed it in a sub-directory of our working directory called *output*.
 
 Let's take a look at the spatial GAMYE model for the Barn Swallow.
@@ -996,6 +995,6 @@ print(BARS_continent_both)
 
 <img src="figures/bbsBayes2_unnamed-chunk-46-1.png" alt="Population trajectory graph for Barn Swallow, same as above plus the smoothed annual indices are added as a grey line"  />
 
-Check out the other [articles](/index.html) to explore more advanced
+Check out the other articles to explore more advanced
 usage or the [function reference](../reference/) to see what functions
 are available and how to use them in greater detail.
