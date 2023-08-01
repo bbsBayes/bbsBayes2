@@ -508,7 +508,8 @@ neighbourhood relationships for a given species and stratification.</p>
 <h3 id="explore_output">Workflow to explore the model outputs<a class="anchor" aria-label="anchor" href="#explore_output"></a>
 </h3>
 <p>If you would prefer to skip the model fitting steps for now, you can
-download a fitted model object (the output of <code><a href="../reference/run_model.html">run_model()</a></code>
+<a href="https://drive.google.com/file/d/1zF8xOIn_ZuORmjNDHAu5YCJjIx4j-MHC/view?usp=drive_link" class="external-link">download
+a fitted model</a> object (the output of <code><a href="../reference/run_model.html">run_model()</a></code>
 function) and test out the remaining package features.</p>
 <p>The outputs of the collection of functions required to fit a model
 are cumulative: each one retains the metadata from the previous step. As
@@ -835,7 +836,7 @@ the map.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get the meta data in trend object - strata information</span></span>
-<span><span class="va">strata_with_data</span> <span class="op">&lt;-</span> <span class="va">t</span><span class="op">$</span><span class="va">meta_strata</span> </span>
+<span><span class="va">strata_with_data</span> <span class="op">&lt;-</span> <span class="va">t</span><span class="op">$</span><span class="va">meta_strata</span></span>
 <span></span>
 <span><span class="co"># Load the original strata map used in the model fitting</span></span>
 <span><span class="co"># then filter to just the strata with data for this species</span></span>
@@ -856,10 +857,9 @@ the map.</p>
 </h4>
 <p>A model with a suitable number of iterations takes a long time to run
 (the Barn Swallow model, a species with many data and many strata, took
-54 hours). Below are three full models run with 1000 iterations and four
-chains. Use these to test out some of the features!</p>
+54 hours).</p>
 <p>You can download a zip-file with a saved model output for Barn
-Swallow here.</p>
+Swallow here:</p>
 <p><a href="https://drive.google.com/file/d/1RNbM312_isopRN7Lb-jP1-wK4UvRKkHE/view?usp=sharing" class="external-link">An
 example of the output from applying the spatial gamye model to Barn
 Swallow data</a>.</p>
@@ -975,10 +975,8 @@ as <code><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class=
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">BARS_continent_both</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/bbsBayes2_unnamed-chunk-46-1.png" alt="Population trajectory graph for Barn Swallow, same as above plus the smoothed annual indices are added as a grey line"></p>
-<p>Check out the other <a href="/index.html">articles</a> to explore
-more advanced usage or the <a href="../reference/">function
-reference</a> to see what functions are available and how to use them in
-greater detail.</p>
+<p>Check out the other articles to explore more advanced usage or the <a href="../reference/">function reference</a> to see what functions are
+available and how to use them in greater detail.</p>
 </div>
 </div>
 </div>

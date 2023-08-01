@@ -107,22 +107,25 @@ called <em>output</em>.</p>
 <div class="section level3">
 <h3 id="posterior-predictive-checks">Posterior Predictive Checks<a class="anchor" aria-label="anchor" href="#posterior-predictive-checks"></a>
 </h3>
-<p>Posterior predictive checks are best done in R, after fitting the
-model. It is certainly possible to modify the Stan code to include
-posterior predictions of the individual BBS counts. However, using Stan
-to generate these predicted counts will almost double the size of the
-saved model object. To generate the posterior distributions of predicted
-counts, you will need to extract the posterior samples of the parameter
-<code>E</code> in the bbsBayes2 models. Also, if you have used the
-negative binomial error distribution, then you will also need to extract
-the posterior samples for the parameter <code>phi</code> (the inverse
-negative binomial dispersion parameter). In the <a href="https://mc-stan.org/docs/functions-reference/neg-binom-2-log.html" class="external-link">Stan
+<p>Posterior predictive checks are graphical comparisons of the
+model-based predictions of data and the observed data. They are best
+done in R, after fitting the model. It is certainly possible to modify
+the Stan code to include posterior predictions of the individual BBS
+counts. However, using Stan to generate these predicted counts will
+almost double the size of the saved model object.</p>
+<p>To generate the posterior distributions of predicted counts, you will
+need to extract the posterior samples of the parameter <code>E</code> in
+the bbsBayes2 models (these represent the expected values on the
+log-scale). Also, if the model used the negative binomial error
+distribution, then you will also need to extract the posterior samples
+for the parameter <code>phi</code> (the inverse negative binomial
+dispersion parameter). In the <a href="https://mc-stan.org/docs/functions-reference/neg-binom-2-log.html" class="external-link">Stan
 negative binomial distribution</a>, <span class="math inline">\(\phi\)</span> is the same parameter as
 <code>size</code> in <code>base::rnbinom()</code>, with arguments
 <code>mu = exp(E), size = phi</code>. Here’s an example, using the
-fitted model object for the Hepatic Tanager data fit to the
-<code>first_dif</code> model using the <code>latlong</code>
-stratification.</p>
+fitted model object for the Scissor-tailed Flycatcher data fit to the
+<code>gamye</code> model with the ‘spatial’ variant, and the using the
+<code>bbs_usgs</code> stratification.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">STFL_gamye_spatial</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/4430_gamye_spatial.rds"</span><span class="op">)</span></span>
 <span></span>
@@ -147,21 +150,28 @@ stratification.</p>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
+<span><span class="co"># generate predicted negative binomial counts</span></span>
 <span><span class="va">y_rep</span> <span class="op">&lt;-</span> <span class="va">E</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">matches</a></span><span class="op">(</span><span class="st">"^E([[:punct:]])"</span><span class="op">)</span>,</span>
 <span>                          <span class="op">~</span> <span class="fu">pred_counts_nb</span><span class="op">(</span><span class="va">.x</span>,<span class="va">phi</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">matches</a></span><span class="op">(</span><span class="st">"^E([[:punct:]])"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html" class="external-link">sample_n</a></span><span class="op">(</span><span class="va">.</span>,<span class="fl">500</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html" class="external-link">sample_n</a></span><span class="op">(</span><span class="va">.</span>,<span class="fl">500</span><span class="op">)</span> <span class="co"># take a random sample of 500 to simplify plotting</span></span>
 <span></span>
+<span><span class="co"># re-formatting to support the PPC plotting below</span></span>
 <span><span class="va">y_rep</span> <span class="op">&lt;-</span> <span class="fu">posterior</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/posterior/reference/draws_matrix.html" class="external-link">as_draws_matrix</a></span><span class="op">(</span><span class="va">y_rep</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># graphical posterior predictive check using the</span></span>
+<span><span class="co"># discrete option on a cumulative distribution plot</span></span>
 <span><span class="va">ppc_overplot</span> <span class="op">&lt;-</span> <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu">ppc_ecdf_overlay</span><span class="op">(</span>y <span class="op">=</span> <span class="va">STFL_gamye_spatial</span><span class="op">$</span><span class="va">raw_data</span><span class="op">$</span><span class="va">count</span>,</span>
-<span>                                    yrep <span class="op">=</span> <span class="va">y_rep</span><span class="op">)</span></span>
+<span>                                    yrep <span class="op">=</span> <span class="va">y_rep</span>,</span>
+<span>                                    discrete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># focusing in on the range of observed data</span></span>
 <span><span class="va">ppc_overplot</span> <span class="op">&lt;-</span> <span class="va">ppc_overplot</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">STFL_gamye_spatial</span><span class="op">$</span><span class="va">raw_data</span><span class="op">$</span><span class="va">count</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">ppc_overplot</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/advanced_unnamed-chunk-3-1.png" alt="Posterior predictive check using overlaying the observed proportion of integer count values and the estimated proportion of count values"></p>
+<p><img src="figures/advanced_unnamed-chunk-3-1.png" alt="Graphical posterior predictive check overlaying the observed proportion of integer count values and the estimated proportion of count values"></p>
 </div>
 <div class="section level3">
 <h3 id="example---replicating-the-cws-status-and-trend-estimates-2018-version-onwards">EXAMPLE - Replicating the CWS status and trend estimates (2018
@@ -178,7 +188,7 @@ species as follows.</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">species.eng</span> <span class="op">=</span> <span class="st">"Pacific Wren"</span></span>
 <span></span>
-<span><span class="va">stratified_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>,species<span class="op">=</span><span class="va">species.eng</span><span class="op">)</span> <span class="co">#same as USGS but with BCR7 as one stratum and PEI and Nova Scotia combined into one stratum</span></span>
+<span><span class="va">stratified_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>,species<span class="op">=</span><span class="va">species.eng</span><span class="op">)</span> <span class="co">#same stratification as USGS but with BCR7 as one stratum and PEI and Nova Scotia combined into one stratum</span></span>
 <span></span>
 <span><span class="co"># to be included a stratum must have at least 3 routes on which the species has been observed</span></span>
 <span><span class="co"># and at least one of those routes must have at least 2 years of observations</span></span>
@@ -216,7 +226,8 @@ normally distributed overdispersion) (see, <a href="https://doi.org/10.1650/COND
 details).</p>
 <p>Here we provide data preparation and model options to approximate the
 2021 USGS bbs analyses for a species that uses the heavy-tailed Poisson
-error distribution and the first-difference model.</p>
+error distribution and the first-difference model (more on the error
+distributions below).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">species.eng</span> <span class="op">=</span> <span class="st">"Pacific Wren"</span></span>
@@ -322,23 +333,24 @@ pattern of change between the two end-points.</p>
 <h4 id="slope-based-trends">Slope-based Trends<a class="anchor" aria-label="anchor" href="#slope-based-trends"></a>
 </h4>
 <p>bbsBayes2 includes an alternate trend estimate that can be applied to
-any of the models to dampen the influence of the start and end years of
-trend. The slope-based trends are calculated by fitting a log-linear
-slope to the series of all annual indices between the two end-points
-(e.g., all 11 years in a 10-year trend from 2011-2021). We refer to
-these trends as <em>slope-based trends</em>. The slope of this line is
-transformed into an average annual percent change across the time-period
-of interest. Fslope-based trend may be useful for estimates derived from
-a model and or a species with strong annual fluctuations when the user
-wishes to account for the overall pattern of the annual fluctuations in
-the trend estimate without letting the trend be completely determined by
-the annual fluctuations in the particular end-point years. These slope
-trends can be added to the trend output table by setting the
-<code>slope = TRUE</code> argument in <code><a href="../reference/generate_trends.html">generate_trends()</a></code>.
-The default <em>end-point trends</em> are still calculated, but
-additional columns are added that include the alternate estimates. NOTE:
-the <code><a href="../reference/plot_map.html">plot_map()</a></code> function can map slope trends as well with
-the same <code>slope = TRUE</code> argument.</p>
+any of the models to dampen the influence of the start and end years on
+the estimated trend. These slope-based trends are calculated by fitting
+a log-linear slope to the series of all annual indices between the two
+end-points (e.g., all 11 years in a 10-year trend from 2011-2021). We
+refer to these trends as <em>slope-based trends</em>. The slope of this
+line is transformed into an average annual percent change across the
+time-period of interest. Fslope-based trend may be useful for estimates
+derived from a model and or a species with strong annual fluctuations
+when the user wishes to account for the overall pattern of the annual
+fluctuations in the trend estimate without letting the trend be
+completely determined by the annual fluctuations in the particular
+end-point years. These slope trends can be added to the trend output
+table by setting the <code>slope = TRUE</code> argument in
+<code><a href="../reference/generate_trends.html">generate_trends()</a></code>. The default <em>end-point trends</em>
+are still calculated, but additional columns are added that include the
+alternate estimates. NOTE: the <code><a href="../reference/plot_map.html">plot_map()</a></code> function can map
+slope trends as well with the same <code>slope = TRUE</code>
+argument.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">t_map_slope</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">t</span>,</span>
@@ -399,7 +411,8 @@ decreased by at least 50% in that same time period
 combinations of strata, such as the trends for some largely arbitrary
 groupings of Bird Conservation Regions based approximately on the
 northern and southern portions of the Barn Swallow’s range.</p>
-<p>First we load a fitted model object for Barn Swallow.</p>
+<p>First we load a <a href="https://drive.google.com/file/d/1hlJ9rljDSGdkV4P_-k07wBSyWyKOy-hm/view?usp=drive_link" class="external-link">fitted
+model object for Barn Swallow</a>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">BARS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/Barn_Swallow_first_diff_spatial.rds"</span><span class="op">)</span></span></code></pre></div>
@@ -482,17 +495,90 @@ very poor diagnostics for approximate loo calculations.</p></li>
 increases the memory requirements and size of the saved model
 objects.</p></li>
 </ol>
+<p>Here’s an example using Baird’s Sparrow, a species with a restricted
+range and so the models fit reasonably quickly (approximately 1-hour)
+and adding the count-level log_lik parameter doesn’t add too much to the
+file size. Here we compare the approximate leave-one-out
+cross-validation estimate between the ‘gamye’ and the ‘first_diff’
+models.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>, species <span class="op">=</span> <span class="st">"Hepatic Tanager"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>min_year<span class="op">=</span> <span class="fl">2009</span>, max_year <span class="op">=</span> <span class="fl">2019</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="st">"first_diff"</span>, calculate_log_lik <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">.</span>, iter_warmup <span class="op">=</span> <span class="fl">200</span>, iter_sampling <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="st">"latlong"</span>,<span class="st">"Baird's Sparrow"</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">s</span>, min_n_routes <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">map</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span>stratify_by <span class="op">=</span> <span class="st">"latlong"</span><span class="op">)</span></span>
+<span><span class="va">sp</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/prepare_spatial.html">prepare_spatial</a></span><span class="op">(</span><span class="va">p</span>,<span class="va">map</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># install.packages("loo")</span></span>
-<span><span class="va">loo_md</span> <span class="op">&lt;-</span> <span class="va">md</span><span class="op">$</span><span class="va">model_fit</span><span class="op">$</span><span class="fu">loo</span><span class="op">(</span><span class="op">)</span> <span class="co"># loo calculations using the functions built into the cmdstanr model-fit object</span></span></code></pre></div>
+<span><span class="co"># first difference</span></span>
+<span><span class="va">mp_first_diff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="va">sp</span>, model <span class="op">=</span> <span class="st">"first_diff"</span>,model_variant <span class="op">=</span> <span class="st">"spatial"</span>,</span>
+<span>                               calculate_log_lik <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">m_first_diff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">mp_first_diff</span>,</span>
+<span>                          iter_sampling <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">m_first_diff</span>,<span class="st">"output/BASP_latlong_first_diff_spatial.rds"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># gamye</span></span>
+<span><span class="va">mp_gamye</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="va">sp</span>, model <span class="op">=</span> <span class="st">"gamye"</span>,model_variant <span class="op">=</span> <span class="st">"spatial"</span>,</span>
+<span>                          calculate_log_lik <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">m_gamye</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">mp_gamye</span>,</span>
+<span>                     iter_sampling <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">m_gamye</span>,<span class="st">"output/BASP_latlong_gamye_spatial.rds"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">m_gamye</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/BASP_latlong_gamye_spatial.rds"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">m_first_diff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/BASP_latlong_first_diff_spatial.rds"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># install.packages("loo") # you may need to install this package</span></span>
+<span><span class="va">loo_gamye</span> <span class="op">&lt;-</span> <span class="va">m_gamye</span><span class="op">$</span><span class="va">model_fit</span><span class="op">$</span><span class="fu">loo</span><span class="op">(</span><span class="op">)</span><span class="co"># loo calculations using the functions built into the cmdstanr model-fit object</span></span>
+<span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
+<span><span class="va">loo_first_diff</span> <span class="op">&lt;-</span> <span class="va">m_first_diff</span><span class="op">$</span><span class="va">model_fit</span><span class="op">$</span><span class="fu">loo</span><span class="op">(</span><span class="op">)</span><span class="co"># loo calculations using the functions built into the cmdstanr model-fit object</span></span>
+<span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
+<span></span>
+<span></span>
+<span><span class="va">loo_gamye</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computed from 8000 by 4368 log-likelihood matrix</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;          Estimate    SE</span></span>
+<span><span class="co">#&gt; elpd_loo  -7095.6 106.3</span></span>
+<span><span class="co">#&gt; p_loo       682.1  26.7</span></span>
+<span><span class="co">#&gt; looic     14191.2 212.5</span></span>
+<span><span class="co">#&gt; ------</span></span>
+<span><span class="co">#&gt; Monte Carlo SE of elpd_loo is NA.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Pareto k diagnostic values:</span></span>
+<span><span class="co">#&gt;                          Count Pct.    Min. n_eff</span></span>
+<span><span class="co">#&gt; (-Inf, 0.5]   (good)     3936  90.1%   576       </span></span>
+<span><span class="co">#&gt;  (0.5, 0.7]   (ok)        298   6.8%   186       </span></span>
+<span><span class="co">#&gt;    (0.7, 1]   (bad)       112   2.6%   14        </span></span>
+<span><span class="co">#&gt;    (1, Inf)   (very bad)   22   0.5%   5         </span></span>
+<span><span class="co">#&gt; See help('pareto-k-diagnostic') for details.</span></span>
+<span><span class="va">loo_first_diff</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computed from 8000 by 4368 log-likelihood matrix</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;          Estimate    SE</span></span>
+<span><span class="co">#&gt; elpd_loo  -6976.8 105.3</span></span>
+<span><span class="co">#&gt; p_loo       778.8  26.2</span></span>
+<span><span class="co">#&gt; looic     13953.7 210.7</span></span>
+<span><span class="co">#&gt; ------</span></span>
+<span><span class="co">#&gt; Monte Carlo SE of elpd_loo is NA.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Pareto k diagnostic values:</span></span>
+<span><span class="co">#&gt;                          Count Pct.    Min. n_eff</span></span>
+<span><span class="co">#&gt; (-Inf, 0.5]   (good)     3913  89.6%   509       </span></span>
+<span><span class="co">#&gt;  (0.5, 0.7]   (ok)        307   7.0%   177       </span></span>
+<span><span class="co">#&gt;    (0.7, 1]   (bad)       130   3.0%   13        </span></span>
+<span><span class="co">#&gt;    (1, Inf)   (very bad)   18   0.4%   4         </span></span>
+<span><span class="co">#&gt; See help('pareto-k-diagnostic') for details.</span></span></code></pre></div>
+<p>This approximation of leave-one-out crossvalidation suggests that the
+first-difference model may slightly out-perform the gamye model for this
+species and time-period. However, the uncertainty in the calculation of
+loo is relatively wide and the estimates for the two models are only
+about 1 SD apart. In addition, the ‘pareto-k’ warnings suggest that the
+approximation may not be accurate for some of the BBS counts.</p>
 </div>
 <div class="section level4">
-<h4 id="cross-fold-validation">Cross-fold Validation<a class="anchor" aria-label="anchor" href="#cross-fold-validation"></a>
+<h4 id="k-fold-cross-validation">K-fold Cross-Validation<a class="anchor" aria-label="anchor" href="#k-fold-cross-validation"></a>
 </h4>
 <p>Bayesian model assessment is an open area of research. We have
 included some experimental features to allow for one approach to
@@ -505,23 +591,37 @@ part of a training set.</p>
 <code>calculate_cv</code> as <code>TRUE</code> during the
 <code><a href="../reference/prepare_model.html">prepare_model()</a></code> step. By default, this will prepare 10 test
 sets (K-folds, <code>cv_k</code>) using <code>obs_n</code> as the
-grouping variable (<code>cv_fold_groups</code>) and omitting groups with
-only single observations (<code>cv_omit_singles</code>).</p>
+blocking variable (<code>cv_fold_groups</code>) and omitting groups with
+only single observations (<code>cv_omit_singles</code>). The blocking
+respects the hierarchical structure of the BBS data. It ensures that all
+of the routes, observers and strata are retained in each of the training
+folds, and so that each of the k-fold model fits can generate
+predictions for all of the routes, observers, and strata in the test
+fold. Conceptually, this default blocking approach results in
+out-of-sample predictions that represent all counts for a given observer
+(a random sample of observers), other than that observer’s first year of
+observations on each route they have ever contributed to. Rephrased, the
+cross-validation compares the ability of the model (or the two models
+being compared) to accurately predict the future observations of each
+observer. The ‘cv_omit_singles’ argument by default excludes the
+observers that have only every contributed a single BBS observation from
+the cross-validation exercise (they are never included in the test
+fold)</p>
 <p>More details and examples coming.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#a model of counts from 2009-2019</span></span>
 <span><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>, species <span class="op">=</span> <span class="st">"Hepatic Tanager"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>min_year<span class="op">=</span> <span class="fl">2009</span>, max_year <span class="op">=</span> <span class="fl">2019</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="st">"first_diff"</span>, calculate_cv <span class="op">=</span> <span class="cn">TRUE</span>, cv_k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="st">"first_diff"</span>, calculate_cv <span class="op">=</span> <span class="cn">TRUE</span>, cv_k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="co"># splits into 5-folds</span></span></code></pre></div>
 <p>Now our model data (<code>md</code>) has a list item called
 <code>folds</code> which contains the fold groups assigned to each
 observation. To use this, you’ll need to loop your model and specify the
 <code>k</code> iteration.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#a quick model with too few iterations, not saving the example model</span></span>
-<span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">md</span>, k <span class="op">=</span> <span class="va">k</span>, chains <span class="op">=</span> <span class="fl">2</span>, iter_warmup <span class="op">=</span> <span class="fl">500</span>, iter_sampling <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>            save_model<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">md</span>, k <span class="op">=</span> <span class="va">k</span>, chains <span class="op">=</span> <span class="fl">2</span>, iter_warmup <span class="op">=</span> <span class="fl">500</span>, iter_sampling <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/save_model_run.html">save_model_run</a></span><span class="op">(</span><span class="va">m</span>,path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"output/first_diff_cv_"</span>,<span class="va">k</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 </div>
