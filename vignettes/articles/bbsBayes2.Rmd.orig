@@ -194,9 +194,8 @@ which can be modified by the user and then used as input to
 See the [Function Reference](../reference) for more details on how to
 use a particular function.
 
-<img src="figures/flow.png" alt="Workflow diagram for bbsBayes2 package functions" width = "80%" height = "80%">
 
-```{r, echo = FALSE, eval=FALSE, fig.cap = "", fig.alt = "", fig.width = 8, fig.asp = 0.65}
+```{r, echo = FALSE, fig.cap = "", fig.alt = "", fig.width = 8, fig.asp = 1.5}
 library(DiagrammeR)
 grViz("digraph functions {
 
