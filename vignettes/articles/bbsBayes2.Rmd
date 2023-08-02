@@ -191,12 +191,9 @@ which can be modified by the user and then used as input to
 See the [Function Reference](../reference) for more details on how to
 use a particular function.
 
+<img src="figures/flow.png" alt="Workflow diagram for bbsBayes2 package functions" width = "80%" height = "80%">
 
-```
-#> Warning: package 'DiagrammeR' was built under R version 4.3.1
-```
 
-<img src="figures/bbsBayes2_unnamed-chunk-10-1.png"  />
 
 ## Workflow to fit models
 
@@ -241,7 +238,7 @@ bbs_usgs, bbs_cws, bcr, latlong, prov_state. See the article on
 [stratifications](articles/stratification) for more details and
 examples.
 
-### Species names in bbsBayes2
+#### Species names in bbsBayes2
 
 Let's first take a brief step out of the workflow to explain important information about species names in bbsBayes2.
 
@@ -277,7 +274,7 @@ search_species("Corvidae")
 #> 10  4810 unid. California Scrub-Jay / Woodh… unid … Aphelo… Pass… Corvi… Aphe… califo… TRUE         
 #> # ℹ 12 more rows
 ```
-#### Species groupings
+##### Species groupings
 
 There are some taxonomic groupings of species-units in the BBS database
 that bbsBayes2 by default also combines into combined species forms. These
@@ -388,7 +385,7 @@ problems with our model.
 m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
 ```
 
-### A note on spatial models
+### Additional steps for spatial models
 
 For spatial models there are two additional steps. You stratify and
 prepare the data as in the previous example, but you also prepare the
@@ -570,9 +567,7 @@ summary_stats_n_smooth
 #> # ℹ 1,365 more rows
 ```
 
-### Model predictions
-
-#### Indices - predictions of annual relative abundance
+### Indices - predictions of annual relative abundance
 
 Indices (annual indices of relative abundance) represent mean predicted
 annual counts of the species in a given region, on an average route, by
@@ -620,8 +615,9 @@ i[["indices"]]
 #> #   index_q_0.975 <dbl>, obs_mean <dbl>, n_routes <int>, n_routes_total <int>, n_non_zero <int>,
 #> #   backcast_flag <dbl>
 ```
+### Trajectory plots
 
-We can also generate time-series plots of these indices.
+We can also generate time-series plots of these indices to visualize population trajectories.
 
 
 ```r
@@ -667,7 +663,7 @@ print(p1_mod)
 
 <img src="figures/bbsBayes2_unnamed-chunk-35-1.png" alt="Population trajectory graph, modified to show only the last 20 years of the time-series and remove the title"  />
 
-#### Trends - predictions of mean rates of change over time
+### Trends - predictions of mean rates of change over time
 
 Next we can calculate the long-term trends based on these indices. Note
 all trends from bbsBayes2 models are derived from summaries of indices
@@ -814,6 +810,8 @@ t_10
 #> #   obs_route <chr>, obs_site <int>, n_obs_sites <int>
 ```
 
+### Trend maps - visualizing the spatial variation in trends
+
 We can plot trend estimates on a map to visualise the spatial patterns
 in population change.
 
@@ -851,7 +849,7 @@ print(t_mod)
 
 <img src="figures/bbsBayes2_unnamed-chunk-40-1.png" alt="Population trend map zoomed in to show just the relevant regions"  />
 
-### Example models
+### Barn Swallow example
 
 A model with a suitable number of iterations takes a long time to run
 (the Barn Swallow model, a species with many data and many strata, took
@@ -943,6 +941,8 @@ print(BARS_continent)
 
 <img src="figures/bbsBayes2_unnamed-chunk-44-1.png" alt="Population trajectory graph for Barn Swallow, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts."  />
 
+### Smoothed population trajectories - gamye model
+
 Above, we've plotted the full annual indices (i.e., the population
 trajectory) from the gamye model. In the *gamye* and *slope* models, the
 population trajectory can be decomposed into two components: the smooth
@@ -972,6 +972,7 @@ BARS_trend_map
 ```
 
 <img src="figures/bbsBayes2_unnamed-chunk-45-1.png" alt="Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"  />
+### Modifying base plots
 
 We can also add the smoothed annual indices to the plots of the full
 annual indices from above, taking advantage of the [ggplot2](https://github.com/tidyverse/ggplot2) functions such as `geom_line()`.
