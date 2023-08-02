@@ -8,6 +8,7 @@ plot_map(
   trends,
   slope = FALSE,
   title = TRUE,
+  alternate_column = NULL,
   col_viridis = FALSE,
   strata_custom = NULL
 )
@@ -21,6 +22,9 @@ metric (slope of a log-linear regression) if \code{slope = TRUE} was used in
 
 \item{title}{Logical. Whether or not to include a title with species. Default
 \code{TRUE}.}
+
+\item{alternate_column}{Character, Optional name of numerical column in
+trends dataframe to plot using viridis continuous colour scale}
 
 \item{col_viridis}{Logical. Should the colour-blind-friendly "viridis"
 palette be used. Default \code{FALSE}.}
