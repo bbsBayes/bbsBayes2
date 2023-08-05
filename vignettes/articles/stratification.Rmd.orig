@@ -29,7 +29,7 @@ library(patchwork) # mutli-plot
 In this vignette we'll explore the various ways you can stratify the BBS data in
 preparation for running the models.
 
-You can use existing, pre-defined stratifications, subset an existing stratification, or load
+You can use existing, pre-defined stratifications, subset an existing stratification (e.g., clip the data to your area of interest), or load
 your own custom stratification, either using a completely new set of spatial
 data, or by modifying the spatial polygons of an existing strata.
 
@@ -65,7 +65,7 @@ specifying `by = "name"` in the `stratify()` function.
 s <- stratify(by = "bbs_usgs", species = "Canada Jay")
 ```
 
-### The latlong stratification
+### The latlong stratification - special note
 
 The latlong stratification `by = "latlong"` is the finest-scale stratification built into the package, and so it divides the BBS data into many more strata-units than other stratifications.  Therefore, you may wish to adjust the minimum data inclusion criteria when preparing the data. Specifically, setting `min_n_routes = 1` ensures that every grid-cell with at least one BBS route can be included. There are many degree-blocks that have only one route, as this is the original sampling design goal of the BBS (at least one route within each degree-block).
 
@@ -77,6 +77,7 @@ p <- prepare_data(s, min_n_routes = 1)
 
 ## Custom stratifications
 
+bbsBayes2 can stratify the BBS data using any polygon map as input.
 
 ### Load a custom stratification map
 
@@ -107,19 +108,20 @@ ggplot(map, aes(fill = factor(STRAT))) +
   scale_fill_viridis_d(guide = "none")
 
 ```
+### Identify the strata names
 
 We see that it has one column that reflects the stratum names. First we'll
-rename this column to `strata_name` which is what `stratify()` requires.
+rename this column to `strata_name`, so that the `stratify()` function knows what attribute includes the names that define each stratum.
 
 ```{r}
 map <- rename(map, strata_name = STRAT)
 ```
 
+### Stratify the data
 
 Now we have the spatial data and relevant information to pass to `stratify()`.
 
-When using a custom stratification, the `by` argument becomes the name you want
-to apply. Let's use something informative, but short (although there's no limit).
+When using a custom stratification, the `by` argument is just a user-defined arbitrary name to document which stratification was used. This name gets passed into the meta data of the following steps and the final fitted model. Let's use something informative, but short (although there's no limit).
 We also need to give the function our map.
 
 ```{r}
@@ -135,12 +137,13 @@ s[["meta_data"]]
 
 s[["routes_strata"]]
 ```
+### Visualise the new strata and data
 
 To get a different look we can also plot this data on top of our map using
 ggplot2. Note that we use `factor()` to ensure the strata names are
 categorical.
 
-```{r, fig.cap="", fig.alt= "", fig.width = 8, fig.asp = 0.8}
+```{r, fig.cap="", fig.alt= "map showing the strata in our custom stratification", fig.width = 8, fig.asp = 0.8}
 rts <- s[["routes_strata"]] %>%
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
@@ -149,10 +152,10 @@ ggplot() +
   geom_sf(data = rts, aes(colour = factor(strata_name)), size = 1) +
   scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none")
 ```
-
+### Omitted BBS routes
 
 Based on the message we received during stratification (`Omitting...`) and this
-map, it looks as if our custom stratification is excluding some BBS data.
+map, it looks as if our custom stratification is excluding some BBS data (i.e., routes with starting locations that are not overlapped by the strata map). This makes sense because the WBPHS survey area is much smaller than the region covered by the BBS. However, let's confirm that the excluded routes are the ones we expect.
 
 We can re-run the stratification with `return_omitted = TRUE` which will attach
 a data frame of omitted strata to the output.
@@ -162,10 +165,9 @@ s <- stratify(by = "WBPHS_2019", species = "Canada Jay", strata_custom = map,
 s[["routes_omitted"]]
 ```
 
+Let's take a look.
 
-Let's take a look at this visually.
-
-```{r, fig.cap="", fig.alt= "", fig.width = 8, fig.asp = 0.8}
+```{r, fig.cap="", fig.alt= "map showing BBS route starting locations that are inside and outside of the custom stratification", fig.width = 8, fig.asp = 0.8}
 omitted <- st_as_sf(s[["routes_omitted"]], coords = c("longitude", "latitude"),
                     crs= 4326)
 
@@ -177,7 +179,10 @@ ggplot() +
 ```
 
 
-The map shows that most of the omitted routes are routes that are clearly outside of our desired stratification. It does also show that there are some BBS route start-points that are just outside of the strata (e.g., some routes in Nova Scotia and Alaska). The user can decide what to do with these sorts of minor overlap issues. For example, buffering the original stratification map might make sense in some situations.
+The map shows that most of the omitted routes are routes that are clearly outside of our desired stratification. However, it also shows that there are some BBS route start-points that are just outside of the strata (e.g., some routes in Nova Scotia and Alaska). The user can decide what to do with these sorts of minor overlap issues. For example, buffering the original stratification map might make sense in some situations. For now, we will trust our custom strata map and retain only the BBS routes with start locations inside our strata polygons.
+
+
+## Fitting the model
 
 To fit the model, we follow the standard workflow using our stratified data.
 
@@ -198,7 +203,7 @@ m <- run_model(mp,
 ```{r,echo=FALSE}
 m <- readRDS("output/BBS_STAN_slope_hier_2023-07-05.rds")
 ```
-#### Looking at indices and trends
+### Predictions from the model using the custom stratification
 
 Now we can start to look at the indices and trends related to our model.
 
@@ -216,14 +221,16 @@ trend_map <- plot_map(t, strata_custom = map)
 trend_map
 ```
 
-`generate_indices()` creates indices at different regional levels. By default
-these are "continent" and "stratum", but you can add "prov_state", "bcr",
-"bcr_by_country" (where appropriate). You can also create your own regional
-divisions and provide them as a `regions_index` data frame.
+## Generating state and province predictions from a custom stratification
+
+A useful feature of the hierarchical Bayesian models for the BBS is the ability to generate formal estimates of indices (annual relative abundance) and trends (rates of population change) for any composite region. *Formal estimates* meaning we can estimate the full posterior distribution, including a point estimate and its associated uncertainty (credible limits). These composite regions can be defined based on any combination of the underlying strata used to fit the model. For example, using any custom stratification, we can generate estimates for political jurisdictions (countries, states, provinces), as long as we can comfortably designate each of the strata to one of these jurisdictions.
+
+By default, `generate_indices()` creates indices at two levels "continent" (the combination of all strata used in the analysis) and "stratum" (estimates for individual strata). For the two *bbs* stratifications ("bbs_usgs" and "bbs_cws"), we can also add "prov_state", "bcr",
+"bcr_by_country" (where appropriate). For any custom stratification, we can also add the political jurisdictions and/or create our own regional divisions and provide them as a `regions_index` data frame.
 
 For example, let's imagine we would like to calculate regional indices for
 each stratum, country, province/state, as well as for a custom division of
-east vs. west.
+eastern and western regions.
 
 First we'll need to tell the function which strata belong to which province or
 state, and then which belong to the 'east' and which to the 'west.
@@ -250,8 +257,8 @@ ggplot(rindex) +
   geom_sf_text(aes(label = strata_name))
 ```
 
+The western and eastern strata seem to be split numerically, such that the western strata have numbers lower than 50, eastern strata have numbers higher 74. So we'll add a column to the `rindex` dataframe with "east" and "west" character names to group the strata.
 
-Let's add a column splitting the strata into eastern and western
 ```{r}
 rindex <- mutate(
   rindex,
@@ -260,7 +267,7 @@ rindex <- mutate(
                       "east"))
 ```
 
-And now double check!
+And now double check that we correctly grouped the strata!
 
 ```{r, fig.cap="", fig.alt= "", fig.width = 8, fig.asp = 0.8}
 ggplot(data = rindex) +
@@ -269,7 +276,7 @@ ggplot(data = rindex) +
 
 ```
 
-Now we'll create our indices and trends
+Then supply the `rindex` object to the `regions_index` argument of the `generate_indices()` function and include the relevant column names from the object as `regions`.
 ```{r}
 i <- generate_indices(
   m,
@@ -280,8 +287,7 @@ t <- generate_trends(i)
 
 ```
 
-We can plot each of these indices with `plot_indices()` which creates a list
-of plots.
+We can plot the population trajectories for each of these regions with `plot_indices()`.
 
 ```{r, fig.cap="", fig.alt= "", fig.width = 8, fig.asp = 0.8}
 
@@ -293,21 +299,17 @@ p[["east"]] + p[["west"]]
 
 Finally we can even create geofaceted plots (which is only possible in our case
 because we assigned our strata to Provinces and States and calculated indices
-for these regions).
+for these regions). These geofacet plots can be useful for visualizing the population trajectories of species with broad ranges across many states and provinces.
 ```{r, fig.cap="", fig.alt= "", fig.width = 8, fig.asp = 0.8}
 plot_geofacet(i, trends = t, multiple = TRUE)
 ```
 
 
+## Subsetting an existing stratification
 
+In general, it is often useful to use all of the data for a given species, even if you're only interested in trends for a portion of the species' range (estimates of observer effects are informed by all of the data in the analysis). However, there may be situations where the focus of your study is limited to a particular region. For example what if you want to use one of the standard stratifications, but you only want the analysis to be influenced by data from one region, say only Canadian data?
 
-### Subsetting an existing stratification
-
-But what if you want to use the BBS CWS stratification, but only really want
-to look at Canadian regions?
-
-In this case you'll subset the BBS CWS stratification and give `stratify()` that
-data set in addition to the specification.
+In this case you can subset the BBS CWS stratification to only Canadian regions, and use that subset of regions as a custom stratification in the `stratify()` function.
 
 In addition to maps, stratifications are available as data frames in the
 `bbs_strata` object.
@@ -336,7 +338,7 @@ print(s[["meta_strata"]], n = Inf)
 ```
 
 
-### Modifying existing BBS maps
+## Modifying existing BBS maps
 
 Stratify by custom stratification, using sf map object. For example, let's look
 at an east/west divide of southern Canada with BBS CWS strata.
