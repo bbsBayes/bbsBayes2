@@ -89,7 +89,6 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bbsBayes/bbsBayes2" class="external-link">bbsBayes2</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: package 'bbsBayes2' was built under R version 4.3.1</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
@@ -476,10 +475,12 @@ to the modified model using the <code>model_file</code> argment in
 <h4 id="calculating-the-approximate-loo-cv">Calculating the approximate loo-cv<a class="anchor" aria-label="anchor" href="#calculating-the-approximate-loo-cv"></a>
 </h4>
 <p>The models include an option to calculate the point-wise
-log-likelihood of each count given the model and parameter estimates. If
-used, this option allows for the use of the <code><a href="https://mc-stan.org/cmdstanr/reference/fit-method-loo.html" class="external-link">cmdstanr::loo()</a></code>
-function to calculate approximate leave-one-out cross-validation
-statistics. Some caveats and warnings:</p>
+log-likelihood of each count given the model and parameter estimates.
+With the argument <code>calculate_log_lik = TRUE</code>, in the
+<code><a href="../reference/prepare_model.html">prepare_model()</a></code> function, this option allows for the use of
+the <code><a href="https://mc-stan.org/cmdstanr/reference/fit-method-loo.html" class="external-link">cmdstanr::loo()</a></code> function to calculate approximate
+leave-one-out cross-validation statistics. Some caveats and
+warnings:</p>
 <ol style="list-style-type: decimal">
 <li><p>Using the approximate loo-cv to assess models and/or compare
 alternate models requires some strong assumptions that the user should
@@ -496,9 +497,9 @@ increases the memory requirements and size of the saved model
 objects.</p></li>
 </ol>
 <p>Here’s an example using Baird’s Sparrow, a species with a restricted
-range and so the models fit reasonably quickly (approximately 1-hour)
-and adding the count-level log_lik parameter doesn’t add too much to the
-file size. Here we compare the approximate leave-one-out
+range and so the models fit reasonably quickly (approximately 1-hour
+each) and adding the count-level log_lik parameter doesn’t add too much
+to the file size. Here we compare the approximate leave-one-out
 cross-validation estimate between the ‘gamye’ and the ‘first_diff’
 models.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -575,7 +576,14 @@ first-difference model may slightly out-perform the gamye model for this
 species and time-period. However, the uncertainty in the calculation of
 loo is relatively wide and the estimates for the two models are only
 about 1 SD apart. In addition, the ‘pareto-k’ warnings suggest that the
-approximation may not be accurate for some of the BBS counts.</p>
+approximation may not be accurate for some of the BBS counts. These
+approximations of cross-validation results can be very useful, because
+they only require fitting the model once. However, they are
+approximations and they do not fully respect the spatial and temporal
+structure of the BBS data. Contrast this approximation of leave-one-out
+cross-validation with the following k-fold cross-validation that also
+accounts for some of the nested and hierarchical structures of the BBS
+data.</p>
 </div>
 <div class="section level4">
 <h4 id="k-fold-cross-validation">K-fold Cross-Validation<a class="anchor" aria-label="anchor" href="#k-fold-cross-validation"></a>
@@ -584,9 +592,9 @@ approximation may not be accurate for some of the BBS counts.</p>
 included some experimental features to allow for one approach to
 cross-validation. These features are experimental and so users should be
 cautious and be confident that they understand what they’re doing. For
-cross fold validation, the <code><a href="../reference/prepare_model.html">prepare_model()</a></code> function can be
-used to define which observations are part of a test set and which are
-part of a training set.</p>
+cross-validation, the <code><a href="../reference/prepare_model.html">prepare_model()</a></code> function can be used
+to define which observations are part of a test set and which are part
+of a training set.</p>
 <p>To use the method implemented by bbsBayes2, we’ll specify
 <code>calculate_cv</code> as <code>TRUE</code> during the
 <code><a href="../reference/prepare_model.html">prepare_model()</a></code> step. By default, this will prepare 10 test
@@ -594,35 +602,178 @@ sets (K-folds, <code>cv_k</code>) using <code>obs_n</code> as the
 blocking variable (<code>cv_fold_groups</code>) and omitting groups with
 only single observations (<code>cv_omit_singles</code>). The blocking
 respects the hierarchical structure of the BBS data. It ensures that all
-of the routes, observers and strata are retained in each of the training
-folds, and so that each of the k-fold model fits can generate
-predictions for all of the routes, observers, and strata in the test
-fold. Conceptually, this default blocking approach results in
-out-of-sample predictions that represent all counts for a given observer
-(a random sample of observers), other than that observer’s first year of
+of the routes, observers are retained in each of the training folds, and
+so that each of the k-fold model fits can generate predictions for all
+of the routes and observers in the test fold. Conceptually, this default
+blocking approach results in out-of-sample predictions that represent
+all future counts for a given observer (a random sample of observers in
+each of the k folds), other than that observer’s first year of
 observations on each route they have ever contributed to. Rephrased, the
 cross-validation compares the ability of the model (or the two models
 being compared) to accurately predict the future observations of each
-observer. The ‘cv_omit_singles’ argument by default excludes the
-observers that have only every contributed a single BBS observation from
-the cross-validation exercise (they are never included in the test
-fold)</p>
-<p>More details and examples coming.</p>
+observer and route combination. The ‘cv_omit_singles’ argument by
+default excludes the observers that have only every contributed a single
+BBS observation from the cross-validation exercise (they are never
+included in the test fold, because there are no “future” observations to
+predict for these observers).</p>
+<p>First we use exactly the same data preparation steps to match the cv
+approximation above.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#a model of counts from 2009-2019</span></span>
-<span><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>, species <span class="op">=</span> <span class="st">"Hepatic Tanager"</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>min_year<span class="op">=</span> <span class="fl">2009</span>, max_year <span class="op">=</span> <span class="fl">2019</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="st">"first_diff"</span>, calculate_cv <span class="op">=</span> <span class="cn">TRUE</span>, cv_k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="co"># splits into 5-folds</span></span></code></pre></div>
-<p>Now our model data (<code>md</code>) has a list item called
-<code>folds</code> which contains the fold groups assigned to each
-observation. To use this, you’ll need to loop your model and specify the
-<code>k</code> iteration.</p>
+<code class="sourceCode R"><span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="st">"latlong"</span>,<span class="st">"Baird's Sparrow"</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">s</span>, min_n_routes <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">map</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span>stratify_by <span class="op">=</span> <span class="st">"latlong"</span><span class="op">)</span></span>
+<span><span class="va">sp</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/prepare_spatial.html">prepare_spatial</a></span><span class="op">(</span><span class="va">p</span>,<span class="va">map</span><span class="op">)</span></span></code></pre></div>
+<p>Then we prepare the models to identify the training and testing
+folds.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#a quick model with too few iterations, not saving the example model</span></span>
-<span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">md</span>, k <span class="op">=</span> <span class="va">k</span>, chains <span class="op">=</span> <span class="fl">2</span>, iter_warmup <span class="op">=</span> <span class="fl">500</span>, iter_sampling <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="../reference/save_model_run.html">save_model_run</a></span><span class="op">(</span><span class="va">m</span>,path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"output/first_diff_cv_"</span>,<span class="va">k</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="va">m_gamye</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="va">sp</span>,<span class="st">"gamye"</span>,</span>
+<span>                        calculate_cv <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">m_first_diff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="va">sp</span>,<span class="st">"first_diff"</span>,</span>
+<span>                        calculate_cv <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>The <code>calculate_cv = TRUE</code> argument adds the calculation of
+a vector of derived parameters, “log_lik_cv[1:ntest]” that represent the
+predicted counts from the model for each of the observed counts in the
+testing dataset (i.e., the observed counts that were held out of the
+training dataset). So these are true out-of-sample predictions for
+counts with known values. The “log_lik_cv” values represent the log
+posterior predictive density (sometimes called lppd) or the
+log-likelihood of the observed data, given the fitted model and the data
+in the training set. They are logs of probability values, and so are
+always negative, and higher values (values closer to 0) indicate better
+fit.</p>
+<p>And finally, we fit each of the models k-times. <strong>Yes, this
+will take a while</strong> We are fitting 20 models in total here. So
+fire it up on a Friday afternoon and we’ll come back to it on Monday
+morning.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## fitting the gamye</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">{</span></span>
+<span></span>
+<span>  <span class="va">m_tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">m_gamye</span>,</span>
+<span>                     refresh <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>                     k <span class="op">=</span> <span class="va">k</span>, <span class="co"># this tells run_model which fold to use as the test</span></span>
+<span>                     output_dir <span class="op">=</span> <span class="st">"output"</span>, <span class="co">#saving the output in a directory</span></span>
+<span>                     output_basename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"m_gamye_"</span>,<span class="va">k</span>,<span class="st">"_.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">sum_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_summary.html">get_summary</a></span><span class="op">(</span><span class="va">m_tmp</span>,variables <span class="op">=</span> <span class="st">"log_lik_cv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># identifying which counts are being predicted in each fold using the</span></span>
+<span><span class="co"># "test" vector in the original model data</span></span>
+<span>  <span class="va">sum_cv</span> <span class="op">&lt;-</span> <span class="va">sum_cv</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>original_count_index <span class="op">=</span> <span class="va">m_tmp</span><span class="op">$</span><span class="va">model_data</span><span class="op">$</span><span class="va">test</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">sum_cv</span>,<span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"output/cv_sum_gamye"</span>,<span class="st">"_"</span>,<span class="va">k</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">## fitting the first_diff</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">{</span></span>
+<span></span>
+<span>  <span class="va">m_tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">m_first_diff</span>,</span>
+<span>                     refresh <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>                     k <span class="op">=</span> <span class="va">k</span>, <span class="co"># this tells run_model which fold to use as the test</span></span>
+<span>                     output_dir <span class="op">=</span> <span class="st">"output"</span>, <span class="co">#saving the output in a directory</span></span>
+<span>                     output_basename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"m_first_diff_"</span>,<span class="va">k</span>,<span class="st">"_.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">sum_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_summary.html">get_summary</a></span><span class="op">(</span><span class="va">m_tmp</span>,variables <span class="op">=</span> <span class="st">"log_lik_cv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># identifying which counts are being predicted in each fold using the</span></span>
+<span><span class="co"># "test" vector in the original model data</span></span>
+<span>  <span class="va">sum_cv</span> <span class="op">&lt;-</span> <span class="va">sum_cv</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>original_count_index <span class="op">=</span> <span class="va">m_tmp</span><span class="op">$</span><span class="va">model_data</span><span class="op">$</span><span class="va">test</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">sum_cv</span>,<span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"output/cv_sum_first_diff"</span>,<span class="st">"_"</span>,<span class="va">k</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
+<p>Now that it’s Monday morning. We want to combine the results for each
+model and each of the k-folds.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="va">orig_data</span> <span class="op">&lt;-</span> <span class="va">m_gamye</span><span class="op">$</span><span class="va">raw_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>folds <span class="op">=</span> <span class="va">m_gamye</span><span class="op">$</span><span class="va">folds</span>,</span>
+<span>         original_count_index <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html" class="external-link">row_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sum_cv</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span><span class="va">wide_cv</span> <span class="op">&lt;-</span> <span class="va">orig_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">original_count_index</span><span class="op">)</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">mod_sel</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gamye"</span>,<span class="st">"first_diff"</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">wide_cvt</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">{</span></span>
+<span></span>
+<span>  <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"output/cv_sum_"</span>,<span class="va">mod_sel</span>,<span class="st">"_"</span>,<span class="va">k</span>,<span class="st">".rds"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">mod_sel</span><span class="op">)</span></span>
+<span>  <span class="va">sum_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">sum_cv</span>,<span class="va">tmp</span><span class="op">)</span></span>
+<span>  <span class="va">tmp</span> <span class="op">&lt;-</span> <span class="va">tmp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">original_count_index</span>,<span class="va">mean</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename_with</a></span><span class="op">(</span><span class="va">.</span>, <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"mean"</span>,<span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"log_lik_"</span>,<span class="va">mod_sel</span><span class="op">)</span>,<span class="va">.x</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">wide_cvt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">wide_cvt</span>,<span class="va">tmp</span><span class="op">)</span></span>
+<span></span>
+<span><span class="op">}</span></span>
+<span>  <span class="va">wide_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">wide_cv</span>,<span class="va">wide_cvt</span>,</span>
+<span>                       by <span class="op">=</span> <span class="st">"original_count_index"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">sum_cv</span> <span class="op">&lt;-</span> <span class="va">sum_cv</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">.</span>,<span class="va">orig_data</span>,</span>
+<span>            by <span class="op">=</span> <span class="st">"original_count_index"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">sum_cv</span>, <span class="st">"output/sum_cv.rds"</span><span class="op">)</span> <span class="co"># overall summary in grouped data frame</span></span>
+<span></span>
+<span><span class="va">cv_dif</span> <span class="op">&lt;-</span> <span class="va">wide_cv</span>  <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">.</span>,<span class="va">orig_data</span>,</span>
+<span>             by <span class="op">=</span> <span class="st">"original_count_index"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">drop_na</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#dropping the single points that were never in the testing dataset</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>diff <span class="op">=</span> <span class="va">log_lik_first_diff</span> <span class="op">-</span> <span class="va">log_lik_gamye</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">cv_dif</span>,<span class="st">"output/cv_dif.rds"</span><span class="op">)</span> <span class="co"># summary of point-wise difference in log_lik between models</span></span></code></pre></div>
+<p>Now that we have combined the results for all of the predicted counts
+from across the k-folds and the two models, we can summarize these
+values. Remembering that because of the scaling of log probabilities
+that smaller absolute values (values closer to 0) indicate a better
+fitting model.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cv_comp</span> <span class="op">&lt;-</span> <span class="va">sum_cv</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">drop_na</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#drops the rows for counts that were never in testing datasets</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>sum_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span>, <span class="co"># total sum of log likelihoods</span></span>
+<span>            mean_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span>, <span class="co"># mean of point-level values</span></span>
+<span>            se_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># SE of point-level values</span></span>
+<span><span class="co">#&gt; Error in drop_na(.): could not find function "drop_na"</span></span>
+<span></span>
+<span><span class="va">cv_comp</span></span>
+<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'cv_comp' not found</span></span></code></pre></div>
+<p>Interestingly, the cross-validation results suggest that the gamye
+model performs better than the first_diff model: The opposite finding of
+the approximation. Model comparison is not a simple thing, especially
+for complex models with complex data.</p>
+<p>We can explore the point-level relative support for each of the two
+models to better understand what aspects of the data are better
+predicted by each model. For example, we can plot the difference in log
+likelihood values against the value of the observed counts.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">cv_dif_sum</span> <span class="op">&lt;-</span> <span class="va">cv_dif</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
+<span>            se_diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>            z <span class="op">=</span> <span class="va">mean_diff</span><span class="op">/</span><span class="va">se_diff</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'cv_dif' not found</span></span>
+<span><span class="va">cv_dif_sum</span></span>
+<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'cv_dif_sum' not found</span></span>
+<span></span>
+<span><span class="co"># explore the differences by count value</span></span>
+<span><span class="va">dif_by_count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cv_dif</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">count</span><span class="op">+</span><span class="fl">1</span>,y <span class="op">=</span> <span class="va">diff</span>,</span>
+<span>                 colour <span class="op">=</span> <span class="va">year</span><span class="op">)</span>,</span>
+<span>             alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_colour_viridis_c</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="co">#scale_x_continuous(trans = "log10")+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'cv_dif' not found</span></span>
+<span></span>
+<span><span class="va">dif_by_count</span></span>
+<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'dif_by_count' not found</span></span></code></pre></div>
 </div>
 </div>
 </div>
