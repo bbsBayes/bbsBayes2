@@ -93,8 +93,7 @@
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span> <span class="co">#to visually check convergence</span></span>
-<span><span class="co">#&gt; Warning: package 'bayesplot' was built under R version 4.3.1</span></span></code></pre></div>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span> <span class="co">#to visually check convergence</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="some-more-advanced-options">Some more advanced options<a class="anchor" aria-label="anchor" href="#some-more-advanced-options"></a>
 </h2>
@@ -436,7 +435,8 @@ belong in each of our new composite regions (<em>North</em> or
 <div class="section level3">
 <h3 id="exporting-and-modifying-the-stan-models">Exporting and modifying the Stan models<a class="anchor" aria-label="anchor" href="#exporting-and-modifying-the-stan-models"></a>
 </h3>
-<p>You can easily export any of the bbsBayes2 models to a text file.</p>
+<p>You can easily export any of the bbsBayes2 models to a text file
+(file extension .Stan).</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/copy_model_file.html">copy_model_file</a></span><span class="op">(</span>model<span class="op">=</span><span class="st">"gamye"</span>,</span>
@@ -467,6 +467,163 @@ to the modified model using the <code>model_file</code> argment in
 <span>          <span class="op">)</span></span>
 <span></span>
 <span><span class="va">mod</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">prep</span>,<span class="va">...</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="example---modifying-a-model-to-include-a-covariate">Example - modifying a model to include a covariate<a class="anchor" aria-label="anchor" href="#example---modifying-a-model-to-include-a-covariate"></a>
+</h3>
+<p>With some experience writing Stan code, there are limitless options
+to modify the base bbsBayes2 models and fit them using the package
+functions. For example, the bbsBayes models are designed to estimate how
+bird populations have changed in time and space. But with modifications
+to include predictors on the aspects of population change, they could
+also serve to estimate <strong>why</strong> pouplations have changed.
+Other very simple modifications could be to change the priors on
+particular parameters. We have used priors on the time-series components
+of these models that are somewhat informative. Based on the observed
+temporal and spatial variation from 50-years of monitoring bird
+populations with the BBS and the Christmas Bird Count. But some users
+may want priors that are less, or more, informative. See the
+supplementals associated with this pre-print, <a href="https://doi.org/10.32942/X2088D" class="external-link">Smith et al. 2023</a>, for more
+information on these priors.</p>
+<div class="section level4">
+<h4 id="viewing-and-exporting-the-stan-code-for-the-models">viewing and exporting the Stan code for the models<a class="anchor" aria-label="anchor" href="#viewing-and-exporting-the-stan-code-for-the-models"></a>
+</h4>
+<p>The <code><a href="../reference/copy_model_file.html">copy_model_file()</a></code> function writes a text file to a
+local directory containing the full Stan code for the selected bbsBayes2
+model.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># writes a copy of the spatial slope model to the working directory</span></span>
+<span><span class="fu"><a href="../reference/copy_model_file.html">copy_model_file</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gamye"</span>, model_variant <span class="op">=</span> <span class="st">"spatial"</span>, dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="adding-the-necessary-stan-code">Adding the necessary Stan code<a class="anchor" aria-label="anchor" href="#adding-the-necessary-stan-code"></a>
+</h4>
+<p>Once copied, the model file can be modified by hand to include
+different priors, new parameters, etc. RStudio has good support for Stan
+code. For example, the following code components were added to the text
+of the Stan file writen using the <code><a href="../reference/copy_model_file.html">copy_model_file()</a></code>
+function above. THese modifications create a model that takes a matrix
+of strata by year values of annual spring-moisture, and uses them as a
+predictor on the year-effects in a gamye model. Conceptually, a model
+that uses the moisture information to help estimate the annual
+fluctuations around the long-term smooth of the GAM component of the
+model. This particular modification is inspired by a project to
+understand the longer-term trends of wetland birds that are not a
+function of local fluctuations in moisture. The lines below were added
+to the “data”, “parameters”, “transformed parameters”, and “model”
+sections of the Stan code, then saved as a new file, e.g.,
+“gamye_spatial_bbs_CV_year_effect_covariate.stan”.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## modify the model to add the following lines in each of the indicated sections</span></span>
+<span><span class="co">## of the Stan mdoel</span></span>
+<span><span class="co"># data {</span></span>
+<span><span class="co">#   ...</span></span>
+<span><span class="co">#   // covariate data</span></span>
+<span><span class="co">#   array[n_strata,n_years] real cov;   // covariate data annual moisture by strata</span></span>
+<span><span class="co">#   ...</span></span>
+<span><span class="co"># }</span></span>
+<span><span class="co"># parameters {</span></span>
+<span><span class="co">#   ...</span></span>
+<span><span class="co"># // covariate parameters</span></span>
+<span><span class="co"># matrix[n_strata,n_years] cov; // strata by year covariate matrix</span></span>
+<span><span class="co">#   ...</span></span>
+<span><span class="co"># }</span></span>
+<span><span class="co"># transformed parameters {</span></span>
+<span><span class="co">#   ...</span></span>
+<span><span class="co">#   // yeareffects as an additive combination of a random fluctuation</span></span>
+<span><span class="co">#   // and the simple linear effect of the annual moisture covariate</span></span>
+<span><span class="co">#   // may not be sufficient data to estimate both, in which case</span></span>
+<span><span class="co">#   // consider removing yeareffect_raw and sdyear</span></span>
+<span><span class="co">#   for(s in 1:n_strata){</span></span>
+<span><span class="co">#     yeareffect[s,] = sdyear[s]*yeareffect_raw[s,] + beta_cov*cov[s,];</span></span>
+<span><span class="co">#   }</span></span>
+<span><span class="co">#   ...</span></span>
+<span><span class="co"># }</span></span>
+<span><span class="co"># model {</span></span>
+<span><span class="co">#   ...</span></span>
+<span><span class="co">#   // covariate effect</span></span>
+<span><span class="co">#   beta_cov ~ normal(0,1); //prior for covariate effect</span></span>
+<span><span class="co">#   ...</span></span>
+<span><span class="co"># }</span></span></code></pre></div>
+<p>Once the model is saved, the only other necessary modification is to
+add the covariate data to the data list supplied to
+<code>prepare_model</code></p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co">## Not Run</span></span>
+<span><span class="co">## example code, but the covariate data are not included</span></span>
+<span></span>
+<span></span>
+<span><span class="va">species</span> <span class="op">&lt;-</span> <span class="st">"Black Tern"</span></span>
+<span><span class="va">stratification</span> <span class="op">&lt;-</span> <span class="st">"latlong"</span></span>
+<span><span class="va">strata_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span><span class="va">stratification</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># setting up a spatial object to filter the data to one BCR</span></span>
+<span><span class="va">bcr_11</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span><span class="st">"bcr"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">strata_name</span> <span class="op">==</span> <span class="st">"BCR11"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_buffer</a></span><span class="op">(</span><span class="va">.</span>,<span class="fl">50000</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co"># 50 km buffer to catch all possible BBS routes</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>bcr <span class="op">=</span> <span class="va">strata_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">bcr</span><span class="op">)</span></span>
+<span><span class="co"># filtering the strata_map to just BCR 11 (Prairie Potholes)</span></span>
+<span><span class="va">strata_sel</span> <span class="op">&lt;-</span> <span class="va">strata_map</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html" class="external-link">st_intersection</a></span><span class="op">(</span><span class="va">.</span>,<span class="va">bcr_11</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">model</span> <span class="op">=</span> <span class="st">"gamye"</span></span>
+<span></span>
+<span><span class="va">model_variant</span> <span class="op">&lt;-</span> <span class="st">"spatial"</span></span>
+<span><span class="co"># stratifying with custom stratification</span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"latlong_bcr11"</span>,</span>
+<span>              strata_custom <span class="op">=</span> <span class="va">strata_sel</span>,</span>
+<span>              species <span class="op">=</span> <span class="va">species</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">s</span>,</span>
+<span>                  min_n_routes <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                  min_max_route_years <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="co">#filtering to strata with more observations</span></span>
+<span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_spatial.html">prepare_spatial</a></span><span class="op">(</span><span class="va">p</span>,</span>
+<span>                      strata_map <span class="op">=</span> <span class="va">strata_sel</span><span class="op">)</span></span>
+<span><span class="co"># string identifying the customized model file</span></span>
+<span> <span class="va">cov_mod</span> <span class="op">&lt;-</span> <span class="st">"gamye_spatial_bbs_CV_year_effect_covariate.stan"</span></span>
+<span></span>
+<span> <span class="co"># preparing the model</span></span>
+<span><span class="va">pm_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="va">ps</span>,</span>
+<span>                        model <span class="op">=</span> <span class="va">model</span>,</span>
+<span>                        model_variant <span class="op">=</span> <span class="va">model_variant</span>,</span>
+<span>                        model_file <span class="op">=</span> <span class="va">cov_mod</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># reading in the moisture covariate data</span></span>
+<span> <span class="va">cov_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"data/annual_latlong_june_spei03.rds"</span><span class="op">)</span> <span class="co"># the covariate data</span></span>
+<span></span>
+<span><span class="va">strata_incl</span> <span class="op">&lt;-</span> <span class="va">ps</span><span class="op">$</span><span class="va">meta_strata</span> <span class="co"># data frame with strata included in the data</span></span>
+<span><span class="va">years_incl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">ps</span><span class="op">$</span><span class="va">raw_data</span><span class="op">$</span><span class="va">year</span><span class="op">)</span> <span class="op">:</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ps</span><span class="op">$</span><span class="va">raw_data</span><span class="op">$</span><span class="va">year</span><span class="op">)</span> <span class="co"># vector of the years available</span></span>
+<span></span>
+<span><span class="co"># Creating the covariate matrix to send to Stan</span></span>
+<span><span class="va">cov_incl</span> <span class="op">&lt;-</span>  <span class="va">strata_incl</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">.</span>,<span class="va">cov_all</span>,</span>
+<span>             by <span class="op">=</span> <span class="st">"strata_name"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co"># dropping covariates outside of the included strata</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">matches</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">years_incl</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>         <span class="va">strata</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#dropping the covariates outside of the years included</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">strata</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co"># sorting to match strata ordering</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">strata</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co"># dropping non-covariate column</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># formating as numerical matrix</span></span>
+<span></span>
+<span><span class="co">## adding the covariate matrix to the model_data object in the</span></span>
+<span><span class="co">## object created by prepare_model()</span></span>
+<span><span class="va">pm_cov</span><span class="op">$</span><span class="va">model_data</span><span class="op">[[</span><span class="st">"cov"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">cov_incl</span></span>
+<span></span>
+<span><span class="co"># fitting the model using run_model()</span></span>
+<span><span class="va">fit_cov</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">pm_cov</span>,</span>
+<span>                 refresh <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>                 iter_warmup <span class="op">=</span> <span class="fl">2000</span>, <span class="co">#increasing the warmup to support more complex model</span></span>
+<span>                 iter_sampling <span class="op">=</span> <span class="fl">4000</span>, <span class="co"># increasing the sampling</span></span>
+<span>                 thin <span class="op">=</span> <span class="fl">2</span>, <span class="co"># small thinning to reduce output file size</span></span>
+<span>                 max_treedepth <span class="op">=</span> <span class="fl">11</span>, <span class="co"># also increased to support more complex model</span></span>
+<span>                 adapt_delta <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>                 output_dir <span class="op">=</span> <span class="st">"output"</span>, <span class="co">#saving model in a particular directory</span></span>
+<span>                 output_basename <span class="op">=</span> <span class="st">"covariate"</span><span class="op">)</span> <span class="co">#saving model output with a relevant name</span></span>
+<span></span>
+<span><span class="co"># posterior summary and convergence of the covariate effect</span></span>
+<span><span class="va">cov_effect</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_summary.html">get_summary</a></span><span class="op">(</span><span class="va">fit_cov</span>, variable <span class="op">=</span> <span class="st">"beta_cov"</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level3">
 <h3 id="comparing-models">Comparing Models<a class="anchor" aria-label="anchor" href="#comparing-models"></a>
@@ -502,7 +659,7 @@ each) and adding the count-level log_lik parameter doesn’t add too much
 to the file size. Here we compare the approximate leave-one-out
 cross-validation estimate between the ‘gamye’ and the ‘first_diff’
 models.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="st">"latlong"</span>,<span class="st">"Baird's Sparrow"</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">s</span>, min_n_routes <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -522,7 +679,7 @@ models.</p>
 <span><span class="va">m_gamye</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">mp_gamye</span>,</span>
 <span>                     iter_sampling <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">m_gamye</span>,<span class="st">"output/BASP_latlong_gamye_spatial.rds"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">m_gamye</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/BASP_latlong_gamye_spatial.rds"</span><span class="op">)</span></span>
 <span></span>
@@ -618,7 +775,7 @@ included in the test fold, because there are no “future” observations to
 predict for these observers).</p>
 <p>First we use exactly the same data preparation steps to match the cv
 approximation above.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="st">"latlong"</span>,<span class="st">"Baird's Sparrow"</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">s</span>, min_n_routes <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -626,7 +783,7 @@ approximation above.</p>
 <span><span class="va">sp</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/prepare_spatial.html">prepare_spatial</a></span><span class="op">(</span><span class="va">p</span>,<span class="va">map</span><span class="op">)</span></span></code></pre></div>
 <p>Then we prepare the models to identify the training and testing
 folds.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">m_gamye</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="va">sp</span>,<span class="st">"gamye"</span>,</span>
 <span>                        calculate_cv <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -648,7 +805,7 @@ fit.</p>
 will take a while</strong> We are fitting 20 models in total here. So
 fire it up on a Friday afternoon and we’ll come back to it on Monday
 morning.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## fitting the gamye</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">{</span></span>
 <span></span>
@@ -688,7 +845,7 @@ morning.</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Now that it’s Monday morning. We want to combine the results for each
 model and each of the k-folds.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="va">orig_data</span> <span class="op">&lt;-</span> <span class="va">m_gamye</span><span class="op">$</span><span class="va">raw_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -729,11 +886,12 @@ model and each of the k-folds.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">cv_dif</span>,<span class="st">"output/cv_dif.rds"</span><span class="op">)</span> <span class="co"># summary of point-wise difference in log_lik between models</span></span></code></pre></div>
 <p>Now that we have combined the results for all of the predicted counts
 from across the k-folds and the two models, we can summarize these
-values. Remembering that because of the scaling of log probabilities
-that smaller absolute values (values closer to 0) indicate a better
-fitting model.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cv_comp</span> <span class="op">&lt;-</span> <span class="va">sum_cv</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+values. Again, because of the scaling of log probabilities that smaller
+absolute values (values closer to 0) indicate a better fitting
+model.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sum_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/sum_cv.rds"</span><span class="op">)</span></span>
+<span><span class="va">cv_comp</span> <span class="op">&lt;-</span> <span class="va">sum_cv</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">drop_na</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#drops the rows for counts that were never in testing datasets</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>sum_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span>, <span class="co"># total sum of log likelihoods</span></span>
@@ -750,16 +908,21 @@ for complex models with complex data.</p>
 <p>We can explore the point-level relative support for each of the two
 models to better understand what aspects of the data are better
 predicted by each model. For example, we can plot the difference in log
-likelihood values against the value of the observed counts.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+likelihood values against the value of the observed counts. Here, we can
+see that the high counts, particularly those in the earlier years,
+appear to be better predicted by the gamye model than the
+first-difference model.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cv_dif</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/cv_dif.rds"</span><span class="op">)</span></span>
 <span><span class="va">cv_dif_sum</span> <span class="op">&lt;-</span> <span class="va">cv_dif</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
 <span>            se_diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>            z <span class="op">=</span> <span class="va">mean_diff</span><span class="op">/</span><span class="va">se_diff</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'cv_dif' not found</span></span>
 <span><span class="va">cv_dif_sum</span></span>
-<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'cv_dif_sum' not found</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
+<span><span class="co">#&gt;   mean_diff se_diff     z</span></span>
+<span><span class="co">#&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1    -0.269  0.0186 -14.4</span></span>
 <span></span>
 <span><span class="co"># explore the differences by count value</span></span>
 <span><span class="va">dif_by_count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cv_dif</span><span class="op">)</span> <span class="op">+</span></span>
@@ -770,10 +933,9 @@ likelihood values against the value of the observed counts.</p>
 <span>  <span class="co">#scale_x_continuous(trans = "log10")+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'cv_dif' not found</span></span>
 <span></span>
-<span><span class="va">dif_by_count</span></span>
-<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'dif_by_count' not found</span></span></code></pre></div>
+<span><span class="va">dif_by_count</span></span></code></pre></div>
+<p><img src="figures/advanced_unnamed-chunk-25-1.png" alt="Cross validation differences"></p>
 </div>
 </div>
 </div>
