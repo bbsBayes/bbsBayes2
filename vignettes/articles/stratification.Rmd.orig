@@ -257,7 +257,7 @@ ggplot(rindex) +
   geom_sf_text(aes(label = strata_name))
 ```
 
-The western and eastern strata seem to be split numerically, such that the western strata have numbers lower than 50, eastern strata have numbers higher 74. So we'll add a column to the `rindex` dataframe with "east" and "west" character names to group the strata.
+The western and eastern strata seem to be split numerically, such that the western strata have numbers lower than 50 or greater than 74, eastern strata have numbers in between. So we'll add a column to the `rindex` dataframe with "east" and "west" character names to group the strata.
 
 ```{r}
 rindex <- mutate(
