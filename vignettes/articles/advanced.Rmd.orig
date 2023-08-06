@@ -346,7 +346,7 @@ print(trajectories[["North"]] / trajectories[["South"]])
 
 ## Exporting and modifying the Stan models
 
-You can easily export any of the bbsBayes2 models to a text file.
+You can easily export any of the bbsBayes2 models to a text file (file extension .Stan).
 
 ```{r, eval=FALSE}
 
@@ -376,6 +376,139 @@ prep<- prepare_model(...,
 
 mod<-run_model(prep,...)
 ```
+## Example - modifying a model to include a covariate
+
+With some experience writing Stan code, there are limitless options to modify the base bbsBayes2 models and fit them using the package functions. For example, the bbsBayes models are designed to estimate how bird populations have changed in time and space. But with modifications to include predictors on the aspects of population change, they could also serve to estimate **why** pouplations have changed. Other very simple modifications could be to change the priors on particular parameters. We have used priors on the time-series components of these models that are somewhat informative. Based on the observed temporal and spatial variation from 50-years of monitoring bird populations with the BBS and the Christmas Bird Count. But some users may want priors that are less, or more, informative. See the supplementals associated with this pre-print, [Smith et al. 2023](https://doi.org/10.32942/X2088D), for more information on these priors.
+
+### viewing and exporting the Stan code for the models
+
+The `copy_model_file()` function writes a text file to a local directory containing the full Stan code for the selected bbsBayes2 model.
+
+```{r, eval = FALSE}
+# writes a copy of the spatial slope model to the working directory
+copy_model_file(model = "gamye", model_variant = "spatial", dir = getwd())
+```
+### Adding the necessary Stan code
+
+Once copied, the model file can be modified by hand to include different priors, new parameters, etc. RStudio has good support for Stan code.
+For example, the following code components were added to the text of the Stan file writen using the `copy_model_file()` function above. THese modifications create a model that takes a matrix of strata by year values of annual spring-moisture, and uses them as a predictor on the year-effects in a gamye model. Conceptually, a model that uses the moisture information to help estimate the annual fluctuations around the long-term smooth of the GAM component of the model. This particular modification is inspired by a project to understand the longer-term trends of wetland birds that are not a function of local fluctuations in moisture. The lines below were added to the "data", "parameters", "transformed parameters", and "model" sections of the Stan code, then saved as a new file, e.g., "gamye_spatial_bbs_CV_year_effect_covariate.stan".
+
+```{r, eval=FALSE}
+## modify the model to add the following lines in each of the indicated sections
+## of the Stan mdoel
+# data {
+#   ...
+#   // covariate data
+#   array[n_strata,n_years] real cov;   // covariate data annual moisture by strata
+#   ...
+# }
+# parameters {
+#   ...
+# // covariate parameters
+# matrix[n_strata,n_years] cov; // strata by year covariate matrix
+#   ...
+# }
+# transformed parameters {
+#   ...
+#   // yeareffects as an additive combination of a random fluctuation
+#   // and the simple linear effect of the annual moisture covariate
+#   // may not be sufficient data to estimate both, in which case
+#   // consider removing yeareffect_raw and sdyear
+#   for(s in 1:n_strata){
+#     yeareffect[s,] = sdyear[s]*yeareffect_raw[s,] + beta_cov*cov[s,];
+#   }
+#   ...
+# }
+# model {
+#   ...
+#   // covariate effect
+#   beta_cov ~ normal(0,1); //prior for covariate effect
+#   ...
+# }
+
+
+```
+Once the model is saved, the only other necessary modification is to add the covariate data to the data list supplied to `prepare_model`
+
+```{r, eval=FALSE}
+
+## Not Run
+## example code, but the covariate data are not included
+
+
+species <- "Black Tern"
+stratification <- "latlong"
+strata_map <- load_map(stratification)
+
+# setting up a spatial object to filter the data to one BCR
+bcr_11 <- load_map("bcr") %>%
+  filter(strata_name == "BCR11") %>%
+  sf::st_buffer(.,50000) %>% # 50 km buffer to catch all possible BBS routes
+  rename(bcr = strata_name) %>%
+  select(bcr)
+# filtering the strata_map to just BCR 11 (Prairie Potholes)
+strata_sel <- strata_map %>%
+  sf::st_intersection(.,bcr_11)
+
+model = "gamye"
+
+model_variant <- "spatial"
+# stratifying with custom stratification
+s <- stratify(by = "latlong_bcr11",
+              strata_custom = strata_sel,
+              species = species)
+p <- prepare_data(s,
+                  min_n_routes = 1,
+                  min_max_route_years = 6) #filtering to strata with more observations
+ps <- prepare_spatial(p,
+                      strata_map = strata_sel)
+# string identifying the customized model file
+ cov_mod <- "gamye_spatial_bbs_CV_year_effect_covariate.stan"
+
+ # preparing the model
+pm_cov <- prepare_model(ps,
+                        model = model,
+                        model_variant = model_variant,
+                        model_file = cov_mod)
+
+
+# reading in the moisture covariate data
+ cov_all <- readRDS("data/annual_latlong_june_spei03.rds") # the covariate data
+
+strata_incl <- ps$meta_strata # data frame with strata included in the data
+years_incl <- min(ps$raw_data$year) : max(ps$raw_data$year) # vector of the years available
+
+# Creating the covariate matrix to send to Stan
+cov_incl <-  strata_incl %>%
+  inner_join(.,cov_all,
+             by = "strata_name") %>% # dropping covariates outside of the included strata
+  select(matches(as.character(years_incl)),
+         strata) %>% #dropping the covariates outside of the years included
+  arrange(strata) %>% # sorting to match strata ordering
+  select(-strata) %>% # dropping non-covariate column
+  as.matrix() # formating as numerical matrix
+
+## adding the covariate matrix to the model_data object in the
+## object created by prepare_model()
+pm_cov$model_data[["cov"]] <- cov_incl
+
+# fitting the model using run_model()
+fit_cov <- run_model(pm_cov,
+                 refresh = 200,
+                 iter_warmup = 2000, #increasing the warmup to support more complex model
+                 iter_sampling = 4000, # increasing the sampling
+                 thin = 2, # small thinning to reduce output file size
+                 max_treedepth = 11, # also increased to support more complex model
+                 adapt_delta = 0.8,
+                 output_dir = "output", #saving model in a particular directory
+                 output_basename = "covariate") #saving model output with a relevant name
+
+# posterior summary and convergence of the covariate effect
+cov_effect <- get_summary(fit_cov, variable = "beta_cov")
+
+```
+
+
 
 ## Comparing Models
 
@@ -576,10 +709,11 @@ cv_dif <- wide_cv  %>%
 saveRDS(cv_dif,"output/cv_dif.rds") # summary of point-wise difference in log_lik between models
 
 ```
-Now that we have combined the results for all of the predicted counts from across the k-folds and the two models, we can summarize these values. Remembering that because of the scaling of log probabilities that smaller absolute values (values closer to 0) indicate a better fitting model.
+Now that we have combined the results for all of the predicted counts from across the k-folds and the two models, we can summarize these values. Again, because of the scaling of log probabilities that smaller absolute values (values closer to 0) indicate a better fitting model.
 
 
 ```{r}
+sum_cv <- readRDS("output/sum_cv.rds")
 cv_comp <- sum_cv %>%
   drop_na() %>% #drops the rows for counts that were never in testing datasets
   group_by(model) %>%
@@ -598,7 +732,7 @@ For example, we can plot the difference in log likelihood values against the val
 
 
 ```{r, fig.cap = "", fig.alt = "Cross validation differences", fig.width = 8, fig.asp = 1}
-
+cv_dif <- readRDS("output/cv_dif.rds")
 cv_dif_sum <- cv_dif %>%
   summarise(mean_diff = mean(diff),
             se_diff = sd(diff)/sqrt(n()),

@@ -73,3 +73,10 @@ the following (assuming you want to install a branch called `dev`).
 
 ```{r}
 pak::pkg_install("bbsBayes/bbsBayes2@dev")
+```
+
+## Why bbsBayes2
+
+We hope you'll agree that the BBS is a [spectacular dataset](https://doi.org/10.1650/CONDOR-17-62.1). Generations of committed and expert birders have contributed their time and expertise to carefully keeping track of local bird populations. For many BBS observers, it's been a commitment that has lasted 20, 30, or even 40 years! Many federal, state, and provincial government agencies, as well as local and national conservation organizations have supported the coordination and curation of over 50-years of data.
+[The BBS was started](https://doi.org/10.1650/CONDOR-17-83.1) at the dawn of the modern North American conservation movement, inspired by changes in bird populations noticed by biologists, naturalists, farmers, and other stewards of the natural world. A continental-scale survey of birds, carefully designed to quantify changes in populations through time, in hopes that Rachel Carson's "Silent Spring", would never come to pass.
+bbsBayes2 was created: to help researchers make use of these precious data; to better understand the spatial and temporal changes in bird populations; to make agency-derived estimates of population status more transparent; and to inspire improvements, elaborations, and critical feedback on the models provided here. We hope you enjoy the package and we hope you will contribute your ideas and code to this open software initiative.
