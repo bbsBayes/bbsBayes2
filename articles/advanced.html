@@ -93,7 +93,8 @@
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span> <span class="co">#to visually check convergence</span></span></code></pre></div>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span> <span class="co">#to visually check convergence</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="some-more-advanced-options">Some more advanced options<a class="anchor" aria-label="anchor" href="#some-more-advanced-options"></a>
 </h2>
@@ -880,7 +881,7 @@ model and each of the k-folds.</p>
 <span><span class="va">cv_dif</span> <span class="op">&lt;-</span> <span class="va">wide_cv</span>  <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">inner_join</a></span><span class="op">(</span><span class="va">.</span>,<span class="va">orig_data</span>,</span>
 <span>             by <span class="op">=</span> <span class="st">"original_count_index"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">drop_na</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#dropping the single points that were never in the testing dataset</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#dropping the single points that were never in the testing dataset</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>diff <span class="op">=</span> <span class="va">log_lik_first_diff</span> <span class="op">-</span> <span class="va">log_lik_gamye</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">cv_dif</span>,<span class="st">"output/cv_dif.rds"</span><span class="op">)</span> <span class="co"># summary of point-wise difference in log_lik between models</span></span></code></pre></div>
@@ -892,15 +893,18 @@ model.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sum_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/sum_cv.rds"</span><span class="op">)</span></span>
 <span><span class="va">cv_comp</span> <span class="op">&lt;-</span> <span class="va">sum_cv</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">drop_na</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#drops the rows for counts that were never in testing datasets</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#drops the rows for counts that were never in testing datasets</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>sum_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span>, <span class="co"># total sum of log likelihoods</span></span>
 <span>            mean_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span>, <span class="co"># mean of point-level values</span></span>
 <span>            se_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># SE of point-level values</span></span>
-<span><span class="co">#&gt; Error in drop_na(.): could not find function "drop_na"</span></span>
 <span></span>
 <span><span class="va">cv_comp</span></span>
-<span><span class="co">#&gt; Error in eval(expr, envir, enclos): object 'cv_comp' not found</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 2 × 4</span></span>
+<span><span class="co">#&gt;   model      sum_log_lik mean_log_lik se_log_lik</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;            &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 first_diff     -11251.        -2.66     0.0663</span></span>
+<span><span class="co">#&gt; 2 gamye          -10115.        -2.39     0.0559</span></span></code></pre></div>
 <p>Interestingly, the cross-validation results suggest that the gamye
 model performs better than the first_diff model: The opposite finding of
 the approximation. Model comparison is not a simple thing, especially
