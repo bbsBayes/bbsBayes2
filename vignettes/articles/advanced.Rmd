@@ -20,7 +20,6 @@ editor_options:
   library(sf)
   library(patchwork)
   library(bayesplot) #to visually check convergence
-#> Warning: package 'bayesplot' was built under R version 4.3.1
 ```
 
 # Some more advanced options
@@ -792,7 +791,7 @@ Interestingly, the cross-validation results suggest that the gamye model perform
 Model comparison is not a simple thing, especially for complex models with complex data.
 
 We can explore the point-level relative support for each of the two models to better understand what aspects of the data are better predicted by each model.
-For example, we can plot the difference in log likelihood values against the value of the observed counts.
+For example, we can plot the difference in log likelihood values against the value of the observed counts. Here, we can see that the high counts, particularly those in the earlier years, appear to be better predicted by the gamye model than the first-difference model.
 
 
 
