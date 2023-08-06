@@ -20,6 +20,7 @@ editor_options:
   library(sf)
   library(patchwork)
   library(bayesplot) #to visually check convergence
+  library(tidyr)
 ```
 
 # Some more advanced options
@@ -782,10 +783,13 @@ cv_comp <- sum_cv %>%
   summarise(sum_log_lik = sum(mean), # total sum of log likelihoods
             mean_log_lik = mean(mean), # mean of point-level values
             se_log_lik = sd(mean)/sqrt(n())) # SE of point-level values
-#> Error in drop_na(.): could not find function "drop_na"
 
 cv_comp
-#> Error in eval(expr, envir, enclos): object 'cv_comp' not found
+#> # A tibble: 2 × 4
+#>   model      sum_log_lik mean_log_lik se_log_lik
+#>   <chr>            <dbl>        <dbl>      <dbl>
+#> 1 first_diff     -11251.        -2.66     0.0663
+#> 2 gamye          -10115.        -2.39     0.0559
 ```
 Interestingly, the cross-validation results suggest that the gamye model performs better than the first_diff model: The opposite finding of the approximation.
 Model comparison is not a simple thing, especially for complex models with complex data.
