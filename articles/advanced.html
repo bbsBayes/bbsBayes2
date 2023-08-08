@@ -94,6 +94,7 @@
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span> <span class="co">#to visually check convergence</span></span>
+<span><span class="co">#&gt; Warning: package 'bayesplot' was built under R version 4.3.1</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="some-more-advanced-options">Some more advanced options<a class="anchor" aria-label="anchor" href="#some-more-advanced-options"></a>
@@ -462,7 +463,7 @@ to the modified model using the <code>model_file</code> argment in
 <code><a href="../reference/prepare_model.html">prepare_model()</a></code>.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">prep</span><span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="va">...</span>,</span>
+<span><span class="va">prep</span><span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gamye"</span>, model_variant <span class="op">=</span> <span class="st">"spatial"</span>,</span>
 <span>        model_file<span class="op">=</span><span class="st">"gamye_hier_bbs_CV_COPY.stan"</span>,</span>
 <span>         <span class="va">...</span></span>
 <span>          <span class="op">)</span></span>
@@ -525,8 +526,8 @@ sections of the Stan code, then saved as a new file, e.g.,
 <span><span class="co"># }</span></span>
 <span><span class="co"># parameters {</span></span>
 <span><span class="co">#   ...</span></span>
-<span><span class="co"># // covariate parameters</span></span>
-<span><span class="co"># matrix[n_strata,n_years] cov; // strata by year covariate matrix</span></span>
+<span><span class="co"># // covariate parameter</span></span>
+<span><span class="co">#  real beta_cov; //coefficient of covariate effect on annual fluctuations</span></span>
 <span><span class="co">#   ...</span></span>
 <span><span class="co"># }</span></span>
 <span><span class="co"># transformed parameters {</span></span>
