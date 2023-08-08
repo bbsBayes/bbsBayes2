@@ -20,6 +20,7 @@ editor_options:
   library(sf)
   library(patchwork)
   library(bayesplot) #to visually check convergence
+#> Warning: package 'bayesplot' was built under R version 4.3.1
   library(tidyr)
 ```
 
@@ -389,7 +390,7 @@ the modified model using the `model_file` argment in `prepare_model()`.
 
 ```r
 
-prep<- prepare_model(...,
+prep<- prepare_model(model = "gamye", model_variant = "spatial",
         model_file="gamye_hier_bbs_CV_COPY.stan",
          ...
           )
@@ -426,8 +427,8 @@ For example, the following code components were added to the text of the Stan fi
 # }
 # parameters {
 #   ...
-# // covariate parameters
-# matrix[n_strata,n_years] cov; // strata by year covariate matrix
+# // covariate parameter
+#  real beta_cov; //coefficient of covariate effect on annual fluctuations
 #   ...
 # }
 # transformed parameters {
