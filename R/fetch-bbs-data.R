@@ -207,8 +207,8 @@ bbs_dir <- function(quiet = TRUE) {
 #'   when `run_models()` is run.
 #' @param level Character. BBS data to remove, one of "all", "state", or "stop".
 #'   Only applies if `type = "bbs_data"`. Default "all".
-#' @param release Character/Numeric. BBS data to remove, one of "all", 2020, or
-#'   2022. Only applies if `type = "bbs_data"`. Default "all".
+#' @param release Character/Numeric. BBS data to remove, one of "all", 2020,
+#'   2022, or 2023. Only applies if `type = "bbs_data"`. Default "all".
 #'
 #' @family BBS data functions
 #'
@@ -249,7 +249,7 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
       check_release(release, all = TRUE)
 
       if(level == "all") level <- c("state", "stop")
-      if(release == "all") release <- c("2020", "2022")
+      if(release == "all") release <- c("2020", "2022", "2023")
 
       # To get all combos
       f <- vector()
@@ -276,8 +276,8 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
 #'
 #' @param level Character. BBS data to check, one of "all", "state", or "stop".
 #'   Default "state".
-#' @param release Character/Numeric. BBS data to check, one of "all", 2020, or
-#'   2022. Default 2022.
+#' @param release Character/Numeric. BBS data to check, one of "all", 2020,
+#'   2022, or 2023. Default 2023.
 #'
 #' @inheritParams common_docs
 #' @family BBS data functions
@@ -291,12 +291,12 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
 #' have_bbs_data(release = 2020)
 #' have_bbs_data(release = "all", level = "all")
 
-have_bbs_data <- function(level = "state", release = 2022, quiet = FALSE){
+have_bbs_data <- function(level = "state", release = 2023, quiet = FALSE){
   check_in(level, c("all", "state", "stop"))
   check_release(release, all = TRUE)
 
   if(level == "all") level <- c("state", "stop")
-  if(release == "all") release <- c("2020", "2022")
+  if(release == "all") release <- c("2020", "2022", "2023")
 
   # To get all combos
   f <- vector()
@@ -331,7 +331,7 @@ get_birds <- function(level, quiet, connection, release, force) {
 
   unz_path <- utils::unzip(zipfile = full_path, exdir = tempdir())
 
-  if(release == 2023){
+  if(release == 2023){ # not zipped in 2023
     birds <- unz_path %>%
     purrr::map(readr::read_csv, col_types = "nnnnnnnnnnnnnnn",
                progress = FALSE) %>%
@@ -365,7 +365,7 @@ get_routes <- function(release, quiet, connection, force) {
   if(release == 2020){
     rtsfl <- "routes.zip"
   }
-  if(release == 2023){
+  if(release == 2023){ # format of embedded files changed in 2023
     rtsfl <- "routes.csv"
   }
 
@@ -379,7 +379,7 @@ get_routes <- function(release, quiet, connection, force) {
 
   if(release == 2023){
     routes <- readr::read_csv(
-      full_path,
+      full_path, # these files not in zip format in 2023
       na = c("NA", "", "NULL"),
       col_types = "nnncnnnnnnn", progress = FALSE,
       locale = readr::locale(encoding = "latin1")) %>%
@@ -403,7 +403,7 @@ get_weather <- function(release, quiet, connection, force) {
 
   if(!quiet) message("  - weather...")
 
-  if(release == 2023){
+  if(release == 2023){ # this file not in zip format in 2023
     wthrfl <- "weather.csv"
   }else{
     wthrfl <- "Weather.zip"
@@ -417,7 +417,7 @@ get_weather <- function(release, quiet, connection, force) {
       overwrite_file = force)
   })
 
-  if(release == 2023){
+  if(release == 2023){ # some files not in zip format in this release
   weather <- readr::read_csv(
    full_path,
    col_types = "nnnnnnnnnnnncnnnnnn",
