@@ -17,6 +17,7 @@ run_model(
   output_basename = NULL,
   output_dir = ".",
   save_model = TRUE,
+  retain_csv = FALSE,
   overwrite = FALSE,
   set_seed = NULL,
   quiet = FALSE,
@@ -56,10 +57,18 @@ details.}
 Stan model run and the final model output RDS file if \code{save_model = TRUE}.}
 
 \item{output_dir}{Character. Directory in which all model files will be
-created.}
+created. Defaults to the working directory, but recommend that the user
+sets this to a particular existing directory for better file organization.}
 
 \item{save_model}{Logical. Whether or not to save the model output to file
 as an RDS object with all required data. Defaults to \code{TRUE}.}
+
+\item{retain_csv}{Logical. Whether to retain the Stan csv files after the
+model has finished running and the fitted object has been saved.
+Defaults to FALSE because csv files duplicate information saved in
+the model output file rds object, when \code{save_model = TRUE}, and so for
+file organization and efficient use of memory, these are deleted
+by default.}
 
 \item{overwrite}{Logical. Whether to overwrite an existing model output file
 when saving.}

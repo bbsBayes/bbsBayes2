@@ -177,10 +177,10 @@ check_dir <- function(output_dir) {
   }
 }
 
-check_file <- function(output_basename, model, model_variant) {
+check_file <- function(output_basename, aou, model, model_variant) {
   if(is.null(output_basename)) {
-    output_basename <- paste0("BBS_STAN_", model, "_", model_variant,
-                              "_", Sys.Date())
+    output_basename <- paste0("BBS_", aou,"_", model, "_", model_variant,
+                              "_", format(Sys.time(), "%Y%m%d%H%M"),"_STAN")
   } else if(!inherits(output_basename, "character")) {
     stop("`output_basename` should be a text string indicating the name of ",
          "the file to create (no extension)", call. = FALSE)

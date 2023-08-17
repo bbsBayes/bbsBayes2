@@ -25,7 +25,14 @@
 #' @param output_basename Character. Name of the files created as part of the
 #'   Stan model run and the final model output RDS file if `save_model = TRUE`.
 #' @param output_dir Character. Directory in which all model files will be
-#'   created.
+#'   created. Defaults to the working directory, but recommend that the user
+#'   sets this to a particular existing directory for better file organization.
+#' @param retain_csv Logical. Whether to retain the Stan csv files after the
+#'   model has finished running and the fitted object has been saved.
+#'   Defaults to `FALSE` because csv files duplicate information saved in
+#'   the model output file save object, when `save_model = TRUE`, and so for
+#'   file organization and efficient use of memory, these are deleted
+#'   by default.
 #' @param overwrite Logical. Whether to overwrite an existing model output file
 #'   when saving.
 #' @param save_model Logical. Whether or not to save the model output to file
@@ -75,6 +82,7 @@ run_model <- function(model_data,
                       output_basename = NULL,
                       output_dir = ".",
                       save_model = TRUE,
+                      retain_csv = FALSE,
                       overwrite = FALSE,
                       set_seed = NULL,
                       quiet = FALSE,
@@ -92,10 +100,12 @@ run_model <- function(model_data,
   init_values <- model_data[["init_values"]]
   folds <- model_data[["folds"]]
   model_data <- model_data[["model_data"]]
+  aou <- search_species(meta_data[["species"]])["aou"]
 
   # Files and directory
   check_dir(output_dir)
   output_basename <- check_file(output_basename,
+                                aou,
                                 meta_data[["model"]],
                                 meta_data[["model_variant"]])
 
@@ -131,10 +141,24 @@ run_model <- function(model_data,
     model_data[["calc_CV"]] <- 0
   }
 
-  # Check if overwriting
+  # Check if overwriting and warn if overwriting existing csv files
   if(save_model & !overwrite & file.exists(paste0(output_basename, ".rds"))){
     stop("File ", output_basename, ".rds already exists. Either choose a new ",
          "basename, or specify `overwrite = TRUE`", call. = FALSE)
+  }
+  if(!overwrite & file.exists(paste0(output_basename, "-1.csv"))){
+    stop("CSV files ", output_basename, " already exist. Either choose a new ",
+         "basename, or specify `overwrite = TRUE` ",
+         "Never run two models with the same output_basename at the same time. ",
+         "Doing so will cause both models to fail when they try to write output ",
+         "to the same csv files.", call. = FALSE)
+  }
+  if(file.exists(paste0(output_basename, "-1.csv"))){
+    warning("CSV files ", output_basename, " already exist. `overwrite = TRUE`",
+            " so previous files have been overwritten.",
+         "Never run two models with the same output_basename at the same time. ",
+         "Doing so will cause both models to fail when they try to write output ",
+         "to the same csv files.", call. = FALSE)
   }
 
   # Compile model
@@ -163,7 +187,7 @@ run_model <- function(model_data,
                        "meta_strata" = meta_strata,
                        "raw_data" = raw_data)
 
-  if(save_model) save_model_run(model_output)
+  if(save_model) save_model_run(model_output, retain_csv)
 
   model_output
 }
@@ -179,6 +203,8 @@ run_model <- function(model_data,
 #'
 #' @param path Character. Optional file path to use for saved data. Defaults to
 #' the file path used for the original run.
+#' @param retain_csv Logical Should the Stan csv files be retained. Defaults to
+#' TRUE, but when called internally by `run_model` this is set to FALSE.
 #'
 #' @inheritParams common_docs
 #' @family modelling functions
@@ -195,20 +221,23 @@ run_model <- function(model_data,
 #' # Clean up
 #' unlink("my_model.rds")
 
-save_model_run <- function(model_output, path = NULL, quiet = FALSE) {
+save_model_run <- function(model_output,
+                           retain_csv = TRUE, path = NULL, quiet = FALSE) {
 
   check_data(model_output)
 
   model_fit <- model_output$model_fit
 
   if(is.null(path)) {
-    path <- model_fit$output_files()
-    if(any(!file.exists(path))) {
+    if(!retain_csv){
+    csv_path <- model_fit$output_files()
+    if(any(!file.exists(csv_path))) {
       stop("Cannot find original model file location, please specify `path`",
            call. = FALSE)
     }
+    }
 
-    path <- path %>%
+    path <- csv_path %>%
       normalizePath() %>%
       stringr::str_remove("-[0-9]{1,3}.csv$") %>%
       unique() %>%
@@ -234,6 +263,9 @@ save_model_run <- function(model_output, path = NULL, quiet = FALSE) {
   model_output[["model_fit"]] <- model_fit
   readr::write_rds(model_output, path)
 
+  if(!retain_csv){
+  unlink(csv_path) # deleting the csv files
+  }
   invisible(model_output)
 }
 
