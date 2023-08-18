@@ -29,7 +29,7 @@ test_that("run_model() first_diff short", {
     expect_s3_class(r[["raw_data"]], "data.frame")
 
     f <- paste0("BBS_STAN_first_diff_hier_", Sys.Date(),
-                c("-1.csv", "-2.csv", ".rds")) %>%
+                c(".rds")) %>%
       test_path()
 
     expect_true(all(file.exists(f)))
@@ -97,7 +97,7 @@ test_that("run_model() first_diff spatial", {
   expect_s3_class(r[["raw_data"]], "data.frame")
 
   f <- paste0("BBS_STAN_first_diff_spatial_", Sys.Date(),
-              c("-1.csv", "-2.csv", ".rds")) %>%
+              c(".rds")) %>%
     test_path()
 
   expect_true(all(file.exists(f)))
@@ -208,7 +208,7 @@ test_that("run_model() Full", {
     expect_s3_class(r[["raw_data"]], "data.frame")
 
     f <- paste0("BBS_STAN_", bbs_models$model[i], "_", bbs_models$variant[i],
-                "_", Sys.Date(), c("-1.csv", "-2.csv", ".rds"))
+                "_", Sys.Date(), c( ".rds"))
 
     expect_true(all(file.exists(f)))
   }

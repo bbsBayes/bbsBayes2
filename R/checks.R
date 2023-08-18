@@ -280,7 +280,7 @@ check_strata <- function(strata, custom = NULL, simple = FALSE,
 }
 
 check_release <- function(release, all = FALSE) {
-  chk <- c("2020", "2022")
+  chk <- c("2020", "2022", "2023")
   if(all) chk <- c("all", chk)
   check_in(release, chk)
 }
