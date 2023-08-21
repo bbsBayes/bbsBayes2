@@ -85,7 +85,7 @@ fetch_bbs_data_internal <- function(level = "state", release = 2023,
   if(!is.null(connection) & !quiet) message("Connected!")
 
   # Download/load Data --------------
-  birds <- get_birds(level, quiet, connection, release, force)
+  birds <- get_birds(level, release, quiet, connection, force)
   routes <- get_routes(release, quiet, connection, force)
   weather <- get_weather(release, quiet, connection, force)
   regs <- readr::read_csv(
@@ -317,7 +317,7 @@ get_encoding <- function() {
   e
 }
 
-get_birds <- function(level, quiet, connection, release, force) {
+get_birds <- function(level, release, quiet, connection, force) {
   if (level == "state") count_zip <- "States.zip"
   if (level == "stop") count_zip <- "50-StopData.zip"
 
@@ -331,20 +331,15 @@ get_birds <- function(level, quiet, connection, release, force) {
 
   unz_path <- utils::unzip(zipfile = full_path, exdir = tempdir())
 
-  if(release == 2023){ # not zipped in 2023
+  if(release != 2023){ # not zipped in 2023
+      unz_path <- purrr::map(unz_path, utils::unzip, exdir = tempdir())
+    }
     birds <- unz_path %>%
     purrr::map(readr::read_csv, col_types = "nnnnnnnnnnnnnnn",
                progress = FALSE) %>%
     purrr::map(~dplyr::rename_with(.x, snakecase::to_snake_case)) %>%
     dplyr::bind_rows()
-  }else{
-  birds <- unz_path %>%
-    purrr::map(utils::unzip, exdir = tempdir()) %>%
-    purrr::map(readr::read_csv, col_types = "nnnnnnnnnnnnnnn",
-               progress = FALSE) %>%
-    purrr::map(~dplyr::rename_with(.x, snakecase::to_snake_case)) %>%
-    dplyr::bind_rows()
-}
+
   unlink(full_path)
 
   birds
@@ -377,22 +372,17 @@ get_routes <- function(release, quiet, connection, force) {
       overwrite_file = force)
   })
 
-  if(release == 2023){
-    routes <- readr::read_csv(
-      full_path, # these files not in zip format in 2023
-      na = c("NA", "", "NULL"),
-      col_types = "nnncnnnnnnn", progress = FALSE,
-      locale = readr::locale(encoding = "latin1")) %>%
-      dplyr::rename_with(snakecase::to_snake_case)
-  }else{
-    routes <- readr::read_csv(
-      utils::unzip(zipfile = full_path, exdir = tempdir()),
-      na = c("NA", "", "NULL"),
-      col_types = "nnncnnnnnnn", progress = FALSE,
-      locale = readr::locale(encoding = "latin1")) %>%
-      dplyr::rename_with(snakecase::to_snake_case)
+  if(release != 2023) {
+    full_path <- utils::unzip(zipfile = full_path, exdir = tempdir())
+  }
 
-}
+  routes <- readr::read_csv(
+    full_path,
+    na = c("NA", "", "NULL"),
+    col_types = "nnncnnnnnnn", progress = FALSE,
+    locale = readr::locale(encoding = "latin1")) %>%
+    dplyr::rename_with(snakecase::to_snake_case)
+
   unlink(full_path)
 
   routes
@@ -417,19 +407,16 @@ get_weather <- function(release, quiet, connection, force) {
       overwrite_file = force)
   })
 
-  if(release == 2023){ # some files not in zip format in this release
+  if(release != 2023){ # some files not in zip format in this release
+    full_path <- utils::unzip(zipfile = full_path, exdir = tempdir())
+  }
+
   weather <- readr::read_csv(
-   full_path,
-   col_types = "nnnnnnnnnnnncnnnnnn",
+    full_path,
+    col_types = "nnnnnnnnnnnncnnnnnn",
     na = c("NA", "", "NULL"), progress = FALSE) %>%
     dplyr::rename_with(snakecase::to_snake_case)
-  }else{
-    weather <- readr::read_csv(
-      utils::unzip(zipfile = full_path, exdir = tempdir()),
-      col_types = "nnnnnnnnnnnncnnnnnn",
-      na = c("NA", "", "NULL"), progress = FALSE) %>%
-      dplyr::rename_with(snakecase::to_snake_case)
-  }
+
 
   unlink(full_path)
 

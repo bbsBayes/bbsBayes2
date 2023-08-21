@@ -12,13 +12,13 @@ run_model(
   iter_warmup = 1000,
   iter_sampling = 1000,
   adapt_delta = 0.8,
-  max_treedepth = 10,
+  max_treedepth = 11,
   k = NULL,
   output_basename = NULL,
   output_dir = ".",
   save_model = TRUE,
-  retain_csv = FALSE,
   overwrite = FALSE,
+  retain_csv = FALSE,
   set_seed = NULL,
   quiet = FALSE,
   ...
@@ -54,7 +54,9 @@ definition. See \code{?prepare_model} or the \href{https://bbsBayes.github.io/bb
 details.}
 
 \item{output_basename}{Character. Name of the files created as part of the
-Stan model run and the final model output RDS file if \code{save_model = TRUE}.}
+Stan model run and the final model output RDS file if \code{save_model = TRUE}.
+Defaults to a character string that is unique to the species, model,
+model_variant, and system time of \code{model_run()} call (nearest minute).}
 
 \item{output_dir}{Character. Directory in which all model files will be
 created. Defaults to the working directory, but recommend that the user
@@ -63,15 +65,15 @@ sets this to a particular existing directory for better file organization.}
 \item{save_model}{Logical. Whether or not to save the model output to file
 as an RDS object with all required data. Defaults to \code{TRUE}.}
 
-\item{retain_csv}{Logical. Whether to retain the Stan csv files after the
-model has finished running and the fitted object has been saved.
-Defaults to FALSE because csv files duplicate information saved in
-the model output file rds object, when \code{save_model = TRUE}, and so for
-file organization and efficient use of memory, these are deleted
-by default.}
-
 \item{overwrite}{Logical. Whether to overwrite an existing model output file
 when saving.}
+
+\item{retain_csv}{Logical. Whether to retain the Stan csv files after the
+model has finished running and the fitted object has been saved.
+Defaults to \code{FALSE} because csv files duplicate information saved in
+the model output file save object, when \code{save_model = TRUE}, and so for
+file organization and efficient use of memory, these are deleted
+by default.}
 
 \item{set_seed}{Numeric. If \code{NULL} (default) no seed is set. Otherwise an
 integer number to be used with \code{withr::with_seed()} internally to ensure
@@ -111,9 +113,6 @@ pm <- prepare_model(p, model = "first_diff", model_variant = "hier")
 
 # Run model (quick and dirty)
 m <- run_model(pm, iter_warmup = 20, iter_sampling = 20, chains = 2)
-
-# Clean up (remove model output files)
-unlink(list.files(pattern = paste0("BBS_STAN_first_diff_hier_", Sys.Date())))
 \dontshow{\}) # examplesIf}
 }
 \seealso{

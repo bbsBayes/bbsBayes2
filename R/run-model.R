@@ -24,19 +24,21 @@
 #'   details.
 #' @param output_basename Character. Name of the files created as part of the
 #'   Stan model run and the final model output RDS file if `save_model = TRUE`.
+#'   Defaults to a character string that is unique to the species, model,
+#'   model_variant, and system time of `model_run()` call (nearest minute).
 #' @param output_dir Character. Directory in which all model files will be
 #'   created. Defaults to the working directory, but recommend that the user
 #'   sets this to a particular existing directory for better file organization.
+#' @param overwrite Logical. Whether to overwrite an existing model output file
+#'   when saving.
+#' @param save_model Logical. Whether or not to save the model output to file
+#'   as an RDS object with all required data. Defaults to `TRUE`.
 #' @param retain_csv Logical. Whether to retain the Stan csv files after the
 #'   model has finished running and the fitted object has been saved.
 #'   Defaults to `FALSE` because csv files duplicate information saved in
 #'   the model output file save object, when `save_model = TRUE`, and so for
 #'   file organization and efficient use of memory, these are deleted
 #'   by default.
-#' @param overwrite Logical. Whether to overwrite an existing model output file
-#'   when saving.
-#' @param save_model Logical. Whether or not to save the model output to file
-#'   as an RDS object with all required data. Defaults to `TRUE`.
 #' @param ... Other arguments passed on to `cmdstanr::sample()`.
 #'
 #' @inheritParams common_docs
@@ -67,8 +69,6 @@
 #' # Run model (quick and dirty)
 #' m <- run_model(pm, iter_warmup = 20, iter_sampling = 20, chains = 2)
 #'
-#' # Clean up (remove model output files)
-#' unlink(list.files(pattern = paste0("BBS_STAN_first_diff_hier_", Sys.Date())))
 
 run_model <- function(model_data,
                       refresh = 100,
@@ -77,20 +77,20 @@ run_model <- function(model_data,
                       iter_warmup = 1000,
                       iter_sampling = 1000,
                       adapt_delta = 0.8,
-                      max_treedepth = 10,
+                      max_treedepth = 11,
                       k = NULL,
                       output_basename = NULL,
                       output_dir = ".",
                       save_model = TRUE,
-                      retain_csv = FALSE,
                       overwrite = FALSE,
+                      retain_csv = FALSE,
                       set_seed = NULL,
                       quiet = FALSE,
                       ...) {
 
   # Check inputs
   check_data(model_data)
-  check_logical(save_model, overwrite, quiet)
+  check_logical(save_model, retain_csv, overwrite, quiet)
   check_numeric(refresh, chains, parallel_chains, iter_sampling, iter_warmup,
                 adapt_delta, max_treedepth)
 
@@ -100,12 +100,13 @@ run_model <- function(model_data,
   init_values <- model_data[["init_values"]]
   folds <- model_data[["folds"]]
   model_data <- model_data[["model_data"]]
-  aou <- search_species(meta_data[["species"]])["aou"]
+  species <- stringr::str_remove_all(meta_data[["species"]],
+                                      "[^[[:alpha:]]]")
 
   # Files and directory
   check_dir(output_dir)
   output_basename <- check_file(output_basename,
-                                aou,
+                                species,
                                 meta_data[["model"]],
                                 meta_data[["model_variant"]])
 
@@ -204,7 +205,8 @@ run_model <- function(model_data,
 #' @param path Character. Optional file path to use for saved data. Defaults to
 #' the file path used for the original run.
 #' @param retain_csv Logical Should the Stan csv files be retained. Defaults to
-#' TRUE, but when called internally by `run_model` this is set to FALSE.
+#' TRUE if user calls function directly. However, when this function is called
+#' internally by `run_model` this is set to FALSE.
 #'
 #' @inheritParams common_docs
 #' @family modelling functions
@@ -222,20 +224,21 @@ run_model <- function(model_data,
 #' unlink("my_model.rds")
 
 save_model_run <- function(model_output,
-                           retain_csv = TRUE, path = NULL, quiet = FALSE) {
+                           retain_csv, path = NULL, quiet = FALSE) {
 
   check_data(model_output)
+  check_logical(retain_csv,quiet)
 
   model_fit <- model_output$model_fit
 
   if(is.null(path)) {
-    if(!retain_csv){
+    #if(!retain_csv){
     csv_path <- model_fit$output_files()
     if(any(!file.exists(csv_path))) {
       stop("Cannot find original model file location, please specify `path`",
            call. = FALSE)
     }
-    }
+    #}
 
     path <- csv_path %>%
       normalizePath() %>%
