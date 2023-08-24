@@ -194,7 +194,8 @@ which can be modified by the user and then used as input to
 See the [Function Reference](../reference) for more details on how to
 use a particular function.
 
-```{r, echo = FALSE, fig.cap = "", fig.alt = "", fig.width = 8, fig.asp = 0.65}
+
+```{r, echo = FALSE, fig.cap = "", fig.alt = "", fig.width = 8, fig.asp = 1.5}
 library(DiagrammeR)
 grViz("digraph functions {
 
@@ -296,7 +297,7 @@ Stratifications included in bbsBayes2 are
 [stratifications](articles/stratification) for more details and
 examples.
 
-### Species names in bbsBayes2
+#### Species names in bbsBayes2
 
 Let's first take a brief step out of the workflow to explain important information about species names in bbsBayes2.
 
@@ -308,7 +309,7 @@ search_species("Geai bleu")
 search_species("Cyanocitta")
 search_species("Corvidae")
 ```
-#### Species groupings
+##### Species groupings
 
 There are some taxonomic groupings of species-units in the BBS database
 that bbsBayes2 by default also combines into combined species forms. These
@@ -372,7 +373,7 @@ problems with our model.
 m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
 ```
 
-### A note on spatial models
+### Additional steps for spatial models
 
 For spatial models there are two additional steps. You stratify and
 prepare the data as in the previous example, but you also prepare the
@@ -495,9 +496,7 @@ summary_stats_n_smooth <- get_summary(m, variables = "n_smooth") %>%
 summary_stats_n_smooth
 ```
 
-### Model predictions
-
-#### Indices - predictions of annual relative abundance
+### Indices - predictions of annual relative abundance
 
 Indices (annual indices of relative abundance) represent mean predicted
 annual counts of the species in a given region, on an average route, by
@@ -524,8 +523,9 @@ We can explore or extract these indices for saving as an external file
 ```{r}
 i[["indices"]]
 ```
+### Trajectory plots
 
-We can also generate time-series plots of these indices.
+We can also generate time-series plots of these indices to visualize population trajectories.
 
 ```{r}
 # generates a list of ggplot graphs, one for each region
@@ -559,7 +559,7 @@ p1_mod <- p[["continent"]]+
 print(p1_mod)
 ```
 
-#### Trends - predictions of mean rates of change over time
+### Trends - predictions of mean rates of change over time
 
 Next we can calculate the long-term trends based on these indices. Note
 all trends from bbsBayes2 models are derived from summaries of indices
@@ -585,6 +585,8 @@ t_10 <- generate_trends(i,
                         max_year = 2021)
 t_10
 ```
+
+### Trend maps - visualizing the spatial variation in trends
 
 We can plot trend estimates on a map to visualise the spatial patterns
 in population change.
@@ -618,7 +620,7 @@ print(t_mod)
 
 ```
 
-### Example models
+### Barn Swallow example
 
 A model with a suitable number of iterations takes a long time to run
 (the Barn Swallow model, a species with many data and many strata, took
@@ -663,6 +665,8 @@ BARS_continent <- BARS_index_plots[["continent"]]
 print(BARS_continent)
 ```
 
+### Smoothed population trajectories - gamye model
+
 Above, we've plotted the full annual indices (i.e., the population
 trajectory) from the gamye model. In the *gamye* and *slope* models, the
 population trajectory can be decomposed into two components: the smooth
@@ -688,6 +692,7 @@ BARS_trend_map <- plot_map(BARS_trends)
 BARS_trend_map
 
 ```
+### Modifying base plots
 
 We can also add the smoothed annual indices to the plots of the full
 annual indices from above, taking advantage of the [ggplot2](https://github.com/tidyverse/ggplot2) functions such as `geom_line()`.
