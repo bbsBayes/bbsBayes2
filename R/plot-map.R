@@ -9,7 +9,9 @@
 #' @param title Logical. Whether or not to include a title with species. Default
 #'   `TRUE`.
 #' @param alternate_column Character, Optional name of numerical column in
-#'   trends dataframe to plot using viridis continuous colour scale
+#'   trends dataframe to plot. If one of the columns with "trend" in the title,
+#'   (e.g., trend_q_0.05 then the colour scheme and breaks will match those
+#'   used in the default trend maps)
 #' @param strata_custom (`sf`) Data Frame. Data frame
 #'   of modified existing stratification, or a `sf` spatial data frame with
 #'   polygons defining the custom stratifications. See details on strata_custom
@@ -71,7 +73,14 @@ plot_map <- function(trends,
 
   if(!is.null(alternate_column)){
     if(!alternate_column %in% names(trends)){
-      stop("alternate_column is missing from trends. Specify a numerical column from the trends dataframe")
+      stop("alternate_column is missing from trends.",
+      "Specify a numerical column from the trends dataframe")
+    }
+    ## if the values in the alternate column are trends, then use the same
+    ## colour scheme and breaks to match the defaul trend maps
+    if(grepl("trend",alternate_column,ignore.case = TRUE)){
+      alternate_trend_column <- alternate_column
+      alternate_column <- NULL
     }
   }
 
@@ -83,7 +92,11 @@ plot_map <- function(trends,
   labls <- paste0(labls, " %")
 
   check_slope(trends, slope)
-  if(slope) trend_col <- "slope_trend" else trend_col <- "trend"
+  if(is.null(alternate_trend_column)){
+  if(slope){ trend_col <- "slope_trend" }else{trend_col <- "trend"}
+  }else{
+    trend_col <- alternate_trend_column
+  }
 
   trends$t_plot <- as.numeric(as.character(trends[[trend_col]]))
   trends$t_plot <- cut(trends$t_plot, breaks = c(-Inf, breaks, Inf),
