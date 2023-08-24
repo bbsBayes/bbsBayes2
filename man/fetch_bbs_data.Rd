@@ -6,7 +6,7 @@
 \usage{
 fetch_bbs_data(
   level = "state",
-  release = 2022,
+  release = 2023,
   force = FALSE,
   quiet = FALSE,
   compression = "none"
@@ -34,7 +34,7 @@ load. Must be one of \code{none}, \code{gz}, \code{bz2}, or \code{xz} (passed to
 Fetch and download Breeding Bird Survey data from the United States
 Geological Survey (USGS) FTP site. This is the raw data that is uploaded to
 the site before any analyses are performed. Users can download different
-types (\code{state}, \code{stop}) and different releases (currently \code{2020} and \code{2022}).
+types (\code{state}, \code{stop}) and different releases (currently \code{2020}, \code{2022}, and \code{2023}).
 }
 \details{
 Users will be asked before saving the BBS data to a package-specific
@@ -49,10 +49,10 @@ beginning in 1997, which includes counts for each stop along routes
 individually. \strong{Note that stop-level data is not currently supported by the
 modelling utilities in bbsBayes2.}
 
-There are two releases for each type of data, \code{2020} and \code{2022}. By default
-all functions use the most recent release unless otherwise specified. For
-example, the \code{release} argument in \code{stratify()} can be changed to \code{2020} to
-use the 2020 release of state-level counts.
+There are three releases for each type of data, \code{2020}, \code{2022}, and \code{2023}.
+By default all functions use the most recent release unless otherwise
+specified. For example, the \code{release} argument in \code{stratify()} can be
+changed to \code{2020} to use the 2020 release of state-level counts.
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

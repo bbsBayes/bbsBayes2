@@ -4,14 +4,14 @@
 \alias{have_bbs_data}
 \title{Check whether BBS data exists locally}
 \usage{
-have_bbs_data(level = "state", release = 2022, quiet = FALSE)
+have_bbs_data(level = "state", release = 2023, quiet = FALSE)
 }
 \arguments{
 \item{level}{Character. BBS data to check, one of "all", "state", or "stop".
 Default "state".}
 
-\item{release}{Character/Numeric. BBS data to check, one of "all", 2020, or
-2022. Default 2022.}
+\item{release}{Character/Numeric. BBS data to check, one of "all", 2020,
+2022, or 2023. Default 2023.}
 
 \item{quiet}{Logical. Suppress progress messages? Default \code{FALSE}.}
 }
