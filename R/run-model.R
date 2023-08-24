@@ -224,7 +224,7 @@ run_model <- function(model_data,
 #' unlink("my_model.rds")
 
 save_model_run <- function(model_output,
-                           retain_csv, path = NULL, quiet = FALSE) {
+                           retain_csv = TRUE, path = NULL, quiet = FALSE) {
 
   check_data(model_output)
   check_logical(retain_csv,quiet)
