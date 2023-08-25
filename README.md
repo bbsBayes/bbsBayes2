@@ -68,8 +68,8 @@ install.packages("remotes")
 remotes::install_github(("bbsBayes/bbsBayes2")
 ```
 
-If you want to install a developmental branch (at your own risk!), you can use 
-the following (assuming you want to install a branch called `dev`).
+If you want to install the developmental branch (which often includes additional 
+options and newest updates), you can use the following.
 
 ```{r}
 pak::pkg_install("bbsBayes/bbsBayes2@dev")
