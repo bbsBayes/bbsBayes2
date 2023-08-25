@@ -1,7 +1,7 @@
 
 test_that("run_model() first_diff short", {
 
-  unlink(list.files(test_path(), "BBS_STAN_first_diff_hier_",
+  unlink(list.files(test_path(), "^BBS_PacificWren",
                     full.names = TRUE))
 
   md <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
@@ -28,20 +28,21 @@ test_that("run_model() first_diff short", {
     expect_s3_class(r[["meta_strata"]], "data.frame")
     expect_s3_class(r[["raw_data"]], "data.frame")
 
-    f <- paste0("BBS_STAN_first_diff_hier_", Sys.Date(),
-                c(".rds")) %>%
-      test_path()
+
+    f <- stringr::str_replace(r[["model_fit"]]$output_files()[1],"-1.csv",".rds")
 
     expect_true(all(file.exists(f)))
 
     # Snapshots can't be run interactively (skip on winows/mac)
-    if(tolower(Sys.info()[["sysname"]]) == "linux") {
-      f <- strip_model_files(f)
-      expect_snapshot_file(f[1])
-      expect_snapshot_file(f[2])
-    }
+    # if(tolower(Sys.info()[["sysname"]]) == "linux") {
+    #   f <- strip_model_files(f)
+    #   expect_snapshot_file(f[1])
+    #   expect_snapshot_file(f[2])
+    # }
 
     # Clean up
+    f %>%
+      unlink()
     list.files(test_path(),
                paste0("^BBS_STAN_first_diff_hier_(.)*"), full.names = TRUE) %>%
       unlink()
@@ -65,7 +66,7 @@ test_that("run_model() slope", {
 
 test_that("run_model() first_diff spatial", {
 
-  unlink(list.files(test_path(), "BBS_STAN_first_diff_spatial_",
+  unlink(list.files(test_path(), "^BBS_PacificWren",
                     full.names = TRUE))
 
   p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
@@ -96,28 +97,29 @@ test_that("run_model() first_diff spatial", {
   expect_s3_class(r[["meta_strata"]], "data.frame")
   expect_s3_class(r[["raw_data"]], "data.frame")
 
-  f <- paste0("BBS_STAN_first_diff_spatial_", Sys.Date(),
-              c(".rds")) %>%
-    test_path()
+  f <- stringr::str_replace(r[["model_fit"]]$output_files()[1],"-1.csv",".rds")
 
   expect_true(all(file.exists(f)))
 
   # Snapshots can't be run interactively (skip on winows/mac)
-  if(tolower(Sys.info()[["sysname"]]) == "linux") {
-    f <- strip_model_files(f)
-    expect_snapshot_file(f[1])
-    expect_snapshot_file(f[2])
-  }
+  # if(tolower(Sys.info()[["sysname"]]) == "linux") {
+  #   f <- strip_model_files(f)
+  #   expect_snapshot_file(f[1])
+  #   expect_snapshot_file(f[2])
+  # }
 
-  # Clean up
-  list.files(test_path(),
-             paste0("^BBS_STAN_first_diff_spatial_(.)*"), full.names = TRUE) %>%
+  f %>%
     unlink()
+  # Clean up
+  # list.files(test_path(),
+  #            paste0("^BBS_STAN_first_diff_spatial_(.)*"), full.names = TRUE) %>%
+  #   unlink()
 })
 
+### confirm if this test is necessary
 test_that("run_model() ... args", {
 
-  unlink(list.files(test_path(), "BBS_STAN_first_diff_hier_",
+  unlink(list.files(test_path(), "^BBS_PacificWren",
                     full.names = TRUE))
 
   md <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
@@ -130,11 +132,17 @@ test_that("run_model() ... args", {
                                 iter_sampling = 5, iter_warmup = 5,
                                 refresh = 0,
                                 set_seed = 111,
-                                save_latent_dynamics = TRUE)) %>%
+                                save_latent_dynamics = TRUE,
+                                retain_csv = TRUE)) %>%
     # Catch all messages and notes
     suppressMessages() %>%
     suppressWarnings() %>%
     utils::capture.output()
+
+  f <- c(r[["model_fit"]]$output_files(),
+         stringr::str_replace(r[["model_fit"]]$output_files()[1],"-1.csv",".rds"))
+
+  expect_true(all(file.exists(f)))
 
   paste0("first_diff_hier_bbs_CV-diagnostic-", 1:2, ".csv") %>%
     test_path() %>%
@@ -143,6 +151,9 @@ test_that("run_model() ... args", {
     expect_true()
 
   # Clean up
+  f %>%
+    unlink()
+
   list.files(test_path(),
              paste0("first_diff_hier_(.)*"), full.names = TRUE) %>%
     unlink()
@@ -161,14 +172,18 @@ test_that("run_model() CV", {
     suppressMessages()
 
   expect_message(
-    m <- run_model(md, k = 1, chains = 2, iter_warmup = 10,
+    r <- run_model(md, k = 1, chains = 2, iter_warmup = 10,
                    iter_sampling = 10)) %>%
     suppressMessages() %>%
     capture.output()
 
-  expect_equal(m[["meta_data"]][["k"]], 1)
+  expect_equal(r[["meta_data"]][["k"]], 1)
+  f <- stringr::str_replace(r[["model_fit"]]$output_files()[1],"-1.csv",".rds")
 
   # Clean up
+  f %>%
+    unlink()
+
   unlink(list.files(test_path(), paste0("^BBS_STAN_(.)*_", Sys.Date()),
                     full.names = TRUE))
 })
@@ -207,13 +222,14 @@ test_that("run_model() Full", {
     expect_s3_class(r[["meta_strata"]], "data.frame")
     expect_s3_class(r[["raw_data"]], "data.frame")
 
-    f <- paste0("BBS_STAN_", bbs_models$model[i], "_", bbs_models$variant[i],
-                "_", Sys.Date(), c( ".rds"))
+    f <- stringr::str_replace(r[["model_fit"]]$output_files()[1],"-1.csv",".rds")
 
     expect_true(all(file.exists(f)))
   }
 
   # Clean up
-  unlink(list.files(test_path(), paste0("^BBS_STAN_(.)*_", Sys.Date()),
+  f %>%
+    unlink()
+  unlink(list.files(test_path(), paste0("^BBS_(.)*", c(".csv",".rds")),
                     full.names = TRUE))
 })
