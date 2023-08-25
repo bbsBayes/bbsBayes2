@@ -24,7 +24,9 @@ metric (slope of a log-linear regression) if \code{slope = TRUE} was used in
 \code{TRUE}.}
 
 \item{alternate_column}{Character, Optional name of numerical column in
-trends dataframe to plot using viridis continuous colour scale}
+trends dataframe to plot. If one of the columns with "trend" in the title,
+(e.g., trend_q_0.05 then the colour scheme and breaks will match those
+used in the default trend maps)}
 
 \item{col_viridis}{Logical. Should the colour-blind-friendly "viridis"
 palette be used. Default \code{FALSE}.}
@@ -58,6 +60,9 @@ plot_map(t, slope = TRUE)
 
 # Viridis
 plot_map(t, col_viridis = TRUE)
+
+# Generate a map (with alternate column - lower 95\% Credible limit)
+plot_map(t, alternate_column = "trend_q_0.05")
 
 }
 \seealso{

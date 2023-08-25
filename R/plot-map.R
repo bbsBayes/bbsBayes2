@@ -40,6 +40,9 @@
 #' # Viridis
 #' plot_map(t, col_viridis = TRUE)
 #'
+#' # Generate a map (with alternate column - lower 95% Credible limit)
+#' plot_map(t, alternate_column = "trend_q_0.05")
+#'
 #' @export
 #'
 
@@ -53,7 +56,7 @@ plot_map <- function(trends,
   # Checks
   check_data(trends)
   check_logical(slope, title, col_viridis)
-
+  alternate_trend_column <- NULL
   stratify_by <- trends[["meta_data"]]$stratify_by
   species <- trends[["meta_data"]]$species
 
@@ -103,7 +106,7 @@ plot_map <- function(trends,
                       labels = labls)
 
   if(title) {
-    title <- paste(species, "trends", start_year, "-", end_year)
+    title <- paste(species, trend_col, start_year, "-", end_year)
   } else title <- NULL
 
 
