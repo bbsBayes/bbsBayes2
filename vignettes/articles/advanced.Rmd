@@ -179,6 +179,50 @@ m<-prepare_model(prepared_data = d,
 #                  ...)
 
 ```
+## Example - mapping trend uncertainty or estimated abundance
+
+A new feature in version 1.1, is the ability to use the plot_map function to map any of the numerical values provided in the output from `generate_trends()`. For example, you may be interested in understanding the spatial distribution of the upper and lower bounds of a trend estimate, in order to visualise the uncertainty in the spatial distribution of trend estimates.
+
+Here, we'll demonstrate this feature using previously generate fitted model output from applying the spatial GAMYE model to the data for Barn Swallow (2022 data-release).
+
+You can download a zip-file with a saved model output for Barn Swallow here:
+
+[An example of the output from applying the spatial gamye model to Barn
+Swallow data](https://drive.google.com/file/d/1RNbM312_isopRN7Lb-jP1-wK4UvRKkHE/view?usp=sharing).
+
+Unzip the file and store it in a local directory.
+In this example we've placed it in a sub-directory of our working directory called *output*.
+
+
+```r
+BARS <- readRDS("output/Barn_Swallow_gamye_spatial.rds")
+```
+Then we generate annual indices of abundance using the smooth-only component of the population trajectory, use those to estimate long-term trends (1966 - 2021), and plot those trends on a map.
+
+
+```r
+BARS_smooth_indices <- generate_indices(BARS,
+                                        alternate_n = "n_smooth")
+#> Processing region continent
+#> Processing region stratum
+BARS_trends <- generate_trends(BARS_smooth_indices)
+BARS_trend_map <- plot_map(BARS_trends)
+BARS_trend_map
+```
+
+<img src="figures/advanced_unnamed-chunk-7-1.png" alt="Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"  />
+Then, to get a sense of the uncertainty in this pattern of trend estimates, we generate two maps that each display the upper and lower credible intervals of the trends. We can interpret these maps as showing the lower-bound and the upper-bound on the rates of population change for the species. For example, we can be reasonably confident that the species' trends have not been more negative than the map on the left, and are unlikely to be more positive than the map on the right.
+
+
+```r
+
+BARS_trend_map_lower <- plot_map(BARS_trends, alternate_column = "trend_q_0.05")
+BARS_trend_map_upper <- plot_map(BARS_trends, alternate_column = "trend_q_0.95")
+# combined using the patchwork package
+BARS_trend_bounds_maps <- BARS_trend_map_lower / BARS_trend_map_upper + plot_layout(guides = "collect")
+BARS_trend_bounds_maps
+`
+
 
 ## Advanced options and customized models
 
@@ -223,7 +267,11 @@ model run-times.
 
 The `generate_trends()` function produces much more than just the trend
 estimates. This section explains one alternate measure of trend (i.e., *slope trends*) and measures of population change, such as the percent change in the population between the first and last years of the trend and the probability that a population has decreased by a certain amount.
-
+#> Error: <text>:15:56: unexpected symbol
+#> 21: negative binomial distribution. This selection is controlled using the
+#> 22: `
+#>                                                            ^
+```
 
 ```r
 # set of indices for demonstrating trend options
@@ -251,7 +299,7 @@ t_map <- plot_map(t)
 print(t_map)
 ```
 
-<img src="figures/advanced_unnamed-chunk-7-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the default end-point trend estimates"  />
+<img src="figures/advanced_unnamed-chunk-10-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the default end-point trend estimates"  />
 
 ### Slope-based Trends
 
@@ -280,7 +328,7 @@ t_map_slope <- plot_map(t,
 print(t_map_slope)
 ```
 
-<img src="figures/advanced_unnamed-chunk-8-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the slope-based trend estimates"  />
+<img src="figures/advanced_unnamed-chunk-11-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the slope-based trend estimates"  />
 
 ### Percent Change and probability of change
 
@@ -361,7 +409,7 @@ trajectories <- plot_indices(i_BARS)
 print(trajectories[["North"]] / trajectories[["South"]])
 ```
 
-<img src="figures/advanced_unnamed-chunk-12-1.png" alt="Population trajectories for Barn Swallow in the northern and southern parts of their range"  />
+<img src="figures/advanced_unnamed-chunk-15-1.png" alt="Population trajectories for Barn Swallow in the northern and southern parts of their range"  />
 
 ## Exporting and modifying the Stan models
 
@@ -825,7 +873,7 @@ dif_by_count <- ggplot(cv_dif) +
 dif_by_count
 ```
 
-<img src="figures/advanced_unnamed-chunk-25-1.png" alt="Cross validation differences"  />
+<img src="figures/advanced_unnamed-chunk-28-1.png" alt="Cross validation differences"  />
 
 
 
