@@ -140,17 +140,24 @@ generate_trends <- function(indices,
                             quantiles = c(0.025, 0.05, 0.25, 0.75, 0.95, 0.975),
                             slope = FALSE,
                             prob_decrease = NULL,
-                            prob_increase = NULL) {
+                            prob_increase = NULL,
+                            hpdi = FALSE) {
 
   # Checks
   check_data(indices)
-  check_logical(slope)
+  check_logical(slope, hpdi)
   check_numeric(quantiles)
   check_numeric(min_year, max_year, quantiles, prob_decrease, prob_increase,
                 allow_null = TRUE)
   check_range(quantiles, c(0, 1))
   check_range(prob_decrease, c(0, 100))
   check_range(prob_increase, c(0, Inf))
+
+  if(hpdi){
+    calc_quantiles <- interval_function_hpdi
+  }else{
+    calc_quantiles <- stats::quantile
+  }
 
   start_year <- indices[["meta_data"]]$start_year
   n_years <- indices[["meta_data"]]$n_years
@@ -213,14 +220,14 @@ generate_trends <- function(indices,
       trend = purrr::map_dbl(.data$tr, stats::median),
       trend_q = purrr::map_df(
         .data$tr,
-        ~stats::setNames(stats::quantile(.x, quantiles, names = FALSE),
+        ~stats::setNames(calc_quantiles(.x, quantiles, names = FALSE),
                          paste0("trend_q_", quantiles))),
 
       # Percent change and quantiles thereof per region
       percent_change = purrr::map_dbl(.data$ch, ~100 * (stats::median(.x) - 1)),
       pc_q = purrr::map_df(
         .data$ch, ~stats::setNames(
-          100 * (stats::quantile(.x, quantiles, names = FALSE) - 1),
+          100 * (calc_quantiles(.x, quantiles, names = FALSE) - 1),
           paste0("percent_change_q_", quantiles)))) %>%
     dplyr::ungroup() %>%
     tidyr::unnest(cols = c("trend_q", "pc_q")) %>%
@@ -247,7 +254,7 @@ generate_trends <- function(indices,
         slope_trend = purrr::map_dbl(.data$sl_t, stats::median),
         slope_trend_q = purrr::map_df(
           .data$sl_t, ~stats::setNames(
-            stats::quantile(.x, quantiles, names = FALSE),
+            calc_quantiles(.x, quantiles, names = FALSE),
             paste0("slope_trend_q_", quantiles)))) %>%
       tidyr::unnest("slope_trend_q") %>%
       dplyr::mutate(

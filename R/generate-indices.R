@@ -53,16 +53,6 @@
 #'   is `FALSE` (regions are flagged and listed but not dropped).
 #' @param start_year Numeric. Trim the data record before calculating annual
 #'   indices.
-#' @param hpdi Logical. Should credible intervals and limits be calculated using
-#'   highest posterior density intervals instead of simple quantiles of the
-#'   posterior distribution. Default is `FALSE`. these intervals are often a
-#'   better descriptor of skewed posterior distributions, such as the predicted
-#'   mean counts that the indices represent.
-#'   Note hpd intervals are not stable for small percentages of the posterior
-#'   distribution, and so `hdpi = TRUE` is ignored for `quantiles` values
-#'   between 0.33 and 0.67 (i.e., if the `quantiles` value defines a limit for
-#'   a centered hpd interval that would include < 33% of the
-#'   posterior distribution).
 #'
 #' @inheritParams common_docs
 #' @family indices and trends functions
@@ -406,28 +396,6 @@ calc_weights <- function(data, n) {
 }
 
 
-# function to calculate the highest posterior density interval for the quantiles
-# these intervals are often a better descriptor of skewed posterior distributions
-interval_function_hpdi <- function(x,probs = 0.025){
-  y <- vector("numeric",length = length(probs))
-  names(y) <- paste0(probs*100,"%")
-  for(j in 1:length(probs)){
-    prob <- probs[j]
-    if(prob > 0.67 | prob < 0.33){
-      if(prob < 0.25){
-        q2 <- 1-(prob*2)
-        i <- 1
-      }else{
-        q2 <- 1-((1-prob)*2)
-        i <- 2
-      }
-      y[j] <- HDInterval::hdi(x,q2)[i]
-    }else{
-      y[j] <- stats::quantile(x,prob)
-    }
-  }
-    return(y)
-  }
 
 calc_quantiles_hpdi <- function(N, quantiles) {
   apply(N, 2, interval_function_hpdi, probs = c(quantiles, 0.5)) %>%
