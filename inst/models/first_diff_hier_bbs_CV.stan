@@ -13,6 +13,7 @@ data {
   int<lower=1> n_counts;
   int<lower=1> n_years;
   int<lower=1> fixed_year; //middle year of the time-series scaled to ~(n_years/2)
+  int<lower=1> n_years_m1; // n_years-1
 
 
   array[n_counts] int<lower=0> count;              // count observations
@@ -82,10 +83,6 @@ transformed data {
      array[n_test] int site_te = site[test];
      array[n_test] int first_year_te = first_year[test];
      array[n_test] int observer_te = observer[test];
-
-     int<lower=1> n_years_m1 = n_years-1;
-
-
 
 }
 
