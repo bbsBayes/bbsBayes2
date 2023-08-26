@@ -112,6 +112,9 @@
 #' # Generate the continental and stratum indices
 #' i <- generate_indices(pacific_wren_model)
 #'
+#' # Generate the continental and stratum indices using hpdi
+#' i <- generate_indices(pacific_wren_model, hpdi = TRUE)
+#'
 #' # Generate only country indices
 #' i_nat <- generate_indices(pacific_wren_model, regions = "country")
 #'
