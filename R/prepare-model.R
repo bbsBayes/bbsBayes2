@@ -114,11 +114,6 @@ prepare_model <- function(prepared_data,
   check_in(cv_fold_groups, c("obs_n", "route"))
 
   model_data <- prepared_data[["model_data"]]
-  raw_years <- prepared_data[["raw_data"]] %>%
-    dplyr::select(year,year_num) %>%
-    dplyr::distinct() %>%
-    dplyr::arrange(year_num)
-
 
   if(model_variant == "spatial") check_spatial(prepared_data)
 
@@ -137,8 +132,7 @@ prepare_model <- function(prepared_data,
     year = model_data$year,
     n_counts = model_data$n_counts,
     basis, n_knots, heavy_tailed, use_pois,
-    calculate_nu, calculate_log_lik,
-    raw_years)
+    calculate_nu, calculate_log_lik)
 
   # Create master parameter list
   model_data <- append(model_data, params)
@@ -182,8 +176,7 @@ model_params <- function(model,
                          model_variant,
                          n_strata, year, n_counts,
                          basis, n_knots, heavy_tailed, use_pois,
-                         calculate_nu, calculate_log_lik,
-                         raw_years) {
+                         calculate_nu, calculate_log_lik) {
 
 
   params <- list()
