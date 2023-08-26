@@ -3,7 +3,7 @@
 #' Fetch and download Breeding Bird Survey data from the United States
 #' Geological Survey (USGS) FTP site. This is the raw data that is uploaded to
 #' the site before any analyses are performed. Users can download different
-#' types (`state`, `stop`) and different releases (currently `2020` and `2022`).
+#' types (`state`, `stop`) and different releases (currently `2020`, `2022`, and `2023`).
 #'
 #' @param force Logical. Should pre-exising BBS data be overwritten? Default
 #'   FALSE.
@@ -30,10 +30,10 @@
 #' individually. **Note that stop-level data is not currently supported by the
 #' modelling utilities in bbsBayes2.**
 #'
-#' There are two releases for each type of data, `2020` and `2022`. By default
-#' all functions use the most recent release unless otherwise specified. For
-#' example, the `release` argument in `stratify()` can be changed to `2020` to
-#' use the 2020 release of state-level counts.
+#' There are three releases for each type of data, `2020`, `2022`, and `2023`.
+#' By default all functions use the most recent release unless otherwise
+#' specified. For example, the `release` argument in `stratify()` can be
+#' changed to `2020` to use the 2020 release of state-level counts.
 #'
 #'
 #' @examplesIf interactive()
@@ -46,7 +46,7 @@
 #' @export
 #'
 fetch_bbs_data <- function(level = "state",
-                           release = 2022,
+                           release = 2023,
                            force = FALSE,
                            quiet = FALSE,
                            compression = "none") {
@@ -72,7 +72,7 @@ fetch_bbs_data <- function(level = "state",
 }
 
 
-fetch_bbs_data_internal <- function(level = "state", release = 2022,
+fetch_bbs_data_internal <- function(level = "state", release = 2023,
                                     force = FALSE, quiet = TRUE,
                                     out_file = NULL, compression = "none") {
 
@@ -85,9 +85,9 @@ fetch_bbs_data_internal <- function(level = "state", release = 2022,
   if(!is.null(connection) & !quiet) message("Connected!")
 
   # Download/load Data --------------
-  birds <- get_birds(level, quiet, connection, force)
+  birds <- get_birds(level, release, quiet, connection, force)
   routes <- get_routes(release, quiet, connection, force)
-  weather <- get_weather(quiet, connection, force)
+  weather <- get_weather(release, quiet, connection, force)
   regs <- readr::read_csv(
     system.file("data-import", "regs.csv", package = "bbsBayes2"),
     col_types = "cnncc", progress = FALSE) %>%
@@ -127,6 +127,7 @@ fetch_bbs_data_internal <- function(level = "state", release = 2022,
   })
   if(!quiet) message("\n") # For next message
 
+  if(release == 2023) lskip <- 11 #silly differences in file structure
   if(release == 2022) lskip <- 14 #silly differences in file structure
   if(release == 2020) lskip <- 11
 
@@ -174,6 +175,7 @@ fetch_bbs_data_internal <- function(level = "state", release = 2022,
 
 get_sb_id <- function(release) {
   switch(as.character(release),
+         "2023" = "64ad9c3dd34e70357a292cee",
          "2022" = "625f151ed34e85fa62b7f926",
          "2020" = "5ea04e9a82cefae35a129d65")
 }
@@ -205,8 +207,8 @@ bbs_dir <- function(quiet = TRUE) {
 #'   when `run_models()` is run.
 #' @param level Character. BBS data to remove, one of "all", "state", or "stop".
 #'   Only applies if `type = "bbs_data"`. Default "all".
-#' @param release Character/Numeric. BBS data to remove, one of "all", 2020, or
-#'   2022. Only applies if `type = "bbs_data"`. Default "all".
+#' @param release Character/Numeric. BBS data to remove, one of "all", 2020,
+#'   2022, or 2023. Only applies if `type = "bbs_data"`. Default "all".
 #'
 #' @family BBS data functions
 #'
@@ -247,7 +249,7 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
       check_release(release, all = TRUE)
 
       if(level == "all") level <- c("state", "stop")
-      if(release == "all") release <- c("2020", "2022")
+      if(release == "all") release <- c("2020", "2022", "2023")
 
       # To get all combos
       f <- vector()
@@ -274,8 +276,8 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
 #'
 #' @param level Character. BBS data to check, one of "all", "state", or "stop".
 #'   Default "state".
-#' @param release Character/Numeric. BBS data to check, one of "all", 2020, or
-#'   2022. Default 2022.
+#' @param release Character/Numeric. BBS data to check, one of "all", 2020,
+#'   2022, or 2023. Default 2023.
 #'
 #' @inheritParams common_docs
 #' @family BBS data functions
@@ -289,12 +291,12 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
 #' have_bbs_data(release = 2020)
 #' have_bbs_data(release = "all", level = "all")
 
-have_bbs_data <- function(level = "state", release = 2022, quiet = FALSE){
+have_bbs_data <- function(level = "state", release = 2023, quiet = FALSE){
   check_in(level, c("all", "state", "stop"))
   check_release(release, all = TRUE)
 
   if(level == "all") level <- c("state", "stop")
-  if(release == "all") release <- c("2020", "2022")
+  if(release == "all") release <- c("2020", "2022", "2023")
 
   # To get all combos
   f <- vector()
@@ -315,7 +317,7 @@ get_encoding <- function() {
   e
 }
 
-get_birds <- function(level, quiet, connection, force) {
+get_birds <- function(level, release, quiet, connection, force) {
   if (level == "state") count_zip <- "States.zip"
   if (level == "stop") count_zip <- "50-StopData.zip"
 
@@ -329,8 +331,10 @@ get_birds <- function(level, quiet, connection, force) {
 
   unz_path <- utils::unzip(zipfile = full_path, exdir = tempdir())
 
-  birds <- unz_path %>%
-    purrr::map(utils::unzip, exdir = tempdir()) %>%
+  if(release != 2023){ # not zipped in 2023
+      unz_path <- purrr::map(unz_path, utils::unzip, exdir = tempdir())
+    }
+    birds <- unz_path %>%
     purrr::map(readr::read_csv, col_types = "nnnnnnnnnnnnnnn",
                progress = FALSE) %>%
     purrr::map(~dplyr::rename_with(.x, snakecase::to_snake_case)) %>%
@@ -348,11 +352,16 @@ get_routes <- function(release, quiet, connection, force) {
     message("  - routes...")
   }
 
-  if(release == 2020) {
+  if(release == 2022) {
     # if necessary because file name changed between 2020 and 2022 releases
-    rtsfl <- "routes.zip"
-  } else{
     rtsfl <- "Routes.zip"
+  }
+
+  if(release == 2020){
+    rtsfl <- "routes.zip"
+  }
+  if(release == 2023){ # format of embedded files changed in 2023
+    rtsfl <- "routes.csv"
   }
 
   suppressMessages({
@@ -363,8 +372,12 @@ get_routes <- function(release, quiet, connection, force) {
       overwrite_file = force)
   })
 
+  if(release != 2023) {
+    full_path <- utils::unzip(zipfile = full_path, exdir = tempdir())
+  }
+
   routes <- readr::read_csv(
-    utils::unzip(zipfile = full_path, exdir = tempdir()),
+    full_path,
     na = c("NA", "", "NULL"),
     col_types = "nnncnnnnnnn", progress = FALSE,
     locale = readr::locale(encoding = "latin1")) %>%
@@ -376,22 +389,34 @@ get_routes <- function(release, quiet, connection, force) {
 }
 
 
-get_weather <- function(quiet, connection, force) {
+get_weather <- function(release, quiet, connection, force) {
 
   if(!quiet) message("  - weather...")
+
+  if(release == 2023){ # this file not in zip format in 2023
+    wthrfl <- "weather.csv"
+  }else{
+    wthrfl <- "Weather.zip"
+  }
+
   suppressMessages({
     full_path <- sbtools::item_file_download(
       sb_id = connection,
-      names = "Weather.zip",
-      destinations = file.path(tempdir(), "Weather.zip"),
+      names = wthrfl,
+      destinations = file.path(tempdir(), wthrfl),
       overwrite_file = force)
   })
 
+  if(release != 2023){ # some files not in zip format in this release
+    full_path <- utils::unzip(zipfile = full_path, exdir = tempdir())
+  }
+
   weather <- readr::read_csv(
-    utils::unzip(zipfile = full_path, exdir = tempdir()),
+    full_path,
     col_types = "nnnnnnnnnnnncnnnnnn",
     na = c("NA", "", "NULL"), progress = FALSE) %>%
     dplyr::rename_with(snakecase::to_snake_case)
+
 
   unlink(full_path)
 

@@ -240,10 +240,10 @@ test_that("check_dir(), check_file()", {
   expect_silent(check_dir(dir))
   unlink(dir, recursive = TRUE)
 
-  expect_silent(check_file("test_name", "slope", "spatial")) %>%
+  expect_silent(check_file("test_name", "AmericanRobin", "slope", "spatial")) %>%
     expect_equal("test_name")
-  expect_silent(check_file(NULL, "slope", "spatial")) %>%
-    expect_equal(paste0("BBS_STAN_slope_spatial_", Sys.Date()))
+  expect_silent(check_file(NULL, "AmericanRobin", "slope", "spatial")) %>%
+    expect_equal(paste0("BBS_","AmericanRobin_slope_spatial_", format(Sys.time(), "%Y%m%d%H%M"),"_STAN"))
   expect_error(check_file("test_name.rds"), "should not have a file extension")
 })
 

@@ -11,7 +11,8 @@ generate_trends(
   quantiles = c(0.025, 0.05, 0.25, 0.75, 0.95, 0.975),
   slope = FALSE,
   prob_decrease = NULL,
-  prob_increase = NULL
+  prob_increase = NULL,
+  hpdi = FALSE
 )
 }
 \arguments{
@@ -53,6 +54,17 @@ optionally calculate the posterior probabilities (see Details). Default is
 \item{prob_increase}{Numeric vector. Percent-increase values for which to
 optionally calculate the posterior probabilities (see Details). Default is
 \code{NULL} (not calculated). Can range from 0 to Inf.}
+
+\item{hpdi}{Logical. Should credible intervals and limits be calculated using
+highest posterior density intervals instead of simple quantiles of the
+posterior distribution. Default is \code{FALSE}. these intervals are often a
+better descriptor of skewed posterior distributions, such as the predicted
+mean counts that the indices represent.
+Note hpd intervals are not stable for small percentages of the posterior
+distribution, and so \code{hdpi = TRUE} is ignored for \code{quantiles} values
+between 0.33 and 0.67 (i.e., if the \code{quantiles} value defines a limit for
+a centered hpd interval that would include < 33\% of the
+posterior distribution).}
 }
 \value{
 A list containing

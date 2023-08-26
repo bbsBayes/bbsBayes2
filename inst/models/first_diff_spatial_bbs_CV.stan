@@ -303,7 +303,7 @@ if(use_pois){
 
    }else{
      noise = 0;
-  log_lik_cv[i] = neg_binomial_2_log_lpmf(count_te[i] | strata + yeareffect[strat_te[i],year_te[i]] + eta*first_year_te[i] + ste + obs + noise, phi);
+  log_lik_cv[i] = neg_binomial_2_log_lpmf(count_te[i] | strata[strat_te[i]] + yeareffect[strat_te[i],year_te[i]] + eta*first_year_te[i] + ste + obs + noise, phi);
 
    }
 
