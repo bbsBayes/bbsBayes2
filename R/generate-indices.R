@@ -53,6 +53,16 @@
 #'   is `FALSE` (regions are flagged and listed but not dropped).
 #' @param start_year Numeric. Trim the data record before calculating annual
 #'   indices.
+#' @param hpdi Logical. Should credible intervals and limits be calculated using
+#'   highest posterior density intervals instead of simple quantiles of the
+#'   posterior distribution. Default is `FALSE`. these intervals are often a
+#'   better descriptor of skewed posterior distributions, such as the predicted
+#'   mean counts that the indices represent.
+#'   Note hpd intervals are not stable for small percentages of the posterior
+#'   distribution, and so `hdpi = TRUE` is ignored for `quantiles` values
+#'   between 0.33 and 0.67 (i.e., if the `quantiles` value defines a limit for
+#'   a centered hpd interval that would include < 33% of the
+#'   posterior distribution).
 #'
 #' @inheritParams common_docs
 #' @family indices and trends functions
@@ -60,10 +70,10 @@
 #' @details
 #'   `max_backcast` is a way to deal with the fact that the species of interest
 #'   may not appear in the data until several years after the start of the
-#'   record. `max_backcast` specifies how many years can occur before the
+#'   time-series `max_backcast` specifies how many years can occur before the
 #'   stratum is flagged. A `max_backcast` of 5 will flag any stratum without a
-#'   non-zero (or non-NA) observation within the first 5 years of the data
-#'   record. Note that records are *only* flagged unless `drop_exclude = TRUE`.
+#'   non-zero (or non-NA) observation within the first 5 years of the time-
+#'   series. Note that records are *only* flagged unless `drop_exclude = TRUE`.
 #'   If you find that the early data record is sparse and results in the
 #'   exclusion of many strata, consider trimming the early years by specifying a
 #'   `start_year`.
@@ -136,15 +146,16 @@ generate_indices <- function(
     regions_index = NULL,
     alternate_n = "n",
     start_year = NULL,
-    drop_exclude = FALSE,
     max_backcast = NULL,
+    drop_exclude = FALSE,
+    hpdi = FALSE,
     quiet = FALSE) {
 
   # Checks
   check_data(model_output)
   check_numeric(quantiles)
   check_numeric(start_year, max_backcast, allow_null = TRUE)
-  check_logical(drop_exclude, quiet)
+  check_logical(drop_exclude, quiet, hpdi)
 
   # Get data
   stratify_by <- model_output$meta_data$stratify_by
@@ -316,7 +327,11 @@ generate_indices <- function(
                                 "n_non_zero", "flag_year"),
                       ~ sum(.x, na.rm = TRUE)),
         .groups = "drop")
-
+if(hpdi){
+  calc_quantiles <- calc_quantiles_hpdi
+}else{
+  calc_quantiles <- calc_quantiles_original
+}
     # Calculate sample statistics for this composite region
     samples <- meta_strata_sub %>%
       # Create back up col for use in calculations
@@ -390,13 +405,46 @@ calc_weights <- function(data, n) {
   apply(n_weight, c(1, 3), sum)
 }
 
-calc_quantiles <- function(N, quantiles) {
+
+# function to calculate the highest posterior density interval for the quantiles
+# these intervals are often a better descriptor of skewed posterior distributions
+interval_function_hpdi <- function(x,probs = 0.025){
+  y <- vector("numeric",length = length(probs))
+  names(y) <- paste0(probs*100,"%")
+  for(j in 1:length(probs)){
+    prob <- probs[j]
+    if(prob > 0.67 | prob < 0.33){
+      if(prob < 0.25){
+        q2 <- 1-(prob*2)
+        i <- 1
+      }else{
+        q2 <- 1-((1-prob)*2)
+        i <- 2
+      }
+      y[j] <- HDInterval::hdi(x,q2)[i]
+    }else{
+      y[j] <- stats::quantile(x,prob)
+    }
+  }
+    return(y)
+  }
+
+calc_quantiles_hpdi <- function(N, quantiles) {
+  apply(N, 2, interval_function_hpdi, probs = c(quantiles, 0.5)) %>%
+    t() %>%
+    as.data.frame() %>%
+    stats::setNames(c(paste0("index_q_", quantiles), "index")) %>%
+    dplyr::bind_cols(year = as.numeric(dimnames(N)$year))
+}
+
+calc_quantiles_original <- function(N, quantiles) {
   apply(N, 2, stats::quantile, probs = c(quantiles, 0.5)) %>%
     t() %>%
     as.data.frame() %>%
     stats::setNames(c(paste0("index_q_", quantiles), "index")) %>%
     dplyr::bind_cols(year = as.numeric(dimnames(N)$year))
 }
+
 
 calc_alt_names <- function(r, region_names) {
   col_region_name <- dplyr::case_when(r == "prov_state" ~ "province_state",
