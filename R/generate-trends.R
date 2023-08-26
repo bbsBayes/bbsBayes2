@@ -300,7 +300,8 @@ generate_trends <- function(indices,
 
 
   list("trends" = trends,
-       "meta_data" = indices[["meta_data"]],
+       "meta_data" = append(indices[["meta_data"]],
+                            list("hpdi_trends" = hpdi)),
        "meta_strata" = indices[["meta_strata"]],
        "raw_data" = indices[["raw_data"]])
 }

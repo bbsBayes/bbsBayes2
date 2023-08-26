@@ -366,7 +366,8 @@ if(hpdi){
        "meta_data" = append(model_output$meta_data,
                             list("regions" = regions,
                                  "start_year" = start_year,
-                                 "n_years" = n_years)),
+                                 "n_years" = n_years,
+                                 "hpdi_indices" = hpdi)),
        "meta_strata" = meta_strata,
        "raw_data" = model_output$raw_data # Original data before trimming
        )
