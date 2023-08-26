@@ -132,12 +132,13 @@ prepare_model <- function(prepared_data,
   # Add model settings as parameters
   params <- model_params(
     model,
-    n_strata = model_data[["n_strata"]],
-    year = model_data[["year"]],
-    n_counts = model_data[["n_counts"]],
+    model_variant,
+    n_strata = model_data$n_strata,
+    year = model_data$year,
+    n_counts = model_data$n_counts,
     basis, n_knots, heavy_tailed, use_pois,
     calculate_nu, calculate_log_lik,
-    raw_years = raw_years)
+    raw_years)
 
   # Create master parameter list
   model_data <- append(model_data, params)
@@ -176,7 +177,10 @@ prepare_model <- function(prepared_data,
        "raw_data" = prepared_data[["raw_data"]])
 }
 
-model_params <- function(model, n_strata, year, n_counts,
+
+model_params <- function(model,
+                         model_variant,
+                         n_strata, year, n_counts,
                          basis, n_knots, heavy_tailed, use_pois,
                          calculate_nu, calculate_log_lik,
                          raw_years) {
@@ -224,14 +228,36 @@ model_params <- function(model, n_strata, year, n_counts,
     params[["n_Iy1"]] <- n_Iy1
     params[["Iy2"]] <- Iy2
     params[["n_Iy2"]] <- n_Iy2
+    params[["n_years_m1"]] <- n_years-1
 
-    if(n_years > n_years_data){
-      y_2020 <- years[-which(years %in% years_data)]
-      params[["y_2020"]] <- y_2020
-    }else{
-      y_2020 <- 0
-      params[["y_2020"]] <- y_2020
+  if(model_variant == "spatial"){
+    # setting up a vector of indicators for years that are not 2020
+    # these are used as conditional values in the Stan model to indicate
+    # years in which the spatial variance of differences should be estimated
+    # equals 1 in all years that are not 2020, and 0 in years that are 2020
+    y_2020 <- rep(NA,(n_years-1))
+
+    for(y in 1:n_years){
+      if(y %in% years_data){
+        if(y < fixed_year){
+          y_2020[y] <- 1
+        }
+        if(y > fixed_year){
+          y_2020[y-1] <- 1
+        }
+      }else{
+        if(y < fixed_year){
+          y_2020[y] <- 0
+        }
+        if(y > fixed_year){
+          y_2020[y-1] <- 0
+        }
       }
+    }
+    params[["y_2020"]] <- y_2020
+  }
+
+
   }
 
 
