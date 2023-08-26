@@ -26,3 +26,29 @@ format_ne_states <- function() {
     dplyr::mutate(prov_state = dplyr::if_else(
       .data$prov_state == "NF", "NL", .data$prov_state))
 }
+
+
+# function to calculate the highest posterior density interval for the quantiles
+# these intervals are often a better descriptor of skewed posterior distributions
+interval_function_hpdi <- function(x,probs, names = TRUE){
+  y <- vector("numeric",length = length(probs))
+  if(names){
+    names(y) <- paste0(probs*100,"%")
+  }
+  for(j in 1:length(probs)){
+    prob <- probs[j]
+    if(prob > 0.67 | prob < 0.33){
+      if(prob < 0.33){
+        q2 <- 1-(prob*2)
+        i <- 1
+      }else{
+        q2 <- 1-((1-prob)*2)
+        i <- 2
+      }
+      y[j] <- HDInterval::hdi(x,q2)[i]
+    }else{
+      y[j] <- stats::quantile(x,prob)
+    }
+  }
+  return(y)
+}

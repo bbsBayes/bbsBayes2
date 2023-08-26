@@ -128,7 +128,7 @@ plot_map <- function(trends,
                    axis.title = ggplot2::element_blank()) +
     ggplot2::guides(fill = ggplot2::guide_legend(reverse = TRUE))
   if(!col_viridis) {
-    pal <- setNames(
+    pal <- stats::setNames(
       c("#a50026", "#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf",
         "#e0f3f8", "#abd9e9", "#74add1", "#4575b4", "#313695"),
       levels(map$t_plot))

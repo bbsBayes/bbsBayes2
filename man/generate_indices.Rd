@@ -11,8 +11,9 @@ generate_indices(
   regions_index = NULL,
   alternate_n = "n",
   start_year = NULL,
-  drop_exclude = FALSE,
   max_backcast = NULL,
+  drop_exclude = FALSE,
+  hpdi = FALSE,
   quiet = FALSE
 )
 }
@@ -64,16 +65,27 @@ time-periods.}
 \item{start_year}{Numeric. Trim the data record before calculating annual
 indices.}
 
-\item{drop_exclude}{Logical. Whether or not strata that exceed the
-\code{max_backcast} threshold should be excluded from the calculations. Default
-is \code{FALSE} (regions are flagged and listed but not dropped).}
-
 \item{max_backcast}{Numeric. The number of years to back cast stratum-level
 estimates before the first year that species was observed on any route in
 that stratum. Default is \code{NULL}, which generates annual indices for the
 entire time series and ignores back-casting. CWS national estimates use a
 back cast of 5. Note that unless \code{drop_exclude = TRUE}, problematic years
 are only flagged, not omitted. See Details for more specifics.}
+
+\item{drop_exclude}{Logical. Whether or not strata that exceed the
+\code{max_backcast} threshold should be excluded from the calculations. Default
+is \code{FALSE} (regions are flagged and listed but not dropped).}
+
+\item{hpdi}{Logical. Should credible intervals and limits be calculated using
+highest posterior density intervals instead of simple quantiles of the
+posterior distribution. Default is \code{FALSE}. these intervals are often a
+better descriptor of skewed posterior distributions, such as the predicted
+mean counts that the indices represent.
+Note hpd intervals are not stable for small percentages of the posterior
+distribution, and so \code{hdpi = TRUE} is ignored for \code{quantiles} values
+between 0.33 and 0.67 (i.e., if the \code{quantiles} value defines a limit for
+a centered hpd interval that would include < 33\% of the
+posterior distribution).}
 
 \item{quiet}{Logical. Suppress progress messages? Default \code{FALSE}.}
 }
@@ -127,10 +139,10 @@ species, and to estimate trends.
 \details{
 \code{max_backcast} is a way to deal with the fact that the species of interest
 may not appear in the data until several years after the start of the
-record. \code{max_backcast} specifies how many years can occur before the
+time-series \code{max_backcast} specifies how many years can occur before the
 stratum is flagged. A \code{max_backcast} of 5 will flag any stratum without a
-non-zero (or non-NA) observation within the first 5 years of the data
-record. Note that records are \emph{only} flagged unless \code{drop_exclude = TRUE}.
+non-zero (or non-NA) observation within the first 5 years of the time-
+series. Note that records are \emph{only} flagged unless \code{drop_exclude = TRUE}.
 If you find that the early data record is sparse and results in the
 exclusion of many strata, consider trimming the early years by specifying a
 \code{start_year}.
@@ -140,6 +152,9 @@ exclusion of many strata, consider trimming the early years by specifying a
 
 # Generate the continental and stratum indices
 i <- generate_indices(pacific_wren_model)
+
+# Generate the continental and stratum indices using hpdi
+i <- generate_indices(pacific_wren_model, hpdi = TRUE)
 
 # Generate only country indices
 i_nat <- generate_indices(pacific_wren_model, regions = "country")
