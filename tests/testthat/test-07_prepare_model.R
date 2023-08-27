@@ -5,8 +5,10 @@ test_that("model_params()", {
 
   p <- p$model_data
 
+
   for(i in seq_len(nrow(bbs_models))) {
     model <- bbs_models$model[i]
+    for(model_variant in c("spatial","hier")){
     if(model == "gam") n_knots <- 9 else n_knots <- NULL
     if(model %in% c("gam", "gamye")) {
       basis <- c("original", "mgcv")
@@ -16,6 +18,7 @@ test_that("model_params()", {
       expect_silent(
         m <- model_params(
           model = model,
+          model_variant = "hier",
           n_strata = p$n_strata, year = p$year, n_counts = p$n_counts,
           heavy_tailed = TRUE,
           n_knots = n_knots,
@@ -28,13 +31,14 @@ test_that("model_params()", {
              "calc_log_lik")
 
       if(model %in% c("gam", "gamye")) n <- c(n, "n_knots_year", "year_basis")
-      if(model == "first_diff") n <- c(n, "fixed_year", "zero_betas",
-                                       "Iy1", "n_Iy1", "Iy2", "n_Iy2")
+      if(model == "first_diff" & model_variant %in% c("spatial","hier")) n <- c(n, "fixed_year", "zero_betas",
+                                       "Iy1", "n_Iy1", "Iy2", "n_Iy2",
+                                       "n_years_m1","y_2020")
       if(model == "slope") n <- c(n, "fixed_year")
       expect_named(m, n)
     }
   }
-
+}
 })
 
 test_that("create_init()", {
@@ -50,6 +54,7 @@ test_that("create_init()", {
     if(model == "gam") n_knots <- 9 else n_knots <- NULL
     m <- append(p,
                 model_params(model = model,
+                             model_variant = "hier",
                              n_strata = p$n_strata, year = p$year,
                              n_counts = p$n_counts,
                              heavy_tailed = TRUE,

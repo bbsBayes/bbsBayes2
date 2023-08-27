@@ -13,6 +13,7 @@ data {
   int<lower=1> n_counts;
   int<lower=1> n_years;
   int<lower=1> fixed_year; //middle year of the time-series scaled to ~(n_years/2)
+  int<lower=1> n_years_m1; // n_years-1
 
 
   array[n_counts] int<lower=0> count;              // count observations
@@ -21,6 +22,7 @@ data {
   array[n_counts] int<lower=1> site; // site index
   array[n_counts] int<lower=0> first_year; // first year index
   array[n_counts] int<lower=1> observer;              // observer indicators
+  array[n_years_m1] int<lower=0> y_2020; //indicators for 2020 = 0 if 2020 and missing if fixed_year
 
   int<lower=1> n_observers;// number of observers
 
@@ -83,10 +85,6 @@ transformed data {
      array[n_test] int first_year_te = first_year[test];
      array[n_test] int observer_te = observer[test];
 
-     int<lower=1> n_years_m1 = n_years-1;
-
-
-
 }
 
 
@@ -136,15 +134,24 @@ transformed parameters {
   yeareffect[,fixed_year] = zero_betas; //fixed at zero
   YearEffect[fixed_year] = 0; //fixed at zero
 
+
 // first half of time-series - runs backwards from fixed_year
   for(t in Iy1){
+  if(y_2020[t]){ // all years not equal to 2020
     beta[,t] = (sdbeta * beta_raw[,t]) + BETA[t];
+  }else{
+    beta[,t] = (0 * beta_raw[,t]) + BETA[t]; // in 2020 strata-parameters forced to 0
+  }
     yeareffect[,t] = yeareffect[,t+1] - beta[,t];
     YearEffect[t] = YearEffect[t+1] - BETA[t]; // hyperparameter trajectory interesting to monitor but no direct inference
   }
 // second half of time-series - runs forwards from fixed_year
    for(t in Iy2){
+   if(y_2020[t-1]){ // all years not equal to 2020
     beta[,t] = (sdbeta * beta_raw[,t-1]) + BETA[t-1];//t-1 indicators to match dimensionality
+      }else{
+    beta[,t] = (0 * beta_raw[,t-1]) + BETA[t-1]; // in 2020 strata-parameters forced to 0
+  }
     yeareffect[,t] = yeareffect[,t-1] + beta[,t];
     YearEffect[t] = YearEffect[t-1] + BETA[t-1];
   }
