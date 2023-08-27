@@ -16,7 +16,7 @@ in population size for composite regions."><meta property="og:image" content="ht
     
     <a class="navbar-brand me-2" href="../index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,8 @@ in population size for composite regions.</p>
 <span>  quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.05</span>, <span class="fl">0.25</span>, <span class="fl">0.75</span>, <span class="fl">0.95</span>, <span class="fl">0.975</span><span class="op">)</span>,</span>
 <span>  slope <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  prob_decrease <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  prob_increase <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  prob_increase <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  hpdi <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -130,6 +131,19 @@ optionally calculate the posterior probabilities (see Details). Default is
 <dd><p>Numeric vector. Percent-increase values for which to
 optionally calculate the posterior probabilities (see Details). Default is
 <code>NULL</code> (not calculated). Can range from 0 to Inf.</p></dd>
+
+
+<dt>hpdi</dt>
+<dd><p>Logical. Should credible intervals and limits be calculated using
+highest posterior density intervals instead of simple quantiles of the
+posterior distribution. Default is <code>FALSE</code>. these intervals are often a
+better descriptor of skewed posterior distributions, such as the predicted
+mean counts that the indices represent.
+Note hpd intervals are not stable for small percentages of the posterior
+distribution, and so <code>hdpi = TRUE</code> is ignored for <code>quantiles</code> values
+between 0.33 and 0.67 (i.e., if the <code>quantiles</code> value defines a limit for
+a centered hpd interval that would include &lt; 33% of the
+posterior distribution).</p></dd>
 
 </dl></div>
     <div class="section level2">

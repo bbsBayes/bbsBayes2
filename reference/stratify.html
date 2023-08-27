@@ -18,7 +18,7 @@ a flexible search to identify correct species names)."><meta property="og:image"
     
     <a class="navbar-brand me-2" href="../index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@ a flexible search to identify correct species names).</p>
 <span>  <span class="va">species</span>,</span>
 <span>  strata_custom <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  combine_species_forms <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  release <span class="op">=</span> <span class="fl">2022</span>,</span>
+<span>  release <span class="op">=</span> <span class="fl">2023</span>,</span>
 <span>  sample_data <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  return_omitted <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -181,172 +181,57 @@ for more details.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># have_bbs_data()</span></span></span>
 <span class="r-in"><span><span class="co"># Full data - species and stratification</span></span></span>
 <span class="r-in"><span><span class="co"># Use `search_species()` to get correct species name</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Stratify by CWS BBS strata</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>, species <span class="op">=</span> <span class="st">"Common Loon"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'bbs_cws' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Common Loon (70)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Combining BCR 7 and NS and PEI...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use use English, French, Scientific, or AOU codes for species names</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>, species <span class="op">=</span> <span class="st">"Plongeon huard"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'bbs_cws' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Common Loon (70)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Combining BCR 7 and NS and PEI...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>, species <span class="op">=</span> <span class="fl">70</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'bbs_cws' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Common Loon (70)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Combining BCR 7 and NS and PEI...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>, species <span class="op">=</span> <span class="st">"Gavia immer"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'bbs_cws' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Common Loon (70)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Combining BCR 7 and NS and PEI...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Stratify by Bird Conservation Regions</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bcr"</span>, species <span class="op">=</span> <span class="st">"Great Horned Owl"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'bcr' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Great Horned Owl (3750)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Stratify by CWS BBS strata</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>, species <span class="op">=</span> <span class="st">"Canada Jay"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'bbs_cws' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Canada Jay (4840)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Combining BCR 7 and NS and PEI...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Stratify by State/Province/Territory only</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"prov_state"</span>, species <span class="op">=</span> <span class="st">"Common Loon"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'prov_state' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Common Loon (70)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"prov_state"</span>, species <span class="op">=</span> <span class="st">"Plongeon huard"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'prov_state' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Common Loon (70)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"prov_state"</span>, species <span class="op">=</span> <span class="fl">70</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'prov_state' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Common Loon (70)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Stratify by blocks of 1 degree of latitude X 1 degree of longitude</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"latlong"</span>, species <span class="op">=</span> <span class="st">"Snowy Owl"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'latlong' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Snowy Owl (3760)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Omitting 80/119,567 route-years that do not match a stratum.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Check routes omitted by stratification</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"latlong"</span>, species <span class="op">=</span> <span class="st">"Snowy Owl"</span>, return_omitted <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'latlong' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Snowy Owl (3760)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Omitting 80/119,567 route-years that do not match a stratum.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     Returning omitted routes.</span>
 <span class="r-in"><span><span class="va">s</span><span class="op">[[</span><span class="st">"routes_omitted"</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 80 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     year strata_name country state     route route_name latitude longitude   bcr</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">1</span>988 <span style="color: #BB0000;">NA</span>          US      CALIFORN… 14-1… SANTA CRU…     34.0    -<span style="color: #BB0000;">120.</span>     32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">1</span>987 <span style="color: #BB0000;">NA</span>          US      FLORIDA   25-83 KEY WEST       24.7     -<span style="color: #BB0000;">81.2</span>    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">1</span>999 <span style="color: #BB0000;">NA</span>          US      FLORIDA   25-1… SUGARLOAF…     24.7     -<span style="color: #BB0000;">81.2</span>    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">2</span>002 <span style="color: #BB0000;">NA</span>          US      FLORIDA   25-1… SUGARLOAF…     24.7     -<span style="color: #BB0000;">81.2</span>    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">2</span>003 <span style="color: #BB0000;">NA</span>          US      FLORIDA   25-1… SUGARLOAF…     24.7     -<span style="color: #BB0000;">81.2</span>    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">2</span>004 <span style="color: #BB0000;">NA</span>          US      FLORIDA   25-1… SUGARLOAF…     24.7     -<span style="color: #BB0000;">81.2</span>    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">2</span>005 <span style="color: #BB0000;">NA</span>          US      FLORIDA   25-2… SUGARLOAF…     24.6     -<span style="color: #BB0000;">81.6</span>    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">2</span>006 <span style="color: #BB0000;">NA</span>          US      FLORIDA   25-2… SUGARLOAF…     24.6     -<span style="color: #BB0000;">81.6</span>    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">2</span>007 <span style="color: #BB0000;">NA</span>          US      FLORIDA   25-2… SUGARLOAF…     24.6     -<span style="color: #BB0000;">81.6</span>    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">2</span>008 <span style="color: #BB0000;">NA</span>          US      FLORIDA   25-2… SUGARLOAF…     24.6     -<span style="color: #BB0000;">81.6</span>    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 70 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: obs_n &lt;dbl&gt;, total_spp &lt;dbl&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use combined or non-combined species forms</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="search_species.html">search_species</a></span><span class="op">(</span><span class="st">"Sooty grouse"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 9</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     aou english          french spanish order family genus species unid_combined</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>971 Sooty Grouse     Tétra… Dendra… Gall… Phasi… Dend… fuligi… TRUE         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>973 Blue Grouse (Du… Tétra… Dendra… Gall… Phasi… Dend… obscur… TRUE         </span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>, species <span class="op">=</span> <span class="st">"Blue Grouse (Dusky/Sooty)"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'bbs_usgs' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Blue Grouse (Dusky/Sooty) (2973)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">birds_strata</span><span class="op">)</span> <span class="co"># Contains all Dusky, Sooty and unidentified</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1501</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="search_species.html">search_species</a></span><span class="op">(</span><span class="st">"Sooty grouse"</span>, combine_species_forms <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 9</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     aou english          french spanish order family genus species unid_combined</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">2</span>971 Sooty Grouse     Tétra… Dendra… Gall… Phasi… Dend… fuligi… FALSE        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">2</span>973 unid. Dusky Gro… unid … Dendra… Gall… Phasi… Dend… obscur… FALSE        </span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>, species <span class="op">=</span> <span class="st">"unid. Dusky Grouse / Sooty Grouse"</span>,</span></span>
 <span class="r-in"><span>              combine_species_forms <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'bbs_usgs' (standard) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species unid. Dusky Grouse / Sooty Grouse (2973)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">birds_strata</span><span class="op">)</span> <span class="co"># Contains *only* unidentified</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 90</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Stratify by a subset of an existing stratification</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">my_cws</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bbs_strata</span><span class="op">[[</span><span class="st">"bbs_cws"</span><span class="op">]</span><span class="op">]</span>, <span class="va">country_code</span> <span class="op">==</span> <span class="st">"CA"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>, strata_custom <span class="op">=</span> <span class="va">my_cws</span>, species <span class="op">=</span> <span class="st">"Snowy Owl"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'bbs_cws' (subset) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Snowy Owl (3760)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Combining BCR 7 and NS and PEI...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Omitting 101,474/119,567 route-years that do not match a stratum.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">my_bcr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">bbs_strata</span><span class="op">[[</span><span class="st">"bcr"</span><span class="op">]</span><span class="op">]</span>, <span class="va">strata_name</span> <span class="op">==</span> <span class="st">"BCR8"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bcr"</span>, strata_custom <span class="op">=</span> <span class="va">my_bcr</span>,</span></span>
 <span class="r-in"><span>              species <span class="op">=</span> <span class="st">"Yellow-rumped Warbler (all forms)"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'bcr' (subset) stratification</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading BBS data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Filtering to species Yellow-rumped Warbler (all forms) (6556)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Stratifying data...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Omitting 118,210/119,567 route-years that do not match a stratum.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Stratify by Custom stratification, using sf map object</span></span></span>
 <span class="r-in"><span><span class="co"># e.g. with WBPHS stratum boundaries 2019</span></span></span>
@@ -360,6 +245,7 @@ for more details.</p>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

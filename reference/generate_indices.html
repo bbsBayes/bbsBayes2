@@ -14,7 +14,7 @@ species, and to estimate trends."><meta property="og:image" content="https://bbs
     
     <a class="navbar-brand me-2" href="../index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,8 +70,9 @@ species, and to estimate trends.</p>
 <span>  regions_index <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  alternate_n <span class="op">=</span> <span class="st">"n"</span>,</span>
 <span>  start_year <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  drop_exclude <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  max_backcast <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  drop_exclude <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  hpdi <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -137,12 +138,6 @@ time-periods.</p></dd>
 indices.</p></dd>
 
 
-<dt>drop_exclude</dt>
-<dd><p>Logical. Whether or not strata that exceed the
-<code>max_backcast</code> threshold should be excluded from the calculations. Default
-is <code>FALSE</code> (regions are flagged and listed but not dropped).</p></dd>
-
-
 <dt>max_backcast</dt>
 <dd><p>Numeric. The number of years to back cast stratum-level
 estimates before the first year that species was observed on any route in
@@ -150,6 +145,25 @@ that stratum. Default is <code>NULL</code>, which generates annual indices for t
 entire time series and ignores back-casting. CWS national estimates use a
 back cast of 5. Note that unless <code>drop_exclude = TRUE</code>, problematic years
 are only flagged, not omitted. See Details for more specifics.</p></dd>
+
+
+<dt>drop_exclude</dt>
+<dd><p>Logical. Whether or not strata that exceed the
+<code>max_backcast</code> threshold should be excluded from the calculations. Default
+is <code>FALSE</code> (regions are flagged and listed but not dropped).</p></dd>
+
+
+<dt>hpdi</dt>
+<dd><p>Logical. Should credible intervals and limits be calculated using
+highest posterior density intervals instead of simple quantiles of the
+posterior distribution. Default is <code>FALSE</code>. these intervals are often a
+better descriptor of skewed posterior distributions, such as the predicted
+mean counts that the indices represent.
+Note hpd intervals are not stable for small percentages of the posterior
+distribution, and so <code>hdpi = TRUE</code> is ignored for <code>quantiles</code> values
+between 0.33 and 0.67 (i.e., if the <code>quantiles</code> value defines a limit for
+a centered hpd interval that would include &lt; 33% of the
+posterior distribution).</p></dd>
 
 
 <dt>quiet</dt>
@@ -198,10 +212,10 @@ time-series. Only calculated if <code>max_backcast != NULL</code>.</p></li>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>max_backcast</code> is a way to deal with the fact that the species of interest
 may not appear in the data until several years after the start of the
-record. <code>max_backcast</code> specifies how many years can occur before the
+time-series <code>max_backcast</code> specifies how many years can occur before the
 stratum is flagged. A <code>max_backcast</code> of 5 will flag any stratum without a
-non-zero (or non-NA) observation within the first 5 years of the data
-record. Note that records are <em>only</em> flagged unless <code>drop_exclude = TRUE</code>.
+non-zero (or non-NA) observation within the first 5 years of the time-
+series. Note that records are <em>only</em> flagged unless <code>drop_exclude = TRUE</code>.
 If you find that the early data record is sparse and results in the
 exclusion of many strata, consider trimming the early years by specifying a
 <code>start_year</code>.</p>
@@ -221,6 +235,11 @@ exclusion of many strata, consider trimming the early years by specifying a
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Generate the continental and stratum indices</span></span></span>
 <span class="r-in"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu">generate_indices</span><span class="op">(</span><span class="va">pacific_wren_model</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region continent</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region stratum</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Generate the continental and stratum indices using hpdi</span></span></span>
+<span class="r-in"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu">generate_indices</span><span class="op">(</span><span class="va">pacific_wren_model</span>, hpdi <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region continent</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region stratum</span>
 <span class="r-in"><span></span></span>
