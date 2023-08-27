@@ -223,7 +223,7 @@ model_params <- function(model,
     params[["n_Iy2"]] <- n_Iy2
     params[["n_years_m1"]] <- n_years-1
 
-  if(model_variant == "spatial"){
+  if(model_variant %in% c("spatial","hier")){
     # setting up a vector of indicators for years that are not 2020
     # these are used as conditional values in the Stan model to indicate
     # years in which the spatial variance of differences should be estimated
