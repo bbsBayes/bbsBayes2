@@ -8,6 +8,7 @@ test_that("model_params()", {
 
   for(i in seq_len(nrow(bbs_models))) {
     model <- bbs_models$model[i]
+    for(model_variant in c("spatial","hier")){
     if(model == "gam") n_knots <- 9 else n_knots <- NULL
     if(model %in% c("gam", "gamye")) {
       basis <- c("original", "mgcv")
@@ -30,14 +31,14 @@ test_that("model_params()", {
              "calc_log_lik")
 
       if(model %in% c("gam", "gamye")) n <- c(n, "n_knots_year", "year_basis")
-      if(model == "first_diff") n <- c(n, "fixed_year", "zero_betas",
+      if(model == "first_diff" & model_variant %in% c("spatial","hier")) n <- c(n, "fixed_year", "zero_betas",
                                        "Iy1", "n_Iy1", "Iy2", "n_Iy2",
-                                       "n_years_m1")
+                                       "n_years_m1","y_2020")
       if(model == "slope") n <- c(n, "fixed_year")
       expect_named(m, n)
     }
   }
-
+}
 })
 
 test_that("create_init()", {
