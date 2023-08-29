@@ -106,14 +106,14 @@ file.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Save the Slope model in temp directory</span></span></span>
 <span class="r-in"><span><span class="fu">copy_model_file</span><span class="op">(</span>model <span class="op">=</span> <span class="st">"slope"</span>, model_variant <span class="op">=</span> <span class="st">"spatial"</span>, dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Copying model file slope_spatial_bbs_CV.stan to /tmp/RtmpphLcbL/slope_spatial_bbs_CV_COPY.stan</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpphLcbL/slope_spatial_bbs_CV_COPY.stan"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Copying model file slope_spatial_bbs_CV.stan to /tmp/RtmpEz5WUc/slope_spatial_bbs_CV_COPY.stan</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpEz5WUc/slope_spatial_bbs_CV_COPY.stan"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Overwrite an existing copy</span></span></span>
 <span class="r-in"><span><span class="fu">copy_model_file</span><span class="op">(</span>model <span class="op">=</span> <span class="st">"slope"</span>, model_variant <span class="op">=</span> <span class="st">"spatial"</span>, dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Copying model file slope_spatial_bbs_CV.stan to /tmp/RtmpphLcbL/slope_spatial_bbs_CV_COPY.stan</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpphLcbL/slope_spatial_bbs_CV_COPY.stan"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Copying model file slope_spatial_bbs_CV.stan to /tmp/RtmpEz5WUc/slope_spatial_bbs_CV_COPY.stan</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpEz5WUc/slope_spatial_bbs_CV_COPY.stan"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Clean up</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"slope_spatial_bbs_CV_COPY.stan"</span><span class="op">)</span><span class="op">)</span></span></span>
