@@ -73,7 +73,7 @@ test_that("fetch_bbs_data()", {
   # Adjust level and release to run all as required
 
   # Clear all
-  expect_message(remove_bbs_data(cache_dir = TRUE), "Removing all")
+  #expect_message(remove_bbs_data(cache_dir = TRUE), "Removing all")
 
   level <- c("stop", "state")[2] # Add [2] to test only "state"
   release <- c(2020, 2022, 2023)[3]    # Add [2] to test only 2022
@@ -83,7 +83,7 @@ test_that("fetch_bbs_data()", {
     f <- file.path(bbs_dir(), paste0("bbs_", l, "_data_", r, ".rds"))
     expect_false(file.exists(f))
     expect_message(fetch_bbs_data_internal(
-      level = l, release = r, check_bbs_data(l, r, force = FALSE, quiet = FALSE),
+      level = l, release = r, check_bbs_data(l, r, force = TRUE, quiet = FALSE),
       force = FALSE, quiet = FALSE), "Using data director") %>%
       expect_message("Connecting to USGS") %>%
       expect_message("Connected!") %>%
