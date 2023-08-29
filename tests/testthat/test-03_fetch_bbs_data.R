@@ -68,7 +68,7 @@ test_that("get_XXXX()", {
 
 test_that("fetch_bbs_data()", {
 
-  skip_on_ci()
+  #skip_on_ci()
 
   # Adjust level and release to run all as required
 
