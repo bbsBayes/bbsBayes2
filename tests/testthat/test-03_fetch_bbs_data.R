@@ -73,7 +73,7 @@ test_that("fetch_bbs_data()", {
   # Adjust level and release to run all as required
 
   # Clear all
-  #expect_message(remove_bbs_data(cache_dir = TRUE), "Removing all")
+  expect_message(remove_bbs_data(cache_dir = TRUE), "Removing all")
 
   level <- c("stop", "state")[2] # Add [2] to test only "state"
   release <- c(2020, 2022, 2023)[3]    # Add [2] to test only 2022
