@@ -73,7 +73,6 @@ jobs:
           key: bbs-data-${{ secrets.BBS_DATA_VERSION }}
 
       - name: Fetch BBS data
-        if: steps.cache-data.outputs.cache-hit != 'true'
         run: bbsBayes2:::fetch_bbs_data_internal(quiet = FALSE)
         shell: Rscript {0}
 
