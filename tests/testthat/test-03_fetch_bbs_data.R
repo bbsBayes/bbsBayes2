@@ -83,7 +83,7 @@ test_that("fetch_bbs_data()", {
     f <- file.path(bbs_dir(), paste0("bbs_", l, "_data_", r, ".rds"))
     expect_false(file.exists(f))
     expect_message(fetch_bbs_data_internal(
-      level = l, release = r, check_bbs_data(l, r, force = FALSE, quiet = FALSE),
+      level = l, release = r, check_bbs_data(l, r, force = TRUE, quiet = FALSE),
       force = TRUE, quiet = FALSE), "Using data director") %>%
       expect_message("Connecting to USGS") %>%
       expect_message("Connected!") %>%
