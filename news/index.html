@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,9 +51,19 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.1" id="bbsbayes2-111">bbsBayes2 1.1.1<a class="anchor" aria-label="anchor" href="#bbsbayes2-111"></a></h2>
+<p>1.1.1 represents a patch to correct some failing checks and tests in 1.1.0, and includes all of the functionality of the 1.1.0 release.</p>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="bbsbayes2-110">bbsBayes2 1.1.0<a class="anchor" aria-label="anchor" href="#bbsbayes2-110"></a></h2>
 <ul><li>Second release. Includes access to the 2023 release of the BBS database. Also includes improvements to the management of the csv files created by Stan, increased ability to map values from <code><a href="../reference/generate_trends.html">generate_trends()</a></code>, tweaks to the first_diff models to better handle the missing data in 2020 (when no BBS surveys were conducted), and options to use highest posterior density intervals (hpdi) to describe the posterior distribution in <code><a href="../reference/generate_indices.html">generate_indices()</a></code> and <code><a href="../reference/generate_trends.html">generate_trends()</a></code>.</li>
-</ul></div>
+</ul><p>More specifically, to support version 1.1.0, the following changes were made:</p>
+<ol style="list-style-type: decimal"><li><p>adds some tweaks to the first_difference, spatial model to force 0 spatial variance in 2020 - the year when the BBS was cancelled and so there are no data and therefore no information with which to meaningfully estimate the variance in annual differences among strata.</p></li>
+<li><p>allows the <code><a href="../reference/plot_map.html">plot_map()</a></code> function to plot any of the numerical values in the output from <code><a href="../reference/generate_trends.html">generate_trends()</a></code>. e.g., to display trend uncertainty by plotting the credible limits or width of the credible intervals of the trend estimates, or to display the mean relative abundance among strata during the trend period. Example added to the Advanced Vignette.</p></li>
+<li><p>package can access the newest database release to include field observations from 1966 - 2022.</p></li>
+<li><p>allows for the use of highest posterior density intervals in the <code><a href="../reference/generate_indices.html">generate_indices()</a></code> and <code><a href="../reference/generate_trends.html">generate_trends()</a></code> functions. HPDI often provide a better description of the posterior distribution, particularly for skewed distributions, such as those from a log-transformed predicted count (i.e., the indices of annual relative abundance). Example added to the Advanced Vignette.</p></li>
+<li><p><code><a href="../reference/run_model.html">run_model()</a></code> function by default now cleans up the .csv files created by Stan, once the model has finished and has been saved to .rds file (also done by default). Saves local disk space, as once the model output is saved in the rds file, the csv files are redundant.</p></li>
+</ol></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="bbsbayes2-100">bbsBayes2 1.0.0<a class="anchor" aria-label="anchor" href="#bbsbayes2-100"></a></h2>
 <ul><li>First release of bbsBayes2, the successor to bbsBayes!</li>
