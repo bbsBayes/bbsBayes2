@@ -204,7 +204,7 @@ m<-prepare_model(prepared_data = d,
 
 ```
 
-## ExAMPLE - mapping uncertainty of trends or estimated abundance
+## EXAMPLE - mapping uncertainty of trends or estimated abundance
 
 A new feature in version 1.1, is the ability to use the plot_map function to map any of the numerical values provided in the output from `generate_trends()`. For example, you may be interested in understanding the spatial distribution of the upper and lower bounds of a trend estimate, in order to visualise the uncertainty in the spatial distribution of trend estimates.
 
