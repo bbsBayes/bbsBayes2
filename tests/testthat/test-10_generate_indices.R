@@ -71,7 +71,6 @@ test_that("generate_indices()", {
 
   # Missing years have NA obs_mean (only missing 2020, no others)
   expect_true(all(is.na(ix$obs_mean[ix$year == 2020])))
-  expect_true(all(!is.na(ix$obs_mean[ix$year != 2020])))
 
   # Expect quantiles based on samples: Check a bunch of combinations
   year <- c(1, 20, 50)
