@@ -345,7 +345,8 @@ if(hpdi){
         backcast_flag = 1 - .data$flag_year,
         region_type = .env$rr,
         # Replace with NA, if entire year missing
-        obs_mean = dplyr::if_else(.data$year %in% .env$missing_yrs,
+        obs_mean = dplyr::if_else((.data$year %in% .env$missing_yrs) |
+                                    (.data$n_routes == 0),
                                   NA_real_,
                                   .data$obs_mean)) %>%
       # Add in quantiles
