@@ -65,7 +65,7 @@ With remotes:
 
 ```{r}
 install.packages("remotes")
-remotes::install_github(("bbsBayes/bbsBayes2")
+remotes::install_github("bbsBayes/bbsBayes2")
 ```
 
 If you want to install the developmental branch (which often includes additional 

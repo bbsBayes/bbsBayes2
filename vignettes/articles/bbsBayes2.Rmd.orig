@@ -130,15 +130,14 @@ This will save the data to a package-specific directory on your computer. You mu
 > section).
 
 
-There are (as of June 2023) two types of BBS data that can be
-downloaded, and two release-versions:
+There are (as of August 2023) two types of BBS data that can be
+downloaded, and three release-versions:
 
 -   Two levels `state` and `stop` (only `state` works with bbsBayes2
     models, the `stop` option is provided to facilitate custom projects and models)
--   Two releases `2020` and `2022` (more options will be added as annual
-    releases occur)
+-   Two releases `2020`, `2022` and `2023` (more options will be added as annual releases occur). 
 
-The defaults (level `state` and the most recent release) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
+The defaults (level `state` and the most recent release - `2023`) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
 However you can download all data sets and specify which one you wish to
 use in the `stratify()` step.
 
@@ -152,7 +151,7 @@ There is no
 lockdowns of spring 2020 so no data were collected and there was no updated data to release the following year.
 
 ```{r, eval = FALSE}
-fetch_bbs_data()                  # Default
+fetch_bbs_data()                  # Default - most recent release
 fetch_bbs_data(release = "2020")  # Specify a different release
 ```
 
