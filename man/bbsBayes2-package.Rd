@@ -24,7 +24,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Adam C. Smith \email{adam.smith2@canada.ca}
+  \item Adam C. Smith \email{adam.smith@ec.gc.ca}
   \item Steffi LaZerte \email{steffi@steffi.ca}
 }
 

@@ -138,7 +138,7 @@ stratify <- function(by,
                      species,
                      strata_custom = NULL,
                      combine_species_forms = TRUE,
-                     release = 2023,
+                     release = 2024,
                      sample_data = FALSE,
                      return_omitted = FALSE,
                      quiet = FALSE) {

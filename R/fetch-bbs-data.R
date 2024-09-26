@@ -3,7 +3,7 @@
 #' Fetch and download Breeding Bird Survey data from the United States
 #' Geological Survey (USGS) FTP site. This is the raw data that is uploaded to
 #' the site before any analyses are performed. Users can download different
-#' types (`state`, `stop`) and different releases (currently `2020`, `2022`, and `2023`).
+#' types (`state`, `stop`) and different releases (currently `2020`, `2022`, `2023`, and `2024`).
 #'
 #' @param force Logical. Should pre-exising BBS data be overwritten? Default
 #'   FALSE.
@@ -30,7 +30,8 @@
 #' individually. **Note that stop-level data is not currently supported by the
 #' modelling utilities in bbsBayes2.**
 #'
-#' There are three releases for each type of data, `2020`, `2022`, and `2023`.
+#' There are three releases for each type of data, `2020`, `2022`, `2023`,
+#' and `2024`.
 #' By default all functions use the most recent release unless otherwise
 #' specified. For example, the `release` argument in `stratify()` can be
 #' changed to `2020` to use the 2020 release of state-level counts.
@@ -46,7 +47,7 @@
 #' @export
 #'
 fetch_bbs_data <- function(level = "state",
-                           release = 2023,
+                           release = 2024,
                            force = FALSE,
                            quiet = FALSE,
                            compression = "none") {
@@ -118,8 +119,9 @@ fetch_bbs_data_internal <- function(level = "state", release = 2023,
   # Species Data ----------------
 
   if(!quiet) message("Downloading species data (Task 3/3)")
-
   temp <- tempfile()
+  if(release < 2024){
+
   suppressMessages({
     full_path <- sbtools::item_file_download(sb_id = connection,
                                              names = "SpeciesList.txt",
@@ -152,6 +154,36 @@ fetch_bbs_data_internal <- function(level = "state", release = 2023,
     progress = FALSE)
 
 
+# Different file type in 2024 release -------------------------------------
+
+}else{
+
+  suppressMessages({
+    full_path <- sbtools::item_file_download(sb_id = connection,
+                                             names = "SpeciesList.csv",
+                                             destinations = temp)
+  })
+
+  # suppressMessages({
+  #   full_path <- sbtools::item_file_download(
+  #     sb_id = connection,
+  #     names = rtsfl,
+  #     destinations = file.path(tempdir(), rtsfl),
+  #     overwrite_file = force)
+  # })
+  species <- readr::read_csv(
+    full_path,
+    na = c("NA", "", "NULL"),
+    col_types = "iiccccccc", progress = FALSE,
+    locale = readr::locale(encoding = "latin1")) %>%
+    dplyr::rename_with(stringr::str_to_lower) %>%
+    dplyr::rename_with(~stringr::str_remove(string = .x,
+                                           pattern = "_common_name")) %>%
+    dplyr::rename_with(snakecase::to_snake_case)
+  }
+
+
+
   # Combine species forms -------------------------------------
   b <- combine_species(birds, species, quiet)
   birds <- b$birds
@@ -175,6 +207,7 @@ fetch_bbs_data_internal <- function(level = "state", release = 2023,
 
 get_sb_id <- function(release) {
   switch(as.character(release),
+         "2024" = "66d9ed16d34eef5af66d534b",
          "2023" = "64ad9c3dd34e70357a292cee",
          "2022" = "625f151ed34e85fa62b7f926",
          "2020" = "5ea04e9a82cefae35a129d65")
@@ -249,7 +282,7 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
       check_release(release, all = TRUE)
 
       if(level == "all") level <- c("state", "stop")
-      if(release == "all") release <- c("2020", "2022", "2023")
+      if(release == "all") release <- c("2020", "2022", "2023", "2024")
 
       # To get all combos
       f <- vector()
@@ -296,7 +329,7 @@ have_bbs_data <- function(level = "state", release = 2023, quiet = FALSE){
   check_release(release, all = TRUE)
 
   if(level == "all") level <- c("state", "stop")
-  if(release == "all") release <- c("2020", "2022", "2023")
+  if(release == "all") release <- c("2020", "2022", "2023", "2024")
 
   # To get all combos
   f <- vector()
@@ -331,7 +364,7 @@ get_birds <- function(level, release, quiet, connection, force) {
 
   unz_path <- utils::unzip(zipfile = full_path, exdir = tempdir())
 
-  if(release != 2023){ # not zipped in 2023
+  if(release < 2023){ # not zipped in 2023
       unz_path <- purrr::map(unz_path, utils::unzip, exdir = tempdir())
     }
     birds <- unz_path %>%
@@ -363,6 +396,9 @@ get_routes <- function(release, quiet, connection, force) {
   if(release == 2023){ # format of embedded files changed in 2023
     rtsfl <- "routes.csv"
   }
+  if(release == 2024){ # all file names title case in 2024
+    rtsfl <- "Routes.csv"
+  }
 
   suppressMessages({
     full_path <- sbtools::item_file_download(
@@ -372,7 +408,7 @@ get_routes <- function(release, quiet, connection, force) {
       overwrite_file = force)
   })
 
-  if(release != 2023) {
+  if(release < 2023) {
     full_path <- utils::unzip(zipfile = full_path, exdir = tempdir())
   }
 
@@ -393,9 +429,14 @@ get_weather <- function(release, quiet, connection, force) {
 
   if(!quiet) message("  - weather...")
 
+
+  if(release == 2024){ # all files have title case names in 2024
+    wthrfl <- "Weather.csv"
+  }
   if(release == 2023){ # this file not in zip format in 2023
     wthrfl <- "weather.csv"
-  }else{
+  }
+  if(release < 2023){
     wthrfl <- "Weather.zip"
   }
 
@@ -407,7 +448,7 @@ get_weather <- function(release, quiet, connection, force) {
       overwrite_file = force)
   })
 
-  if(release != 2023){ # some files not in zip format in this release
+  if(release < 2023){ # some files not in zip format in this release
     full_path <- utils::unzip(zipfile = full_path, exdir = tempdir())
   }
 
