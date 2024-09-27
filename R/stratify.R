@@ -308,7 +308,8 @@ stratify <- function(by,
   # Return list
   out <- list("meta_data" = list("stratify_by" = stratify_by,
                                  "stratify_type" = stratify_type,
-                                 "species" = species),
+                                 "species" = species,
+                                 "sp_aou" = sp_aou),
               "meta_strata" = meta_strata,
               "birds_strata" = dplyr::select(birds, -"rid"),
               "routes_strata" = dplyr::select(routes, -"rid"))

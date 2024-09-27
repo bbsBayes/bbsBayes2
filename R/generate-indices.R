@@ -257,7 +257,7 @@ generate_indices <- function(
       dplyr::mutate(
         pz_area = .data$area_sq_km * .data$non_zero_weight,
         strata_p = .data$pz_area / sum(.data$pz_area),
-        area_weight = .data$area_sq_km / sum(.data$area_sq_km),
+        area_weight = .data$area_sq_km / sum(.data$area_sq_km,na.rm = TRUE),
         area_weight_non_zero = .data$area_weight * .data$non_zero_weight) %>%
       dplyr::ungroup()
 

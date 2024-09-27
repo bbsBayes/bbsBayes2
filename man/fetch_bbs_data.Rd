@@ -49,7 +49,7 @@ beginning in 1997, which includes counts for each stop along routes
 individually. \strong{Note that stop-level data is not currently supported by the
 modelling utilities in bbsBayes2.}
 
-There are three releases for each type of data, \code{2020}, \code{2022}, \code{2023},
+There are multiple releases for each type of data, \code{2020}, \code{2022}, \code{2023},
 and \code{2024}.
 By default all functions use the most recent release unless otherwise
 specified. For example, the \code{release} argument in \code{stratify()} can be

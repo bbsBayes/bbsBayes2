@@ -31,7 +31,16 @@
 #'   quantiles need to have been precalculated in `generate_indices()`.
 #' @param add_observed_means Logical. Whether to include points indicating the
 #'   observed mean counts. Default `FALSE`. Note: scale of observed means and
-#'   annual indices may not match due to imbalanced sampling among routes.
+#'   annual indices may not match due to imbalanced sampling among routes. Also,
+#'   pattern of change in observed means through time should reflect estimated
+#'   population trajectories for strata-level summaries. However, the temporal
+#'   patterns may be very different between means and annual indices for composite
+#'   regions (e.g., continental, state, province, or BCR) because the indices
+#'   for composite regions account for the variation in area weights and
+#'   variation in relative abundances among strata, and the observed mean counts
+#'   do not. For strata-level assessments, these observed means can be a useful
+#'   model assessment tool. For composite regions, their interpretation is more
+#'   complicated.
 #' @param col_viridis Logical. Should the colour-blind-friendly "viridis"
 #'   palette be used. Default `FALSE`.
 #'
@@ -48,7 +57,7 @@
 #'   better descriptor of skewed posterior distributions, such as the predicted
 #'   mean counts that the indices represent.
 #'   Note hpd intervals are not stable for small percentages of the posterior
-#'   distribution, and so `hdpi = TRUE` is ignored for `quantiles` values
+#'   distribution, and so `hpdi = TRUE` is ignored for `quantiles` values
 #'   between 0.33 and 0.67 (i.e., if the `quantiles` value defines a limit for
 #'   a centered hpd interval that would include < 33% of the
 #'   posterior distribution).

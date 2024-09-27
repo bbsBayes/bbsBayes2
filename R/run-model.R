@@ -39,6 +39,12 @@
 #'   the model output file save object, when `save_model = TRUE`, and so for
 #'   file organization and efficient use of memory, these are deleted
 #'   by default.
+#' @param show_exceptions Logical.  Passed to `cmdstanr::sample()`.
+#'   Defaults to FALSE. When TRUE, prints all informational messages from Stan,
+#'   for example rejection of the current proposal. Disabled by default in
+#'   bbsBayes2, because of the copious informational messages during the
+#'   initialization period that have no bearing on model fit. If fitting a
+#'   custom model, recommend setting this to TRUE.
 #' @param ... Other arguments passed on to `cmdstanr::sample()`.
 #'
 #' @inheritParams common_docs
@@ -86,6 +92,7 @@ run_model <- function(model_data,
                       retain_csv = FALSE,
                       set_seed = NULL,
                       quiet = FALSE,
+                      show_exceptions = FALSE,
                       ...) {
 
   # Check inputs
@@ -180,6 +187,7 @@ run_model <- function(model_data,
     init = init_values,
     output_dir = output_dir,
     output_basename = output_basename,
+    show_exceptions = show_exceptions,
     ...)
 
   model_output <- list("model_fit" = model_fit,

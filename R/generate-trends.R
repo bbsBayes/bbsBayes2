@@ -192,7 +192,7 @@ generate_trends <- function(indices,
     dplyr::summarize(
       # Basic statistics
       rel_abundance = mean(.data$index),
-      obs_rel_abundance = mean(.data$obs_mean),
+      obs_rel_abundance = mean(.data$obs_mean,na.rm = TRUE),
       mean_n_routes = mean(.data$n_routes),
       n_routes = mean(.data$n_routes_total),
       backcast_flag = mean(.data$backcast_flag),

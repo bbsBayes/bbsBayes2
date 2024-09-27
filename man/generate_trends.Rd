@@ -61,7 +61,7 @@ posterior distribution. Default is \code{FALSE}. these intervals are often a
 better descriptor of skewed posterior distributions, such as the predicted
 mean counts that the indices represent.
 Note hpd intervals are not stable for small percentages of the posterior
-distribution, and so \code{hdpi = TRUE} is ignored for \code{quantiles} values
+distribution, and so \code{hpdi = TRUE} is ignored for \code{quantiles} values
 between 0.33 and 0.67 (i.e., if the \code{quantiles} value defines a limit for
 a centered hpd interval that would include < 33\% of the
 posterior distribution).}

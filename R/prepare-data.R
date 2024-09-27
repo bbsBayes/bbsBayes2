@@ -75,6 +75,35 @@ prepare_data <- function(strata_data,
     dplyr::left_join(obs, by = c("route", "rpid", "year")) %>%
     dplyr::mutate(count = tidyr::replace_na(.data$count, 0))
 
+  # Warn if min_year is null and species is a lumped species complex
+  # of if species has expanded into BBS range
+  if(strata_data$meta_data$sp_aou %in% bbsBayes2::species_notes$aou){
+    sp_note <- species_notes %>%
+      dplyr::filter(.data$aou == .env$strata_data$meta_data$sp_aou)
+      sp_note_y <- sp_note$minimum_year
+      sp_note_msg <- sp_note$warning
+
+      if(is.null(min_year)){
+        warning(paste("Consider rerunning prepare_data(min_year = ",
+                      sp_note_y,") or some later year.",
+                sp_note_msg),
+                call. = FALSE, immediate. = TRUE)
+      }else{
+
+      if(min_year < sp_note_y){
+        warning(paste("Consider rerunning prepare_data(min_year = ",
+                      sp_note_y,") or some later year.",
+                      sp_note_msg),
+                call. = FALSE, immediate. = TRUE)
+      }
+      }
+
+    }else{
+      sp_note_y <- NULL
+      sp_note_msg <- NULL
+    }
+
+
   # Filter observations
   if(!is.null(min_year)) obs <- dplyr::filter(obs, .data$year >= .env$min_year)
   if(!is.null(max_year)) obs <- dplyr::filter(obs, .data$year <= .env$max_year)

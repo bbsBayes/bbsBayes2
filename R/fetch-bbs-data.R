@@ -30,7 +30,7 @@
 #' individually. **Note that stop-level data is not currently supported by the
 #' modelling utilities in bbsBayes2.**
 #'
-#' There are three releases for each type of data, `2020`, `2022`, `2023`,
+#' There are multiple releases for each type of data, `2020`, `2022`, `2023`,
 #' and `2024`.
 #' By default all functions use the most recent release unless otherwise
 #' specified. For example, the `release` argument in `stratify()` can be
