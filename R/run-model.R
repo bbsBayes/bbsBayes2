@@ -104,9 +104,17 @@ run_model <- function(model_data,
   meta_data <- model_data[["meta_data"]]
   raw_data <- model_data[["raw_data"]]
   meta_strata <- model_data[["meta_strata"]]
+
   init_values <- model_data[["init_values"]]
   folds <- model_data[["folds"]]
   model_data <- model_data[["model_data"]]
+
+  if(model_data$n_strata < 2){
+    stop("The data have only 1 stratum. bbsBayes2 models require multiple strata.
+         If there are sufficient routes with data, you can try an alternate stratification
+         (e.g., latlong) where the routes may be redistributed among > 1 strata.")
+  }
+
   species <- stringr::str_remove_all(meta_data[["species"]],
                                       "[^[[:alpha:]]]")
 

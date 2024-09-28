@@ -93,7 +93,7 @@ z <- "output/WBPHS_Stratum_Boundaries_2019.zip" #
 
 download.file(url = "https://ecos.fws.gov/ServCat/DownloadFile/213149",
               destfile = z,
-              cacheOK = FALSE)
+              cacheOK = TRUE)
 unzip(z)  # Unzip - if you get a file is corrupt message, download it manually
 unlink(z) # Remove the zipped file
 ```

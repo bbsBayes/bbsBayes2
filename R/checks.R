@@ -308,14 +308,16 @@ check_regions <- function(regions, stratify_by, stratify_type,
   msg <- "Stratification does not match desired regions:\n"
 
   if(stratify_by %in% c("bcr", "latlong") &
-     any(regions %in% c("country", "prov_state"))) {
+     any(regions %in% c("country", "prov_state"))
+     & stratify_type != "custom" & is.null(regions_index)) {
     stop(msg,
          "BCRs and lat-long degree block stratifications cannot be divided ",
          "into regions with political boundaries ('country', 'prov_state').",
          call. = FALSE)
   }
 
-  if(stratify_by == "prov_state" & "bcr" %in% regions){
+  if(stratify_by == "prov_state" & "bcr" %in% regions
+     & stratify_type != "custom" & is.null(regions_index)){
     stop(msg,
          "The States and Provinces stratification",
          "cannot be divided into BCR regions.",

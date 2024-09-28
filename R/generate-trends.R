@@ -139,13 +139,14 @@ generate_trends <- function(indices,
                             max_year = NULL,
                             quantiles = c(0.025, 0.05, 0.25, 0.75, 0.95, 0.975),
                             slope = FALSE,
+                            gam = FALSE,
                             prob_decrease = NULL,
                             prob_increase = NULL,
                             hpdi = FALSE) {
 
   # Checks
   check_data(indices)
-  check_logical(slope, hpdi)
+  check_logical(slope, hpdi, gam)
   check_numeric(quantiles)
   check_numeric(min_year, max_year, quantiles, prob_decrease, prob_increase,
                 allow_null = TRUE)
@@ -263,6 +264,26 @@ generate_trends <- function(indices,
           .data[[paste0("slope_trend_q_", q1)]])
   }
 
+
+  # Optional gam based trends
+  if(gam) {
+    trends <- trends %>%
+      dplyr::mutate(
+        sl_t = purrr::map(.data$n, calc_gam,
+                          .env$min_year_num, .env$max_year_num),
+        gam_trend = purrr::map_dbl(.data$sl_t, stats::median),
+        gam_trend_q = purrr::map_df(
+          .data$sl_t, ~stats::setNames(
+            calc_quantiles(.x, quantiles, names = FALSE),
+            paste0("gam_trend_q_", quantiles)))) %>%
+      tidyr::unnest("gam_trend_q") %>%
+      dplyr::mutate(
+        "width_of_{q}_percent_credible_interval_gam" :=
+          .data[[paste0("gam_trend_q_", q2)]] -
+          .data[[paste0("gam_trend_q_", q1)]])
+  }
+
+
   # Model conditional probabilities of population change during trends period
   if(!is.null(prob_decrease)) {
     trends <- trends %>%
@@ -292,6 +313,7 @@ generate_trends <- function(indices,
       dplyr::starts_with("trend"),
       dplyr::starts_with("percent_change"),
       dplyr::starts_with("slope"),
+      dplyr::starts_with("gam"),
       dplyr::starts_with("width"),
       dplyr::starts_with("prob"),
       "rel_abundance", "obs_rel_abundance",
@@ -321,6 +343,25 @@ calc_slope <- function(n, min_year_num, max_year_num) {
 
   ne <- log(n[, wy])
   m <-  t(apply(ne, 1, FUN = bsl, wy))
+
+  as.vector((exp(m) - 1) * 100)
+}
+
+gam_sl <- function(i, wy) {
+  df <- data.frame(i = i,
+                   y = 1:length(i))
+  sm <- mgcv::gam(data = df,
+                  formula = i~s(y))
+  smf <- sm$fitted.values[wy]
+  ny <- wy[2]-wy[1]
+  smt <- (smf[2]-smf[1])*(1/ny)
+}
+
+calc_gam <- function(n, min_year_num, max_year_num) {
+  wy <- c(min_year_num,max_year_num)
+
+  ne <- log(n)
+  m <-  t(apply(ne, 1, FUN = gam_sl, wy))
 
   as.vector((exp(m) - 1) * 100)
 }

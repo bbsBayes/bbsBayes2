@@ -39,14 +39,14 @@ The four models differ in the way they estimate the time-series components.
 
 ### 1. First Difference Models
 
-A first-difference model considers the time-series as a random-walk forward and backwards in time from the mid-year of the time-series, so that the first-differences of the sequence of year-effects are random effects with mean = 0 and an estimated variance. The non-hierarchical variant of this model model has been described in [Link et al., 2017](https://doi.org/10.1650/CONDOR-17-1.1) the hierarchical and spatial variants are described in [Smith et al., 2023 pre-print](https://doi.org/10.32942/X2088D).
+A first-difference model considers the time-series as a random-walk forward and backwards in time from the mid-year of the time-series, so that the first-differences of the sequence of year-effects are random effects with mean = 0 and an estimated variance. The non-hierarchical variant of this model model has been described in [Link et al., 2017](https://doi.org/10.1650/CONDOR-17-1.1) the hierarchical and spatial variants are described in [Smith et al., 2024](https://doi.org/10.1093/ornithapp/duad056).
 
 
 ### 2. Generalized Additive Models
-The GAM models the time series as a semiparametric smooth using a Generalized Additive Model (GAM) structure. This model is unique among the bbsBayes2 models in that it does not model annual fluctuations, only smoothed changes in population size through time. As a result, it makes some very strong assumptions about population change. See [Smith & Edwards, 2021](https://doi.org/10.1093/ornithapp/duaa065) for the original formulation. The updated hierarchical and spatial variants of this model are described in this [Smith et al., 2023 pre-print](https://doi.org/10.32942/X2088D).
+The GAM models the time series as a semiparametric smooth using a Generalized Additive Model (GAM) structure. This model is unique among the bbsBayes2 models in that it does not model annual fluctuations, only smoothed changes in population size through time. As a result, it makes some very strong assumptions about population change. See [Smith & Edwards, 2021](https://doi.org/10.1093/ornithapp/duaa065) for the original formulation. The updated hierarchical and spatial variants of this model are described in this [Smith et al., 2024](https://doi.org/10.1093/ornithapp/duad056).
 
 ### 3. Generalized Additive Models with Year Effect
-The GAMYE includes the semiparametric smooth used in the gam option, but also includes random year-effect terms that track annual fluctuations around the smooth. This is the model that the Canadian Wildlife Service is now using for the annual status and trend estimates. See this [Smith et al., 2023 pre-print](https://doi.org/10.32942/X2088D) for details on the Stan version of this model and see [Smith & Edwards, 2021](https://doi.org/10.1093/ornithapp/duaa065) for the original formulation.
+The GAMYE includes the semiparametric smooth used in the gam option, but also includes random year-effect terms that track annual fluctuations around the smooth. This is the model that the Canadian Wildlife Service is now using for the annual status and trend estimates. See this [Smith et al., 2024](https://doi.org/10.1093/ornithapp/duad056) for details on the Stan version of this model and see [Smith & Edwards, 2021](https://doi.org/10.1093/ornithapp/duaa065) for the original formulation.
 
 ### 4. Slope
 The slope model estimates the time series as a log-linear regression with random year-effect terms that allow the trajectory to depart from the smooth log-linear regression line. It is the model used by the USGS and CWS to estimate BBS trends between 2011 and 2018. The basic model was first described in 2002 [Link and Sauer 2002](https://doi.org/10.1890/0012-9658(2002)083[2832:AHAOPC]2.0.CO;2) and its application to the annual status and trend estimates is documented in [Sauer and Link, 2011](https://doi.org/10.1525/auk.2010.09220) and [Smith et al., 2014](https://doi.org/10.22621/cfn.v128i2.1565).
@@ -66,17 +66,63 @@ The non-hierarchical variant of the first-difference model `model = "first_diff"
 
 ## More background reading
 
-The models in bbsBayes2 are best described and contrasted here [Smith et al., 2023 pre-print](https://doi.org/10.32942/X2088D).
+The models in bbsBayes2 are best described and contrasted here [Smith et al., 2024](https://doi.org/10.1093/ornithapp/duad056).
 
 The models and variants differ in the way they estimate the parameters that are most important for understanding the status and trends of bird populations. That is, they vary in the way they estimate the relative abundance and the temporal-changes in relative abundance (population trends), within and among strata.
-Otherwise, they are identical in that they all share the same set of parameters designed to adjust estimates for variations among observers, routes, and first-year observer start-up effects. For more details on the development of these Bayesian hierarchical models for the BBS and the observer-effects, see [Link and Sauer 2002](https://doi.org/10.1890/0012-9658(2002)083[2832:AHAOPC]2.0.CO;2), [Sauer and Link, 2011](https://doi.org/10.1525/auk.2010.09220), [Smith et al., 2014](https://doi.org/10.22621/cfn.v128i2.1565), [Link et al., 2017](https://doi.org/10.1650/CONDOR-17-1.1), [Link et al. 2020](https://doi.org/10.1002/eap.2137), [Smith & Edwards, 2021](https://doi.org/10.1093/ornithapp/duaa065).
+Otherwise, they are identical in that they all share the same set of parameters and priors designed to adjust estimates for variations among observers, routes, and first-year observer start-up effects. For more details on the development of these Bayesian hierarchical models for the BBS and the observer-effects, see [Link and Sauer 2002](https://doi.org/10.1890/0012-9658(2002)083[2832:AHAOPC]2.0.CO;2), [Sauer and Link, 2011](https://doi.org/10.1525/auk.2010.09220), [Smith et al., 2014](https://doi.org/10.22621/cfn.v128i2.1565), [Link et al., 2017](https://doi.org/10.1650/CONDOR-17-1.1), [Link et al. 2020](https://doi.org/10.1002/eap.2137), [Smith & Edwards, 2021](https://doi.org/10.1093/ornithapp/duaa065).
 
 ## One species, nine-models
 
 Here is an example application of all nine models and variants applied to the same data set. In this example, we've used data for the Scissor-tailed Flycatcher.
 
 You can download the fitted model results for all nine models in a zipped file [here](https://drive.google.com/file/d/1zF8xOIn_ZuORmjNDHAu5YCJjIx4j-MHC/view?usp=sharing). Unzip the file and save the *.rds* files in a sub-directory of your working directory called *output* to replicate our code below.
-The following code chunk loads each of the fitted model objects, calculates the annual indices and trends, then saves the continent population trajectories and the long-term (1966-2021) trend maps.
+The following code chunk loads each of the fitted model objects, calculates the annual indices and trends, then saves the continent population trajectories and the long-term (1966-2023) trend maps.
+
+This code was used to generate these fitted model results.
+
+
+```{r, eval=FALSE}
+library(bbsBayes2)
+library(tidyverse)
+
+species <- "Scissor-tailed Flycatcher"
+
+# extract the unique numerical identifier for this species in the BBS database
+species_number <- search_species(species) %>%
+  select(aou) %>%
+  unlist()
+
+s <- stratify("bbs_usgs",
+              species = species) %>%
+  prepare_data()
+
+for(j in 1:nrow(bbs_models)){
+
+  mod <- as.character(bbs_models[j,"model"])
+  var <- as.character(bbs_models[j,"variant"])
+
+  if(var == "spatial"){
+  p <- prepare_spatial(s, strata_map = load_map("bbs_usgs")) %>%
+    prepare_model(model = mod, model_variant = var)
+  }else{
+  p <- prepare_model(s,model = mod,
+                     model_variant = var)
+}
+
+  m <- paste0("output/",
+                      species_number,
+                      "_",
+                      mod,
+                      "_",
+                      var)
+  m2 <- run_model(p,
+                 output_basename = m,
+                 output_dir = getwd())
+
+}
+
+
+```
 
 ```{r, message=FALSE}
 saved_trajectories <- NULL

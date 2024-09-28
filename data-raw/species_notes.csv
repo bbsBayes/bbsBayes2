@@ -1,7 +1,7 @@
-aou,minimum_year,warning
-4661,1978,Alder and Willow Flycatcher were considered a single species until 1973. It is likely that they are not accurately separated by BBS observers until at least some years after that split.
-4660,1978,Alder and Willow Flycatcher were considered a single species until 1973. It is likely that they are not accurately separated by BBS observers until at least some years after that split.
-10,1990,Clark's and Western Grebe were considered a single species until 1985. It is likely that they are not accurately separated by BBS observers until at least some years after that split.
-10,1990,Clark's and Western Grebe were considered a single species until 1985. It is likely that they are not accurately separated by BBS observers until at least some years after that split.
-22860,1990,Eurasian Collared Dove was introduced into North America in the 1980s. 1990 is the first year that the species was observed on at least 3 BBS routes. 
-6121,1985,Cave Swallows were relatively rare in the areas surveyed by BBS before 1980. There are only two observations during BBS before 1980.
+english,french,aou,minimum_year,warning
+Alder Flycatcher,Moucherolle des aulnes,4661,1978,Alder and Willow Flycatcher were considered a single species until 1973. It is likely that they are not accurately separated by BBS observers until at least some years after that split.
+Willow Flycatcher,Moucherolle des saules,4660,1978,Alder and Willow Flycatcher were considered a single species until 1973. It is likely that they are not accurately separated by BBS observers until at least some years after that split.
+Clark's Grebe,Grèbe à face blanche,11,1990,Clark's and Western Grebe were considered a single species until 1985. It is likely that they are not accurately separated by BBS observers until at least some years after that split.
+Western Grebe,Grèbe élégant,10,1990,Clark's and Western Grebe were considered a single species until 1985. It is likely that they are not accurately separated by BBS observers until at least some years after that split.
+Eurasian Collared-Dove,Tourterelle turque,22860,1990,Eurasian Collared Dove was introduced into North America in the 1980s. 1990 is the first year that the species was observed on at least 3 BBS routes. 
+Cave Swallow,Hirondelle à front brun,6121,1985,Cave Swallows were relatively rare in the areas surveyed by BBS before 1980. There are only two observations during BBS before 1980.

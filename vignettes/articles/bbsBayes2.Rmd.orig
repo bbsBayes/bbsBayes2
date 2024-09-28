@@ -88,10 +88,10 @@ Now we should be able to use cmdstanr to install cmdstan
 cmdstanr::install_cmdstan()
 ```
 
-Let's check that everything went as planned
+Let's check that everything went as planned, and tell cmdstanr to fix any issues.
 
 ```{r, eval = TRUE}
-cmdstanr::check_cmdstan_toolchain()
+cmdstanr::check_cmdstan_toolchain(fix = TRUE)
 ```
 
 > Problems? Check out cmdstanr's vignette on [Getting
@@ -130,15 +130,15 @@ This will save the data to a package-specific directory on your computer. You mu
 > section).
 
 
-There are (as of August 2023) two types of BBS data that can be
-downloaded, and three release-versions:
+There are two types of BBS data that can be
+downloaded, and annual release-versions:
 
 -   Two levels `state` and `stop` (only `state` works with bbsBayes2
     models, the `stop` option is provided to facilitate custom projects and models)
--   Two releases `2020`, `2022` and `2023` (more options will be added as annual releases occur). 
+-   Annual releases `2020`, `2022`, `2023`, and '2024' more options will be added as annual releases occur).
 
-The defaults (level `state` and the most recent release - `2023`) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
-However you can download all data sets and specify which one you wish to
+The defaults (level `state` and the most recent release - `2024`) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
+However you can download all releases and specify which one you wish to
 use in the `stratify()` step.
 
 ### A note about BBS release names:
@@ -311,7 +311,7 @@ search_species("Corvidae")
 ##### Species groupings
 
 There are some taxonomic groupings of species-units in the BBS database
-that bbsBayes2 by default also combines into combined species forms. These
+that bbsBayes2 by default also groups into combined species forms. These
 represent groupings that make sense based on changes in taxonomy or
 potentially inconsistent distinctions among observers, routes, regions, or time.
 
@@ -321,11 +321,17 @@ potentially inconsistent distinctions among observers, routes, regions, or time.
     Flicker observations exist in the BBS database separately as
     Red-shafted Flicker (4130), Yellow-shafted Flicker (4120), unidentified Red/Yellow-shafted Flicker (4123) or hybrid Red x Yellow-shafted Flicker (4125). To provide an appropriate dataset to represent population trends of Northern Flicker, bbsBayes2 by default sums all of these observations into a new *species* called Northern Flicker (all forms), which replaces the (4123) unidentified category in the species database. The remaining original separate forms (Red, Yellow, and hybrid) are retained.
 -   Similar combined *species* are created for taxonomic splits that have occurred since the start of the BBS, such as Clark's and Western Grebe, which are retained as their own separate species, but are also combined into Western Grebe (Clark's/Western) (12).
-
 You can access a complete list of these combined *species* groups and the sub groups that make them up.
 
 ```{r}
-species_forms
+bbsBayes2::species_forms
+```
+
+-   These splits that have occurred since the start of the BBS require some extra
+care when considering what years to include in any model fit. For example, if fitting a trend model to the data for Clark's Grebe, it would not make sense to include all years back to 1966. Prior to 1985, Clark's Grebe was not a distinct species and so observers would not have recorded observations for this *species* in the same was as they would have after 1985. The `prepare_data()` function will generate warnings if the user selects a species and time-period where these species identification-issues may be important. Related concerns with time-span may apply to species that have expanded their range into the surveyed area of the BBS since the beginning of surveys. A list of the species where these time-span concerns may be most relevant can be found by calling the built-in data table.
+
+```{r}
+bbsBayes2::species_notes
 ```
 
 If you're looking for a complete list of all species in the BBS database.
@@ -401,7 +407,7 @@ m <- run_model(mod)
 # Optionally, save the model output as an .rds file
 saveRDS(m, "output/4430_gamye_spatial.rds")
 ```
-The spatial aspects of the spatial model variants use an intrinsic Conditional Autoregressive structure (iCAR) to share information among neighbouring strata on the population abundance and trend parameter ([Besag et al. 1991](https://doi.org/10.1007/BF00116466), [ver Hoef et al. 2018](http://doi.wiley.com/10.1002/ecm.1283), [Morris et al. 2019](https://doi.org/10.1016/j.sste.2019.100301)). For more information about the bbsBayes2 models and the spatial models see the [models vignette](./models.html) and [Smith et al., 2023 pre-print](https://doi.org/10.32942/X2088D).
+The spatial aspects of the spatial model variants use an intrinsic Conditional Autoregressive structure (iCAR) to share information among neighbouring strata on the population abundance and trend parameter ([Besag et al. 1991](https://doi.org/10.1007/BF00116466), [ver Hoef et al. 2018](http://doi.wiley.com/10.1002/ecm.1283), [Morris et al. 2019](https://doi.org/10.1016/j.sste.2019.100301)). For more information about the bbsBayes2 models and the spatial models see the [models vignette](./models.html) and [Smith et al., 2024](https://doi.org/10.1093/ornithapp/duad056).
 
 The prepared spatial data object includes a map of the spatial neighbourhood relationships for a given species and stratification.
 
@@ -557,6 +563,18 @@ p1_mod <- p[["continent"]]+
   labs(title = "") # remove the title
 print(p1_mod)
 ```
+
+#### Spaghetti plots to show uncertainty in population trajectories
+
+The most common inference to draw from one of these BBS models relates to the estimates of the population trajectory. One particularly useful way to visualise the uncertainty of those population trajectories is to plot many posterior draws of the full trajectory. The default population trajectories plots `plot_indices()` show a line representing the path of the annual posterior medians of the annual indices and an uncertainty band spanning the outer limits of a credible interval on the annual indices. These are reasonable summaries of the uncertainty in the collection of annual indices. However, the uncertainty of each annual index of abundance includes information about the uncertainty in the estimate of the change in abundance through time (e.g., trend) and uncertainty in the estimate of the mean abundance (e.g., the mean count in any given route or observer). Those two sources of uncertainty can be correlated in the posterior distribution, so that the uncertainty of the annual indices may over-estimate the uncertainty in the trend.
+To plot a sample of estimated trajectories, set the `spaghetti = TRUE` argument in the `plot_indices()` function.
+```{r}
+# generates a list of ggplot graphs, one for each region
+p <- plot_indices(indices = i,
+                  add_observed_means = TRUE)
+print(p[["continent"]])
+```
+There are arguments that also allow the user to control the transparency of each plotted line, as well as the number of lines to plot (the default is to draw 100 random samples).
 
 ### Trends - predictions of mean rates of change over time
 
