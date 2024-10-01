@@ -40,21 +40,18 @@ for(j in 1:nrow(bbs_models)){
 }
 
 
-# latlong fits ------------------------------------------------------------
-
-
 
 s <- stratify("latlong",
               species = species) %>%
-  prepare_data(min_n_routes = 1)
+  prepare_data()
 
-for(j in 3){
+for(j in 1:nrow(bbs_models)){
 
   mod <- as.character(bbs_models[j,"model"])
   var <- as.character(bbs_models[j,"variant"])
 
   if(var == "spatial"){
-    p <- prepare_spatial(s, strata_map = load_map("latlong")) %>%
+    p <- prepare_spatial(s, strata_map = load_map("bbs_usgs")) %>%
       prepare_model(model = mod, model_variant = var)
   }else{
     p <- prepare_model(s,model = mod,
@@ -63,7 +60,7 @@ for(j in 3){
 
   m <- paste0("output/",
               species_number,
-              "_latlong_",
+              "_",
               mod,
               "_",
               var)
