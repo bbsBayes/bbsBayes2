@@ -10,6 +10,7 @@ generate_trends(
   max_year = NULL,
   quantiles = c(0.025, 0.05, 0.25, 0.75, 0.95, 0.975),
   slope = FALSE,
+  gam = FALSE,
   prob_decrease = NULL,
   prob_increase = NULL,
   hpdi = FALSE
