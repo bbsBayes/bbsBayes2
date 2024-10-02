@@ -33,7 +33,7 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -67,7 +67,7 @@ jobs:
 
       - name: Cache BBS data
         id: cache-data
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.cache-dir.outputs.CACHE_DIR  }}
           key: bbs-data-${{ secrets.BBS_DATA_VERSION }}
