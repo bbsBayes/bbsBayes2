@@ -6,11 +6,11 @@ test_that("bbs_dir() location", {
 
 test_that("have_bbs_data() / remove_cache()", {
   skip_on_ci()
-  expect_message(h <- have_bbs_data(), "Expected BBS state data 2023")
-  expect_message(remove_cache(level = "state", release = 2023))
-  expect_message(remove_cache(level = "state", release = 2023),
+  expect_message(h <- have_bbs_data(), "Expected BBS state data 2024")
+  expect_message(remove_cache(level = "state", release = 2024))
+  expect_message(remove_cache(level = "state", release = 2024),
                  "No data files to remove")
-  expect_message(h <- have_bbs_data(), "Expected BBS state data 2023")
+  expect_message(h <- have_bbs_data(), "Expected BBS state data 2024")
   expect_false(h)
 
   # Models
@@ -37,37 +37,40 @@ test_that("get_XXXX()", {
 
   skip("Long running, only run as needed")
 
-  connection <- sbtools::item_get(sb_id = get_sb_id(rel_date = 2020))
+  connection <- sbtools::item_get(sb_id = get_sb_id(release = 2020))
 
-  expect_message(b <- get_birds("state", quiet = FALSE, connection, TRUE))
+  expect_message(b <- get_birds("state", release = 2020, quiet = FALSE, connection, TRUE))
   expect_s3_class(b, "tbl")
-  expect_message(b <- get_birds("stop", quiet = FALSE, connection, TRUE))
+  expect_message(b <- get_birds("stop", release = 2020, quiet = FALSE, connection, TRUE))
   expect_s3_class(b, "tbl")
 
   expect_message(r <- get_routes(2020, quiet = FALSE, connection, TRUE))
   expect_s3_class(r, "tbl")
 
-  expect_message(w <- get_weather(connection, TRUE))
+  expect_message(w <- get_weather(2020, quiet = FALSE, connection, TRUE))
   expect_s3_class(w, "tbl")
 
 
-  connection <- sbtools::item_get(sb_id = get_sb_id(rel_date = 2023))
+  connection <- sbtools::item_get(sb_id = get_sb_id(release = 2024))
 
-  expect_message(b <- get_birds("state", quiet = FALSE, connection, TRUE))
+  expect_message(b <- get_birds("state", release = 2024, quiet = FALSE, connection, TRUE))
   expect_s3_class(b, "tbl")
-  expect_message(b <- get_birds("stop", quiet = FALSE, connection, TRUE))
+  expect_message(b <- get_birds("stop", release = 2024, quiet = FALSE, connection, TRUE))
   expect_s3_class(b, "tbl")
 
-  expect_message(r <- get_routes(2023, quiet = FALSE, connection, TRUE))
+  expect_message(r <- get_routes(2024, quiet = FALSE, connection, TRUE))
   expect_s3_class(r, "tbl")
 
-  expect_message(w <- get_weather(connection, TRUE))
+  expect_message(w <- get_weather(2024, quiet = FALSE, connection, TRUE))
   expect_s3_class(w, "tbl")
 
 })
 
 test_that("fetch_bbs_data()", {
 
+  #skip("Skip on github actions, only run locally")
+
+  #
   #skip_on_ci()
 
   # Adjust level and release to run all as required
@@ -76,7 +79,7 @@ test_that("fetch_bbs_data()", {
   #expect_message(remove_bbs_data(cache_dir = TRUE), "Removing all")
 
   level <- c("stop", "state")[2] # Add [2] to test only "state"
-  release <- c(2020, 2022, 2023)[3]    # Add [2] to test only 2022
+  release <- c(2020, 2022, 2023, 2024)[4]    # Add [2] to test only 2022
 
   for(l in level) {
     for(r in release) {

@@ -55,7 +55,8 @@
 #' Second, you can edit or overwrite the initialization parameters
 #' (`init_values`) in the output of `prepare_model()` to customize the `init`
 #' supplied to `cmdstanr::sample()`. You can supply these parameters in anyway
-#' that `cmdstanr::sample()` accepts the `init` argument.
+#' that `cmdstanr::sample()` accepts the `init` argument. See also the
+#' `init_alternate` argument in `run_model()`.
 #'
 #' To implement bbsBayes2' version of cross validation, set `calculate_cv =
 #' TRUE`. You can set up your own system for cross validation by modifying the

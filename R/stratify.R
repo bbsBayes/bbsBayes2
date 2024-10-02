@@ -171,6 +171,8 @@ stratify <- function(by,
   } else {
     if(!quiet) message("Using species Pacific Wren (sample data)")
     species <- "Pacific Wren"
+    sp_aou <- check_species(species, species_list, combine_species_forms, quiet)
+
   }
 
   if(!quiet) message("Stratifying data...")

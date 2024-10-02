@@ -73,7 +73,7 @@ fetch_bbs_data <- function(level = "state",
 }
 
 
-fetch_bbs_data_internal <- function(level = "state", release = 2023,
+fetch_bbs_data_internal <- function(level = "state", release = 2024,
                                     force = FALSE, quiet = TRUE,
                                     out_file = NULL, compression = "none") {
 
@@ -241,7 +241,7 @@ bbs_dir <- function(quiet = TRUE) {
 #' @param level Character. BBS data to remove, one of "all", "state", or "stop".
 #'   Only applies if `type = "bbs_data"`. Default "all".
 #' @param release Character/Numeric. BBS data to remove, one of "all", 2020,
-#'   2022, or 2023. Only applies if `type = "bbs_data"`. Default "all".
+#'   2022, 2024, or 2024. Only applies if `type = "bbs_data"`. Default "all".
 #'
 #' @family BBS data functions
 #'
@@ -309,8 +309,8 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
 #'
 #' @param level Character. BBS data to check, one of "all", "state", or "stop".
 #'   Default "state".
-#' @param release Character/Numeric. BBS data to check, one of "all", 2020,
-#'   2022, or 2023. Default 2023.
+#' @param release Character/Numeric. BBS data to check, one of "all", or the
+#' annual releases. Default 2024
 #'
 #' @inheritParams common_docs
 #' @family BBS data functions
@@ -324,7 +324,7 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
 #' have_bbs_data(release = 2020)
 #' have_bbs_data(release = "all", level = "all")
 
-have_bbs_data <- function(level = "state", release = 2023, quiet = FALSE){
+have_bbs_data <- function(level = "state", release = 2024, quiet = FALSE){
   check_in(level, c("all", "state", "stop"))
   check_release(release, all = TRUE)
 
@@ -364,7 +364,7 @@ get_birds <- function(level, release, quiet, connection, force) {
 
   unz_path <- utils::unzip(zipfile = full_path, exdir = tempdir())
 
-  if(release < 2023){ # not zipped in 2023
+  if(release < 2023){ # zipped before 2023
       unz_path <- purrr::map(unz_path, utils::unzip, exdir = tempdir())
     }
     birds <- unz_path %>%

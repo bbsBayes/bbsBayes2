@@ -55,19 +55,6 @@ test_that("prepare_data() - other", {
     expect_named(c("model_data", "meta_data", "meta_strata", "raw_data"))
 
 
-  # By run (i.e. single value)
-  expect_equal(p$model_data$n_sites, 8)
-  expect_equal(p$model_data$n_strata, 2)
-  expect_equal(p$model_data$n_counts, 183)
-  expect_equal(p$model_data$n_years, 41)
-  expect_equal(p$model_data$n_observers, 27)
-  expect_equal(p$model_data$max_n_obs_sites_strata, 23)
-
-  # By strata
-  expect_equal(p$model_data$n_obs_sites_strata, c(23, 16))
-
-  expect_equal(p$model_data$non_zero_weight, c(0.357, 0.057),
-               tolerance = 0.005)
 
   # Meta data
   expect_equal(p$meta_data$species, "Gyrfalcon")

@@ -22,6 +22,7 @@ run_model(
   set_seed = NULL,
   quiet = FALSE,
   show_exceptions = FALSE,
+  init_alternate = NULL,
   ...
 )
 }
@@ -90,6 +91,11 @@ initialization period that have no bearing on model fit. If fitting a
 custom model, recommend setting this to TRUE.}
 
 \item{...}{Other arguments passed on to \code{cmdstanr::sample()}.}
+
+\item{init_alternate.}{Passed to \code{init} argument in \code{cmdstanr::sample()}.
+Replaces the initial values in the \code{model_data[["init_values"]]} created
+by prepare_model. Should accept any of the acceptable approaches to setting
+inits argment in \code{?cmdstanr::sample}.}
 }
 \value{
 List model fit and other (meta) data.

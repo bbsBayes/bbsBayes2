@@ -4,7 +4,7 @@
 \alias{load_bbs_data}
 \title{Load Breeding Bird Survey data}
 \usage{
-load_bbs_data(level = "state", release = 2023, sample = FALSE, quiet = TRUE)
+load_bbs_data(level = "state", release = 2024, sample = FALSE, quiet = TRUE)
 }
 \arguments{
 \item{level}{Character. Which type of BBS counts to use, "state" or "stop".

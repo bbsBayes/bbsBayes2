@@ -114,7 +114,7 @@ plot_indices <- function(indices = NULL,
       dplyr::distinct() %>%
       as.character() %>%
       paste(collapse = "_")
-
+  if(spaghetti){
     to_plot_spaghetti <- indices_samples[[samples_name]] %>%
       as.data.frame() %>%
       dplyr::mutate(iteration = dplyr::row_number()) %>%
@@ -123,7 +123,7 @@ plot_indices <- function(indices = NULL,
                           values_to = "index",
                           names_to = "year") %>%
       dplyr::mutate(year = as.integer(.data$year))
-
+  }
 
     if(title) t <- paste0(species, " - ", i) else t <- ""
 

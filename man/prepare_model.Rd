@@ -112,7 +112,8 @@ edited by hand.
 Second, you can edit or overwrite the initialization parameters
 (\code{init_values}) in the output of \code{prepare_model()} to customize the \code{init}
 supplied to \code{cmdstanr::sample()}. You can supply these parameters in anyway
-that \code{cmdstanr::sample()} accepts the \code{init} argument.
+that \code{cmdstanr::sample()} accepts the \code{init} argument. See also the
+\code{init_alternate} argument in \code{run_model()}.
 
 To implement bbsBayes2' version of cross validation, set \code{calculate_cv = TRUE}. You can set up your own system for cross validation by modifying the
 \code{folds} list-item in the output of \code{prepare_model()}. \strong{Note this is

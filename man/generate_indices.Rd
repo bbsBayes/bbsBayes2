@@ -10,6 +10,7 @@ generate_indices(
   regions = c("continent", "stratum"),
   regions_index = NULL,
   alternate_n = "n",
+  gam_smooths = FALSE,
   start_year = NULL,
   max_backcast = NULL,
   drop_exclude = FALSE,

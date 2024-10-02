@@ -116,3 +116,25 @@
 #' species_forms
 
 "species_forms"
+
+#' Species notes
+#'
+#' Introduced in version 1.1.2.
+#' List of species and comments returned as warning messages if the time-span of
+#' an analysis is not appropriate: A collection of species and species-complexes
+#' where observations are not consistently recorded through time. List intended to
+#' help flag particular species where some trend analyses may be inappropriate.
+#'
+#' @format ## `species_notes`
+#' A data frame with 6 rows and 5 columns
+#'
+#' - `english` - The English name of the species
+#' - `french` - Le nom francais, de l'espece
+#' - `aou` - The unique numerical identification of the species in the BBS database
+#' - `minimum_year` - The suggested first year by which the species observations are consistent
+#' - `warning` - The text warning and explanation delivered by the prepare_data function
+#'
+#' @examples
+#' species_notes
+
+"species_notes"

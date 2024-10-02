@@ -45,6 +45,10 @@
 #'   bbsBayes2, because of the copious informational messages during the
 #'   initialization period that have no bearing on model fit. If fitting a
 #'   custom model, recommend setting this to TRUE.
+#' @param init_alternate. Passed to `init` argument in `cmdstanr::sample()`.
+#'   Replaces the initial values in the `model_data[["init_values"]]` created
+#'   by prepare_model. Should accept any of the acceptable approaches to setting
+#'   inits argment in `?cmdstanr::sample`.
 #' @param ... Other arguments passed on to `cmdstanr::sample()`.
 #'
 #' @inheritParams common_docs
@@ -93,6 +97,7 @@ run_model <- function(model_data,
                       set_seed = NULL,
                       quiet = FALSE,
                       show_exceptions = FALSE,
+                      init_alternate = NULL,
                       ...) {
 
   # Check inputs
@@ -105,7 +110,11 @@ run_model <- function(model_data,
   raw_data <- model_data[["raw_data"]]
   meta_strata <- model_data[["meta_strata"]]
 
+  if(!is.null(init_alternate)){
+    init_values <- init_alternate
+  }else{
   init_values <- model_data[["init_values"]]
+  }
   folds <- model_data[["folds"]]
   model_data <- model_data[["model_data"]]
 

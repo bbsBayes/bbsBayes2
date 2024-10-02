@@ -17,7 +17,7 @@ when \code{run_models()} is run.}
 Only applies if \code{type = "bbs_data"}. Default "all".}
 
 \item{release}{Character/Numeric. BBS data to remove, one of "all", 2020,
-2022, or 2023. Only applies if \code{type = "bbs_data"}. Default "all".}
+2022, 2024, or 2024. Only applies if \code{type = "bbs_data"}. Default "all".}
 }
 \value{
 Nothing
