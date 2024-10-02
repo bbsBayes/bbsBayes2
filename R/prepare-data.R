@@ -78,7 +78,7 @@ prepare_data <- function(strata_data,
   # Warn if min_year is null and species is a lumped species complex
   # of if species has expanded into BBS range
   if(strata_data$meta_data$sp_aou %in% bbsBayes2::species_notes$aou){
-    sp_note <- species_notes %>%
+    sp_note <- bbsBayes2::species_notes %>%
       dplyr::filter(.data$aou == .env$strata_data$meta_data$sp_aou)
       sp_note_y <- sp_note$minimum_year
       sp_note_msg <- sp_note$warning

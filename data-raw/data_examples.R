@@ -31,7 +31,7 @@ pacific_wren_model <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
   run_model(chains = 2, iter_sampling = 20, iter_warmup = 20, set_seed = 111)
 
 usethis::use_data(pacific_wren_model, overwrite = TRUE)
-unlink(list.files(pattern = paste0("BBS_STAN_first_diff_hier_", Sys.Date())))
+unlink(list.files(pattern = paste0("BBS_STAN_first_diff_hier_")))
 
 # Testing models (internal data)
 slope_test_model <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
@@ -40,4 +40,4 @@ slope_test_model <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
   run_model(chains = 2, iter_sampling = 20, iter_warmup = 20, set_seed = 111)
 
 usethis::use_data(slope_test_model, internal = TRUE, overwrite = TRUE)
-unlink(list.files(pattern = paste0("BBS_STAN_slope_hier_", Sys.Date())))
+unlink(list.files(pattern = paste0("BBS_STAN_slope_hier_")))

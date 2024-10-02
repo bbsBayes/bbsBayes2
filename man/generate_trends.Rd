@@ -48,6 +48,11 @@ represent the end-point difference of the smooth component, which already
 excludes the annual fluctuations and so has similar inferential properties as
 the \code{slope = TRUE} option from the "first_diff" model.}
 
+\item{gam}{Logical. New in version 1.1.2. Optional trend calculation using
+end-point trends derived from posterior distribution of GAM-based smooths of
+each posterior draw of the estimated annual indices. Requires the output from
+generate_indices(., gam_smooth = TRUE).}
+
 \item{prob_decrease}{Numeric vector. Percent-decrease values for which to
 optionally calculate the posterior probabilities (see Details). Default is
 \code{NULL} (not calculated). Can range from 0 to 100.}

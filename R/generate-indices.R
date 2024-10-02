@@ -53,6 +53,13 @@
 #'   is `FALSE` (regions are flagged and listed but not dropped).
 #' @param start_year Numeric. Trim the data record before calculating annual
 #'   indices.
+#' @param gam_smooths Logical. Whether to return an array of posterior samples of
+#'   gam-based smooths through the full time-series of annual indices. These can
+#'   by treated as smooth population trajectories from any model. NOTE: these
+#'   gam smooths require fitting mgcv::gam() to every posterior draw of every
+#'   possible population trajectory. As a result, generate_indices can require
+#'   can require many minutes to complete if set to TRUE.
+#'
 #'
 #' @inheritParams common_docs
 #' @family indices and trends functions
@@ -75,6 +82,7 @@
 #'   - `meta_data` - meta data defining the analysis
 #'   - `meta_strata` - data frame listing strata meta data
 #'   - `raw_data` - data frame of summarized counts
+#'   - `gam_smooth_samples` - optional-array of posterior draws of the gam smooth
 #'
 #' **`indices`** contains the following columns:
 #'

@@ -16,6 +16,9 @@
 #'   of modified existing stratification, or a `sf` spatial data frame with
 #'   polygons defining the custom stratifications. See details on strata_custom
 #'   in `stratify()`.
+#' @param zoom_range Logical. When TRUE (default) zooms into region of the map
+#'   where trend data are available. If FALSE, map extends out to cover all of
+#'   the stratification map. Zoom-in uses `ggplot2::coord_sf()`
 #'
 #' @inheritParams common_docs
 #' @family indices and trends functions
@@ -51,7 +54,8 @@ plot_map <- function(trends,
                      title = TRUE,
                      alternate_column = NULL,
                      col_viridis = FALSE,
-                     strata_custom = NULL) {
+                     strata_custom = NULL,
+                     zoom_range = TRUE) {
 
   # Checks
   check_data(trends)
@@ -87,6 +91,15 @@ plot_map <- function(trends,
     }
   }
 
+  if(zoom_range){
+    bb <- dplyr::inner_join(x = map, y = trends, by = c("strata_name" = "region")) %>%
+      sf::st_bbox()
+    xl <- bb[c("xmin","xmax")]
+    yl <- bb[c("ymin","ymax")]
+    zoom <- ggplot2::coord_sf(xlim = xl,ylim = yl)
+  }
+
+
   if(is.null(alternate_column)){
   breaks <- c(-7, -4, -2, -1, -0.5, 0.5, 1, 2, 4, 7)
   labls <- c(paste0("< ", breaks[1]),
@@ -113,7 +126,6 @@ plot_map <- function(trends,
   map <- dplyr::left_join(x = map, y = trends, by = c("strata_name" = "region"))
 
 
-
   m <- ggplot2::ggplot() +
     ggplot2::geom_sf(data = map, ggplot2::aes(fill = .data$t_plot),
                      colour = "grey40", size = 0.1) +
@@ -133,9 +145,9 @@ plot_map <- function(trends,
         "#e0f3f8", "#abd9e9", "#74add1", "#4575b4", "#313695"),
       levels(map$t_plot))
 
-    m <- m + ggplot2::scale_fill_manual(values = pal)
+    m <- m + ggplot2::scale_fill_manual(values = pal, na.value = "white")
   } else {
-    m <- m + ggplot2::scale_fill_viridis_d()
+    m <- m + ggplot2::scale_fill_viridis_d(na.value = "white")
   }
 
   }else{ # if plotting alternate_column
@@ -163,7 +175,10 @@ plot_map <- function(trends,
                      axis.title = ggplot2::element_blank()) +
       ggplot2::guides(fill = ggplot2::guide_legend(reverse = TRUE))
 
-    m <- m + ggplot2::scale_fill_viridis_c()
+    m <- m + ggplot2::scale_fill_viridis_c(na.value = "white")
   }
+  if(zoom_range){
+    m <- m+zoom
+    }
   m
 }

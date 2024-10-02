@@ -21,7 +21,7 @@
 #'   one posterior draw of the population trajectory.
 #' @param n_spaghetti Integer. 100 by default. Number of posterior draws of the
 #'   population trajectory to include in the plot. Ignored if spaghetti = FALSE.
-#' @param alpha_spaghetti Numeric [0,1], 0.2 by default. Alpha value - transparency
+#' @param alpha_spaghetti Numeric between 0 and 1, 0.2 by default. Alpha value - transparency
 #'   of each individual population trajectory line in the spaghetti plot.
 #'   Ignored if spaghetti = FALSE.
 #' @inheritParams common_docs
@@ -110,7 +110,7 @@ plot_indices <- function(indices = NULL,
     to_plot <- indices[which(indices$region == i), ]
 
     samples_name <- to_plot %>%
-      dplyr::select(region_type,region) %>%
+      dplyr::select(.data$region_type,.data$region) %>%
       dplyr::distinct() %>%
       as.character() %>%
       paste(collapse = "_")

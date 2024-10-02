@@ -81,10 +81,10 @@ plot_geofacet <- function(indices,
   if(!is.null(trends)) {
 
     check_data(trends)
-    t_meta_data <- trends$meta_data
-    t_meta_data$hpdi_trends <- NULL
+    #t_meta_data <- trends$meta_data
+    #t_meta_data$hpdi_trends <- NULL
 
-    if(any(unlist(t_meta_data) != unlist(indices$meta_data))) {
+    if(any(unlist(trends$meta_data[c(1:15)]) != unlist(indices$meta_data[c(1:15)]))) {
       stop("`trends` data must have been created from the same `indices` ",
            "used here.\n",
            "Meta data doesn't match (see `",

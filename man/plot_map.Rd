@@ -10,7 +10,8 @@ plot_map(
   title = TRUE,
   alternate_column = NULL,
   col_viridis = FALSE,
-  strata_custom = NULL
+  strata_custom = NULL,
+  zoom_range = TRUE
 )
 }
 \arguments{
@@ -35,6 +36,10 @@ palette be used. Default \code{FALSE}.}
 of modified existing stratification, or a \code{sf} spatial data frame with
 polygons defining the custom stratifications. See details on strata_custom
 in \code{stratify()}.}
+
+\item{zoom_range}{Logical. When TRUE (default) zooms into region of the map
+where trend data are available. If FALSE, map extends out to cover all of
+the stratification map. Zoom-in uses \code{ggplot2::coord_sf()}}
 }
 \value{
 a ggplot2 plot

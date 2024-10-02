@@ -174,8 +174,7 @@ fetch_bbs_data_internal <- function(level = "state", release = 2024,
   species <- readr::read_csv(
     full_path,
     na = c("NA", "", "NULL"),
-    col_types = "iiccccccc", progress = FALSE,
-    locale = readr::locale(encoding = "latin1")) %>%
+    col_types = "iiccccccc", progress = FALSE) %>%
     dplyr::rename_with(stringr::str_to_lower) %>%
     dplyr::rename_with(~stringr::str_remove(string = .x,
                                            pattern = "_common_name")) %>%

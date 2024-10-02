@@ -3,7 +3,7 @@ library(bbsBayes2)
 library(tidyverse)
 
 species <- "Scissor-tailed Flycatcher"
-species <- "Arctic Warbler"
+#species <- "Arctic Warbler"
 
 # extract the unique numerical identifier for this species in the BBS database
 species_number <- search_species(species) %>%
@@ -70,3 +70,18 @@ for(j in 1:nrow(bbs_models)){
 
 }
 
+
+
+library(patchwork)
+i <- generate_indices(m2)
+
+igam <- generate_indices(m2, gam_smooths = TRUE)
+
+t <- generate_trends(i, min_year = 2000)
+tgam <- generate_trends(igam,gam = TRUE, min_year = 2000)
+map <- plot_map(t)
+mapgam <- plot_map(tgam)
+map+mapgam
+
+tt <- t$trends
+ttgam <- tgam$trends

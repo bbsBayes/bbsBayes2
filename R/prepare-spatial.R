@@ -87,7 +87,7 @@ prepare_spatial <- function(prepared_data,
   if(!quiet) message("Preparing spatial data...")
 
   # Project strata_map to equal area projection
-  if(sf::st_crs(strata_map) != equal_area_crs){
+  if(sf::st_crs(strata_map) != bbsBayes2::equal_area_crs){
     if(!quiet) message("Supplied strata_map is in a geographic projection. ",
                        "Transforming coordinate reference system to ",
                        "a projected and equal area crs to facilitate mapping ",
@@ -96,7 +96,7 @@ prepare_spatial <- function(prepared_data,
                        "ensures that neighbours are consistently defined and ",
                        "easily mapped.")
     strata_map <- sf::st_transform(strata_map,
-                                crs = equal_area_crs)
+                                crs = bbsBayes2::equal_area_crs)
   }
   # Filter to only strata in prepared_data
   strata_map <- strata_map %>%

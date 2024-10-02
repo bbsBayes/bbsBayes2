@@ -17,7 +17,7 @@ temp.geofacet.pdf
 *.EX.R
 R/*abundance.R
 arch/
-
+local_temp_delete/
 inst/doc
 model_outputs
 docs

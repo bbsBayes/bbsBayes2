@@ -57,7 +57,7 @@ jobs:
 
       - name: Cache BBS data
         id: cache-data
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.cache-dir.outputs.CACHE_DIR  }}
           key: bbs-data-${{ secrets.BBS_DATA_VERSION }}

@@ -138,3 +138,19 @@
 #' species_notes
 
 "species_notes"
+
+#' equal_area_crs
+#'
+#' Introduced in version 1.1.2.
+#' The specific coordinate reference system (crs) used for the included strata maps.
+#' North_America_Albers_Equal_Area_Conic, projection that provides good visualisation
+#' of the main areas covered by the North American Breeding Bird Survey
+#'
+#' @format ## `equal_area_crs`
+#' An object of class `crs`
+#'
+#'
+#' @examples
+#' equal_area_crs
+
+"equal_area_crs"

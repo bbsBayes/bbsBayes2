@@ -52,7 +52,7 @@ one posterior draw of the population trajectory.}
 \item{n_spaghetti}{Integer. 100 by default. Number of posterior draws of the
 population trajectory to include in the plot. Ignored if spaghetti = FALSE.}
 
-\item{alpha_spaghetti}{Numeric \link{0,1}, 0.2 by default. Alpha value - transparency
+\item{alpha_spaghetti}{Numeric between 0 and 1, 0.2 by default. Alpha value - transparency
 of each individual population trajectory line in the spaghetti plot.
 Ignored if spaghetti = FALSE.}
 

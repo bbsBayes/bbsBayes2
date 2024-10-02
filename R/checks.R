@@ -20,7 +20,7 @@ check_data <- function(data) {
     n <- c(n, "model_fit", "model_data", "raw_data")
     from <- "run_model()"
   } else if(type == "indices") {
-    n <- c(n, "indices", "samples", "raw_data")
+    n <- c(n, "indices", "samples", "raw_data", "gam_smooth_samples")
     from <- "generate_indices()"
   } else if (type == "trends") {
     n <- c(n, "trends", "raw_data")
@@ -439,6 +439,10 @@ check_sf <- function(sf, check_poly = FALSE, col = FALSE) {
     # Check for correct column names
     if(col && !"strata_name" %in% names(sf)) {
       stop("`", nm, "` missing column `strata_name`", call. = FALSE)
+    }
+    # Check for correct column type
+    if(!class(sf$strata_name) %in% c("character")) {
+      stop("`", nm, "` column `strata_name` must be class character", call. = FALSE)
     }
 
     # Check for feature types

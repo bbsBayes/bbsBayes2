@@ -26,6 +26,10 @@
 #' represent the end-point difference of the smooth component, which already
 #' excludes the annual fluctuations and so has similar inferential properties as
 #' the `slope = TRUE` option from the "first_diff" model.
+#' @param gam Logical. New in version 1.1.2. Optional trend calculation using
+#'  end-point trends derived from posterior distribution of GAM-based smooths of
+#'  each posterior draw of the estimated annual indices. Requires the output from
+#'  generate_indices(., gam_smooth = TRUE).
 #' @param prob_decrease Numeric vector. Percent-decrease values for which to
 #'   optionally calculate the posterior probabilities (see Details). Default is
 #'   `NULL` (not calculated). Can range from 0 to 100.
@@ -164,6 +168,18 @@ generate_trends <- function(indices,
   n_years <- indices[["meta_data"]]$n_years
   indx <- indices[["indices"]]
 
+  if(!gam){
+    ind_samples <- indices[["samples"]]
+  }
+
+  if(gam){
+    ind_samples <- indices[["gam_smooth_samples"]]
+    if(all(is.na(ind_samples))){
+      stop("indices object has no gam_smooth_samples. ",
+           "To calculate gam-based trends, generate_trends requires the output ",
+           "from generate_indices with gam_smooths = TRUE")
+    }
+  }
   if(is.null(min_year)) {
     min_year <- start_year
   } else {
@@ -207,8 +223,9 @@ generate_trends <- function(indices,
         .data$strata_included, ~length(unlist(stringr::str_split(.x, " ; ")))),
 
       # Add in samples
+
       n = purrr::map2(.data$region_type, .data$region,
-                      ~indices$samples[[paste0(.x, "_", .y)]]),
+                      ~ind_samples[[paste0(.x, "_", .y)]]),
       # Calculate change start to end for each iteration
       ch = purrr::map(.data$n,
                       ~.x[, .env$max_year_num] / .x[, .env$min_year_num]),
@@ -265,23 +282,23 @@ generate_trends <- function(indices,
   }
 
 
-  # Optional gam based trends
-  if(gam) {
-    trends <- trends %>%
-      dplyr::mutate(
-        sl_t = purrr::map(.data$n, calc_gam,
-                          .env$min_year_num, .env$max_year_num),
-        gam_trend = purrr::map_dbl(.data$sl_t, stats::median),
-        gam_trend_q = purrr::map_df(
-          .data$sl_t, ~stats::setNames(
-            calc_quantiles(.x, quantiles, names = FALSE),
-            paste0("gam_trend_q_", quantiles)))) %>%
-      tidyr::unnest("gam_trend_q") %>%
-      dplyr::mutate(
-        "width_of_{q}_percent_credible_interval_gam" :=
-          .data[[paste0("gam_trend_q_", q2)]] -
-          .data[[paste0("gam_trend_q_", q1)]])
-  }
+  # # Optional gam based trends
+  # if(gam) {
+  #   trends <- trends %>%
+  #     dplyr::mutate(
+  #       sl_t = purrr::map(.data$n, calc_gam,
+  #                         .env$min_year_num, .env$max_year_num),
+  #       gam_trend = purrr::map_dbl(.data$sl_t, stats::median),
+  #       gam_trend_q = purrr::map_df(
+  #         .data$sl_t, ~stats::setNames(
+  #           calc_quantiles(.x, quantiles, names = FALSE),
+  #           paste0("gam_trend_q_", quantiles)))) %>%
+  #     tidyr::unnest("gam_trend_q") %>%
+  #     dplyr::mutate(
+  #       "width_of_{q}_percent_credible_interval_gam" :=
+  #         .data[[paste0("gam_trend_q_", q2)]] -
+  #         .data[[paste0("gam_trend_q_", q1)]])
+  # }
 
 
   # Model conditional probabilities of population change during trends period
@@ -323,7 +340,8 @@ generate_trends <- function(indices,
 
   list("trends" = trends,
        "meta_data" = append(indices[["meta_data"]],
-                            list("hpdi_trends" = hpdi)),
+                            list("hpdi_trends" = hpdi,
+                                 "gam_smooth_trends" = gam)),
        "meta_strata" = indices[["meta_strata"]],
        "raw_data" = indices[["raw_data"]])
 }
@@ -346,25 +364,25 @@ calc_slope <- function(n, min_year_num, max_year_num) {
 
   as.vector((exp(m) - 1) * 100)
 }
-
-gam_sl <- function(i, wy) {
-  df <- data.frame(i = i,
-                   y = 1:length(i))
-  sm <- mgcv::gam(data = df,
-                  formula = i~s(y))
-  smf <- sm$fitted.values[wy]
-  ny <- wy[2]-wy[1]
-  smt <- (smf[2]-smf[1])*(1/ny)
-}
-
-calc_gam <- function(n, min_year_num, max_year_num) {
-  wy <- c(min_year_num,max_year_num)
-
-  ne <- log(n)
-  m <-  t(apply(ne, 1, FUN = gam_sl, wy))
-
-  as.vector((exp(m) - 1) * 100)
-}
+#
+# gam_sl <- function(i, wy) {
+#   df <- data.frame(i = i,
+#                    y = 1:length(i))
+#   sm <- mgcv::gam(data = df,
+#                   formula = i~s(y))
+#   smf <- sm$fitted.values[wy]
+#   ny <- wy[2]-wy[1]
+#   smt <- (smf[2]-smf[1])*(1/ny)
+# }
+#
+# calc_gam <- function(n, min_year_num, max_year_num) {
+#   wy <- c(min_year_num,max_year_num)
+#
+#   ne <- log(n)
+#   m <-  t(apply(ne, 1, FUN = gam_sl, wy))
+#
+#   as.vector((exp(m) - 1) * 100)
+# }
 
 calc_prob_crease <- function(x, p, type = "decrease") {
   if(type == "decrease") f <- function(p) length(x[x < (-1 * p)]) / length(x)
