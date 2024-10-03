@@ -441,7 +441,7 @@ check_sf <- function(sf, check_poly = FALSE, col = FALSE) {
       stop("`", nm, "` missing column `strata_name`", call. = FALSE)
     }
     # Check for correct column type
-    if(!class(sf$strata_name) %in% c("character")) {
+    if(col && !class(sf$strata_name) %in% c("character")) {
       stop("`", nm, "` column `strata_name` must be class character", call. = FALSE)
     }
 
