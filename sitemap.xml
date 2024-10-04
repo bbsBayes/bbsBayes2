@@ -1,150 +1,54 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/404.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/CODE_DESIGN.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/ISSUES_TEMPLATE.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/PULL_REQUEST_TEMPLATE.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/articles/advanced.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/articles/bbsBayes2.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/articles/models.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/articles/stratification.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/assign_prov_state.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/bbsBayes2-defunct.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/bbsBayes2-deprecated.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/bbsBayes2-package.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/bbs_data_sample.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/bbs_models.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/bbs_strata.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/common_docs.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/copy_model_file.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/fetch_bbs_data.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/generate_indices.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/generate_trends.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/get_convergence.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/get_model_vars.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/get_summary.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/have_bbs_data.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/have_cmdstan.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/load_bbs_data.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/load_map.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/pacific_wren_model.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/plot_geofacet.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/plot_indices.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/plot_map.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/prepare_data.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/prepare_model.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/prepare_spatial.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/remove_cache.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/run_model.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/save_model_run.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/search_species.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/species_forms.html</loc>
-  </url>
-  <url>
-    <loc>https://bbsbayes.github.io/bbsBayes2/reference/stratify.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/404.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/CODE_DESIGN.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/CONTRIBUTING.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/ISSUES_TEMPLATE.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/LICENSE-text.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/PULL_REQUEST_TEMPLATE.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/articles/advanced.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/articles/bbsBayes2.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/articles/index.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/articles/models.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/articles/stratification.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/authors.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/index.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/news/index.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/assign_prov_state.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/bbsBayes2-defunct.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/bbsBayes2-deprecated.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/bbsBayes2-package.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/bbs_data_sample.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/bbs_models.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/bbs_strata.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/common_docs.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/copy_model_file.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/equal_area_crs.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/fetch_bbs_data.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/generate_indices.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/generate_trends.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/get_convergence.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/get_model_vars.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/get_summary.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/have_bbs_data.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/have_cmdstan.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/index.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/load_bbs_data.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/load_map.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/pacific_wren_model.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/pipe.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/plot_geofacet.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/plot_indices.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/plot_map.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/prepare_data.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/prepare_model.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/prepare_spatial.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/remove_cache.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/run_model.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/save_model_run.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/search_species.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/species_forms.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/species_notes.html</loc></url>
+<url><loc>https://bbsbayes.github.io/bbsBayes2/reference/stratify.html</loc></url>
 </urlset>
+

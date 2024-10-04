@@ -5,7 +5,6 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="bbsBayes2">
 <title>Advanced Example • bbsBayes2</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -15,61 +14,41 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Advanced Example">
-<meta property="og:description" content="bbsBayes2">
-<meta property="og:image" content="https://bbsbayes.github.io/bbsBayes2/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Advanced Example">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../articles/bbsBayes2.html">Get started</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
-<li class="active nav-item">
-  <a class="nav-link" href="../articles/index.html">Articles</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/bbsBayes2.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="active nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/bbsBayes/bbsBayes2/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/bbsBayes/bbsBayes2/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -81,7 +60,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Advanced Example</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/HEAD/vignettes/articles/advanced.Rmd" class="external-link"><code>vignettes/articles/advanced.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/main/vignettes/articles/advanced.Rmd" class="external-link"><code>vignettes/articles/advanced.Rmd</code></a></small>
       <div class="d-none name"><code>advanced.Rmd</code></div>
     </div>
 
@@ -94,13 +73,13 @@
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span> <span class="co">#to visually check convergence</span></span>
-<span><span class="co">#&gt; Warning: package 'bayesplot' was built under R version 4.3.1</span></span>
+<span><span class="co">#&gt; Error in library(bayesplot): there is no package called 'bayesplot'</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="some-more-advanced-options">Some more advanced options<a class="anchor" aria-label="anchor" href="#some-more-advanced-options"></a>
 </h2>
 <p>For most of these examples, we will be using a series of saved model
-outputs. These model outputs can be downloaded from this <a href="https://drive.google.com/drive/folders/1EMPqmRYjcw7aQ9rPfFoGFtgI0ELHY4Ga?usp=sharing" class="external-link">Google
+outputs. These model outputs can be downloaded from this <a href="https://drive.google.com/drive/folders/1m45wWySCJYxh4DZGfvp_xI8fRUEsE5e1?usp=sharing" class="external-link">Google
 Drive</a>. In the example code here, we have unzipped these saved model
 outputs and stored the <em>.rds</em> files in a local sub-directory
 called <em>output</em>.</p>
@@ -120,8 +99,10 @@ log-scale). Also, if the model used the negative binomial error
 distribution, then you will also need to extract the posterior samples
 for the parameter <code>phi</code> (the inverse negative binomial
 dispersion parameter). In the <a href="https://mc-stan.org/docs/functions-reference/neg-binom-2-log.html" class="external-link">Stan
-negative binomial distribution</a>, <span class="math inline">\(\phi\)</span> is the same parameter as
-<code>size</code> in <code>base::rnbinom()</code>, with arguments
+negative binomial distribution</a>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>
+is the same parameter as <code>size</code> in
+<code>base::rnbinom()</code>, with arguments
 <code>mu = exp(E), size = phi</code>. Here’s an example, using the
 fitted model object for the Scissor-tailed Flycatcher data fit to the
 <code>gamye</code> model with the ‘spatial’ variant, and the using the
@@ -165,13 +146,15 @@ fitted model object for the Scissor-tailed Flycatcher data fit to the
 <span><span class="va">ppc_overplot</span> <span class="op">&lt;-</span> <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu">ppc_ecdf_overlay</span><span class="op">(</span>y <span class="op">=</span> <span class="va">STFL_gamye_spatial</span><span class="op">$</span><span class="va">raw_data</span><span class="op">$</span><span class="va">count</span>,</span>
 <span>                                    yrep <span class="op">=</span> <span class="va">y_rep</span>,</span>
 <span>                                    discrete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in loadNamespace(x): there is no package called 'bayesplot'</span></span>
 <span><span class="co"># focusing in on the range of observed data</span></span>
 <span><span class="va">ppc_overplot</span> <span class="op">&lt;-</span> <span class="va">ppc_overplot</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">STFL_gamye_spatial</span><span class="op">$</span><span class="va">raw_data</span><span class="op">$</span><span class="va">count</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: object 'ppc_overplot' not found</span></span>
 <span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">ppc_overplot</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/advanced_unnamed-chunk-3-1.png" alt="Graphical posterior predictive check overlaying the observed proportion of integer count values and the estimated proportion of count values"></p>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">ppc_overplot</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: object 'ppc_overplot' not found</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="hpdi---highest-posterior-density-intervals">HPDI - Highest posterior density intervals<a class="anchor" aria-label="anchor" href="#hpdi---highest-posterior-density-intervals"></a>
@@ -205,7 +188,7 @@ they are in the upper plot using the default quantiles.</p>
 <span><span class="va">trajectories_hpdi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_indices.html">plot_indices</a></span><span class="op">(</span><span class="va">i_hpdi</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">trajectories</span><span class="op">$</span><span class="va">US_NM_35</span> <span class="op">/</span> <span class="va">trajectories_hpdi</span><span class="op">$</span><span class="va">US_NM_35</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/advanced_unnamed-chunk-4-1.png" alt="Population trajectories contrasting simple quantiles and HPDI for an example stratum. The HPDI uncertainty bound is more symetrical around the mean"></p>
+<p><img src="figures%2Fadvanced_unnamed-chunk-4-1.png" alt="Population trajectories contrasting simple quantiles and HPDI for an example stratum. The HPDI uncertainty bound is more symetrical around the mean"></p>
 </div>
 <div class="section level3">
 <h3 id="example---replicating-the-cws-status-and-trend-estimates-2018-version-onwards">EXAMPLE - Replicating the CWS status and trend estimates (2018
@@ -299,7 +282,7 @@ model output from applying the spatial GAMYE model to the data for Barn
 Swallow (2022 data-release).</p>
 <p>You can download a zip-file with a saved model output for Barn
 Swallow here:</p>
-<p><a href="https://drive.google.com/file/d/1RNbM312_isopRN7Lb-jP1-wK4UvRKkHE/view?usp=sharing" class="external-link">An
+<p><a href="https://drive.google.com/drive/folders/1m45wWySCJYxh4DZGfvp_xI8fRUEsE5e1?usp=drive_link" class="external-link">An
 example of the output from applying the spatial gamye model to Barn
 Swallow data</a>.</p>
 <p>Unzip the file and store it in a local directory. In this example
@@ -318,7 +301,7 @@ long-term trends (1966 - 2021), and plot those trends on a map.</p>
 <span><span class="va">BARS_trends</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">BARS_smooth_indices</span><span class="op">)</span></span>
 <span><span class="va">BARS_trend_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">BARS_trends</span><span class="op">)</span></span>
 <span><span class="va">BARS_trend_map</span></span></code></pre></div>
-<p><img src="figures/advanced_unnamed-chunk-8-1.png" alt="Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"></p>
+<p><img src="figures%2Fadvanced_unnamed-chunk-8-1.png" alt="Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"></p>
 <p>Then, to visualise the uncertainty in this pattern of trend
 estimates, we generate two maps that each display the upper and lower
 credible intervals of the trends. We can interpret these maps as showing
@@ -328,15 +311,15 @@ species’ trends have not been more negative than the map on the left,
 and are unlikely to be more positive than the map on the right.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">BARS_trend_map_lower</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">BARS_trends</span>, alternate_column <span class="op">=</span> <span class="st">"trend_q_0.05"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span><span class="va">BARS_trend_map_lower</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">BARS_trends</span>, alternate_column <span class="op">=</span> <span class="st">"trend_q_0.05"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Lower bound on trend"</span><span class="op">)</span></span>
-<span><span class="va">BARS_trend_map_upper</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">BARS_trends</span>, alternate_column <span class="op">=</span> <span class="st">"trend_q_0.95"</span><span class="op">)</span> <span class="op">+</span> </span>
+<span><span class="va">BARS_trend_map_upper</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">BARS_trends</span>, alternate_column <span class="op">=</span> <span class="st">"trend_q_0.95"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Upper bound on trend"</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="co">#removing the second legend</span></span>
 <span><span class="co"># combined using the patchwork package</span></span>
 <span><span class="va">BARS_trend_bounds_maps</span> <span class="op">&lt;-</span> <span class="va">BARS_trend_map_lower</span> <span class="op">+</span> <span class="va">BARS_trend_map_upper</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">"collect"</span><span class="op">)</span></span>
 <span><span class="va">BARS_trend_bounds_maps</span></span></code></pre></div>
-<p><img src="figures/advanced_unnamed-chunk-9-1.png" alt="Population trend maps for Barn Swallow, showing the lower and upper bounds on the population trends, where strata with increasing trends are shown in shades of blue and strata with decreasing trends in shades of red"></p>
+<p><img src="figures%2Fadvanced_unnamed-chunk-9-1.png" alt="Population trend maps for Barn Swallow, showing the lower and upper bounds on the population trends, where strata with increasing trends are shown in shades of blue and strata with decreasing trends in shades of red"></p>
 <p>Alternatively, we could visualise the width of the credible interval
 on the trends. Here we see that most of the trend estimates have
 credible intervals that are narrower than approximately 2%/year, but
@@ -345,10 +328,10 @@ precise. Note: Because in this case we are not displaying estimates of
 trends specifically, the function uses the viridis colour scale.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">BARS_trend_map_CI_width</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">BARS_trends</span>, alternate_column <span class="op">=</span> <span class="st">"width_of_95_percent_credible_interval"</span><span class="op">)</span> </span>
+<span><span class="va">BARS_trend_map_CI_width</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">BARS_trends</span>, alternate_column <span class="op">=</span> <span class="st">"width_of_95_percent_credible_interval"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">BARS_trend_map_CI_width</span></span></code></pre></div>
-<p><img src="figures/advanced_unnamed-chunk-10-1.png" alt="Map of the width of the credible interval on trend estimates for Barn Swallow"></p>
+<p><img src="figures%2Fadvanced_unnamed-chunk-10-1.png" alt="Map of the width of the credible interval on trend estimates for Barn Swallow"></p>
 </div>
 <div class="section level3">
 <h3 id="advanced-options-and-customized-models">Advanced options and customized models<a class="anchor" aria-label="anchor" href="#advanced-options-and-customized-models"></a>
@@ -414,19 +397,19 @@ by a certain amount.</p>
 <h4 id="the-default-trend-estimate">The default trend estimate<a class="anchor" aria-label="anchor" href="#the-default-trend-estimate"></a>
 </h4>
 <p>The default trend calculation is an interval-specific estimate of the
-geometric mean annual change in the population. <span class="math inline">\(Trend = (\frac
-{n[min-year]}{n[max-year]})^{(1/(max-year-min-year))}\)</span> We refer
-to these as <em>end-point trends</em>. They rely on a comparison of the
-annual indices in the first and last years of the trend period to
-quantify the mean rate of population change. However, it ignores the
-pattern of change between the two end-points.</p>
+geometric mean annual change in the population.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>r</mi><mi>e</mi><mi>n</mi><mi>d</mi><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>n</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>m</mi><mi>i</mi><mi>n</mi><mo>−</mo><mi>y</mi><mi>e</mi><mi>a</mi><mi>r</mi><mo stretchy="true" form="postfix">]</mo></mrow></mrow><mrow><mi>n</mi><mrow><mo stretchy="true" form="prefix">[</mo><mi>m</mi><mi>a</mi><mi>x</mi><mo>−</mo><mi>y</mi><mi>e</mi><mi>a</mi><mi>r</mi><mo stretchy="true" form="postfix">]</mo></mrow></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mi>a</mi><mi>x</mi><mo>−</mo><mi>y</mi><mi>e</mi><mi>a</mi><mi>r</mi><mo>−</mo><mi>m</mi><mi>i</mi><mi>n</mi><mo>−</mo><mi>y</mi><mi>e</mi><mi>a</mi><mi>r</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">Trend = (\frac {n[min-year]}{n[max-year]})^{(1/(max-year-min-year))}</annotation></semantics></math>
+We refer to these as <em>end-point trends</em>. They rely on a
+comparison of the annual indices in the first and last years of the
+trend period to quantify the mean rate of population change. However, it
+ignores the pattern of change between the two end-points.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">i</span>,</span>
 <span>                     slope <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                     min_year <span class="op">=</span> <span class="fl">1980</span><span class="op">)</span> <span class="co">#trends from 1980-2021</span></span>
 <span><span class="va">t_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">t_map</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/advanced_unnamed-chunk-12-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the default end-point trend estimates"></p>
+<p><img src="figures%2Fadvanced_unnamed-chunk-12-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the default end-point trend estimates"></p>
 </div>
 <div class="section level4">
 <h4 id="slope-based-trends">Slope-based Trends<a class="anchor" aria-label="anchor" href="#slope-based-trends"></a>
@@ -455,7 +438,7 @@ argument.</p>
 <span><span class="va">t_map_slope</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">t</span>,</span>
 <span>                        slope <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">t_map_slope</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/advanced_unnamed-chunk-13-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the slope-based trend estimates"></p>
+<p><img src="figures%2Fadvanced_unnamed-chunk-13-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the slope-based trend estimates"></p>
 </div>
 <div class="section level4">
 <h4 id="percent-change-and-probability-of-change">Percent Change and probability of change<a class="anchor" aria-label="anchor" href="#percent-change-and-probability-of-change"></a>
@@ -476,7 +459,7 @@ percent”</p>
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   region    percent_change percent_change_q_0.95</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;              &lt;dbl&gt;                 &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 continent          -46.8                 -39.8</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 continent          -39.9                 -31.9</span></span></code></pre></div>
 <p>In addition, the function can optionally calculate the posterior
 conditional probability that a population has changed more or less than
 some user-defined threshold(s), using the <code>prob_decrease</code> and
@@ -493,7 +476,7 @@ conditaional probability that the population has decreased by more than
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   region    prob_decrease_0_percent prob_decrease_50_percent</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                       &lt;dbl&gt;                    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 continent                       1                    0.208</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 continent                       1                  0.00775</span></span></code></pre></div>
 <p>These values can be useful for deriving statements such as “the
 first-difference spatial model suggests that it is extremely likely that
 the Scissor-tailed Flycatcher population monitored by the BBS has
@@ -531,7 +514,7 @@ belong in each of our new composite regions (<em>North</em> or
 <span></span>
 <span><span class="va">trajectories</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_indices.html">plot_indices</a></span><span class="op">(</span><span class="va">i_BARS</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">trajectories</span><span class="op">[[</span><span class="st">"North"</span><span class="op">]</span><span class="op">]</span> <span class="op">/</span> <span class="va">trajectories</span><span class="op">[[</span><span class="st">"South"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/advanced_unnamed-chunk-17-1.png" alt="Population trajectories for Barn Swallow in the northern and southern parts of their range"></p>
+<p><img src="figures%2Fadvanced_unnamed-chunk-17-1.png" alt="Population trajectories for Barn Swallow in the northern and southern parts of their range"></p>
 </div>
 <div class="section level3">
 <h3 id="exporting-and-modifying-the-stan-models">Exporting and modifying the Stan models<a class="anchor" aria-label="anchor" href="#exporting-and-modifying-the-stan-models"></a>
@@ -584,8 +567,12 @@ of these models that are somewhat informative. Based on the observed
 temporal and spatial variation from 50-years of monitoring bird
 populations with the BBS and the Christmas Bird Count. But some users
 may want priors that are less, or more, informative. See the
-supplementals associated with this pre-print, <a href="https://doi.org/10.32942/X2088D" class="external-link">Smith et al. 2023</a>, for more
-information on these priors.</p>
+supplementals associated with this paper, <a href="https://doi.org/10.1093/ornithapp/duad056" class="external-link">Smith et al. 2024</a>,
+for more information on these priors.</p>
+<p>The details on this example are from an ongoing collaboration
+examining the effects of annual climate factors on the relative
+abundance of Black Tern, which you can explore more in this <a href="https://github.com/AdamCSmithCWS/Wetland_bird_trends_moisture" class="external-link">GitHub
+repo</a>.</p>
 <div class="section level4">
 <h4 id="viewing-and-exporting-the-stan-code-for-the-models">viewing and exporting the Stan code for the models<a class="anchor" aria-label="anchor" href="#viewing-and-exporting-the-stan-code-for-the-models"></a>
 </h4>
@@ -783,52 +770,26 @@ models.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">m_gamye</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/BASP_latlong_gamye_spatial.rds"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in gzfile(file, "rb"): cannot open compressed file 'output/BASP_latlong_gamye_spatial.rds', probable reason</span></span>
+<span><span class="co">#&gt; 'No such file or directory'</span></span>
+<span><span class="co">#&gt; Error in gzfile(file, "rb"): cannot open the connection</span></span>
 <span></span>
 <span><span class="va">m_first_diff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/BASP_latlong_first_diff_spatial.rds"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in gzfile(file, "rb"): cannot open compressed file 'output/BASP_latlong_first_diff_spatial.rds', probable</span></span>
+<span><span class="co">#&gt; reason 'No such file or directory'</span></span>
+<span><span class="co">#&gt; Error in gzfile(file, "rb"): cannot open the connection</span></span>
 <span></span>
 <span><span class="co"># install.packages("loo") # you may need to install this package</span></span>
 <span><span class="va">loo_gamye</span> <span class="op">&lt;-</span> <span class="va">m_gamye</span><span class="op">$</span><span class="va">model_fit</span><span class="op">$</span><span class="fu">loo</span><span class="op">(</span><span class="op">)</span><span class="co"># loo calculations using the functions built into the cmdstanr model-fit object</span></span>
-<span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
+<span><span class="co">#&gt; Error: object 'm_gamye' not found</span></span>
 <span><span class="va">loo_first_diff</span> <span class="op">&lt;-</span> <span class="va">m_first_diff</span><span class="op">$</span><span class="va">model_fit</span><span class="op">$</span><span class="fu">loo</span><span class="op">(</span><span class="op">)</span><span class="co"># loo calculations using the functions built into the cmdstanr model-fit object</span></span>
-<span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
+<span><span class="co">#&gt; Error: object 'm_first_diff' not found</span></span>
 <span></span>
 <span></span>
 <span><span class="va">loo_gamye</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Computed from 8000 by 4368 log-likelihood matrix</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;          Estimate    SE</span></span>
-<span><span class="co">#&gt; elpd_loo  -7095.6 106.3</span></span>
-<span><span class="co">#&gt; p_loo       682.1  26.7</span></span>
-<span><span class="co">#&gt; looic     14191.2 212.5</span></span>
-<span><span class="co">#&gt; ------</span></span>
-<span><span class="co">#&gt; Monte Carlo SE of elpd_loo is NA.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Pareto k diagnostic values:</span></span>
-<span><span class="co">#&gt;                          Count Pct.    Min. n_eff</span></span>
-<span><span class="co">#&gt; (-Inf, 0.5]   (good)     3936  90.1%   576       </span></span>
-<span><span class="co">#&gt;  (0.5, 0.7]   (ok)        298   6.8%   186       </span></span>
-<span><span class="co">#&gt;    (0.7, 1]   (bad)       112   2.6%   14        </span></span>
-<span><span class="co">#&gt;    (1, Inf)   (very bad)   22   0.5%   5         </span></span>
-<span><span class="co">#&gt; See help('pareto-k-diagnostic') for details.</span></span>
+<span><span class="co">#&gt; Error: object 'loo_gamye' not found</span></span>
 <span><span class="va">loo_first_diff</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Computed from 8000 by 4368 log-likelihood matrix</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;          Estimate    SE</span></span>
-<span><span class="co">#&gt; elpd_loo  -6976.8 105.3</span></span>
-<span><span class="co">#&gt; p_loo       778.8  26.2</span></span>
-<span><span class="co">#&gt; looic     13953.7 210.7</span></span>
-<span><span class="co">#&gt; ------</span></span>
-<span><span class="co">#&gt; Monte Carlo SE of elpd_loo is NA.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Pareto k diagnostic values:</span></span>
-<span><span class="co">#&gt;                          Count Pct.    Min. n_eff</span></span>
-<span><span class="co">#&gt; (-Inf, 0.5]   (good)     3913  89.6%   509       </span></span>
-<span><span class="co">#&gt;  (0.5, 0.7]   (ok)        307   7.0%   177       </span></span>
-<span><span class="co">#&gt;    (0.7, 1]   (bad)       130   3.0%   13        </span></span>
-<span><span class="co">#&gt;    (1, Inf)   (very bad)   18   0.4%   4         </span></span>
-<span><span class="co">#&gt; See help('pareto-k-diagnostic') for details.</span></span></code></pre></div>
+<span><span class="co">#&gt; Error: object 'loo_first_diff' not found</span></span></code></pre></div>
 <p>This approximation of leave-one-out crossvalidation suggests that the
 first-difference model may slightly out-perform the gamye model for this
 species and time-period. However, the uncertainty in the calculation of
@@ -992,19 +953,19 @@ absolute values (values closer to 0) indicate a better fitting
 model.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sum_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/sum_cv.rds"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in gzfile(file, "rb"): cannot open compressed file 'output/sum_cv.rds', probable reason 'No such file or</span></span>
+<span><span class="co">#&gt; directory'</span></span>
+<span><span class="co">#&gt; Error in gzfile(file, "rb"): cannot open the connection</span></span>
 <span><span class="va">cv_comp</span> <span class="op">&lt;-</span> <span class="va">sum_cv</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#drops the rows for counts that were never in testing datasets</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>sum_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span>, <span class="co"># total sum of log likelihoods</span></span>
 <span>            mean_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span>, <span class="co"># mean of point-level values</span></span>
 <span>            se_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># SE of point-level values</span></span>
+<span><span class="co">#&gt; Error: object 'sum_cv' not found</span></span>
 <span></span>
 <span><span class="va">cv_comp</span></span>
-<span><span class="co">#&gt; # A tibble: 2 × 4</span></span>
-<span><span class="co">#&gt;   model      sum_log_lik mean_log_lik se_log_lik</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;            &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 first_diff     -11251.        -2.66     0.0663</span></span>
-<span><span class="co">#&gt; 2 gamye          -10115.        -2.39     0.0559</span></span></code></pre></div>
+<span><span class="co">#&gt; Error: object 'cv_comp' not found</span></span></code></pre></div>
 <p>Interestingly, the cross-validation results suggest that the gamye
 model performs better than the first_diff model: The opposite finding of
 the approximation. Model comparison is not a simple thing, especially
@@ -1018,15 +979,16 @@ appear to be better predicted by the gamye model than the
 first-difference model.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cv_dif</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/cv_dif.rds"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in gzfile(file, "rb"): cannot open compressed file 'output/cv_dif.rds', probable reason 'No such file or</span></span>
+<span><span class="co">#&gt; directory'</span></span>
+<span><span class="co">#&gt; Error in gzfile(file, "rb"): cannot open the connection</span></span>
 <span><span class="va">cv_dif_sum</span> <span class="op">&lt;-</span> <span class="va">cv_dif</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
 <span>            se_diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>            z <span class="op">=</span> <span class="va">mean_diff</span><span class="op">/</span><span class="va">se_diff</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: object 'cv_dif' not found</span></span>
 <span><span class="va">cv_dif_sum</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
-<span><span class="co">#&gt;   mean_diff se_diff     z</span></span>
-<span><span class="co">#&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1    -0.269  0.0186 -14.4</span></span>
+<span><span class="co">#&gt; Error: object 'cv_dif_sum' not found</span></span>
 <span></span>
 <span><span class="co"># explore the differences by count value</span></span>
 <span><span class="va">dif_by_count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cv_dif</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1037,34 +999,33 @@ first-difference model.</p>
 <span>  <span class="co">#scale_x_continuous(trans = "log10")+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: object 'cv_dif' not found</span></span>
 <span></span>
-<span><span class="va">dif_by_count</span></span></code></pre></div>
-<p><img src="figures/advanced_unnamed-chunk-30-1.png" alt="Cross validation differences"></p>
+<span><span class="va">dif_by_count</span></span>
+<span><span class="co">#&gt; Error: object 'dif_by_count' not found</span></span></code></pre></div>
 </div>
 </div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Brandon P.M. Edwards, Adam C. Smith, Steffi LaZerte.</p>
+  <p>Developed by Brandon P.M. Edwards, Adam C. Smith, Steffi LaZerte.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
