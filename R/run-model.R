@@ -249,7 +249,8 @@ run_model <- function(model_data,
 #' unlink("my_model.rds")
 
 save_model_run <- function(model_output,
-                           retain_csv = TRUE, path = NULL, quiet = FALSE) {
+                           retain_csv = TRUE, path = NULL, quiet = FALSE,
+                           save_file_path = NULL) {
 
   check_data(model_output)
   check_logical(retain_csv,quiet)
@@ -271,13 +272,21 @@ save_model_run <- function(model_output,
       unique() %>%
       paste0(".rds")
 
+    if(is.null(save_file_path)){
+      save_file_path <- path
+    }else{
+      check_dir(dirname(save_file_path))
+      if(ext(path) != "rds") {
+        stop("save_file_path must have a .rds extension", call. = FALSE)
+      }
+    }
 
-    if(!quiet) message("Saving model output to ", path)
+    if(!quiet) message("Saving model output to ", save_file_path)
   } else {
 
-    check_dir(dirname(path))
+    check_dir(dirname(save_file_path))
     if(ext(path) != "rds") {
-      stop("File must have a .rds extension", call. = FALSE)
+      stop("save_file_path must have a .rds extension", call. = FALSE)
     }
   }
 
