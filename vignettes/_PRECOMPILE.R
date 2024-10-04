@@ -2,7 +2,7 @@
 library(knitr)
 library(readr)
 library(stringr)
-
+devtools::load_all(".")
 # Make sure to put figures in local dir in knitr chunk options
 v <- list.files("vignettes", ".orig$", full.names = TRUE, recursive = TRUE)
 

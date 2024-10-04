@@ -87,17 +87,7 @@ spatial data object with polygons defining your strata.
 In our example we'll use WBPHS stratum boundaries for 2019.
 This is available from available from the US Fish and Wildlife Service Catalogue: <https://ecos.fws.gov/ServCat/Reference/Profile/142628>
 
-You can either download it by hand, or with the following code.
-```{r, eval=FALSE}
-z <- "output/WBPHS_Stratum_Boundaries_2019.zip" #
-
-download.file(url = "https://ecos.fws.gov/ServCat/DownloadFile/213149",
-              destfile = z,
-              cacheOK = TRUE)
-unzip(z)  # Unzip - if you get a file is corrupt message, download it manually
-unlink(z) # Remove the zipped file
-```
-The zip file is also available in this [Google Drive](https://drive.google.com/file/d/1pWPC2Eh5VBP7RIC173gazdAmtHfx4KdF/view?usp=sharing)
+To run this locally, download the file manually and unzip the shapefile contents into subdirectory of your working directory called *output*.
 
 To use this file in bbsBayes2, we need to load it as an sf object using the sf
 package.

@@ -13,7 +13,7 @@ editor_options:
 
 
 
-```r
+``` r
 library(bbsBayes2)
 library(tidyverse)
 ```
@@ -55,7 +55,7 @@ the BBS survey data, and then we'll run through some example workflows.
 If you haven't already, install bbsBayes2 from the R-Universe.
 
 
-```r
+``` r
 install.packages("bbsBayes2", repos = c(bbsbayes = "https://bbsbayes.r-universe.dev",
                                         CRAN = getOption("repos")))
 ```
@@ -71,7 +71,7 @@ sure we have cmdstanr and cmdstan both installed.
 Run this in a fresh R session.
 
 
-```r
+``` r
 install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/",
                                        getOption("repos")))
 ```
@@ -79,15 +79,15 @@ install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/",
 Now we should be able to use cmdstanr to install cmdstan
 
 
-```r
+``` r
 cmdstanr::install_cmdstan()
 ```
 
-Let's check that everything went as planned
+Let's check that everything went as planned, and tell cmdstanr to fix any issues.
 
 
-```r
-cmdstanr::check_cmdstan_toolchain()
+``` r
+cmdstanr::check_cmdstan_toolchain(fix = TRUE)
 #> The C++ toolchain required for CmdStan is setup properly!
 ```
 
@@ -116,7 +116,7 @@ done.
 Now we'll fetch the BBS data using the `fetch_bbs_data()` function.
 
 
-```r
+``` r
 library(bbsBayes2)
 fetch_bbs_data() #
 ```
@@ -128,15 +128,15 @@ This will save the data to a package-specific directory on your computer. You mu
 > section).
 
 
-There are (as of August 2023) two types of BBS data that can be
-downloaded, and three release-versions:
+There are two types of BBS data that can be
+downloaded, and annual release-versions:
 
 -   Two levels `state` and `stop` (only `state` works with bbsBayes2
     models, the `stop` option is provided to facilitate custom projects and models)
--   Two releases `2020`, `2022` and `2023` (more options will be added as annual releases occur). 
+-   Annual releases `2020`, `2022`, `2023`, and '2024' more options will be added as annual releases occur).
 
-The defaults (level `state` and the most recent release - `2023`) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
-However you can download all data sets and specify which one you wish to
+The defaults (level `state` and the most recent release - `2024`) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
+However you can download all releases and specify which one you wish to
 use in the `stratify()` step.
 
 ### A note about BBS release names:
@@ -149,7 +149,7 @@ There is no
 lockdowns of spring 2020 so no data were collected and there was no updated data to release the following year.
 
 
-```r
+``` r
 fetch_bbs_data()                  # Default - most recent release
 fetch_bbs_data(release = "2020")  # Specify a different release
 ```
@@ -176,7 +176,7 @@ example, the output of `stratify()` is required input for
 
 Functions which are connected by a **solid, grey** arrow, indicate that
 the output of the first function is *optional* input to the second. For
-example, the output of `grenerate_trends()` is an option input for
+example, the output of `generate_trends()` is an option input for
 `plot_geofacet()`.
 
 Functions which are connected by a **dotted** arrow indicate that the
@@ -190,13 +190,9 @@ which can be modified by the user and then used as input to
 See the [Function Reference](../reference) for more details on how to
 use a particular function.
 
+![Workflow diagram demonstrating the steps, ordering, and dependencies of the key functions within the bbsBayes2 package](figures/workflow_diagram.png)
 
 
-```
-#> Warning: package 'DiagrammeR' was built under R version 4.3.1
-```
-
-<img src="figures/bbsBayes2_unnamed-chunk-10-1.png"  />
 
 ## Workflow to fit models
 
@@ -214,7 +210,7 @@ this step we choose a stratification type as well as a species to
 explore.
 
 
-```r
+``` r
 s <- stratify(by = "bbs_usgs", species = "Scissor-tailed Flycatcher")
 #> Using 'bbs_usgs' (standard) stratification
 #> Loading BBS data...
@@ -226,11 +222,12 @@ s <- stratify(by = "bbs_usgs", species = "Scissor-tailed Flycatcher")
 We can also play around with the included sample data (Pacific Wrens)
 
 
-```r
+``` r
 s <- stratify(by = "bbs_cws", sample_data = TRUE) # Only Pacific Wren
 #> Using 'bbs_cws' (standard) stratification
 #> Using sample BBS data...
 #> Using species Pacific Wren (sample data)
+#> Filtering to species Pacific Wren (7221)
 #> Stratifying data...
 #>   Combining BCR 7 and NS and PEI...
 #>   Renaming routes...
@@ -249,47 +246,47 @@ All of the models in the package are species-specific. So the species is a funda
 The `search_species()` function allows the user to search up the species names in the BBS database, using text from the English, Spanish, French, or Latin names. The English names for each species will be retained in the metadata at every step of the workflow.
 
 
-```r
+``` r
 search_species("Geai bleu")
-#> # A tibble: 1 × 9
-#>     aou english  french    spanish             order         family genus species unid_combined
-#>   <dbl> <chr>    <chr>     <chr>               <chr>         <chr>  <chr> <chr>   <lgl>        
-#> 1  4770 Blue Jay Geai bleu Cyanocitta cristata Passeriformes Corvi… Cyan… crista… TRUE
+#> # A tibble: 1 × 8
+#>     aou english  french    order         family   genus      species  unid_combined
+#>   <dbl> <chr>    <chr>     <chr>         <chr>    <chr>      <chr>    <lgl>        
+#> 1  4770 Blue Jay Geai bleu Passeriformes Corvidae Cyanocitta cristata TRUE
 search_species("Cyanocitta")
-#> # A tibble: 2 × 9
-#>     aou english       french          spanish          order family genus species unid_combined
-#>   <dbl> <chr>         <chr>           <chr>            <chr> <chr>  <chr> <chr>   <lgl>        
-#> 1  4780 Steller's Jay Geai de Steller Cyanocitta stel… Pass… Corvi… Cyan… stelle… TRUE         
-#> 2  4770 Blue Jay      Geai bleu       Cyanocitta cris… Pass… Corvi… Cyan… crista… TRUE
+#> # A tibble: 2 × 8
+#>     aou english       french          order         family   genus      species  unid_combined
+#>   <dbl> <chr>         <chr>           <chr>         <chr>    <chr>      <chr>    <lgl>        
+#> 1  4780 Steller's Jay Geai de Steller Passeriformes Corvidae Cyanocitta stelleri TRUE         
+#> 2  4770 Blue Jay      Geai bleu       Passeriformes Corvidae Cyanocitta cristata TRUE
 search_species("Corvidae")
-#> # A tibble: 20 × 9
-#>      aou english                        french spanish order family genus species unid_combined
-#>    <dbl> <chr>                          <chr>  <chr>   <chr> <chr>  <chr> <chr>   <lgl>        
-#>  1  4840 Canada Jay                     Mésan… Periso… Pass… Corvi… Peri… canade… TRUE         
-#>  2  4830 Green Jay                      Geai … Cyanoc… Pass… Corvi… Cyan… yncas   TRUE         
-#>  3  4920 Pinyon Jay                     Geai … Gymnor… Pass… Corvi… Gymn… cyanoc… TRUE         
-#>  4  4780 Steller's Jay                  Geai … Cyanoc… Pass… Corvi… Cyan… stelle… TRUE         
-#>  5  4770 Blue Jay                       Geai … Cyanoc… Pass… Corvi… Cyan… crista… TRUE         
-#>  6  4790 Florida Scrub-Jay              Geai … Aphelo… Pass… Corvi… Aphe… coerul… TRUE         
-#>  7  4811 Island Scrub-Jay               Geai … Aphelo… Pass… Corvi… Aphe… insula… TRUE         
-#>  8  4812 California Scrub-Jay           Geai … Aphelo… Pass… Corvi… Aphe… califo… TRUE         
-#>  9  4813 Woodhouse's Scrub-Jay          Geai … Aphelo… Pass… Corvi… Aphe… woodho… TRUE         
-#> 10  4810 unid. California Scrub-Jay / … unid … Aphelo… Pass… Corvi… Aphe… califo… TRUE         
-#> 11  4820 Mexican Jay                    Geai … Aphelo… Pass… Corvi… Aphe… wollwe… TRUE         
-#> 12  4910 Clark's Nutcracker             Casse… Nucifr… Pass… Corvi… Nuci… columb… TRUE         
-#> 13  4750 Black-billed Magpie            Pie d… Pica h… Pass… Corvi… Pica  hudson… TRUE         
-#> 14  4760 Yellow-billed Magpie           Pie à… Pica n… Pass… Corvi… Pica  nuttal… TRUE         
-#> 15  4880 American Crow                  Corne… Corvus… Pass… Corvi… Corv… brachy… TRUE         
-#> 16  4900 Fish Crow                      Corne… Corvus… Pass… Corvi… Corv… ossifr… TRUE         
-#> 17  4881 unid. American Crow / Fish Cr… unid … Corvus… Pass… Corvi… Corv… brachy… TRUE         
-#> 18  4870 Chihuahuan Raven               Corbe… Corvus… Pass… Corvi… Corv… crypto… TRUE         
-#> 19  4860 Common Raven                   Grand… Corvus… Pass… Corvi… Corv… corax   TRUE         
-#> 20  4865 unid. Chihuahuan Raven / Comm… unid … Corvus… Pass… Corvi… Corv… crypto… TRUE
+#> # A tibble: 20 × 8
+#>      aou english                                            french          order family genus species unid_combined
+#>    <dbl> <chr>                                              <chr>           <chr> <chr>  <chr> <chr>   <lgl>        
+#>  1  4840 Canada Jay                                         Mésangeai du C… Pass… Corvi… Peri… canade… TRUE         
+#>  2  4830 Green Jay                                          Geai vert       Pass… Corvi… Cyan… yncas   TRUE         
+#>  3  4920 Pinyon Jay                                         Geai des pinèd… Pass… Corvi… Gymn… cyanoc… TRUE         
+#>  4  4780 Steller's Jay                                      Geai de Steller Pass… Corvi… Cyan… stelle… TRUE         
+#>  5  4770 Blue Jay                                           Geai bleu       Pass… Corvi… Cyan… crista… TRUE         
+#>  6  4790 Florida Scrub-Jay                                  Geai à gorge b… Pass… Corvi… Aphe… coerul… TRUE         
+#>  7  4811 Island Scrub-Jay                                   Geai de Santa … Pass… Corvi… Aphe… insula… TRUE         
+#>  8  4812 California Scrub-Jay                               Geai buissonni… Pass… Corvi… Aphe… califo… TRUE         
+#>  9  4813 Woodhouse's Scrub-Jay                              Geai de Woodho… Pass… Corvi… Aphe… woodho… TRUE         
+#> 10  4810 unid. California Scrub-Jay / Woodhouse's Scrub-Jay unid Geai buis… Pass… Corvi… Aphe… califo… TRUE         
+#> 11  4820 Mexican Jay                                        Geai du Mexique Pass… Corvi… Aphe… wollwe… TRUE         
+#> 12  4910 Clark's Nutcracker                                 Cassenoix d'Am… Pass… Corvi… Nuci… columb… TRUE         
+#> 13  4750 Black-billed Magpie                                Pie d'Amérique  Pass… Corvi… Pica  hudson… TRUE         
+#> 14  4760 Yellow-billed Magpie                               Pie à bec jaune Pass… Corvi… Pica  nuttal… TRUE         
+#> 15  4880 American Crow                                      Corneille d'Am… Pass… Corvi… Corv… brachy… TRUE         
+#> 16  4900 Fish Crow                                          Corneille de r… Pass… Corvi… Corv… ossifr… TRUE         
+#> 17  4881 unid. American Crow / Fish Crow                    unid Corneille… Pass… Corvi… Corv… brachy… TRUE         
+#> 18  4870 Chihuahuan Raven                                   Corbeau à cou … Pass… Corvi… Corv… crypto… TRUE         
+#> 19  4860 Common Raven                                       Grand Corbeau   Pass… Corvi… Corv… corax   TRUE         
+#> 20  4865 unid. Chihuahuan Raven / Common Raven              unid Grand Cor… Pass… Corvi… Corv… crypto… TRUE
 ```
 ##### Species groupings
 
 There are some taxonomic groupings of species-units in the BBS database
-that bbsBayes2 by default also combines into combined species forms. These
+that bbsBayes2 by default also groups into combined species forms. These
 represent groupings that make sense based on changes in taxonomy or
 potentially inconsistent distinctions among observers, routes, regions, or time.
 
@@ -299,12 +296,11 @@ potentially inconsistent distinctions among observers, routes, regions, or time.
     Flicker observations exist in the BBS database separately as
     Red-shafted Flicker (4130), Yellow-shafted Flicker (4120), unidentified Red/Yellow-shafted Flicker (4123) or hybrid Red x Yellow-shafted Flicker (4125). To provide an appropriate dataset to represent population trends of Northern Flicker, bbsBayes2 by default sums all of these observations into a new *species* called Northern Flicker (all forms), which replaces the (4123) unidentified category in the species database. The remaining original separate forms (Red, Yellow, and hybrid) are retained.
 -   Similar combined *species* are created for taxonomic splits that have occurred since the start of the BBS, such as Clark's and Western Grebe, which are retained as their own separate species, but are also combined into Western Grebe (Clark's/Western) (12).
-
 You can access a complete list of these combined *species* groups and the sub groups that make them up.
 
 
-```r
-species_forms
+``` r
+bbsBayes2::species_forms
 #>    aou_unid                               english_original
 #> 1      2973              unid. Dusky Grouse / Sooty Grouse
 #> 2      5677                   (unid. race) Dark-eyed Junco
@@ -319,6 +315,7 @@ species_forms
 #> 11       12            unid. Western Grebe / Clark's Grebe
 #> 12     6556 (unid. Myrtle/Audubon's) Yellow-rumped Warbler
 #> 13     5275           unid. Common Redpoll / Hoary Redpoll
+#> 14     5012                               unid. Meadowlark
 #>                                                   english_combined
 #> 1                                        Blue Grouse (Dusky/Sooty)
 #> 2                                      Dark-eyed Junco (all forms)
@@ -333,6 +330,7 @@ species_forms
 #> 11                                 Western Grebe (Clark's/Western)
 #> 12                               Yellow-rumped Warbler (all forms)
 #> 13                                          Redpoll (Common/Hoary)
+#> 14                         Meadowlark (Eastern/Western/Chihuahuan)
 #>                                                french_combined                       aou_id
 #> 1                            Tétras sombre (sombre/fuligineux)                   2970, 2971
 #> 2                            Junco ardoisé (toutes les formes) 5671, 5670, 5680, 5660, 5690
@@ -346,12 +344,35 @@ species_forms
 #> 10                     Moucherolle côtier (des ravins/ côtier)                   4641, 4640
 #> 11                      Grèbe élégant (à face blanche/élégant)                       10, 11
 #> 12               Paruline à croupion jaune (toutes les formes)                   6550, 6560
-#> 13                                 Sizerin (Flammé/Blanchâtre)                   5270, 5280
+#> 13                                 Sizerin (flammé/blanchâtre)                   5270, 5280
+#> 14                               Sturnelle (prés/Ouest/Lilian)             5009, 5010, 5011
+```
+
+-   These splits that have occurred since the start of the BBS require some extra
+care when considering what years to include in any model fit. For example, if fitting a trend model to the data for Clark's Grebe, it would not make sense to include all years back to 1966. Prior to 1985, Clark's Grebe was not a distinct species and so observers would not have recorded observations for this *species* in the same was as they would have after 1985. The `prepare_data()` function will generate warnings if the user selects a species and time-period where these species identification-issues may be important. Related concerns with time-span may apply to species that have expanded their range into the surveyed area of the BBS since the beginning of surveys. A list of the species where these time-span concerns may be most relevant can be found by calling the built-in data table.
+
+
+``` r
+bbsBayes2::species_notes
+#>                  english                  french   aou minimum_year
+#> 1       Alder Flycatcher  Moucherolle des aulnes  4661         1978
+#> 2      Willow Flycatcher  Moucherolle des saules  4660         1978
+#> 3          Clark's Grebe    Grèbe à face blanche    11         1990
+#> 4          Western Grebe           Grèbe élégant    10         1990
+#> 5 Eurasian Collared-Dove      Tourterelle turque 22860         1990
+#> 6           Cave Swallow Hirondelle à front brun  6121         1985
+#>                                                                                                                                                                                     warning
+#> 1 Alder and Willow Flycatcher were considered a single species until 1973. It is likely that they are not accurately separated by BBS observers until at least some years after that split.
+#> 2 Alder and Willow Flycatcher were considered a single species until 1973. It is likely that they are not accurately separated by BBS observers until at least some years after that split.
+#> 3   Clark's and Western Grebe were considered a single species until 1985. It is likely that they are not accurately separated by BBS observers until at least some years after that split.
+#> 4   Clark's and Western Grebe were considered a single species until 1985. It is likely that they are not accurately separated by BBS observers until at least some years after that split.
+#> 5                                     Eurasian Collared Dove was introduced into North America in the 1980s. 1990 is the first year that the species was observed on at least 3 BBS routes.
+#> 6                                                      Cave Swallows were relatively rare in the areas surveyed by BBS before 1980. There are only two observations during BBS before 1980.
 ```
 
 If you're looking for a complete list of all species in the BBS database.
 
-```r
+``` r
 all_species_bbs_database <- load_bbs_data()$species
 ```
 
@@ -369,7 +390,7 @@ samples, etc. See `prepare_data()` for more details on how you can
 customize this step.
 
 
-```r
+``` r
 p <- prepare_data(s)
 ```
 
@@ -379,7 +400,7 @@ Next we will prepare the model parameters and initialization values. See
 `prepare_model()` for more details on how you can customize this step.
 
 
-```r
+``` r
 md <- prepare_model(p, model = "first_diff")
 ```
 
@@ -393,7 +414,7 @@ much lower values, but note that this almost certainly will result in
 problems with our model.
 
 
-```r
+``` r
 m <- run_model(md, iter_sampling = 100, iter_warmup = 500, chains = 2)
 ```
 
@@ -404,7 +425,7 @@ prepare the data as in the previous example, but you also prepare the
 map and the spatial data. An example is below.
 
 
-```r
+``` r
 s <- stratify(by = "bbs_usgs", species="Scissor-tailed Flycatcher")
 #> Using 'bbs_usgs' (standard) stratification
 #> Loading BBS data...
@@ -416,7 +437,7 @@ p <- prepare_data(s)
 
 And now the additional steps...
 
-```r
+``` r
 # Load a map
 map <- load_map(stratify_by = "bbs_usgs")
 # Prepare the spatial data
@@ -428,7 +449,7 @@ sp <- prepare_spatial(p, map)
 ```
 Then the remaining steps are the same but we use `model_variant = "spatial"` in  `prepare_model()`.
 
-```r
+``` r
 # Then prepare the model with the spatial output
 mod <- prepare_model(sp, model = "gamye", model_variant = "spatial")
 
@@ -438,22 +459,55 @@ m <- run_model(mod)
 # Optionally, save the model output as an .rds file
 saveRDS(m, "output/4430_gamye_spatial.rds")
 ```
-The spatial aspects of the spatial model variants use an intrinsic Conditional Autoregressive structure (iCAR) to share information among neighbouring strata on the population abundance and trend parameter ([Besag et al. 1991](https://doi.org/10.1007/BF00116466), [ver Hoef et al. 2018](http://doi.wiley.com/10.1002/ecm.1283), [Morris et al. 2019](https://doi.org/10.1016/j.sste.2019.100301)). For more information about the bbsBayes2 models and the spatial models see the [models vignette](./models.html) and [Smith et al., 2023 pre-print](https://doi.org/10.32942/X2088D).
+The spatial aspects of the spatial model variants use an intrinsic Conditional Autoregressive structure (iCAR) to share information among neighbouring strata on the population abundance and trend parameter ([Besag et al. 1991](https://doi.org/10.1007/BF00116466), [ver Hoef et al. 2018](http://doi.wiley.com/10.1002/ecm.1283), [Morris et al. 2019](https://doi.org/10.1016/j.sste.2019.100301)). For more information about the bbsBayes2 models and the spatial models see the [models vignette](./models.html) and [Smith et al., 2024](https://doi.org/10.1093/ornithapp/duad056).
 
 The prepared spatial data object includes a map of the spatial neighbourhood relationships for a given species and stratification.
 
 
-```r
+``` r
 print(sp$spatial_data$map)
 ```
 
-<img src="figures/bbsBayes2_unnamed-chunk-22-1.png" alt="Map showing the strata and neighbourhood relationships among them for Scissor-tailed Flycatcher"  />
+<img src="vignettes/articles/figures/bbsBayes2_unnamed-chunk-23-1.png" alt="Map showing the strata and neighbourhood relationships among them for Scissor-tailed Flycatcher"  />
 
 ## Workflow to explore the model outputs {#explore_output}
 
 If you would prefer to skip the model fitting steps for now, you can
-[download a fitted model](https://drive.google.com/file/d/1zF8xOIn_ZuORmjNDHAu5YCJjIx4j-MHC/view?usp=drive_link) object (the output of `run_model()` function)
-and test out the remaining package features.
+[download a fitted model](https://drive.google.com/file/d/14SYabzAj_3IGmbBB-y0NZfBngKytiR0x/view?usp=sharing) object (the output of the code below) and test out the remaining package features.
+
+
+``` r
+library(bbsBayes2)
+library(tidyverse)
+
+species <- "Scissor-tailed Flycatcher"
+
+# extract the unique numerical identifier for this species in the BBS database
+species_number <- search_species(species) %>%
+  select(aou) %>%
+  unlist()
+
+mod <- "gamye"
+var <- "spatial"
+
+out_name <- paste0("output/",
+                      species_number,
+                      "_",
+                      mod,
+                      "_",
+                      var)
+
+d <- stratify("bbs_usgs",
+              species = species) %>%
+  prepare_data() %>%
+  prepare_spatial(s, strata_map = load_map("bbs_usgs")) %>%
+  prepare_model(model = mod, model_variant = var)
+
+m <- run_model(d,
+    output_basename = out_name,
+    output_dir = getwd()) # by default saves the model output using output_basename
+
+```
 
 The outputs of the collection of functions required to fit a model are
 cumulative: each one retains the metadata from the previous step. As a
@@ -463,7 +517,7 @@ fitting process, as well as all of the data and metadata necessary to
 understand and replicate the choices made to fit the model.
 
 
-```r
+``` r
 m <- readRDS("output/4430_gamye_spatial.rds")
 names(m)
 #> [1] "model_fit"   "model_data"  "meta_data"   "meta_strata" "raw_data"
@@ -480,31 +534,31 @@ summary statistics (mean, median, credible intervals) for all parameters
 in a fitted model.
 
 
-```r
+``` r
 # Convergence diagnostics for all parameters
 converge <- get_convergence(m)
 ```
 
 
-```r
+``` r
 # Convergence diagnostics for all smoothed annual indices
 converge_n_smooth <- get_convergence(m, variables = "n_smooth") %>%
   arrange(-rhat)
 converge_n_smooth
-#> # A tibble: 1,375 × 5
+#> # A tibble: 1,425 × 5
 #>    variable_type variable         rhat ess_bulk ess_tail
 #>    <chr>         <chr>           <dbl>    <dbl>    <dbl>
-#>  1 n_smooth      n_smooth[7,26]   1.00    5383.    3686.
-#>  2 n_smooth      n_smooth[7,25]   1.00    5384.    3618.
-#>  3 n_smooth      n_smooth[7,28]   1.00    5325.    3745.
-#>  4 n_smooth      n_smooth[7,24]   1.00    5137.    3545.
-#>  5 n_smooth      n_smooth[7,23]   1.00    5053.    3197.
-#>  6 n_smooth      n_smooth[9,35]   1.00    4546.    3433.
-#>  7 n_smooth      n_smooth[7,27]   1.00    5348.    3780.
-#>  8 n_smooth      n_smooth[12,54]  1.00    4279.    3348.
-#>  9 n_smooth      n_smooth[14,10]  1.00    4870.    3670.
-#> 10 n_smooth      n_smooth[12,53]  1.00    4317.    3549.
-#> # ℹ 1,365 more rows
+#>  1 n_smooth      n_smooth[21,25]  1.00    5881.    2893.
+#>  2 n_smooth      n_smooth[20,16]  1.00    4369.    3568.
+#>  3 n_smooth      n_smooth[20,15]  1.00    4363.    3713.
+#>  4 n_smooth      n_smooth[18,27]  1.00    4850.    3204.
+#>  5 n_smooth      n_smooth[24,33]  1.00    5138.    3663.
+#>  6 n_smooth      n_smooth[18,29]  1.00    4999.    3353.
+#>  7 n_smooth      n_smooth[16,51]  1.00    4498.    3746.
+#>  8 n_smooth      n_smooth[18,28]  1.00    5024.    3182.
+#>  9 n_smooth      n_smooth[16,50]  1.00    4430.    3747.
+#> 10 n_smooth      n_smooth[21,23]  1.00    5757.    3643.
+#> # ℹ 1,415 more rows
 ```
 
 Here we've sorted the convergence diagnostics by rhat values (highest values at the top to highlight any problems). Cut-offs for rhat statistics are somewhat arbitrary and recommendations vary in the literature, but values of
@@ -519,7 +573,7 @@ in [Gabry et al., 2019](https://doi.org/10.1111/rssa.12378). bbsBayes2 relies on
 
 
 
-```r
+``` r
 m <- run_model(mod,
                iter_warmup = 2000,
                iter_sampling = 2000)
@@ -533,7 +587,7 @@ would also increase the time required to fit the model by a factor of
 approximately 4).
 
 
-```r
+``` r
 m <- run_model(mod,
                iter_warmup = 4000,
                iter_sampling = 4000,
@@ -544,31 +598,31 @@ If you want summary statistics of the parameters, as well as convergence
 diagnostics, the function `get_summary()` may be more useful.
 
 
-```r
+``` r
 # Summary statistics and convergence diagnostics for all parameters
 summary_stats <- get_summary(m)
 ```
 
 
-```r
+``` r
 # Summary statistics and convergence diagnostics for all smoothed annual indices
 summary_stats_n_smooth <- get_summary(m, variables = "n_smooth") %>%
   arrange(-rhat)
 summary_stats_n_smooth
-#> # A tibble: 1,375 × 10
-#>    variable           mean  median     sd    mad      q5    q95  rhat ess_bulk ess_tail
-#>    <chr>             <num>   <num>  <num>  <num>   <num>  <num> <num>    <num>    <num>
-#>  1 n_smooth[7,26]   0.501   0.494  0.0909 0.0894  0.367   0.661  1.00    5383.    3686.
-#>  2 n_smooth[7,25]   0.512   0.504  0.0933 0.0917  0.374   0.675  1.00    5384.    3618.
-#>  3 n_smooth[7,28]   0.488   0.480  0.0869 0.0849  0.359   0.644  1.00    5325.    3745.
-#>  4 n_smooth[7,24]   0.528   0.520  0.0965 0.0947  0.385   0.694  1.00    5137.    3545.
-#>  5 n_smooth[7,23]   0.548   0.541  0.101  0.0992  0.400   0.718  1.00    5053.    3197.
-#>  6 n_smooth[9,35]   0.251   0.245  0.0470 0.0444  0.183   0.335  1.00    4546.    3433.
-#>  7 n_smooth[7,27]   0.494   0.487  0.0888 0.0866  0.361   0.649  1.00    5348.    3780.
-#>  8 n_smooth[12,54]  0.103   0.0963 0.0400 0.0338  0.0539  0.174  1.00    4279.    3348.
-#>  9 n_smooth[14,10] 25.0    25.0    1.69   1.71   22.4    27.9    1.00    4870.    3670.
-#> 10 n_smooth[12,53]  0.0984  0.0926 0.0354 0.0297  0.0545  0.163  1.00    4317.    3549.
-#> # ℹ 1,365 more rows
+#> # A tibble: 1,425 × 10
+#>    variable         mean median    sd   mad    q5   q95  rhat ess_bulk ess_tail
+#>    <chr>           <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>    <dbl>    <dbl>
+#>  1 n_smooth[21,25] 33.6   33.6  1.33  1.32  31.5  35.8   1.00    5881.    2893.
+#>  2 n_smooth[20,16] 13.8   13.8  0.998 1.01  12.2  15.5   1.00    4369.    3568.
+#>  3 n_smooth[20,15] 12.8   12.7  0.926 0.935 11.3  14.3   1.00    4363.    3713.
+#>  4 n_smooth[18,27]  8.93   8.89 0.743 0.720  7.80 10.2   1.00    4850.    3204.
+#>  5 n_smooth[24,33] 36.4   36.3  2.26  2.21  32.7  40.2   1.00    5138.    3663.
+#>  6 n_smooth[18,29]  8.70   8.66 0.690 0.668  7.62  9.91  1.00    4999.    3353.
+#>  7 n_smooth[16,51] 19.1   19.0  1.60  1.59  16.6  21.9   1.00    4498.    3746.
+#>  8 n_smooth[18,28]  8.78   8.74 0.714 0.696  7.68 10.0   1.00    5024.    3182.
+#>  9 n_smooth[16,50] 20.6   20.5  1.67  1.65  18.0  23.6   1.00    4430.    3747.
+#> 10 n_smooth[21,23] 34.5   34.5  1.40  1.36  32.3  36.9   1.00    5757.    3643.
+#> # ℹ 1,415 more rows
 ```
 
 ### Indices - predictions of annual relative abundance
@@ -589,7 +643,7 @@ allow it (e.g., `region = "country"` for the stratifications `bbs_usgs`,
 `bbs_cws`, or `prov_state`).
 
 
-```r
+``` r
 i <- generate_indices(model_output = m)
 #> Processing region continent
 #> Processing region stratum
@@ -599,32 +653,31 @@ We can explore or extract these indices for saving as an external file
 (e.g., export to .csv), by accessing the `indices` item in the list.
 
 
-```r
+``` r
 i[["indices"]]
-#> # A tibble: 1,430 × 17
-#>     year region    region_type strata_included strata_excluded index index_q_0.025 index_q_0.05
-#>    <dbl> <chr>     <chr>       <chr>           <chr>           <dbl>         <dbl>        <dbl>
-#>  1  1967 continent continent   US-AR-24 ; US-… ""              12.7          11.4         11.6 
-#>  2  1968 continent continent   US-AR-24 ; US-… ""              12.8          11.7         11.9 
-#>  3  1969 continent continent   US-AR-24 ; US-… ""              13.0          12.0         12.2 
-#>  4  1970 continent continent   US-AR-24 ; US-… ""              13.1          12.1         12.3 
-#>  5  1971 continent continent   US-AR-24 ; US-… ""              12.9          12.1         12.3 
-#>  6  1972 continent continent   US-AR-24 ; US-… ""              12.8          12.0         12.1 
-#>  7  1973 continent continent   US-AR-24 ; US-… ""              11.6          10.9         11.0 
-#>  8  1974 continent continent   US-AR-24 ; US-… ""              10.9          10.3         10.4 
-#>  9  1975 continent continent   US-AR-24 ; US-… ""              10.3           9.62         9.72
-#> 10  1976 continent continent   US-AR-24 ; US-… ""               9.37          8.78         8.87
-#> # ℹ 1,420 more rows
-#> # ℹ 9 more variables: index_q_0.25 <dbl>, index_q_0.75 <dbl>, index_q_0.95 <dbl>,
-#> #   index_q_0.975 <dbl>, obs_mean <dbl>, n_routes <int>, n_routes_total <int>,
-#> #   n_non_zero <int>, backcast_flag <dbl>
+#> # A tibble: 1,482 × 17
+#>     year region    region_type strata_included         strata_excluded index index_q_0.025 index_q_0.05 index_q_0.25
+#>    <dbl> <chr>     <chr>       <chr>                   <chr>           <dbl>         <dbl>        <dbl>        <dbl>
+#>  1  1967 continent continent   US-AR-24 ; US-AR-25 ; … ""              13.1          11.7         11.9         12.6 
+#>  2  1968 continent continent   US-AR-24 ; US-AR-25 ; … ""              12.9          11.8         12.0         12.5 
+#>  3  1969 continent continent   US-AR-24 ; US-AR-25 ; … ""              12.9          12.0         12.1         12.6 
+#>  4  1970 continent continent   US-AR-24 ; US-AR-25 ; … ""              12.9          12.1         12.2         12.6 
+#>  5  1971 continent continent   US-AR-24 ; US-AR-25 ; … ""              12.9          12.0         12.1         12.6 
+#>  6  1972 continent continent   US-AR-24 ; US-AR-25 ; … ""              12.8          12.0         12.1         12.5 
+#>  7  1973 continent continent   US-AR-24 ; US-AR-25 ; … ""              11.7          11.0         11.1         11.5 
+#>  8  1974 continent continent   US-AR-24 ; US-AR-25 ; … ""              11.0          10.3         10.5         10.8 
+#>  9  1975 continent continent   US-AR-24 ; US-AR-25 ; … ""              10.3           9.67         9.77        10.1 
+#> 10  1976 continent continent   US-AR-24 ; US-AR-25 ; … ""               9.35          8.76         8.85         9.14
+#> # ℹ 1,472 more rows
+#> # ℹ 8 more variables: index_q_0.75 <dbl>, index_q_0.95 <dbl>, index_q_0.975 <dbl>, obs_mean <dbl>, n_routes <int>,
+#> #   n_routes_total <int>, n_non_zero <int>, backcast_flag <dbl>
 ```
 ### Trajectory plots
 
 We can also generate time-series plots of these indices to visualize population trajectories.
 
 
-```r
+``` r
 # generates a list of ggplot graphs, one for each region
 p <- plot_indices(indices = i,
                   add_observed_means = TRUE) # optional argument to show raw observed mean counts
@@ -634,29 +687,28 @@ Note that we get one plot for each region and regional category, in this
 case that means one plot for the continent, and one for each stratum.
 
 
-```r
+``` r
 names(p)
-#>  [1] "continent" "US_AR_24"  "US_AR_25"  "US_AR_26"  "US_KS_18"  "US_KS_19"  "US_KS_22" 
-#>  [8] "US_LA_25"  "US_LA_37"  "US_MO_22"  "US_MO_24"  "US_NM_18"  "US_NM_35"  "US_OK_18" 
-#> [15] "US_OK_19"  "US_OK_21"  "US_OK_22"  "US_OK_25"  "US_TX_18"  "US_TX_19"  "US_TX_20" 
-#> [22] "US_TX_21"  "US_TX_25"  "US_TX_35"  "US_TX_36"  "US_TX_37"
+#>  [1] "continent" "US_AR_24"  "US_AR_25"  "US_AR_26"  "US_KS_18"  "US_KS_19"  "US_KS_22"  "US_LA_25"  "US_LA_37" 
+#> [10] "US_MO_22"  "US_MO_24"  "US_NM_18"  "US_NM_35"  "US_OK_18"  "US_OK_19"  "US_OK_21"  "US_OK_22"  "US_OK_25" 
+#> [19] "US_TX_18"  "US_TX_19"  "US_TX_20"  "US_TX_21"  "US_TX_25"  "US_TX_35"  "US_TX_36"  "US_TX_37"
 ```
 
 We can plot them individually by pulling a plot out of the list
 
 
-```r
+``` r
 print(p[["continent"]])
 ```
 
-<img src="figures/bbsBayes2_unnamed-chunk-34-1.png" alt="Population trajectory graph, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts."  />
+<img src="vignettes/articles/figures/bbsBayes2_unnamed-chunk-36-1.png" alt="Population trajectory graph, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts."  />
 
 Each of these plots is a [ggplot2](https://github.com/tidyverse/ggplot2)
 object that can be modified like any other. For example, you can modify
 titles or axes.
 
 
-```r
+``` r
 library(ggplot2)
 
 p1_mod <- p[["continent"]]+
@@ -665,7 +717,22 @@ p1_mod <- p[["continent"]]+
 print(p1_mod)
 ```
 
-<img src="figures/bbsBayes2_unnamed-chunk-35-1.png" alt="Population trajectory graph, modified to show only the last 20 years of the time-series and remove the title"  />
+<img src="vignettes/articles/figures/bbsBayes2_unnamed-chunk-37-1.png" alt="Population trajectory graph, modified to show only the last 20 years of the time-series and remove the title"  />
+
+#### Spaghetti plots to show uncertainty in population trajectories
+
+The most common inference to draw from one of these BBS models relates to the estimates of the population trajectory. One particularly useful way to visualise the uncertainty of those population trajectories is to plot many posterior draws of the full trajectory. The default population trajectories plots `plot_indices()` show a line representing the path of the annual posterior medians of the annual indices and an uncertainty band spanning the outer limits of a credible interval on the annual indices. These are reasonable summaries of the uncertainty in the collection of annual indices. However, the uncertainty of each annual index of abundance includes information about the uncertainty in the estimate of the change in abundance through time (e.g., trend) and uncertainty in the estimate of the mean abundance (e.g., the mean count in any given route or observer). Those two sources of uncertainty can be correlated in the posterior distribution, so that the uncertainty of the annual indices may over-estimate the uncertainty in the trend.
+To plot a sample of estimated trajectories, set the `spaghetti = TRUE` argument in the `plot_indices()` function.
+
+``` r
+# generates a list of ggplot graphs, one for each region
+p <- plot_indices(indices = i,
+                  add_observed_means = TRUE)
+print(p[["continent"]])
+```
+
+![plot of chunk unnamed-chunk-38](vignettes/articles/figures/bbsBayes2_unnamed-chunk-38-1.png)
+There are arguments that also allow the user to control the transparency of each plotted line, as well as the number of lines to plot (the default is to draw 100 random samples).
 
 ### Trends - predictions of mean rates of change over time
 
@@ -674,7 +741,7 @@ all trends from bbsBayes2 models are derived from summaries of indices
 through time or between two points in time.
 
 
-```r
+``` r
 t <- generate_trends(i)
 ```
 
@@ -682,60 +749,58 @@ We can explore or extract these trends for saving as an external file
 (e.g., export to .csv), by accessing the `trends` item in the list.
 
 
-```r
+``` r
 t[["trends"]]
 #> # A tibble: 26 × 27
-#>    start_year end_year region region_type strata_included strata_excluded   trend trend_q_0.025
-#>         <dbl>    <dbl> <chr>  <chr>       <chr>           <chr>             <dbl>         <dbl>
-#>  1       1967     2021 conti… continent   US-AR-24 ; US-… ""              -1.09          -1.34 
-#>  2       1967     2021 US-AR… stratum     US-AR-24        ""               4.58           3.09 
-#>  3       1967     2021 US-AR… stratum     US-AR-25        ""               0.0864        -0.664
-#>  4       1967     2021 US-AR… stratum     US-AR-26        ""               4.88           2.54 
-#>  5       1967     2021 US-KS… stratum     US-KS-18        ""               2.64          -1.87 
-#>  6       1967     2021 US-KS… stratum     US-KS-19        ""              -0.528         -1.32 
-#>  7       1967     2021 US-KS… stratum     US-KS-22        ""              -0.199         -0.936
-#>  8       1967     2021 US-LA… stratum     US-LA-25        ""              -1.70          -3.45 
-#>  9       1967     2021 US-LA… stratum     US-LA-37        ""               0.357         -2.01 
-#> 10       1967     2021 US-MO… stratum     US-MO-22        ""              -0.327         -2.64 
+#>    start_year end_year region    region_type strata_included      strata_excluded   trend trend_q_0.025 trend_q_0.05
+#>         <dbl>    <dbl> <chr>     <chr>       <chr>                <chr>             <dbl>         <dbl>        <dbl>
+#>  1       1967     2023 continent continent   US-AR-24 ; US-AR-25… ""              -0.874         -1.11        -1.07 
+#>  2       1967     2023 US-AR-24  stratum     US-AR-24             ""               4.41           3.10         3.33 
+#>  3       1967     2023 US-AR-25  stratum     US-AR-25             ""               0.214         -0.553       -0.411
+#>  4       1967     2023 US-AR-26  stratum     US-AR-26             ""               4.65           2.78         3.06 
+#>  5       1967     2023 US-KS-18  stratum     US-KS-18             ""               2.81          -1.36        -0.700
+#>  6       1967     2023 US-KS-19  stratum     US-KS-19             ""              -0.538         -1.31        -1.19 
+#>  7       1967     2023 US-KS-22  stratum     US-KS-22             ""              -0.0272        -0.701       -0.615
+#>  8       1967     2023 US-LA-25  stratum     US-LA-25             ""              -1.25          -2.85        -2.56 
+#>  9       1967     2023 US-LA-37  stratum     US-LA-37             ""               0.320         -1.81        -1.49 
+#> 10       1967     2023 US-MO-22  stratum     US-MO-22             ""              -0.356         -2.43        -2.08 
 #> # ℹ 16 more rows
-#> # ℹ 19 more variables: trend_q_0.05 <dbl>, trend_q_0.25 <dbl>, trend_q_0.75 <dbl>,
-#> #   trend_q_0.95 <dbl>, trend_q_0.975 <dbl>, percent_change <dbl>,
-#> #   percent_change_q_0.025 <dbl>, percent_change_q_0.05 <dbl>, percent_change_q_0.25 <dbl>,
+#> # ℹ 18 more variables: trend_q_0.25 <dbl>, trend_q_0.75 <dbl>, trend_q_0.95 <dbl>, trend_q_0.975 <dbl>,
+#> #   percent_change <dbl>, percent_change_q_0.025 <dbl>, percent_change_q_0.05 <dbl>, percent_change_q_0.25 <dbl>,
 #> #   percent_change_q_0.75 <dbl>, percent_change_q_0.95 <dbl>, percent_change_q_0.975 <dbl>,
-#> #   width_of_95_percent_credible_interval <dbl>, rel_abundance <dbl>, obs_rel_abundance <dbl>,
-#> #   n_routes <dbl>, mean_n_routes <dbl>, n_strata_included <dbl>, backcast_flag <dbl>
+#> #   width_of_95_percent_credible_interval <dbl>, rel_abundance <dbl>, obs_rel_abundance <dbl>, n_routes <dbl>,
+#> #   mean_n_routes <dbl>, n_strata_included <dbl>, backcast_flag <dbl>
 ```
 
 We can generate trends for different periods of time, using any
 combination of a starting year `min_year` and ending year `max_year`.
 
 
-```r
+``` r
 t_10 <- generate_trends(i,
                         min_year = 2011,
                         max_year = 2021)
 t_10
 #> $trends
 #> # A tibble: 26 × 27
-#>    start_year end_year region  region_type strata_included strata_excluded  trend trend_q_0.025
-#>         <dbl>    <dbl> <chr>   <chr>       <chr>           <chr>            <dbl>         <dbl>
-#>  1       2011     2021 contin… continent   US-AR-24 ; US-… ""              -2.39          -3.21
-#>  2       2011     2021 US-AR-… stratum     US-AR-24        ""               2.23          -1.56
-#>  3       2011     2021 US-AR-… stratum     US-AR-25        ""              -0.449         -3.07
-#>  4       2011     2021 US-AR-… stratum     US-AR-26        ""               3.87          -2.70
-#>  5       2011     2021 US-KS-… stratum     US-KS-18        ""               5.19          -3.53
-#>  6       2011     2021 US-KS-… stratum     US-KS-19        ""               1.16          -2.15
-#>  7       2011     2021 US-KS-… stratum     US-KS-22        ""              -4.42          -6.92
-#>  8       2011     2021 US-LA-… stratum     US-LA-25        ""              -2.92         -10.1 
-#>  9       2011     2021 US-LA-… stratum     US-LA-37        ""               3.84          -4.79
-#> 10       2011     2021 US-MO-… stratum     US-MO-22        ""               2.76          -5.91
+#>    start_year end_year region    region_type strata_included      strata_excluded   trend trend_q_0.025 trend_q_0.05
+#>         <dbl>    <dbl> <chr>     <chr>       <chr>                <chr>             <dbl>         <dbl>        <dbl>
+#>  1       2011     2021 continent continent   US-AR-24 ; US-AR-25… ""              -2.00           -2.71       -2.61 
+#>  2       2011     2021 US-AR-24  stratum     US-AR-24             ""               1.94           -1.19       -0.648
+#>  3       2011     2021 US-AR-25  stratum     US-AR-25             ""              -0.411          -2.85       -2.46 
+#>  4       2011     2021 US-AR-26  stratum     US-AR-26             ""               3.18           -2.08       -0.996
+#>  5       2011     2021 US-KS-18  stratum     US-KS-18             ""               4.08           -2.35       -1.24 
+#>  6       2011     2021 US-KS-19  stratum     US-KS-19             ""               0.982          -2.07       -1.60 
+#>  7       2011     2021 US-KS-22  stratum     US-KS-22             ""              -3.95           -6.37       -5.92 
+#>  8       2011     2021 US-LA-25  stratum     US-LA-25             ""              -2.19           -8.99       -7.78 
+#>  9       2011     2021 US-LA-37  stratum     US-LA-37             ""               1.43           -4.89       -3.92 
+#> 10       2011     2021 US-MO-22  stratum     US-MO-22             ""               0.0656         -6.34       -5.38 
 #> # ℹ 16 more rows
-#> # ℹ 19 more variables: trend_q_0.05 <dbl>, trend_q_0.25 <dbl>, trend_q_0.75 <dbl>,
-#> #   trend_q_0.95 <dbl>, trend_q_0.975 <dbl>, percent_change <dbl>,
-#> #   percent_change_q_0.025 <dbl>, percent_change_q_0.05 <dbl>, percent_change_q_0.25 <dbl>,
+#> # ℹ 18 more variables: trend_q_0.25 <dbl>, trend_q_0.75 <dbl>, trend_q_0.95 <dbl>, trend_q_0.975 <dbl>,
+#> #   percent_change <dbl>, percent_change_q_0.025 <dbl>, percent_change_q_0.05 <dbl>, percent_change_q_0.25 <dbl>,
 #> #   percent_change_q_0.75 <dbl>, percent_change_q_0.95 <dbl>, percent_change_q_0.975 <dbl>,
-#> #   width_of_95_percent_credible_interval <dbl>, rel_abundance <dbl>, obs_rel_abundance <dbl>,
-#> #   n_routes <dbl>, mean_n_routes <dbl>, n_strata_included <dbl>, backcast_flag <dbl>
+#> #   width_of_95_percent_credible_interval <dbl>, rel_abundance <dbl>, obs_rel_abundance <dbl>, n_routes <dbl>,
+#> #   mean_n_routes <dbl>, n_strata_included <dbl>, backcast_flag <dbl>
 #> 
 #> $meta_data
 #> $meta_data$stratify_by
@@ -754,19 +819,19 @@ t_10
 #> [1] "spatial"
 #> 
 #> $meta_data$model_file
-#> [1] "C:/Users/SmithAC/AppData/Local/R/win-library/4.2/bbsBayes2/models/gamye_spatial_bbs_CV.stan"
+#> [1] "C:/Users/SmithAC/AppData/Local/Programs/R/R-4.4.1/library/bbsBayes2/models/gamye_spatial_bbs_CV.stan"
 #> 
 #> $meta_data$run_date
-#> [1] "2023-02-13 07:24:57 EST"
+#> [1] "2024-09-28 18:05:30 EDT"
 #> 
 #> $meta_data$bbsBayes2_version
-#> [1] "1.0.0"
+#> [1] "1.1.2"
 #> 
 #> $meta_data$cmdstan_path
-#> [1] "C:/Users/SmithAC/Documents/.cmdstan/wsl-cmdstan-2.30.1"
+#> [1] "//wsl$/Ubuntu/home/smithac/.cmdstan/cmdstan-2.35.0"
 #> 
 #> $meta_data$cmdstan_version
-#> [1] "2.30.1"
+#> [1] "2.35.0"
 #> 
 #> $meta_data$regions
 #> [1] "continent" "stratum"  
@@ -775,7 +840,16 @@ t_10
 #> [1] 1967
 #> 
 #> $meta_data$n_years
-#> [1] 55
+#> [1] 57
+#> 
+#> $meta_data$hpdi_indices
+#> [1] FALSE
+#> 
+#> $meta_data$hpdi_trends
+#> [1] FALSE
+#> 
+#> $meta_data$gam_smooth_trends
+#> [1] FALSE
 #> 
 #> 
 #> $meta_strata
@@ -795,23 +869,22 @@ t_10
 #> # ℹ 15 more rows
 #> 
 #> $raw_data
-#> # A tibble: 12,626 × 23
-#>    country_num state_num state     rpid   bcr  year strata_name route   obs_n count n_routes
-#>          <dbl>     <dbl> <chr>    <dbl> <dbl> <dbl> <chr>       <chr>   <dbl> <dbl>    <int>
-#>  1         840         7 ARKANSAS   101    24  1967 US-AR-24    7-20  1190020     0       12
-#>  2         840         7 ARKANSAS   101    24  1968 US-AR-24    7-20  1190020     0       12
-#>  3         840         7 ARKANSAS   101    24  1969 US-AR-24    7-20  1190020     0       12
-#>  4         840         7 ARKANSAS   101    24  1970 US-AR-24    7-20  1190020     0       12
-#>  5         840         7 ARKANSAS   101    24  1971 US-AR-24    7-20  1190020     0       12
-#>  6         840         7 ARKANSAS   101    24  1972 US-AR-24    7-20  1190020     0       12
-#>  7         840         7 ARKANSAS   101    24  1973 US-AR-24    7-20  1190020     0       12
-#>  8         840         7 ARKANSAS   101    24  1974 US-AR-24    7-20  1190020     0       12
-#>  9         840         7 ARKANSAS   101    24  1975 US-AR-24    7-20  1190020     0       12
-#> 10         840         7 ARKANSAS   101    24  1976 US-AR-24    7-20  1190020     0       12
-#> # ℹ 12,616 more rows
-#> # ℹ 12 more variables: non_zero_weight <dbl>, first_year <dbl>, max_n_routes_year <int>,
-#> #   n_obs <int>, mean_obs <dbl>, year_num <dbl>, strata <dbl>, observer <int>, site <int>,
-#> #   obs_route <chr>, obs_site <int>, n_obs_sites <int>
+#> # A tibble: 13,250 × 23
+#>    country_num state_num state   rpid   bcr  year strata_name route  obs_n count n_routes non_zero_weight first_year
+#>          <dbl>     <dbl> <chr>  <dbl> <dbl> <dbl> <chr>       <chr>  <dbl> <dbl>    <int>           <dbl>      <dbl>
+#>  1         840         7 ARKAN…   101    24  1967 US-AR-24    7-20  1.19e6     0       12               1          1
+#>  2         840         7 ARKAN…   101    24  1968 US-AR-24    7-20  1.19e6     0       12               1          0
+#>  3         840         7 ARKAN…   101    24  1969 US-AR-24    7-20  1.19e6     0       12               1          0
+#>  4         840         7 ARKAN…   101    24  1970 US-AR-24    7-20  1.19e6     0       12               1          0
+#>  5         840         7 ARKAN…   101    24  1971 US-AR-24    7-20  1.19e6     0       12               1          0
+#>  6         840         7 ARKAN…   101    24  1972 US-AR-24    7-20  1.19e6     0       12               1          0
+#>  7         840         7 ARKAN…   101    24  1973 US-AR-24    7-20  1.19e6     0       12               1          0
+#>  8         840         7 ARKAN…   101    24  1974 US-AR-24    7-20  1.19e6     0       12               1          0
+#>  9         840         7 ARKAN…   101    24  1975 US-AR-24    7-20  1.19e6     0       12               1          0
+#> 10         840         7 ARKAN…   101    24  1976 US-AR-24    7-20  1.19e6     0       12               1          0
+#> # ℹ 13,240 more rows
+#> # ℹ 10 more variables: max_n_routes_year <int>, n_obs <int>, mean_obs <dbl>, year_num <dbl>, strata <dbl>,
+#> #   observer <int>, site <int>, obs_route <chr>, obs_site <int>, n_obs_sites <int>
 ```
 
 ### Trend maps - visualizing the spatial variation in trends
@@ -820,19 +893,19 @@ We can plot trend estimates on a map to visualise the spatial patterns
 in population change.
 
 
-```r
+``` r
 trend_map <- plot_map(t)
 print(trend_map)
 ```
 
-<img src="figures/bbsBayes2_unnamed-chunk-39-1.png" alt="Population trend map showing strata with increasing trends in blues and decreasing trends in reds."  />
+<img src="vignettes/articles/figures/bbsBayes2_unnamed-chunk-42-1.png" alt="Population trend map showing strata with increasing trends in blues and decreasing trends in reds."  />
 
 The maps are also [ggplot2](https://github.com/tidyverse/ggplot2)
 objects that can be modified like any other. For example, you can zoom
 into a section of the map.
 
 
-```r
+``` r
 library(ggplot2)
 
 # Get the meta data in trend object - strata information
@@ -847,37 +920,37 @@ data_bounding_box <- load_map(stratify_by = t$meta_data$stratify_by) %>%
 t_mod <- trend_map +
   coord_sf(xlim = data_bounding_box[c("xmin","xmax")],
            ylim = data_bounding_box[c("ymin","ymax")])
+#> Coordinate system already present. Adding new coordinate system, which will replace the existing one.
 
 print(t_mod)
 ```
 
-<img src="figures/bbsBayes2_unnamed-chunk-40-1.png" alt="Population trend map zoomed in to show just the relevant regions"  />
+<img src="vignettes/articles/figures/bbsBayes2_unnamed-chunk-43-1.png" alt="Population trend map zoomed in to show just the relevant regions"  />
 
 ### Barn Swallow example
 
 A model with a suitable number of iterations takes a long time to run
-(the Barn Swallow model, a species with many data and many strata, took
+(the Barn Swallow model, a species with many counts, years and strata, took
 54 hours).
 
-You can download a zip-file with a saved model output for Barn Swallow here:
+You can download an example of the saved model output for Barn Swallow here:
 
 [An example of the output from applying the spatial gamye model to Barn
-Swallow data](https://drive.google.com/file/d/1RNbM312_isopRN7Lb-jP1-wK4UvRKkHE/view?usp=sharing).
+Swallow data](https://drive.google.com/file/d/1jFzzoJel6B2bg6yOmhMHnGTxkLaTRaRn/view?usp=sharing).
 
-Unzip the file and store it in a local directory.
 In this example we've placed it in a sub-directory of our working directory called *output*.
 
 Let's take a look at the spatial GAMYE model for the Barn Swallow.
 
 First we load the data
 
-```r
+``` r
 BARS <- readRDS("output/Barn_Swallow_gamye_spatial.rds")
 ```
 
 We can investigate the model meta data
 
-```r
+``` r
 BARS$meta_data
 #> $stratify_by
 #> [1] "bbs_cws"
@@ -912,7 +985,7 @@ BARS$meta_data
 
 See the length of the run in seconds or hours
 
-```r
+``` r
 BARS$model_fit$time()
 #> $total
 #> [1] 197011.7
@@ -929,7 +1002,7 @@ BARS$model_fit$time()$total/3600
 
 Now create the indices and trends
 
-```r
+``` r
 
 BARS_indices <- generate_indices(BARS)
 #> Processing region continent
@@ -943,7 +1016,7 @@ BARS_continent <- BARS_index_plots[["continent"]]
 print(BARS_continent)
 ```
 
-<img src="figures/bbsBayes2_unnamed-chunk-44-1.png" alt="Population trajectory graph for Barn Swallow, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts."  />
+<img src="vignettes/articles/figures/bbsBayes2_unnamed-chunk-47-1.png" alt="Population trajectory graph for Barn Swallow, showing the estimated annual relative abundances, their associated 95% credible intervals, and points representing the raw mean observed counts."  />
 
 ### Smoothed population trajectories - gamye model
 
@@ -965,7 +1038,7 @@ model applied to a short time-frame (it's probably unlikely that a
 linear smooth is reasonable for long periods of time).
 
 
-```r
+``` r
 BARS_smooth_indices <- generate_indices(BARS,
                                         alternate_n = "n_smooth")
 #> Processing region continent
@@ -975,14 +1048,14 @@ BARS_trend_map <- plot_map(BARS_trends)
 BARS_trend_map
 ```
 
-<img src="figures/bbsBayes2_unnamed-chunk-45-1.png" alt="Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"  />
+<img src="vignettes/articles/figures/bbsBayes2_unnamed-chunk-48-1.png" alt="Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"  />
 ### Modifying base plots
 
 We can also add the smoothed annual indices to the plots of the full
 annual indices from above, taking advantage of the [ggplot2](https://github.com/tidyverse/ggplot2) functions such as `geom_line()`.
 
 
-```r
+``` r
 library(ggplot2)
 
 smooth_cont_indices <- BARS_smooth_indices$indices %>%
@@ -998,7 +1071,7 @@ BARS_continent_both <- BARS_continent +
 print(BARS_continent_both)
 ```
 
-<img src="figures/bbsBayes2_unnamed-chunk-46-1.png" alt="Population trajectory graph for Barn Swallow, same as above plus the smoothed annual indices are added as a grey line"  />
+<img src="vignettes/articles/figures/bbsBayes2_unnamed-chunk-49-1.png" alt="Population trajectory graph for Barn Swallow, same as above plus the smoothed annual indices are added as a grey line"  />
 
 Check out the other articles to explore more advanced
 usage or the [function reference](../reference/) to see what functions

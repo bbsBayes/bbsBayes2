@@ -70,6 +70,7 @@ remotes::install_github("bbsBayes/bbsBayes2")
 
 If you want to install the developmental branch (which often includes additional 
 options and newest updates), you can use the following.
+NOTE: bbsBayes2 is supported by a small team of committed researchers with limited capacity. The development branch may not be stable. 
 
 ```{r}
 pak::pkg_install("bbsBayes/bbsBayes2@dev")
@@ -77,7 +78,7 @@ pak::pkg_install("bbsBayes/bbsBayes2@dev")
 
 ## Why bbsBayes2
 
-We hope you'll agree that the BBS is a [spectacular dataset](https://doi.org/10.1650/CONDOR-17-62.1). Generations of committed and expert birders have contributed their time and expertise to carefully keeping track of local bird populations. For many BBS observers, it's been a commitment that has lasted 20, 30, or even 40 years! Many federal, state, and provincial government agencies, as well as local and national conservation organizations have supported the coordination and curation of over 50-years of data.
+We hope you'll agree that the BBS is a [spectacular dataset](https://doi.org/10.1650/CONDOR-17-62.1). Generations of committed and expert birders have contributed their time and expertise to carefully keeping track of local bird populations. For many BBS observers, it's been a commitment that has lasted 20, 30, or even 40 years! Many federal, state, and provincial government agencies, as well as local and national conservation organizations have supported the coordination and curation of almost 60-years of data.
 
 [The BBS was started](https://doi.org/10.1650/CONDOR-17-83.1) at the dawn of the modern North American conservation movement, inspired by changes in bird populations noticed by biologists, naturalists, farmers, and other stewards of the natural world. A continental-scale survey of birds, carefully designed to quantify changes in populations through time, in hopes that Rachel Carson's "Silent Spring", would never come to pass.
 
