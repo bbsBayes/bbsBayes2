@@ -36,8 +36,9 @@
 #'   To define a completely new custom stratification, specify the name you
 #'   would like use in `by` (e.g., "east_west_divide") and then supply a spatial
 #'   data frame with polygons identifying the different strata to
-#'   `strata_custom`. Note that this data must have a column called
-#'   `strata_name` which names all the strata contained (see examples).
+#'   `strata_custom`. Note that this data must have a column called exactly
+#'   `strata_name` which names all the strata contained (see examples). This
+#'   column must also be of class character not numeric or factor.
 #'
 #'   If `combine_species_forms` is `TRUE` (default), species with multiple forms
 #'   (e.g., "unid. Dusky Grouse / Sooty Grouse") are included in overall species
@@ -138,7 +139,7 @@ stratify <- function(by,
                      species,
                      strata_custom = NULL,
                      combine_species_forms = TRUE,
-                     release = 2023,
+                     release = 2024,
                      sample_data = FALSE,
                      return_omitted = FALSE,
                      quiet = FALSE) {
@@ -171,6 +172,8 @@ stratify <- function(by,
   } else {
     if(!quiet) message("Using species Pacific Wren (sample data)")
     species <- "Pacific Wren"
+    sp_aou <- check_species(species, species_list, combine_species_forms, quiet)
+
   }
 
   if(!quiet) message("Stratifying data...")
@@ -308,7 +311,8 @@ stratify <- function(by,
   # Return list
   out <- list("meta_data" = list("stratify_by" = stratify_by,
                                  "stratify_type" = stratify_type,
-                                 "species" = species),
+                                 "species" = species,
+                                 "sp_aou" = sp_aou),
               "meta_strata" = meta_strata,
               "birds_strata" = dplyr::select(birds, -"rid"),
               "routes_strata" = dplyr::select(routes, -"rid"))

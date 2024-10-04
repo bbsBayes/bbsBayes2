@@ -29,7 +29,7 @@ test_that("fix_no_neighbours()", {
   m <- load_map("latlong") %>%
     dplyr::filter(stringr::str_detect(strata_name, "(^51)|(^38)"))
 
-  nb_db <- spdep::poly2nb(m, queen = FALSE)
+  nb_db <- suppressWarnings(spdep::poly2nb(m, queen = FALSE))
   sf::st_agr(m) <- "constant"
   centres <- sf::st_centroid(m)
   nb_weights <- spdep::nb2WB(nb_db)
@@ -47,7 +47,7 @@ test_that("fix_islands()", {
   m <- load_map("latlong") %>%
     dplyr::filter(stringr::str_detect(strata_name, "(^51)|(^38)"))
 
-  nb_db <- spdep::poly2nb(m, queen = FALSE)
+  nb_db <- suppressWarnings(spdep::poly2nb(m, queen = FALSE))
   sf::st_agr(m) <- "constant"
   centres <- sf::st_centroid(m)
 
@@ -98,7 +98,8 @@ test_that("prepare_spatial(nearest_fill = TRUE)", {
   map <- load_map("latlong")
   p <- stratify(by = "latlong", sample_data = TRUE) %>%
     prepare_data() %>%
-    suppressMessages()
+    suppressMessages() %>%
+    suppressWarnings()
 
   expect_message(n <- prepare_spatial(p, map, nearest_fill = TRUE),
                  "Preparing") %>%

@@ -62,7 +62,8 @@ test_that("stratify - bbs_cws", {
                     "routes_strata"))
   expect_equal(s$meta_data, list(stratify_by = "bbs_cws",
                                  stratify_type = "standard",
-                                 species = "Snowy Owl"))
+                                 species = "Snowy Owl",
+                                 sp_aou = 3760))
 
   comp <- bbs_strata[["bbs_cws"]] %>%
     dplyr::filter(strata_name %in% s$meta_strata$strata_name)
@@ -93,7 +94,8 @@ test_that("stratify - bbs_usgs", {
                     "routes_strata"))
   expect_equal(s$meta_data, list(stratify_by = "bbs_usgs",
                                  stratify_type = "standard",
-                                 species = "Snowy Owl"))
+                                 species = "Snowy Owl",
+                                 sp_aou = 3760))
 
   comp <- bbs_strata[["bbs_usgs"]] %>%
     dplyr::filter(strata_name %in% s$meta_strata$strata_name)
@@ -120,7 +122,8 @@ test_that("stratify - bcr", {
                     "routes_strata"))
   expect_equal(s$meta_data, list(stratify_by = "bcr",
                                  stratify_type = "standard",
-                                 species = "Snowy Owl"))
+                                 species = "Snowy Owl",
+                                 sp_aou = 3760))
 
   comp <- bbs_strata[["bcr"]] %>%
     dplyr::filter(strata_name %in% s$meta_strata$strata_name)
@@ -160,7 +163,8 @@ test_that("stratify - latlong & return_omitted", {
                     "routes_strata", "routes_omitted"))
   expect_equal(s$meta_data, list(stratify_by = "latlong",
                                  stratify_type = "standard",
-                                 species = "Snowy Owl"))
+                                 species = "Snowy Owl",
+                                 sp_aou = 3760))
 
   comp <- bbs_strata[["latlong"]] %>%
     dplyr::filter(strata_name %in% s$meta_strata$strata_name)
@@ -188,7 +192,8 @@ test_that("stratify - prov_state", {
                     "routes_strata"))
   expect_equal(s$meta_data, list(stratify_by = "prov_state",
                                  stratify_type = "standard",
-                                 species = "Snowy Owl"))
+                                 species = "Snowy Owl",
+                                 sp_aou = 3760))
 
   comp <- bbs_strata[["prov_state"]] %>%
     dplyr::filter(strata_name %in% s$meta_strata$strata_name)
@@ -220,7 +225,8 @@ test_that("stratify - subset", {
                     "routes_strata"))
   expect_equal(s$meta_data, list(stratify_by = "bbs_cws",
                                  stratify_type = "subset",
-                                 species = "Snowy Owl"))
+                                 species = "Snowy Owl",
+                                 sp_aou = 3760))
 
   comp <- bbs_strata[["bbs_cws"]] %>%
     dplyr::filter(strata_name %in% s$meta_strata$strata_name)
@@ -251,7 +257,8 @@ test_that("stratify - custom", {
                     "routes_strata"))
   expect_equal(s$meta_data, list(stratify_by = "my_cws",
                                  stratify_type = "custom",
-                                 species = "Snowy Owl"))
+                                 species = "Snowy Owl",
+                                 sp_aou = 3760))
 
   # (should match because same map)
   comp <- bbs_strata[["bbs_cws"]] %>%

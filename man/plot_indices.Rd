@@ -14,6 +14,9 @@ plot_indices(
   axis_title_size = 18,
   axis_text_size = 16,
   line_width = 1,
+  spaghetti = FALSE,
+  n_spaghetti = 100,
+  alpha_spaghetti = 0.2,
   add_observed_means = FALSE,
   add_number_routes = FALSE
 )
@@ -39,9 +42,32 @@ quantiles need to have been precalculated in \code{generate_indices()}.}
 
 \item{line_width}{Numeric. Size of the trajectory line. Defaults to 1}
 
+\item{spaghetti}{Logical. False by default. Plotting option to visualise the
+uncertainty in the estimated population trajectories. Instead of plotting
+the trajectory as a single line with an uncertainty bound, if TRUE, then
+the plot shows a sample of the posterior distribution of the estimated
+population trajectories. E.g., 100 semi-transparent lines, each representing
+one posterior draw of the population trajectory.}
+
+\item{n_spaghetti}{Integer. 100 by default. Number of posterior draws of the
+population trajectory to include in the plot. Ignored if spaghetti = FALSE.}
+
+\item{alpha_spaghetti}{Numeric between 0 and 1, 0.2 by default. Alpha value - transparency
+of each individual population trajectory line in the spaghetti plot.
+Ignored if spaghetti = FALSE.}
+
 \item{add_observed_means}{Logical. Whether to include points indicating the
 observed mean counts. Default \code{FALSE}. Note: scale of observed means and
-annual indices may not match due to imbalanced sampling among routes.}
+annual indices may not match due to imbalanced sampling among routes. Also,
+pattern of change in observed means through time should reflect estimated
+population trajectories for strata-level summaries. However, the temporal
+patterns may be very different between means and annual indices for composite
+regions (e.g., continental, state, province, or BCR) because the indices
+for composite regions account for the variation in area weights and
+variation in relative abundances among strata, and the observed mean counts
+do not. For strata-level assessments, these observed means can be a useful
+model assessment tool. For composite regions, their interpretation is more
+complicated.}
 
 \item{add_number_routes}{Logical. Whether to superimpose dotplot
 showing the number of BBS routes included in each year. This is useful as a

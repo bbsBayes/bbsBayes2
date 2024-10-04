@@ -13,7 +13,17 @@
 #'   showing the number of BBS routes included in each year. This is useful as a
 #'   visual check on the relative data-density through time because in most
 #'   cases the number of observations increases over time.
-#'
+#' @param spaghetti Logical. False by default. Plotting option to visualise the
+#'   uncertainty in the estimated population trajectories. Instead of plotting
+#'   the trajectory as a single line with an uncertainty bound, if TRUE, then
+#'   the plot shows a sample of the posterior distribution of the estimated
+#'   population trajectories. E.g., 100 semi-transparent lines, each representing
+#'   one posterior draw of the population trajectory.
+#' @param n_spaghetti Integer. 100 by default. Number of posterior draws of the
+#'   population trajectory to include in the plot. Ignored if spaghetti = FALSE.
+#' @param alpha_spaghetti Numeric between 0 and 1, 0.2 by default. Alpha value - transparency
+#'   of each individual population trajectory line in the spaghetti plot.
+#'   Ignored if spaghetti = FALSE.
 #' @inheritParams common_docs
 #' @family indices and trends functions
 #'
@@ -63,6 +73,9 @@ plot_indices <- function(indices = NULL,
                          axis_title_size = 18,
                          axis_text_size = 16,
                          line_width = 1,
+                         spaghetti = FALSE,
+                         n_spaghetti = 100,
+                         alpha_spaghetti = 0.2,
                          add_observed_means = FALSE,
                          add_number_routes = FALSE) {
 
@@ -70,12 +83,21 @@ plot_indices <- function(indices = NULL,
   check_data(indices)
   check_logical(title, add_observed_means, add_number_routes)
   check_numeric(ci_width, title_size, axis_title_size, axis_text_size, line_width)
+  check_numeric(alpha_spaghetti,n_spaghetti)
+
   check_numeric(min_year, max_year, allow_null = TRUE)
   check_range(ci_width, c(0.001, 0.999))
 
+  if(spaghetti){line_width = line_width*0.1}
+
   species <- indices$meta_data$species
+
+  indices_samples <- indices$samples
+
   indices <- indices$indices %>%
     calc_luq(ci_width)
+
+
 
   cl <- "#39568c"
 
@@ -85,21 +107,37 @@ plot_indices <- function(indices = NULL,
   if(!is.null(max_year)) indices <- indices[indices$year <= max_year, ]
 
   for (i in unique(indices$region)) {
-
     to_plot <- indices[which(indices$region == i), ]
+
+    samples_name <- to_plot %>%
+      dplyr::select(.data$region_type,.data$region) %>%
+      dplyr::distinct() %>%
+      as.character() %>%
+      paste(collapse = "_")
+  if(spaghetti){
+    to_plot_spaghetti <- indices_samples[[samples_name]] %>%
+      as.data.frame() %>%
+      dplyr::mutate(iteration = dplyr::row_number()) %>%
+      dplyr::sample_n(size = n_spaghetti) %>%
+      tidyr::pivot_longer(cols = !dplyr::matches("iteration"),
+                          values_to = "index",
+                          names_to = "year") %>%
+      dplyr::mutate(year = as.integer(.data$year))
+  }
+
     if(title) t <- paste0(species, " - ", i) else t <- ""
 
     if(add_number_routes){
       if(max(to_plot$n_routes) > 200) {
         ncby_y <- ceiling(to_plot$n_routes/50)
-        annot <- c("each dot ~ 50 routes")
+        annot <- c("1 dot ~ 50 routes")
       } else {
         if(max(to_plot$n_routes) > 100) {
           ncby_y <- ceiling(to_plot$n_routes/10)
-          annot <- c("each dot ~ 10 routes")
+          annot <- c("1 dot ~ 10 routes")
         } else {
           ncby_y <- to_plot$n_routes
-          annot <- c("each dot = 1 route")
+          annot <- c("1 dot = 1 route")
         }
       }
 
@@ -131,15 +169,23 @@ plot_indices <- function(indices = NULL,
                             colour = "grey60", na.rm = TRUE)
     }
 
+    if(spaghetti){
     p <- p +
       ggplot2::geom_line(
-        data = to_plot, ggplot2::aes(x = .data$year, y = .data$index),
-        colour = cl, linewidth = line_width, ) +
-      ggplot2::geom_ribbon(
-        data = to_plot,
-        ggplot2::aes(x = .data$year, ymin = .data$lci, ymax = .data$uci),
-        fill = cl, alpha = 0.3)
-
+        data = to_plot_spaghetti, ggplot2::aes(x = .data$year, y = .data$index,
+                                               group = .data$iteration),
+        colour = cl, linewidth = line_width,
+        alpha = alpha_spaghetti)
+    }else{
+      p <- p +
+        ggplot2::geom_line(
+          data = to_plot, ggplot2::aes(x = .data$year, y = .data$index),
+          colour = cl, linewidth = line_width, ) +
+        ggplot2::geom_ribbon(
+          data = to_plot,
+          ggplot2::aes(x = .data$year, ymin = .data$lci, ymax = .data$uci),
+          fill = cl, alpha = 0.3)
+    }
     if(add_number_routes) {
       p <- p +
         ggplot2::geom_dotplot(

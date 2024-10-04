@@ -53,6 +53,13 @@
 #'   is `FALSE` (regions are flagged and listed but not dropped).
 #' @param start_year Numeric. Trim the data record before calculating annual
 #'   indices.
+#' @param gam_smooths Logical. Whether to return an array of posterior samples of
+#'   gam-based smooths through the full time-series of annual indices. These can
+#'   by treated as smooth population trajectories from any model. NOTE: these
+#'   gam smooths require fitting mgcv::gam() to every posterior draw of every
+#'   possible population trajectory. As a result, generate_indices can require
+#'   can require many minutes to complete if set to TRUE.
+#'
 #'
 #' @inheritParams common_docs
 #' @family indices and trends functions
@@ -75,6 +82,7 @@
 #'   - `meta_data` - meta data defining the analysis
 #'   - `meta_strata` - data frame listing strata meta data
 #'   - `raw_data` - data frame of summarized counts
+#'   - `gam_smooth_samples` - optional-array of posterior draws of the gam smooth
 #'
 #' **`indices`** contains the following columns:
 #'
@@ -138,6 +146,7 @@ generate_indices <- function(
     regions = c("continent","stratum"),
     regions_index = NULL,
     alternate_n = "n",
+    gam_smooths = FALSE,
     start_year = NULL,
     max_backcast = NULL,
     drop_exclude = FALSE,
@@ -257,7 +266,7 @@ generate_indices <- function(
       dplyr::mutate(
         pz_area = .data$area_sq_km * .data$non_zero_weight,
         strata_p = .data$pz_area / sum(.data$pz_area),
-        area_weight = .data$area_sq_km / sum(.data$area_sq_km),
+        area_weight = .data$area_sq_km / sum(.data$area_sq_km,na.rm = TRUE),
         area_weight_non_zero = .data$area_weight * .data$non_zero_weight) %>%
       dplyr::ungroup()
 
@@ -365,6 +374,20 @@ if(hpdi){
                                "strata_name", "strata", "area_sq_km",
                                dplyr::all_of(.env$regions))
 
+
+  if(gam_smooths){
+
+    N_all_smooth <- N_all
+    for(j in names(N_all)){
+      if(!quiet) message("Creating gam smooths for region ",j )
+    N_all_smooth[[j]] <- t(apply(N_all[[j]],1,gam_sm))
+    dimnames(N_all_smooth[[j]]) <- dimnames(N_all[[j]])
+    }
+  }else{
+    N_all_smooth <- NA
+  }
+
+
   list("indices" = indices,
        "samples" = N_all,
        "meta_data" = append(model_output$meta_data,
@@ -373,7 +396,8 @@ if(hpdi){
                                  "n_years" = n_years,
                                  "hpdi_indices" = hpdi)),
        "meta_strata" = meta_strata,
-       "raw_data" = model_output$raw_data # Original data before trimming
+       "raw_data" = model_output$raw_data, # Original data before trimming
+       "gam_smooth_samples" = N_all_smooth
        )
 }
 
@@ -434,6 +458,15 @@ calc_alt_names <- function(r, region_names) {
   }
 
   region_alt_name
+}
+
+
+gam_sm <- function(i) {
+  df <- data.frame(i = log(i),
+                   y = as.integer(names(i)))
+  sm <- mgcv::gam(data = df,
+                  formula = i~s(y))
+  smf <- exp(sm$fitted.values)
 }
 
 

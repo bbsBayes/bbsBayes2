@@ -2,11 +2,11 @@
 library(knitr)
 library(readr)
 library(stringr)
-
+devtools::load_all(".")
 # Make sure to put figures in local dir in knitr chunk options
 v <- list.files("vignettes", ".orig$", full.names = TRUE, recursive = TRUE)
 
-for(i in v[1:2]) {
+for(i in v) {
   new <- stringr::str_remove(i, ".orig$")
   knit(i, new)
 

@@ -10,6 +10,7 @@ generate_trends(
   max_year = NULL,
   quantiles = c(0.025, 0.05, 0.25, 0.75, 0.95, 0.975),
   slope = FALSE,
+  gam = FALSE,
   prob_decrease = NULL,
   prob_increase = NULL,
   hpdi = FALSE
@@ -47,6 +48,11 @@ represent the end-point difference of the smooth component, which already
 excludes the annual fluctuations and so has similar inferential properties as
 the \code{slope = TRUE} option from the "first_diff" model.}
 
+\item{gam}{Logical. New in version 1.1.2. Optional trend calculation using
+end-point trends derived from posterior distribution of GAM-based smooths of
+each posterior draw of the estimated annual indices. Requires the output from
+generate_indices(., gam_smooth = TRUE).}
+
 \item{prob_decrease}{Numeric vector. Percent-decrease values for which to
 optionally calculate the posterior probabilities (see Details). Default is
 \code{NULL} (not calculated). Can range from 0 to 100.}
@@ -61,7 +67,7 @@ posterior distribution. Default is \code{FALSE}. these intervals are often a
 better descriptor of skewed posterior distributions, such as the predicted
 mean counts that the indices represent.
 Note hpd intervals are not stable for small percentages of the posterior
-distribution, and so \code{hdpi = TRUE} is ignored for \code{quantiles} values
+distribution, and so \code{hpdi = TRUE} is ignored for \code{quantiles} values
 between 0.33 and 0.67 (i.e., if the \code{quantiles} value defines a limit for
 a centered hpd interval that would include < 33\% of the
 posterior distribution).}

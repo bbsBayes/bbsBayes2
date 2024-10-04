@@ -86,6 +86,18 @@ prepare_spatial <- function(prepared_data,
   # Prepare spatial data
   if(!quiet) message("Preparing spatial data...")
 
+  # Project strata_map to equal area projection
+  if(sf::st_crs(strata_map) != bbsBayes2::equal_area_crs){
+    if(!quiet) message("Supplied strata_map is in a geographic projection. ",
+                       "Transforming coordinate reference system to ",
+                       "a projected and equal area crs to facilitate mapping ",
+                       "and neighbourhood relationships. This will not affect ",
+                       "the relationship between strata and the BBS data, only ",
+                       "ensures that neighbours are consistently defined and ",
+                       "easily mapped.")
+    strata_map <- sf::st_transform(strata_map,
+                                crs = bbsBayes2::equal_area_crs)
+  }
   # Filter to only strata in prepared_data
   strata_map <- strata_map %>%
     dplyr::semi_join(prepared_data$raw_data, by = "strata_name")
@@ -119,9 +131,9 @@ prepare_spatial <- function(prepared_data,
   # Neighbours - NOT Voronoi -------------
   if(!voronoi) {
     if(!quiet) message("Identifying neighbours (non-Voronoi method)...")
-    nb_db <- spdep::poly2nb(strata_map,
+    nb_db <- suppressWarnings(spdep::poly2nb(strata_map,
                             row.names = strata_map[["strata_name"]],
-                            queen = FALSE)
+                            queen = FALSE))
 
     nb_weights <- spdep::nb2WB(nb_db)
 
@@ -182,9 +194,9 @@ prepare_spatial <- function(prepared_data,
       sf::st_join(centres, join = sf::st_contains) %>%
       dplyr::arrange(.data[["strata_name"]])
 
-    nb_db <- spdep::poly2nb(vint,
+    nb_db <- suppressWarnings(spdep::poly2nb(vint,
                             row.names = vint[["strata_name"]],
-                            queen = FALSE) # polygon to neighbour definition
+                            queen = FALSE)) # polygon to neighbour definition
   }
 
   if(!quiet) message("Formating neighbourhood matrices...")
@@ -269,7 +281,8 @@ fix_islands <- function(nb_db, centres, island_link_dist_factor, quiet) {
     message("Linking islands (isolated groups of nodes)...")
   }
 
-  while(n_islands > 1) {
+  loops <- 0
+  while(n_islands > 1 & loops < 100) {
     if(!quiet) message("    Islands found (", n_islands - 1, "). ",
                        "Linking by distance between centroids...")
 
@@ -278,7 +291,9 @@ fix_islands <- function(nb_db, centres, island_link_dist_factor, quiet) {
     dist <- dist_centres[isld1, -isld1, drop = FALSE]
     dist_min <- apply(dist, 1, min)              # min dist for each site (row)
     closest <- names(which.min(dist_min))  # min dist overall
-
+    if(is.null(closest)){
+      closest <- which.min(dist_min)
+    }
     isld2 <- which(
       dist_centres[closest, ] == dist_min[closest] |
         (dist_centres[closest, ] > dist_min[closest] &
@@ -302,6 +317,12 @@ fix_islands <- function(nb_db, centres, island_link_dist_factor, quiet) {
     islands <- spdep::n.comp.nb(nb_db)
     n_islands <- islands$nc
 
+    loops <- loops + 1
+  }
+  if(loops > 99){
+    stop("Sorry. Something went wrong when trying to connect all strata.",
+         "Perhaps try projecting the strata map into a projected crs.",
+         "using, sf::st_transform()")
   }
 
   nb_db

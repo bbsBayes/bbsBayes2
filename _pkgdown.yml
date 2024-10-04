@@ -66,6 +66,8 @@ reference:
   - bbs_models
   - pacific_wren_model
   - species_forms
+  - species_notes
+  - equal_area_crs
 - title: Deprecated/Defunct functions
   contents:
   - bbsBayes2-defunct

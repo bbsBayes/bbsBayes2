@@ -56,7 +56,7 @@ prepare_data <- function(strata_data,
   check_numeric(min_n_routes, min_max_route_years, min_mean_route_years)
   check_logical(quiet)
   #warning if stratification == latlong and min_n_routes > 1
-  if(strata_data$meta_data$stratify_by == "latlong" & min_n_routes == 3){
+  if(strata_data$meta_data$stratify_by == "latlong" & min_n_routes > 1){
     warning("Many strata with data may have been excluded ",
             "With latlong stratification, most strata have ",
             "only 1 route. You may wish to set min_n_routes = 1",
@@ -71,9 +71,38 @@ prepare_data <- function(strata_data,
   # Add in routes
   obs <- strata_data$routes_strata %>%
     dplyr::select("country_num", "state_num", "state", "rpid", "bcr", "year",
-                  "strata_name", "route", "obs_n") %>%
+                  "strata_name", "route", "obs_n","latitude","longitude") %>%
     dplyr::left_join(obs, by = c("route", "rpid", "year")) %>%
     dplyr::mutate(count = tidyr::replace_na(.data$count, 0))
+
+  # Warn if min_year is null and species is a lumped species complex
+  # of if species has expanded into BBS range
+  if(strata_data$meta_data$sp_aou %in% bbsBayes2::species_notes$aou){
+    sp_note <- bbsBayes2::species_notes %>%
+      dplyr::filter(.data$aou == .env$strata_data$meta_data$sp_aou)
+      sp_note_y <- sp_note$minimum_year
+      sp_note_msg <- sp_note$warning
+
+      if(is.null(min_year)){
+        warning(paste("Consider rerunning prepare_data(min_year = ",
+                      sp_note_y,") or some later year.",
+                sp_note_msg),
+                call. = FALSE, immediate. = TRUE)
+      }else{
+
+      if(min_year < sp_note_y){
+        warning(paste("Consider rerunning prepare_data(min_year = ",
+                      sp_note_y,") or some later year.",
+                      sp_note_msg),
+                call. = FALSE, immediate. = TRUE)
+      }
+      }
+
+    }else{
+      sp_note_y <- NULL
+      sp_note_msg <- NULL
+    }
+
 
   # Filter observations
   if(!is.null(min_year)) obs <- dplyr::filter(obs, .data$year >= .env$min_year)

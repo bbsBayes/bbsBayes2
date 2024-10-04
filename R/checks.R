@@ -20,7 +20,7 @@ check_data <- function(data) {
     n <- c(n, "model_fit", "model_data", "raw_data")
     from <- "run_model()"
   } else if(type == "indices") {
-    n <- c(n, "indices", "samples", "raw_data")
+    n <- c(n, "indices", "samples", "raw_data", "gam_smooth_samples")
     from <- "generate_indices()"
   } else if (type == "trends") {
     n <- c(n, "trends", "raw_data")
@@ -280,7 +280,7 @@ check_strata <- function(strata, custom = NULL, simple = FALSE,
 }
 
 check_release <- function(release, all = FALSE) {
-  chk <- c("2020", "2022", "2023")
+  chk <- c("2020", "2022", "2023","2024")
   if(all) chk <- c("all", chk)
   check_in(release, chk)
 }
@@ -308,14 +308,16 @@ check_regions <- function(regions, stratify_by, stratify_type,
   msg <- "Stratification does not match desired regions:\n"
 
   if(stratify_by %in% c("bcr", "latlong") &
-     any(regions %in% c("country", "prov_state"))) {
+     any(regions %in% c("country", "prov_state"))
+     & stratify_type != "custom" & is.null(regions_index)) {
     stop(msg,
          "BCRs and lat-long degree block stratifications cannot be divided ",
          "into regions with political boundaries ('country', 'prov_state').",
          call. = FALSE)
   }
 
-  if(stratify_by == "prov_state" & "bcr" %in% regions){
+  if(stratify_by == "prov_state" & "bcr" %in% regions
+     & stratify_type != "custom" & is.null(regions_index)){
     stop(msg,
          "The States and Provinces stratification",
          "cannot be divided into BCR regions.",
@@ -437,6 +439,10 @@ check_sf <- function(sf, check_poly = FALSE, col = FALSE) {
     # Check for correct column names
     if(col && !"strata_name" %in% names(sf)) {
       stop("`", nm, "` missing column `strata_name`", call. = FALSE)
+    }
+    # Check for correct column type
+    if(col && !class(sf$strata_name) %in% c("character")) {
+      stop("`", nm, "` column `strata_name` must be class character", call. = FALSE)
     }
 
     # Check for feature types

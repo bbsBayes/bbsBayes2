@@ -5,19 +5,6 @@
 // facilitate the ragged array issues and to reduce the model output size (greatly)
 // althought nice to have them here where Rhat and ess_ are calculated
 
-// iCAR function, from Morris et al. 2019
-// Morris, M., K. Wheeler-Martin, D. Simpson, S. J. Mooney, A. Gelman, and C. DiMaggio (2019).
-// Bayesian hierarchical spatial models: Implementing the Besag York Mollié model in stan.
-// Spatial and Spatio-temporal Epidemiology 31:100301.
-
- functions {
-   real icar_normal_lpdf(vector bb, int ns, array[] int n1, array[] int n2) {
-     return -0.5 * dot_self(bb[n1] - bb[n2])
-       + normal_lpdf(sum(bb) | 0, 0.001 * ns); //soft sum to zero constraint on bb
-  }
- }
-
-
 
 data {
   int<lower=1> n_sites;

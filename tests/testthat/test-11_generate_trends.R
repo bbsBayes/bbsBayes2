@@ -21,9 +21,9 @@ test_that("calc_slope()", {
 
   expect_silent(sl <- calc_slope(i[["samples"]][["continent_continent"]],
                                  1, dim(i[["samples"]][[1]])[2]))
-  expect_equal(sl[1], 1.312448, tolerance = 0.0001)
-  expect_equal(sl[10], 0.2823069, tolerance = 0.0001)
-  expect_equal(sl[20], 0.8105784, tolerance = 0.0001)
+  expect_equal(sl[1], -0.48622013 , tolerance = 0.0001)
+  expect_equal(sl[10], 0.54030845  , tolerance = 0.0001)
+  expect_equal(sl[20], 0.40114793, tolerance = 0.0001)
 
 })
 
@@ -67,7 +67,7 @@ test_that("generate_trends() basics", {
                ignore_attr = TRUE)
   expect_equal(trnd$rel_abundance[1], mean(ix$index[ix$region == "continent"]))
   expect_equal(trnd$obs_rel_abundance[1],
-               mean(ix$obs_mean[ix$region == "continent"]))
+               mean(ix$obs_mean[ix$region == "continent"],na.rm = TRUE))
   expect_equal(trnd$n_routes[1],
                mean(ix$n_routes_total[ix$region == "continent"]))
   expect_equal(trnd$mean_n_routes[1],
@@ -163,11 +163,11 @@ test_that("generate_trends() prob_decrease/prob_increase", {
 
   expect_silent(trnd <- generate_trends(i, prob_decrease = 10)[["trends"]])
   expect_true("prob_decrease_10_percent" %in% names(trnd))
-  expect_equal(trnd$prob_decrease_10_percent[1:4], c(0, 0.175, 0.0, 0.45))
+  expect_equal(trnd$prob_decrease_10_percent[1:4], c(0.175, 0.40, 0.075,0.475))
 
   expect_silent(trnd <- generate_trends(i, prob_increase = 10)[["trends"]])
   expect_true("prob_increase_10_percent" %in% names(trnd))
-  expect_equal(trnd$prob_increase_10_percent[1:4], c(0.95, 0.675, 0.975, 0.40))
+  expect_equal(trnd$prob_increase_10_percent[1:4], c(0.725, 0.40, 0.8, 0.425))
 
   expect_silent(
     trnd <- generate_trends(i, prob_decrease = c(10, 20))[["trends"]])

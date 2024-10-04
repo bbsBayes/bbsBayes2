@@ -15,6 +15,18 @@ species_forms <- readr::read_csv("data-raw/species_forms.csv",
 usethis::use_data(species_forms, overwrite = TRUE)
 
 
+species_notes <- readr::read_csv("data-raw/species_notes.csv",
+                                 col_types = "ccnnc", locale = readr::locale(encoding = "latin1"),
+                                 progress = FALSE) %>%
+  as.data.frame()
+
+usethis::use_data(species_notes, overwrite = TRUE)
+
+
+equal_area_crs <- sf::st_crs(bbsBayes2::load_map("bbs_usgs"))
+usethis::use_data(equal_area_crs, overwrite = TRUE)
+
+
 bbs_models <- dplyr::tribble(
   ~model,       ~variant,           ~file,
   "first_diff", "nonhier", "first_diff_nonhier_bbs_CV.stan",

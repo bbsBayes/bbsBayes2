@@ -10,7 +10,7 @@ vignette: >
 
 
 
-```r
+``` r
 library(bbsBayes2)
 library(sf)       # Spatial data manipulations
 library(dplyr)    # General data manipulations
@@ -45,7 +45,7 @@ You can visualize these stratifications by looking at the maps
 included in bbsBayes2 with `load_map()`.
 
 
-```r
+``` r
 ggplot(data = load_map("bbs_usgs"), aes(fill = strata_name)) +
   geom_sf() +
   scale_fill_viridis_d(guide = "none")
@@ -57,7 +57,7 @@ To stratify BBS data, you can use these existing stratifications by
 specifying `by = "name"` in the `stratify()` function.
 
 
-```r
+``` r
 s <- stratify(by = "bbs_usgs", species = "Canada Jay")
 #> Using 'bbs_usgs' (standard) stratification
 #> Loading BBS data...
@@ -71,16 +71,17 @@ s <- stratify(by = "bbs_usgs", species = "Canada Jay")
 The latlong stratification `by = "latlong"` is the finest-scale stratification built into the package, and so it divides the BBS data into many more strata-units than other stratifications.  Therefore, you may wish to adjust the minimum data inclusion criteria when preparing the data. Specifically, setting `min_n_routes = 1` ensures that every grid-cell with at least one BBS route can be included. There are many degree-blocks that have only one route, as this is the original sampling design goal of the BBS (at least one route within each degree-block).
 
 
-```r
+``` r
 s <- stratify(by = "latlong", species = "Canada Jay")
 #> Using 'latlong' (standard) stratification
 #> Loading BBS data...
 #> Filtering to species Canada Jay (4840)
 #> Stratifying data...
 #>   Renaming routes...
-#>   Omitting 80/119,567 route-years that do not match a stratum.
+#>   Omitting 81/124,900 route-years that do not match a stratum.
 #>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
 p <- prepare_data(s, min_n_routes = 1)
+
 ```
 
 ## Custom stratifications
@@ -95,38 +96,32 @@ spatial data object with polygons defining your strata.
 In our example we'll use WBPHS stratum boundaries for 2019.
 This is available from available from the US Fish and Wildlife Service Catalogue: <https://ecos.fws.gov/ServCat/Reference/Profile/142628>
 
-You can either download it by hand, or with the following code.
-
-```r
-z <- "output/WBPHS_Stratum_Boundaries_2019.zip" #
-
-download.file(url = "https://ecos.fws.gov/ServCat/DownloadFile/213149",
-              destfile = z,
-              cacheOK = FALSE)
-unzip(z)  # Unzip - if you get a file is corrupt message, download it manually
-unlink(z) # Remove the zipped file
-```
-The zip file is also available in this [Google Drive](https://drive.google.com/file/d/1pWPC2Eh5VBP7RIC173gazdAmtHfx4KdF/view?usp=sharing)
+To run this locally, download the file manually and unzip the shapefile contents into subdirectory of your working directory called *output*.
 
 To use this file in bbsBayes2, we need to load it as an sf object using the sf
 package.
 
-```r
+``` r
 map <- sf::read_sf("output/WBPHS_stratum_boundaries_2019.shp")
+#> Error: Cannot open "output/WBPHS_stratum_boundaries_2019.shp"; The file doesn't seem to exist.
 ggplot(map, aes(fill = factor(STRAT))) +
   geom_sf() +
   scale_fill_viridis_d(guide = "none")
+#> Error in `fortify()`:
+#> ! `data` must be a <data.frame>, or an object coercible by `fortify()`, or a valid <data.frame>-like object
+#>   coercible by `as.data.frame()`.
+#> Caused by error in `.prevalidate_data_frame_like_object()`:
+#> ! `dim(data)` must return an <integer> of length 2.
 ```
-
-<img src="figures/stratification_unnamed-chunk-6-1.png" alt="Map of the strata used in the Waterfowl Breeding Population and Habitat Surveys"  />
 ### Identify the strata names
 
 We see that it has one column that reflects the stratum names. First we'll
 rename this column to `strata_name`, so that the `stratify()` function knows what attribute includes the names that define each stratum.
 
 
-```r
+``` r
 map <- rename(map, strata_name = STRAT)
+#> Error in UseMethod("rename"): no applicable method for 'rename' applied to an object of class "c('gg', 'ggplot')"
 ```
 
 ### Stratify the data
@@ -137,19 +132,10 @@ When using a custom stratification, the `by` argument is just a user-defined arb
 We also need to give the function our map.
 
 
-```r
+``` r
 s <- stratify(by = "WBPHS_2019", species = "Canada Jay", strata_custom = map)
-#> Using 'wbphs_2019' (custom) stratification
-#> Loading BBS data...
-#> Filtering to species Canada Jay (4840)
-#> Stratifying data...
-#> Preparing custom strata (EPSG:4326; WGS 84)...
-#>   Summarizing strata...
-#>   Calculating area weights...
-#>   Joining routes to custom spatial data...
-#>   Renaming routes...
-#>   Omitting 100,155/119,567 route-years that do not match a stratum.
-#>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
+#> Error: Invalid stratification specified, choose one of 'bbs_usgs', 'bbs_cws', 'bcr', 'latlong', 'prov_state',
+#>  or provide an sf spatial data frame to `strata_custom` to use a custom stratification
 ```
 
 > Note that strata names are automatically put into lower case for consistency.
@@ -157,37 +143,39 @@ s <- stratify(by = "WBPHS_2019", species = "Canada Jay", strata_custom = map)
 We can take a quick look at the output, by looking at the meta data and routes
 contained therein.
 
-```r
+``` r
 s[["meta_data"]]
 #> $stratify_by
-#> [1] "wbphs_2019"
+#> [1] "latlong"
 #> 
 #> $stratify_type
-#> [1] "custom"
+#> [1] "standard"
 #> 
 #> $species
 #> [1] "Canada Jay"
+#> 
+#> $sp_aou
+#> [1] 4840
 
 s[["routes_strata"]]
-#> # A tibble: 19,412 × 33
-#>    strata_name country_num state_num route route_name  active latitude longitude   bcr route_type_id
-#>    <chr>             <dbl>     <dbl> <chr> <chr>        <dbl>    <dbl>     <dbl> <dbl>         <dbl>
-#>  1 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
-#>  2 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
-#>  3 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
-#>  4 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
-#>  5 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
-#>  6 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
-#>  7 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
-#>  8 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
-#>  9 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
-#> 10 3                   840         3 3-8   TOWER BLUF…      1     63.6     -144.     4             1
-#> # ℹ 19,402 more rows
-#> # ℹ 23 more variables: route_type_detail_id <dbl>, route_data_id <dbl>, rpid <dbl>, year <dbl>,
-#> #   month <dbl>, day <dbl>, obs_n <dbl>, total_spp <dbl>, start_temp <dbl>, end_temp <dbl>,
-#> #   temp_scale <chr>, start_wind <dbl>, end_wind <dbl>, start_sky <dbl>, end_sky <dbl>,
-#> #   start_time <dbl>, end_time <dbl>, assistant <dbl>, quality_current_id <dbl>, run_type <dbl>,
-#> #   state <chr>, st_abrev <chr>, country <chr>
+#> # A tibble: 124,819 × 33
+#>    country_num state_num route route_name active latitude longitude   bcr route_type_id route_type_detail_id
+#>          <dbl>     <dbl> <chr> <chr>       <dbl>    <dbl>     <dbl> <dbl>         <dbl>                <dbl>
+#>  1         840         2 2-1   ST FLORIAN      1     34.9     -87.6    27             1                    1
+#>  2         840         2 2-1   ST FLORIAN      1     34.9     -87.6    27             1                    1
+#>  3         840         2 2-1   ST FLORIAN      1     34.9     -87.6    27             1                    1
+#>  4         840         2 2-1   ST FLORIAN      1     34.9     -87.6    27             1                    1
+#>  5         840         2 2-1   ST FLORIAN      1     34.9     -87.6    27             1                    1
+#>  6         840         2 2-1   ST FLORIAN      1     34.9     -87.6    27             1                    1
+#>  7         840         2 2-1   ST FLORIAN      1     34.9     -87.6    27             1                    1
+#>  8         840         2 2-1   ST FLORIAN      1     34.9     -87.6    27             1                    1
+#>  9         840         2 2-1   ST FLORIAN      1     34.9     -87.6    27             1                    1
+#> 10         840         2 2-1   ST FLORIAN      1     34.9     -87.6    27             1                    1
+#> # ℹ 124,809 more rows
+#> # ℹ 23 more variables: route_data_id <dbl>, rpid <dbl>, year <dbl>, month <dbl>, day <dbl>, obs_n <dbl>,
+#> #   total_spp <dbl>, start_temp <dbl>, end_temp <dbl>, temp_scale <chr>, start_wind <dbl>, end_wind <dbl>,
+#> #   start_sky <dbl>, end_sky <dbl>, start_time <dbl>, end_time <dbl>, assistant <dbl>, quality_current_id <dbl>,
+#> #   run_type <dbl>, state <chr>, st_abrev <chr>, country <chr>, strata_name <chr>
 ```
 ### Visualise the new strata and data
 
@@ -196,7 +184,7 @@ ggplot2. Note that we use `factor()` to ensure the strata names are
 categorical.
 
 
-```r
+``` r
 rts <- s[["routes_strata"]] %>%
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
@@ -204,9 +192,12 @@ ggplot() +
   geom_sf(data = map, aes(fill = factor(strata_name)), alpha = 0.3) +
   geom_sf(data = rts, aes(colour = factor(strata_name)), size = 1) +
   scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none")
+#> Error in `fortify()`:
+#> ! `data` must be a <data.frame>, or an object coercible by `fortify()`, or a valid <data.frame>-like object
+#>   coercible by `as.data.frame()`.
+#> Caused by error in `.prevalidate_data_frame_like_object()`:
+#> ! `dim(data)` must return an <integer> of length 2.
 ```
-
-<img src="figures/stratification_unnamed-chunk-10-1.png" alt="map showing the strata in our custom stratification"  />
 ### Omitted BBS routes
 
 Based on the message we received during stratification (`Omitting...`) and this
@@ -215,52 +206,34 @@ map, it looks as if our custom stratification is excluding some BBS data (i.e., 
 We can re-run the stratification with `return_omitted = TRUE` which will attach
 a data frame of omitted strata to the output.
 
-```r
+``` r
 s <- stratify(by = "WBPHS_2019", species = "Canada Jay", strata_custom = map,
               return_omitted = TRUE)
-#> Using 'wbphs_2019' (custom) stratification
-#> Loading BBS data...
-#> Filtering to species Canada Jay (4840)
-#> Stratifying data...
-#> Preparing custom strata (EPSG:4326; WGS 84)...
-#>   Summarizing strata...
-#>   Calculating area weights...
-#>   Joining routes to custom spatial data...
-#>   Renaming routes...
-#>   Omitting 100,155/119,567 route-years that do not match a stratum.
-#>     Returning omitted routes.
+#> Error: Invalid stratification specified, choose one of 'bbs_usgs', 'bbs_cws', 'bcr', 'latlong', 'prov_state',
+#>  or provide an sf spatial data frame to `strata_custom` to use a custom stratification
 s[["routes_omitted"]]
-#> # A tibble: 100,155 × 11
-#>     year strata_name country state   route route_name latitude longitude   bcr   obs_n total_spp
-#>    <dbl> <chr>       <chr>   <chr>   <chr> <chr>         <dbl>     <dbl> <dbl>   <dbl>     <dbl>
-#>  1  1967 <NA>        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1140018        56
-#>  2  1969 <NA>        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27  990062        52
-#>  3  1970 <NA>        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27  990062        52
-#>  4  1971 <NA>        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27  990062        56
-#>  5  1972 <NA>        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27  990062        54
-#>  6  1973 <NA>        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        52
-#>  7  1974 <NA>        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        55
-#>  8  1975 <NA>        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        59
-#>  9  1976 <NA>        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        56
-#> 10  1977 <NA>        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        51
-#> # ℹ 100,145 more rows
+#> NULL
 ```
 
 Let's take a look.
 
 
-```r
+``` r
 omitted <- st_as_sf(s[["routes_omitted"]], coords = c("longitude", "latitude"),
                     crs= 4326)
+#> Error in UseMethod("st_as_sf"): no applicable method for 'st_as_sf' applied to an object of class "NULL"
 
 ggplot() +
   geom_sf(data = map, aes(fill = factor(strata_name)), alpha = 0.3) +
   geom_sf(data = rts, aes(colour = factor(strata_name)), size = 1, alpha = 0.5) +
   geom_sf(data = omitted, size = 0.75, alpha = 0.5) +
   scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none")
+#> Error in `fortify()`:
+#> ! `data` must be a <data.frame>, or an object coercible by `fortify()`, or a valid <data.frame>-like object
+#>   coercible by `as.data.frame()`.
+#> Caused by error in `.prevalidate_data_frame_like_object()`:
+#> ! `dim(data)` must return an <integer> of length 2.
 ```
-
-<img src="figures/stratification_unnamed-chunk-12-1.png" alt="map showing BBS route starting locations that are inside and outside of the custom stratification"  />
 
 
 The map shows that most of the omitted routes are routes that are clearly outside of our desired stratification. However, it also shows that there are some BBS route start-points that are just outside of the strata (e.g., some routes in Nova Scotia and Alaska). The user can decide what to do with these sorts of minor overlap issues. For example, buffering the original stratification map might make sense in some situations. For now, we will trust our custom strata map and retain only the BBS routes with start locations inside our strata polygons.
@@ -271,22 +244,29 @@ The map shows that most of the omitted routes are routes that are clearly outsid
 To fit the model, we follow the standard workflow using our stratified data.
 
 
-```r
+``` r
 p <- prepare_data(s,
                   min_year = 2000,
                   max_year = 2021) #subset a shorter time-span to speed model-fit
+#> Warning: Many strata with data may have been excluded With latlong stratification, most strata have only 1 route.
+#> You may wish to set min_n_routes = 1
 mp <- prepare_model(p,model = "slope",
                    model_variant = "hier")
 ```
 
 
-```r
+``` r
 m <- run_model(mp,
                iter_warmup = 500,
                iter_sampling = 100)
 ```
 
 
+```
+#> Warning in gzfile(file, "rb"): cannot open compressed file 'output/BBS_STAN_slope_hier_2023-07-05.rds', probable
+#> reason 'No such file or directory'
+#> Error in gzfile(file, "rb"): cannot open the connection
+```
 ### Predictions from the model using the custom stratification
 
 Now we can start to look at the indices and trends related to our model.
@@ -294,7 +274,7 @@ Now we can start to look at the indices and trends related to our model.
 We can apply the `generate_indices()` and `generate_trends()` functions to the output from our model, the same as we would with the built-in stratifications.
 
 
-```r
+``` r
 i <- generate_indices(m)
 #> Processing region continent
 #> Processing region stratum
@@ -304,12 +284,14 @@ t <- generate_trends(i)
 And with one additional argument, we can also use the `plot_map()` function.
 
 
-```r
+``` r
 trend_map <- plot_map(t, strata_custom = map)
+#> Error: `strata_custom` is provided, but is not a data frame. 
+#> If using an establish stratification ('bbs_usgs'), `strata_custom` must be either empty, or a data frame
 trend_map
 ```
 
-<img src="figures/stratification_unnamed-chunk-17-1.png"  />
+<img src="figures/stratification_unnamed-chunk-16-1.png"  />
 
 ## Generating state and province predictions from a custom stratification
 
@@ -333,61 +315,56 @@ The plot gives us a chance to make a quick assessment of whether we're happy
 with how the various strata have been assigned.
 
 
-```r
+``` r
 rindex <- assign_prov_state(map, min_overlap = 0.6, plot = TRUE)
-#> The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
-#> which was just loaded, will retire in October 2023.
-#> Please refer to R-spatial evolution reports for details, especially
-#> https://r-spatial.org/r/2023/05/15/evolution4.html.
-#> It may be desirable to make the sf package available;
-#> package maintainers should consider adding sf to Suggests:.
-#> The sp package is now running under evolution status 2
-#>      (status 2 uses the sf package in place of rgdal)
+#> Error: `strata_map` must be an 'sf' spatial data frame
 ```
-
-<img src="figures/stratification_unnamed-chunk-18-1.png"  />
 
 Next we'll define the east/west divide by hand. If we plot the strata by
 name, we can pick out which are eastern and which western.
 
 
-```r
+``` r
 
 ggplot(rindex) +
   geom_sf(data = load_map(type = "North America")) +
   geom_sf() +
   geom_sf_text(aes(label = strata_name))
-#> Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not give correct results
-#> for longitude/latitude data
 ```
 
-<img src="figures/stratification_unnamed-chunk-19-1.png"  />
+<img src="figures/stratification_unnamed-chunk-18-1.png"  />
 
-The western and eastern strata seem to be split numerically, such that the western strata have numbers lower than 50, eastern strata have numbers higher 74. So we'll add a column to the `rindex` dataframe with "east" and "west" character names to group the strata.
+The western and eastern strata seem to be split numerically, such that the western strata have numbers lower than 50 or greater than 74, eastern strata have numbers in between. So we'll add a column to the `rindex` dataframe with "east" and "west" character names to group the strata.
 
 
-```r
+``` r
 rindex <- mutate(
   rindex,
   east_west = if_else(as.numeric(strata_name) < 50 | as.numeric(strata_name) > 74,
                       "west",
                       "east"))
+#> Warning: There were 2 warnings in `stopifnot()`.
+#> The first warning was:
+#> ℹ In argument: `east_west = if_else(...)`.
+#> Caused by warning in `is_logical()`:
+#> ! NAs introduced by coercion
+#> ℹ Run `dplyr::last_dplyr_warnings()` to see the 1 remaining warning.
 ```
 
 And now double check that we correctly grouped the strata!
 
 
-```r
+``` r
 ggplot(data = rindex) +
   geom_sf(data = load_map(type = "North America")) +
   geom_sf(data = rindex, aes(fill = east_west), alpha = 0.5)
 ```
 
-<img src="figures/stratification_unnamed-chunk-21-1.png"  />
+<img src="figures/stratification_unnamed-chunk-20-1.png"  />
 
 Then supply the `rindex` object to the `regions_index` argument of the `generate_indices()` function and include the relevant column names from the object as `regions`.
 
-```r
+``` r
 i <- generate_indices(
   m,
   regions = c("stratum", "country", "prov_state", "east_west"),
@@ -398,45 +375,41 @@ i <- generate_indices(
 #> Processing region east_west
 
 t <- generate_trends(i)
+
 ```
 
 We can plot the population trajectories for each of these regions with `plot_indices()`.
 
 
-```r
+``` r
 
 p <- plot_indices(i)
 names(p)
-#>  [1] "1"                        "14"                       "17"                      
-#>  [4] "18"                       "2"                        "22"                      
-#>  [7] "23"                       "24"                       "26"                      
-#> [10] "3"                        "31"                       "44"                      
-#> [13] "50"                       "51"                       "52"                      
-#> [16] "56"                       "62"                       "63"                      
-#> [19] "64"                       "66"                       "67"                      
-#> [22] "68"                       "69"                       "71"                      
-#> [25] "72"                       "75"                       "76"                      
-#> [28] "77"                       "Canada"                   "United_States_of_America"
-#> [31] "AB"                       "AK"                       "MB"                      
-#> [34] "ME"                       "NB"                       "NL"                      
-#> [37] "NS"                       "NT"                       "ON"                      
-#> [40] "QC"                       "SD"                       "SK"                      
-#> [43] "east"                     "west"
+#>  [1] "US_AR_24"                 "US_AR_25"                 "US_AR_26"                 "US_KS_18"                
+#>  [5] "US_KS_19"                 "US_KS_22"                 "US_LA_25"                 "US_LA_37"                
+#>  [9] "US_MO_22"                 "US_MO_24"                 "US_NM_18"                 "US_NM_35"                
+#> [13] "US_OK_18"                 "US_OK_19"                 "US_OK_21"                 "US_OK_22"                
+#> [17] "US_OK_25"                 "US_TX_18"                 "US_TX_19"                 "US_TX_20"                
+#> [21] "US_TX_21"                 "US_TX_25"                 "US_TX_35"                 "US_TX_36"                
+#> [25] "US_TX_37"                 "United_States_of_America" "AR"                       "KS"                      
+#> [29] "LA"                       "MO"                       "NM"                       "OK"                      
+#> [33] "TX"                       "NA"
 
 p[["east"]] + p[["west"]]
+#> integer(0)
 ```
-
-<img src="figures/stratification_unnamed-chunk-23-1.png"  />
 
 Finally we can even create geofaceted plots (which is only possible in our case
 because we assigned our strata to Provinces and States and calculated indices
 for these regions). These geofacet plots can be useful for visualizing the population trajectories of species with broad ranges across many states and provinces.
 
-```r
+``` r
 plot_geofacet(i, trends = t, multiple = TRUE)
+#> Warning in unlist(trends$meta_data[c(1:15)]) != unlist(indices$meta_data[c(1:15)]): longer object length is not a
+#> multiple of shorter object length
+#> Error: `trends` data must have been created from the same `indices` used here.
+#> Meta data doesn't match (see `t[['meta_data']]` vs. `i[['meta_data']]`)
 ```
-
-<img src="figures/stratification_unnamed-chunk-24-1.png"  />
 
 
 ## Subsetting an existing stratification
@@ -449,7 +422,7 @@ In addition to maps, stratifications are available as data frames in the
 `bbs_strata` object.
 
 
-```r
+``` r
 names(bbs_strata)
 #> [1] "bbs_usgs"   "bbs_cws"    "bcr"        "latlong"    "prov_state"
 head(bbs_strata[["bbs_cws"]])
@@ -466,7 +439,7 @@ head(bbs_strata[["bbs_cws"]])
 
 We can now modify and use this data frame as we like.
 
-```r
+``` r
 my_cws <- filter(bbs_strata[["bbs_cws"]], country == "Canada")
 s <- stratify(by = "bbs_cws", species = "Canada Jay", strata_custom = my_cws)
 #> Using 'bbs_cws' (subset) stratification
@@ -475,14 +448,14 @@ s <- stratify(by = "bbs_cws", species = "Canada Jay", strata_custom = my_cws)
 #> Stratifying data...
 #>   Combining BCR 7 and NS and PEI...
 #>   Renaming routes...
-#>   Omitting 101,474/119,567 route-years that do not match a stratum.
+#>   Omitting 105,811/124,900 route-years that do not match a stratum.
 #>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
 ```
 
 Note that the stratification is now "bbs_cws" and "subset"
 
 
-```r
+``` r
 s[["meta_data"]]
 #> $stratify_by
 #> [1] "bbs_cws"
@@ -492,12 +465,15 @@ s[["meta_data"]]
 #> 
 #> $species
 #> [1] "Canada Jay"
+#> 
+#> $sp_aou
+#> [1] 4840
 ```
 
 We can see the strata included by looking at the `meta_strata`
 
 
-```r
+``` r
 print(s[["meta_strata"]], n = Inf)
 #> # A tibble: 30 × 7
 #>    strata_name area_sq_km country country_code prov_state   bcr bcr_by_country
@@ -542,14 +518,14 @@ at an east/west divide of southern Canada with BBS CWS strata.
 
 First we'll start with the CWS BBS data
 
-```r
+``` r
 map <- load_map("bbs_cws")
 ```
 
 We'll modify this by first looking only at provinces (omitting the northern territories),
 transforming to the GPS CRS (4326), and ensuring the resulting polygons are valid.
 
-```r
+``` r
 new_map <- map %>%
   filter(country_code == "CA", !prov_state %in% c("NT", "NU", "YT")) %>%
   st_transform(4326)%>%
@@ -559,7 +535,7 @@ new_map <- map %>%
 Now we can crop this map to make a western and an eastern portion, defined by
 longitude and latitude (which is why we first transformed to the GPS CRS).
 
-```r
+``` r
 west <- st_crop(new_map, xmin = -140, ymin = 42, xmax = -95, ymax = 68) %>%
   mutate(strata_name = "west")
 #> Warning: attribute variables are assumed to be spatially constant throughout all geometries
@@ -571,7 +547,7 @@ east <- st_crop(new_map, xmin = -95, ymin = 42, xmax = -52, ymax = 68) %>%
 Now we'll bind these together and transform back to the original CRS
 
 
-```r
+``` r
 new_strata <- bind_rows(west, east) %>%
   st_transform(st_crs(map))
 
@@ -580,13 +556,13 @@ ggplot() +
   geom_sf(data = new_strata, aes(fill = strata_name), alpha = 1)
 ```
 
-<img src="figures/stratification_unnamed-chunk-32-1.png"  />
+<img src="figures/stratification_unnamed-chunk-31-1.png"  />
 
 Looks good! Let's use it in our stratification and take a look at the points
 afterwards to ensure they've been categorized appropriately.
 
 
-```r
+``` r
 s <- stratify(by = "canada_ew", species = "Canada Jay",
               strata_custom = new_strata)
 #> Using 'canada_ew' (custom) stratification
@@ -598,7 +574,7 @@ s <- stratify(by = "canada_ew", species = "Canada Jay",
 #>   Calculating area weights...
 #>   Joining routes to custom spatial data...
 #>   Renaming routes...
-#>   Omitting 103,468/119,567 route-years that do not match a stratum.
+#>   Omitting 107,925/124,900 route-years that do not match a stratum.
 #>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
 
 s$meta_data
@@ -610,6 +586,9 @@ s$meta_data
 #> 
 #> $species
 #> [1] "Canada Jay"
+#> 
+#> $sp_aou
+#> [1] 4840
 routes <- s$routes_strata %>%
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
@@ -618,7 +597,7 @@ ggplot() +
   geom_sf(data = routes, aes(shape = strata_name))
 ```
 
-<img src="figures/stratification_unnamed-chunk-33-1.png"  />
+<img src="figures/stratification_unnamed-chunk-32-1.png"  />
 
 
 

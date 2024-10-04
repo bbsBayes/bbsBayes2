@@ -3,8 +3,9 @@ expect_silent({
   #20 iterations x 2 chains = 40
   n_iter <- r$model_fit$metadata()$iter_sampling * r$model_fit$num_chains()
 
-  n_yrs <- 54
+  n_yrs <- r$model_data$n_years
   n_strata <- dplyr::n_distinct(r$raw_data$strata_name)
+  end_year <- max(r$raw_data$year)
 })
 
 test_that("samples_to_array()", {
@@ -52,7 +53,7 @@ test_that("generate_indices()", {
   expect_message(i <- generate_indices(r, regions = "stratum"),
                  "Processing region stratum")
   expect_named(i, c("indices", "samples", "meta_data",
-                    "meta_strata", "raw_data"))
+                    "meta_strata", "raw_data","gam_smooth_samples"))
 
   ix <- i[["indices"]]
   s <- i[["samples"]]
@@ -104,7 +105,7 @@ test_that("generate_indices(start_year)", {
   expect_equal(min(ix$year), 1995)
 
   # Samples for all samples x all years (fewer now)
-  expect_true(all(vapply(s, FUN = dim, FUN.VALUE = c(1, 1)) == c(n_iter, 27)))
+  expect_true(all(vapply(s, FUN = dim, FUN.VALUE = c(1, 1)) == c(n_iter, 1+(end_year-1995))))
   expect_true(all(ix$year %in% i1[["indices"]]$year))
 
   # Expect indices same for years which overlap (except n_routes_total)

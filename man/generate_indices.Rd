@@ -10,6 +10,7 @@ generate_indices(
   regions = c("continent", "stratum"),
   regions_index = NULL,
   alternate_n = "n",
+  gam_smooths = FALSE,
   start_year = NULL,
   max_backcast = NULL,
   drop_exclude = FALSE,
@@ -62,6 +63,13 @@ population change across the entire time-series. Biologically, this may be
 reasonable for 10-20 year periods, but will be less reasonable for longer
 time-periods.}
 
+\item{gam_smooths}{Logical. Whether to return an array of posterior samples of
+gam-based smooths through the full time-series of annual indices. These can
+by treated as smooth population trajectories from any model. NOTE: these
+gam smooths require fitting mgcv::gam() to every posterior draw of every
+possible population trajectory. As a result, generate_indices can require
+can require many minutes to complete if set to TRUE.}
+
 \item{start_year}{Numeric. Trim the data record before calculating annual
 indices.}
 
@@ -82,7 +90,7 @@ posterior distribution. Default is \code{FALSE}. these intervals are often a
 better descriptor of skewed posterior distributions, such as the predicted
 mean counts that the indices represent.
 Note hpd intervals are not stable for small percentages of the posterior
-distribution, and so \code{hdpi = TRUE} is ignored for \code{quantiles} values
+distribution, and so \code{hpdi = TRUE} is ignored for \code{quantiles} values
 between 0.33 and 0.67 (i.e., if the \code{quantiles} value defines a limit for
 a centered hpd interval that would include < 33\% of the
 posterior distribution).}
@@ -98,6 +106,7 @@ abundances
 \item \code{meta_data} - meta data defining the analysis
 \item \code{meta_strata} - data frame listing strata meta data
 \item \code{raw_data} - data frame of summarized counts
+\item \code{gam_smooth_samples} - optional-array of posterior draws of the gam smooth
 }
 
 \strong{\code{indices}} contains the following columns:

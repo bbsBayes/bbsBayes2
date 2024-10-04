@@ -39,6 +39,16 @@
 #'   the model output file save object, when `save_model = TRUE`, and so for
 #'   file organization and efficient use of memory, these are deleted
 #'   by default.
+#' @param show_exceptions Logical.  Passed to `cmdstanr::sample()`.
+#'   Defaults to FALSE. When TRUE, prints all informational messages from Stan,
+#'   for example rejection of the current proposal. Disabled by default in
+#'   bbsBayes2, because of the copious informational messages during the
+#'   initialization period that have no bearing on model fit. If fitting a
+#'   custom model, recommend setting this to TRUE.
+#' @param init_alternate Passed to `init` argument in `cmdstanr::sample()`.
+#'   Replaces the initial values in the `model_data[["init_values"]]` created
+#'   by prepare_model. Should accept any of the acceptable approaches to setting
+#'   inits argment in `?cmdstanr::sample`.
 #' @param ... Other arguments passed on to `cmdstanr::sample()`.
 #'
 #' @inheritParams common_docs
@@ -86,6 +96,8 @@ run_model <- function(model_data,
                       retain_csv = FALSE,
                       set_seed = NULL,
                       quiet = FALSE,
+                      show_exceptions = FALSE,
+                      init_alternate = NULL,
                       ...) {
 
   # Check inputs
@@ -97,9 +109,21 @@ run_model <- function(model_data,
   meta_data <- model_data[["meta_data"]]
   raw_data <- model_data[["raw_data"]]
   meta_strata <- model_data[["meta_strata"]]
+
+  if(!is.null(init_alternate)){
+    init_values <- init_alternate
+  }else{
   init_values <- model_data[["init_values"]]
+  }
   folds <- model_data[["folds"]]
   model_data <- model_data[["model_data"]]
+
+  if(model_data$n_strata < 2){
+    stop("The data have only 1 stratum. bbsBayes2 models require multiple strata.
+         If there are sufficient routes with data, you can try an alternate stratification
+         (e.g., latlong) where the routes may be redistributed among > 1 strata.")
+  }
+
   species <- stringr::str_remove_all(meta_data[["species"]],
                                       "[^[[:alpha:]]]")
 
@@ -180,6 +204,7 @@ run_model <- function(model_data,
     init = init_values,
     output_dir = output_dir,
     output_basename = output_basename,
+    show_exceptions = show_exceptions,
     ...)
 
   model_output <- list("model_fit" = model_fit,

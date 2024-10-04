@@ -50,7 +50,8 @@ search_species <- function(species, combine_species_forms = TRUE) {
                   search_col(.data$french, search) |
                   search_col(.data$aou, search) |
                   search_col(.data$family, search) |
-                  search_col(.data$spanish, search) # Scientific
+                  search_col(.data$genus, search) |
+                  search_col(.data$species, search)# Scientific
   ) %>%
     dplyr::select(-"seq")
 }
