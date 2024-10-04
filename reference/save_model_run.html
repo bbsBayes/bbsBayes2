@@ -34,7 +34,7 @@ regarding data preparation (stratification etc.)."><meta property="og:image" con
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Save output of run_model()</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/v1.1.2/R/run-model.R" class="external-link"><code>R/run-model.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/main/R/run-model.R" class="external-link"><code>R/run-model.R</code></a></small>
       <div class="d-none name"><code>save_model_run.Rd</code></div>
     </div>
 
@@ -46,7 +46,13 @@ regarding data preparation (stratification etc.).</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">save_model_run</span><span class="op">(</span><span class="va">model_output</span>, retain_csv <span class="op">=</span> <span class="cn">TRUE</span>, path <span class="op">=</span> <span class="cn">NULL</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">save_model_run</span><span class="op">(</span></span>
+<span>  <span class="va">model_output</span>,</span>
+<span>  retain_csv <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  save_file_path <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -71,6 +77,11 @@ the file path used for the original run.</p></dd>
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
 <dd><p>Logical. Suppress progress messages? Default <code>FALSE</code>.</p></dd>
 
+
+<dt id="arg-save-file-path">save_file_path<a class="anchor" aria-label="anchor" href="#arg-save-file-path"></a></dt>
+<dd><p>Character. file path and full file name, including .rds
+extension.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -94,6 +105,7 @@ the Stan model run files (if the original files exist).</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># But you can also deliberately save the file (here with an example model)</span></span></span>
 <span class="r-in"><span><span class="fu">save_model_run</span><span class="op">(</span><span class="va">pacific_wren_model</span>, path <span class="op">=</span> <span class="st">"my_model.rds"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dirname(save_file_path):</span> a character vector argument expected</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Clean up</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"my_model.rds"</span><span class="op">)</span></span></span>
