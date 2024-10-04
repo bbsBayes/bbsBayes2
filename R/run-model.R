@@ -229,6 +229,8 @@ run_model <- function(model_data,
 #'
 #' @param path Character. Optional file path to use for saved data. Defaults to
 #' the file path used for the original run.
+#' @param save_file_path Character. file path and full file name, including .rds
+#' extension.
 #' @param retain_csv Logical Should the Stan csv files be retained. Defaults to
 #' TRUE if user calls function directly. However, when this function is called
 #' internally by `run_model` this is set to FALSE.
