@@ -73,7 +73,7 @@ jobs:
           key: bbs-data-${{ secrets.BBS_DATA_VERSION }}
 
       - name: Fetch BBS data
-        run: bbsBayes2:::fetch_bbs_data_internal(quiet = FALSE)
+        run: bbsBayes2:::fetch_bbs_data_internal(force = TRUE,quiet = FALSE)
         shell: Rscript {0}
 
       - uses: r-lib/actions/check-r-package@v2
