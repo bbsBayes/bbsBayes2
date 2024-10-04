@@ -57,12 +57,14 @@ STFL_gamye_spatial <- readRDS("output/4430_gamye_spatial.rds")
 E <- posterior::as_draws_df(STFL_gamye_spatial$model_fit) %>%
   select(matches("^E([[:punct:]])"),
          .draw)
-#> Warning: Dropping 'draws_df' class as required metadata was removed.
+#> Warning: Dropping 'draws_df' class as required metadata was
+#> removed.
 # tibble with 1 column for phi and one row for each posterior draw
 phi <- posterior::as_draws_df(STFL_gamye_spatial$model_fit)%>%
   select(phi,
          .draw)
-#> Warning: Dropping 'draws_df' class as required metadata was removed.
+#> Warning: Dropping 'draws_df' class as required metadata was
+#> removed.
 
 # join tibbles by draw
 E <- left_join(phi,E,
@@ -684,26 +686,52 @@ saveRDS(m_gamye,"output/BASP_latlong_gamye_spatial.rds")
 ``` r
 
 m_gamye <- readRDS("output/BASP_latlong_gamye_spatial.rds")
-#> Warning in gzfile(file, "rb"): cannot open compressed file 'output/BASP_latlong_gamye_spatial.rds', probable reason
-#> 'No such file or directory'
-#> Error in gzfile(file, "rb"): cannot open the connection
 
 m_first_diff <- readRDS("output/BASP_latlong_first_diff_spatial.rds")
-#> Warning in gzfile(file, "rb"): cannot open compressed file 'output/BASP_latlong_first_diff_spatial.rds', probable
-#> reason 'No such file or directory'
-#> Error in gzfile(file, "rb"): cannot open the connection
 
 # install.packages("loo") # you may need to install this package
 loo_gamye <- m_gamye$model_fit$loo()# loo calculations using the functions built into the cmdstanr model-fit object
-#> Error: object 'm_gamye' not found
+#> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 loo_first_diff <- m_first_diff$model_fit$loo()# loo calculations using the functions built into the cmdstanr model-fit object
-#> Error: object 'm_first_diff' not found
+#> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 
 
 loo_gamye
-#> Error: object 'loo_gamye' not found
+#> 
+#> Computed from 8000 by 4368 log-likelihood matrix.
+#> 
+#>          Estimate    SE
+#> elpd_loo  -7095.6 106.3
+#> p_loo       682.1  26.7
+#> looic     14191.2 212.5
+#> ------
+#> MCSE of elpd_loo is NA.
+#> MCSE and ESS estimates assume MCMC draws (r_eff in [0.3, 1.9]).
+#> 
+#> Pareto k diagnostic values:
+#>                          Count Pct.    Min. ESS
+#> (-Inf, 0.7]   (good)     4234  96.9%   186     
+#>    (0.7, 1]   (bad)       112   2.6%   <NA>    
+#>    (1, Inf)   (very bad)   22   0.5%   <NA>    
+#> See help('pareto-k-diagnostic') for details.
 loo_first_diff
-#> Error: object 'loo_first_diff' not found
+#> 
+#> Computed from 8000 by 4368 log-likelihood matrix.
+#> 
+#>          Estimate    SE
+#> elpd_loo  -6976.8 105.3
+#> p_loo       778.8  26.2
+#> looic     13953.7 210.7
+#> ------
+#> MCSE of elpd_loo is NA.
+#> MCSE and ESS estimates assume MCMC draws (r_eff in [0.3, 1.7]).
+#> 
+#> Pareto k diagnostic values:
+#>                          Count Pct.    Min. ESS
+#> (-Inf, 0.7]   (good)     4220  96.6%   177     
+#>    (0.7, 1]   (bad)       130   3.0%   <NA>    
+#>    (1, Inf)   (very bad)   18   0.4%   <NA>    
+#> See help('pareto-k-diagnostic') for details.
 ```
 
 This approximation of leave-one-out crossvalidation suggests that the first-difference model may slightly out-perform the gamye model for this species and time-period. However, the uncertainty in the calculation of loo is relatively wide and the estimates for the two models are only about 1 SD apart.
@@ -847,19 +875,19 @@ Now that we have combined the results for all of the predicted counts from acros
 
 ``` r
 sum_cv <- readRDS("output/sum_cv.rds")
-#> Warning in gzfile(file, "rb"): cannot open compressed file 'output/sum_cv.rds', probable reason 'No such file or
-#> directory'
-#> Error in gzfile(file, "rb"): cannot open the connection
 cv_comp <- sum_cv %>%
   drop_na() %>% #drops the rows for counts that were never in testing datasets
   group_by(model) %>%
   summarise(sum_log_lik = sum(mean), # total sum of log likelihoods
             mean_log_lik = mean(mean), # mean of point-level values
             se_log_lik = sd(mean)/sqrt(n())) # SE of point-level values
-#> Error: object 'sum_cv' not found
 
 cv_comp
-#> Error: object 'cv_comp' not found
+#> # A tibble: 2 × 4
+#>   model      sum_log_lik mean_log_lik se_log_lik
+#>   <chr>            <dbl>        <dbl>      <dbl>
+#> 1 first_diff     -11251.        -2.66     0.0663
+#> 2 gamye          -10115.        -2.39     0.0559
 ```
 Interestingly, the cross-validation results suggest that the gamye model performs better than the first_diff model: The opposite finding of the approximation.
 Model comparison is not a simple thing, especially for complex models with complex data.
@@ -871,16 +899,15 @@ For example, we can plot the difference in log likelihood values against the val
 
 ``` r
 cv_dif <- readRDS("output/cv_dif.rds")
-#> Warning in gzfile(file, "rb"): cannot open compressed file 'output/cv_dif.rds', probable reason 'No such file or
-#> directory'
-#> Error in gzfile(file, "rb"): cannot open the connection
 cv_dif_sum <- cv_dif %>%
   summarise(mean_diff = mean(diff),
             se_diff = sd(diff)/sqrt(n()),
             z = mean_diff/se_diff)
-#> Error: object 'cv_dif' not found
 cv_dif_sum
-#> Error: object 'cv_dif_sum' not found
+#> # A tibble: 1 × 3
+#>   mean_diff se_diff     z
+#>       <dbl>   <dbl> <dbl>
+#> 1    -0.269  0.0186 -14.4
 
 # explore the differences by count value
 dif_by_count <- ggplot(cv_dif) +
@@ -891,11 +918,11 @@ dif_by_count <- ggplot(cv_dif) +
   #scale_x_continuous(trans = "log10")+
   geom_hline(yintercept = 0)+
   theme_bw()
-#> Error: object 'cv_dif' not found
 
 dif_by_count
-#> Error: object 'dif_by_count' not found
 ```
+
+<img src="figures/advanced_unnamed-chunk-30-1.png" alt="Cross validation differences"  />
 
 
 

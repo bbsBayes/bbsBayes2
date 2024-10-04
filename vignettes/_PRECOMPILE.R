@@ -2,7 +2,7 @@
 library(knitr)
 library(readr)
 library(stringr)
-devtools::load_all(".")
+#devtools::load_all(".")
 # Make sure to put figures in local dir in knitr chunk options
 v <- list.files("vignettes", ".orig$", full.names = TRUE, recursive = TRUE)
 
@@ -20,7 +20,7 @@ cache <- list.files("./vignettes", "cache", include.dirs = TRUE,
 unlink(cache, recursive = TRUE)
 
 # build vignette
-#devtools::build_vignettes()
+devtools::build_vignettes()
 #unlink("./doc/", recursive = TRUE)
 #unlink("./Meta/", recursive = TRUE)
 

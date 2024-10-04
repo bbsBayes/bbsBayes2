@@ -278,16 +278,19 @@ save_model_run <- function(model_output,
       save_file_path <- path
     }else{
       check_dir(dirname(save_file_path))
-      if(ext(path) != "rds") {
+      if(ext(save_file_path) != "rds") {
         stop("save_file_path must have a .rds extension", call. = FALSE)
       }
     }
 
     if(!quiet) message("Saving model output to ", save_file_path)
   } else {
-
+    if(!is.null(save_file_path)){
     check_dir(dirname(save_file_path))
-    if(ext(path) != "rds") {
+    }else{
+      save_file_path <- path
+    }
+    if(ext(save_file_path) != "rds") {
       stop("save_file_path must have a .rds extension", call. = FALSE)
     }
   }
@@ -300,7 +303,7 @@ save_model_run <- function(model_output,
 
   # Update entire model output object and save
   model_output[["model_fit"]] <- model_fit
-  readr::write_rds(model_output, path)
+  readr::write_rds(model_output, save_file_path)
 
   if(!retain_csv){
   unlink(csv_path) # deleting the csv files

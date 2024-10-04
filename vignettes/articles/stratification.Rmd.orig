@@ -84,7 +84,7 @@ bbsBayes2 can stratify the BBS data using any polygon map as input.
 To define a completely different stratification, you'll need to provide a
 spatial data object with polygons defining your strata.
 
-In our example we'll use WBPHS stratum boundaries for 2019.
+In our example we'll use WBPHS stratum boundaries.
 This is available from available from the US Fish and Wildlife Service Catalogue: <https://ecos.fws.gov/ServCat/Reference/Profile/142628>
 
 To run this locally, download the file manually and unzip the shapefile contents into subdirectory of your working directory called *output*.
@@ -92,7 +92,7 @@ To run this locally, download the file manually and unzip the shapefile contents
 To use this file in bbsBayes2, we need to load it as an sf object using the sf
 package.
 ```{r, fig.cap="", fig.alt= "Map of the strata used in the Waterfowl Breeding Population and Habitat Surveys", fig.width = 8, fig.asp = 0.8}
-map <- sf::read_sf("output/WBPHS_stratum_boundaries_2019.shp")
+map <- sf::read_sf("output/WBPHS_stratum_boundaries.shp")
 ggplot(map, aes(fill = factor(STRAT))) +
   geom_sf() +
   scale_fill_viridis_d(guide = "none")
