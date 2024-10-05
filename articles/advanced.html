@@ -114,12 +114,14 @@ fitted model object for the Scissor-tailed Flycatcher data fit to the
 <span><span class="va">E</span> <span class="op">&lt;-</span> <span class="fu">posterior</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/posterior/reference/draws_df.html" class="external-link">as_draws_df</a></span><span class="op">(</span><span class="va">STFL_gamye_spatial</span><span class="op">$</span><span class="va">model_fit</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">matches</a></span><span class="op">(</span><span class="st">"^E([[:punct:]])"</span><span class="op">)</span>,</span>
 <span>         <span class="va">.draw</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Dropping 'draws_df' class as required metadata was removed.</span></span>
+<span><span class="co">#&gt; Warning: Dropping 'draws_df' class as required metadata was</span></span>
+<span><span class="co">#&gt; removed.</span></span>
 <span><span class="co"># tibble with 1 column for phi and one row for each posterior draw</span></span>
 <span><span class="va">phi</span> <span class="op">&lt;-</span> <span class="fu">posterior</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/posterior/reference/draws_df.html" class="external-link">as_draws_df</a></span><span class="op">(</span><span class="va">STFL_gamye_spatial</span><span class="op">$</span><span class="va">model_fit</span><span class="op">)</span><span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">phi</span>,</span>
 <span>         <span class="va">.draw</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Dropping 'draws_df' class as required metadata was removed.</span></span>
+<span><span class="co">#&gt; Warning: Dropping 'draws_df' class as required metadata was</span></span>
+<span><span class="co">#&gt; removed.</span></span>
 <span></span>
 <span><span class="co"># join tibbles by draw</span></span>
 <span><span class="va">E</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">phi</span>,<span class="va">E</span>,</span>
@@ -770,26 +772,52 @@ models.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">m_gamye</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/BASP_latlong_gamye_spatial.rds"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in gzfile(file, "rb"): cannot open compressed file 'output/BASP_latlong_gamye_spatial.rds', probable reason</span></span>
-<span><span class="co">#&gt; 'No such file or directory'</span></span>
-<span><span class="co">#&gt; Error in gzfile(file, "rb"): cannot open the connection</span></span>
 <span></span>
 <span><span class="va">m_first_diff</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/BASP_latlong_first_diff_spatial.rds"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in gzfile(file, "rb"): cannot open compressed file 'output/BASP_latlong_first_diff_spatial.rds', probable</span></span>
-<span><span class="co">#&gt; reason 'No such file or directory'</span></span>
-<span><span class="co">#&gt; Error in gzfile(file, "rb"): cannot open the connection</span></span>
 <span></span>
 <span><span class="co"># install.packages("loo") # you may need to install this package</span></span>
 <span><span class="va">loo_gamye</span> <span class="op">&lt;-</span> <span class="va">m_gamye</span><span class="op">$</span><span class="va">model_fit</span><span class="op">$</span><span class="fu">loo</span><span class="op">(</span><span class="op">)</span><span class="co"># loo calculations using the functions built into the cmdstanr model-fit object</span></span>
-<span><span class="co">#&gt; Error: object 'm_gamye' not found</span></span>
+<span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
 <span><span class="va">loo_first_diff</span> <span class="op">&lt;-</span> <span class="va">m_first_diff</span><span class="op">$</span><span class="va">model_fit</span><span class="op">$</span><span class="fu">loo</span><span class="op">(</span><span class="op">)</span><span class="co"># loo calculations using the functions built into the cmdstanr model-fit object</span></span>
-<span><span class="co">#&gt; Error: object 'm_first_diff' not found</span></span>
+<span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
 <span></span>
 <span></span>
 <span><span class="va">loo_gamye</span></span>
-<span><span class="co">#&gt; Error: object 'loo_gamye' not found</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computed from 8000 by 4368 log-likelihood matrix.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;          Estimate    SE</span></span>
+<span><span class="co">#&gt; elpd_loo  -7095.6 106.3</span></span>
+<span><span class="co">#&gt; p_loo       682.1  26.7</span></span>
+<span><span class="co">#&gt; looic     14191.2 212.5</span></span>
+<span><span class="co">#&gt; ------</span></span>
+<span><span class="co">#&gt; MCSE of elpd_loo is NA.</span></span>
+<span><span class="co">#&gt; MCSE and ESS estimates assume MCMC draws (r_eff in [0.3, 1.9]).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Pareto k diagnostic values:</span></span>
+<span><span class="co">#&gt;                          Count Pct.    Min. ESS</span></span>
+<span><span class="co">#&gt; (-Inf, 0.7]   (good)     4234  96.9%   186     </span></span>
+<span><span class="co">#&gt;    (0.7, 1]   (bad)       112   2.6%   &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;    (1, Inf)   (very bad)   22   0.5%   &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt; See help('pareto-k-diagnostic') for details.</span></span>
 <span><span class="va">loo_first_diff</span></span>
-<span><span class="co">#&gt; Error: object 'loo_first_diff' not found</span></span></code></pre></div>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Computed from 8000 by 4368 log-likelihood matrix.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;          Estimate    SE</span></span>
+<span><span class="co">#&gt; elpd_loo  -6976.8 105.3</span></span>
+<span><span class="co">#&gt; p_loo       778.8  26.2</span></span>
+<span><span class="co">#&gt; looic     13953.7 210.7</span></span>
+<span><span class="co">#&gt; ------</span></span>
+<span><span class="co">#&gt; MCSE of elpd_loo is NA.</span></span>
+<span><span class="co">#&gt; MCSE and ESS estimates assume MCMC draws (r_eff in [0.3, 1.7]).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Pareto k diagnostic values:</span></span>
+<span><span class="co">#&gt;                          Count Pct.    Min. ESS</span></span>
+<span><span class="co">#&gt; (-Inf, 0.7]   (good)     4220  96.6%   177     </span></span>
+<span><span class="co">#&gt;    (0.7, 1]   (bad)       130   3.0%   &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;    (1, Inf)   (very bad)   18   0.4%   &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt; See help('pareto-k-diagnostic') for details.</span></span></code></pre></div>
 <p>This approximation of leave-one-out crossvalidation suggests that the
 first-difference model may slightly out-perform the gamye model for this
 species and time-period. However, the uncertainty in the calculation of
@@ -953,19 +981,19 @@ absolute values (values closer to 0) indicate a better fitting
 model.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sum_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/sum_cv.rds"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in gzfile(file, "rb"): cannot open compressed file 'output/sum_cv.rds', probable reason 'No such file or</span></span>
-<span><span class="co">#&gt; directory'</span></span>
-<span><span class="co">#&gt; Error in gzfile(file, "rb"): cannot open the connection</span></span>
 <span><span class="va">cv_comp</span> <span class="op">&lt;-</span> <span class="va">sum_cv</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#drops the rows for counts that were never in testing datasets</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>sum_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span>, <span class="co"># total sum of log likelihoods</span></span>
 <span>            mean_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span>, <span class="co"># mean of point-level values</span></span>
 <span>            se_log_lik <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># SE of point-level values</span></span>
-<span><span class="co">#&gt; Error: object 'sum_cv' not found</span></span>
 <span></span>
 <span><span class="va">cv_comp</span></span>
-<span><span class="co">#&gt; Error: object 'cv_comp' not found</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 2 × 4</span></span>
+<span><span class="co">#&gt;   model      sum_log_lik mean_log_lik se_log_lik</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;            &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 first_diff     -11251.        -2.66     0.0663</span></span>
+<span><span class="co">#&gt; 2 gamye          -10115.        -2.39     0.0559</span></span></code></pre></div>
 <p>Interestingly, the cross-validation results suggest that the gamye
 model performs better than the first_diff model: The opposite finding of
 the approximation. Model comparison is not a simple thing, especially
@@ -979,16 +1007,15 @@ appear to be better predicted by the gamye model than the
 first-difference model.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cv_dif</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/cv_dif.rds"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in gzfile(file, "rb"): cannot open compressed file 'output/cv_dif.rds', probable reason 'No such file or</span></span>
-<span><span class="co">#&gt; directory'</span></span>
-<span><span class="co">#&gt; Error in gzfile(file, "rb"): cannot open the connection</span></span>
 <span><span class="va">cv_dif_sum</span> <span class="op">&lt;-</span> <span class="va">cv_dif</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
 <span>            se_diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>            z <span class="op">=</span> <span class="va">mean_diff</span><span class="op">/</span><span class="va">se_diff</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: object 'cv_dif' not found</span></span>
 <span><span class="va">cv_dif_sum</span></span>
-<span><span class="co">#&gt; Error: object 'cv_dif_sum' not found</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
+<span><span class="co">#&gt;   mean_diff se_diff     z</span></span>
+<span><span class="co">#&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1    -0.269  0.0186 -14.4</span></span>
 <span></span>
 <span><span class="co"># explore the differences by count value</span></span>
 <span><span class="va">dif_by_count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">cv_dif</span><span class="op">)</span> <span class="op">+</span></span>
@@ -999,10 +1026,9 @@ first-difference model.</p>
 <span>  <span class="co">#scale_x_continuous(trans = "log10")+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: object 'cv_dif' not found</span></span>
 <span></span>
-<span><span class="va">dif_by_count</span></span>
-<span><span class="co">#&gt; Error: object 'dif_by_count' not found</span></span></code></pre></div>
+<span><span class="va">dif_by_count</span></span></code></pre></div>
+<p><img src="figures%2Fadvanced_unnamed-chunk-30-1.png" alt="Cross validation differences"></p>
 </div>
 </div>
 </div>
