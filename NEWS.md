@@ -4,6 +4,10 @@ editor_options:
     wrap: sentence
 ---
 
+# bbsBayes2 1.1.2.1
+
+-   minor fixes to bugs in 1.1.2
+
 # bbsBayes2 1.1.2
 
 -   2024 release. Includes access to the 2024 release of the BBS database (observations from 1966 through to 2023). 

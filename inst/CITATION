@@ -1,21 +1,21 @@
-citHeader("To cite bbsBayes2 in publication, please use both: Edwards et al. 2023 and Smith et al. 2023")
+citHeader("To cite bbsBayes2 in publication, please use both: Edwards et al. 2024 and Smith et al. 2024")
 
 citEntry(
   entry = "misc",
-  title = "bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data",
-  year = "2023",
+  title = "bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. Version 1.1.2.1",
+  year = "2024",
   url = "https://github.com/bbsBayes/bbsBayes2",
   author = "Edwards, B. P. M., A. C. Smith, and S. LaZerte ",
-  textVersion = "Edwards, B. P. M., A. C. Smith, and S. LaZerte. (2023). bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. https://github.com/bbsBayes/bbsBayes2"
+  textVersion = "Edwards, B. P. M., A. C. Smith, and S. LaZerte. (2024). bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. https://github.com/bbsBayes/bbsBayes2"
 )
 
 citEntry(
-  entry = "misc",
+  entry = "Article",
   title = "Spatially explicit Bayesian hierarchical models for avian population status and trends",
-  year = "2023",
-  url = "https://doi.org/10.32942/X2088D",
+  year = "2024",
+  url = "https://doi.org/10.1093/ornithapp/duad056",
   author = "Smith, A.C., Binley, A., Daly, L., Edwards, B.P.M., Ethier, D., Frei, B., Iles, D., Meehan, T.D., and Michel, N.L., and Smith, P.A.",
-  textVersion = "Smith, A.C., Binley, A., Daly, L., Edwards, B.P.M., Ethier, D., Frei, B., Iles, D., Meehan, T.D., and Michel, N.L., and Smith, P.A. (2023). Spatially explicit Bayesian hierarchical models for avian population status and trends. https://doi.org/10.32942/X2088D"
+  textVersion = "Smith, A.C., Binley, A., Daly, L., Edwards, B.P.M., Ethier, D., Frei, B., Iles, D., Meehan, T.D., and Michel, N.L., and Smith, P.A. (2024). Spatially explicit Bayesian hierarchical models for avian population status and trends. Ornithological Applications. duad056 https://doi.org/10.1093/ornithapp/duad056"
 )
 
 citHeader("To cite the Breeding Bird Survey data in publication, please use the citation for the relevant data release. This is currently the default 2024 data release")
