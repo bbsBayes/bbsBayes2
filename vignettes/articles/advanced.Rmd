@@ -57,14 +57,12 @@ STFL_gamye_spatial <- readRDS("output/4430_gamye_spatial.rds")
 E <- posterior::as_draws_df(STFL_gamye_spatial$model_fit) %>%
   select(matches("^E([[:punct:]])"),
          .draw)
-#> Warning: Dropping 'draws_df' class as required metadata was
-#> removed.
+#> Warning: Dropping 'draws_df' class as required metadata was removed.
 # tibble with 1 column for phi and one row for each posterior draw
 phi <- posterior::as_draws_df(STFL_gamye_spatial$model_fit)%>%
   select(phi,
          .draw)
-#> Warning: Dropping 'draws_df' class as required metadata was
-#> removed.
+#> Warning: Dropping 'draws_df' class as required metadata was removed.
 
 # join tibbles by draw
 E <- left_join(phi,E,

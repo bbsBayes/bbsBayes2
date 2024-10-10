@@ -24,3 +24,4 @@ devtools::build_vignettes()
 #unlink("./doc/", recursive = TRUE)
 #unlink("./Meta/", recursive = TRUE)
 
+
