@@ -60,7 +60,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Advanced Example</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/v1.1.2.1/vignettes/articles/advanced.Rmd" class="external-link"><code>vignettes/articles/advanced.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/main/vignettes/articles/advanced.Rmd" class="external-link"><code>vignettes/articles/advanced.Rmd</code></a></small>
       <div class="d-none name"><code>advanced.Rmd</code></div>
     </div>
 
@@ -114,14 +114,12 @@ fitted model object for the Scissor-tailed Flycatcher data fit to the
 <span><span class="va">E</span> <span class="op">&lt;-</span> <span class="fu">posterior</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/posterior/reference/draws_df.html" class="external-link">as_draws_df</a></span><span class="op">(</span><span class="va">STFL_gamye_spatial</span><span class="op">$</span><span class="va">model_fit</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">matches</a></span><span class="op">(</span><span class="st">"^E([[:punct:]])"</span><span class="op">)</span>,</span>
 <span>         <span class="va">.draw</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Dropping 'draws_df' class as required metadata was</span></span>
-<span><span class="co">#&gt; removed.</span></span>
+<span><span class="co">#&gt; Warning: Dropping 'draws_df' class as required metadata was removed.</span></span>
 <span><span class="co"># tibble with 1 column for phi and one row for each posterior draw</span></span>
 <span><span class="va">phi</span> <span class="op">&lt;-</span> <span class="fu">posterior</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/posterior/reference/draws_df.html" class="external-link">as_draws_df</a></span><span class="op">(</span><span class="va">STFL_gamye_spatial</span><span class="op">$</span><span class="va">model_fit</span><span class="op">)</span><span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">phi</span>,</span>
 <span>         <span class="va">.draw</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Dropping 'draws_df' class as required metadata was</span></span>
-<span><span class="co">#&gt; removed.</span></span>
+<span><span class="co">#&gt; Warning: Dropping 'draws_df' class as required metadata was removed.</span></span>
 <span></span>
 <span><span class="co"># join tibbles by draw</span></span>
 <span><span class="va">E</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">phi</span>,<span class="va">E</span>,</span>
