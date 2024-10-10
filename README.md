@@ -10,6 +10,7 @@
 # Critical News:
 ## Error in the non-hierarchical first-difference model
 In versions 1.1.0, 1.1.1, and 1.1.2.0, the non-hierarchical variant of the first-difference model included a coding error. Estimates of trends and population trajectories from this model in these versions will be biased. 
+
 The error was fixed in version 1.1.2.1.
 I so sorry for this error, please [reach out](https://github.com/AdamCSmithCWS) if you would like more information or assistance in fixing/recovering from this. 
 
