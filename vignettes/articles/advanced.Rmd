@@ -20,7 +20,6 @@ editor_options:
   library(sf)
   library(patchwork)
   library(bayesplot) #to visually check convergence
-#> Error in library(bayesplot): there is no package called 'bayesplot'
   library(tidyr)
 
 ```
@@ -89,16 +88,15 @@ y_rep <- posterior::as_draws_matrix(y_rep)
 ppc_overplot <- bayesplot::ppc_ecdf_overlay(y = STFL_gamye_spatial$raw_data$count,
                                     yrep = y_rep,
                                     discrete = TRUE)
-#> Error in loadNamespace(x): there is no package called 'bayesplot'
 # focusing in on the range of observed data
 ppc_overplot <- ppc_overplot +
   coord_cartesian(xlim = range(STFL_gamye_spatial$raw_data$count))
-#> Error: object 'ppc_overplot' not found
 
 
 print(ppc_overplot)
-#> Error: object 'ppc_overplot' not found
 ```
+
+<img src="figures/advanced_unnamed-chunk-3-1.png" alt="Graphical posterior predictive check overlaying the observed proportion of integer count values and the estimated proportion of count values"  />
 
 ## HPDI - Highest posterior density intervals
 
@@ -126,16 +124,13 @@ print(trajectories$US_NM_35 / trajectories_hpdi$US_NM_35)
 
 
 
-## EXAMPLE - Replicating the CWS status and trend estimates (2018 version onwards)
+## EXAMPLE - Replicating the CWS status and trend estimates (2022 version and later)
 
-The CWS analysis, as of the 2018 BBS data-version, uses the gamye model.
+The CWS analysis, as of the 2022 BBS data-version, uses the spatial gamye model.
 
-The full script to run the CWS analysis for the 2021 BBS data version is
+The full script to run the CWS analysis for the 2023 release is
 accessible
-[here](https://github.com/AdamCSmithCWS/CWS_BBS_2021_Analyses). Although
-those particular analyses were run before bbsBayes2 was released, the
-basic workflow can be replicated in bbsBayes2 for a given species as
-follows.
+[here](https://github.com/AdamCSmithCWS/CWS_BBS_2022_Analyses).
 
 
 ``` r
@@ -150,28 +145,28 @@ d<- prepare_data(strata_data = stratified_data,
                  min_n_routes = 3,
                  min_max_route_years = 2)
 
+sd <- prepare_spatial(d,load_map("bbs_cws")) # create spatial relationships
 m<-prepare_model(
-  prepared_data = d,
+  prepared_data = sd,
   model="gamye",
-  model_variant="hier", # non-spatial version used in 2021
+  model_variant="spatial",
   use_pois = FALSE #negative binomial error distribution
 )
 
-mod_cws <- run_model( model_data = m,
+mod_cws <- run_model(model_data = m,
                   refresh=500,
                       iter_sampling = 1000,
-                      iter_warmup = 1000,
-                     chains = 3,
-                     parallel_chains = 3)
+                      iter_warmup = 1000)
+
 ```
 
-## EXAMPLE - Similar analyses to the USGS status and trend estimates 2021 data version
+## EXAMPLE - Similar analyses to the USGS status and trend estimates 2023 data version
 
 > This example is approximate. The USGS analysis does NOT use the
 > bbsBayes2 package, nor have the analysts at the USGS confirmed that
 > this example would replicate their analyses.
 
-The USGS analyses for 2021 uses one of two different models (either
+The USGS analyses for 2023 relase uses one of two different models (either
 slope or first-difference) and with one of two different error
 distributions (Poisson with either heavy-tailed overdispersion or
 normally distributed overdispersion) (see, [Link et al.
@@ -179,7 +174,7 @@ normally distributed overdispersion) (see, [Link et al.
 2020](https://doi.org/10.1002/eap.2137) for more details).
 
 Here we provide data preparation and model options to approximate the
-2021 USGS bbs analyses for a species that uses the heavy-tailed Poisson
+2022 USGS bbs analyses for a species that uses the heavy-tailed Poisson
 error distribution and the first-difference model (more on the error distributions below).
 
 
@@ -201,8 +196,8 @@ m<-prepare_model(prepared_data = d,
  calculate_nu = TRUE     # estimated the df parameter for the heavy-tailed t-distribution
 )
 
-# MCMC settings for the usgs analyses are not published, nor would they be relevant here
-# because the official analyses use JAGS and Gibbs Sampling and not Stan's HMC algorithm
+# MCMC settings for the usgs analyses would not be relevant here because
+# the official analyses use JAGS and Gibbs Sampling and not Stan's HMC algorithm
 # mod <- run_model(model_data = m,
 #                  ...)
 

@@ -565,7 +565,7 @@ i[["indices"]]
 
 We can also generate time-series plots of these indices to visualize population trajectories.
 
-```{r}
+```{r, fig.cap = "", fig.alt = "Continental population trajectory graph showing smooth changes in Scissor-tailed Flycatcher populations through time", fig.width = 8, fig.asp = 0.8}
 # generates a list of ggplot graphs, one for each region
 p <- plot_indices(indices = i,
                   add_observed_means = TRUE) # optional argument to show raw observed mean counts
@@ -601,10 +601,12 @@ print(p1_mod)
 
 The most common inference to draw from one of these BBS models relates to the estimates of the population trajectory. One particularly useful way to visualise the uncertainty of those population trajectories is to plot many posterior draws of the full trajectory. The default population trajectories plots `plot_indices()` show a line representing the path of the annual posterior medians of the annual indices and an uncertainty band spanning the outer limits of a credible interval on the annual indices. These are reasonable summaries of the uncertainty in the collection of annual indices. However, the uncertainty of each annual index of abundance includes information about the uncertainty in the estimate of the change in abundance through time (e.g., trend) and uncertainty in the estimate of the mean abundance (e.g., the mean count in any given route or observer). Those two sources of uncertainty can be correlated in the posterior distribution, so that the uncertainty of the annual indices may over-estimate the uncertainty in the trend.
 To plot a sample of estimated trajectories, set the `spaghetti = TRUE` argument in the `plot_indices()` function.
-```{r}
+
+```{r, fig.cap = "", fig.alt = "Population trajectory graph, showing a posterior sample of estimated trajectories as multiple overlapping lines, and points representing the raw mean observed counts."}
 # generates a list of ggplot graphs, one for each region
 p <- plot_indices(indices = i,
-                  add_observed_means = TRUE)
+                  add_observed_means = TRUE,
+                  spaghetti = TRUE)
 print(p[["continent"]])
 ```
 There are arguments that also allow the user to control the transparency of each plotted line, as well as the number of lines to plot (the default is to draw 100 random samples).
@@ -644,30 +646,6 @@ in population change.
 ```{r, fig.cap = "", fig.alt = "Population trend map showing strata with increasing trends in blues and decreasing trends in reds.", fig.width = 8, fig.asp = 0.8}
 trend_map <- plot_map(t)
 print(trend_map)
-```
-
-The maps are also [ggplot2](https://github.com/tidyverse/ggplot2)
-objects that can be modified like any other. For example, you can zoom
-into a section of the map.
-
-```{r, fig.cap = "", fig.alt = "Population trend map zoomed in to show just the relevant regions", fig.width = 8, fig.asp = 0.8}
-library(ggplot2)
-
-# Get the meta data in trend object - strata information
-strata_with_data <- t$meta_strata
-
-# Load the original strata map used in the model fitting
-# then filter to just the strata with data for this species
-data_bounding_box <- load_map(stratify_by = t$meta_data$stratify_by) %>%
-  filter(strata_name %in% strata_with_data$strata_name) %>%
-  sf::st_bbox() # create a bounding box for x and y limits
-
-t_mod <- trend_map +
-  coord_sf(xlim = data_bounding_box[c("xmin","xmax")],
-           ylim = data_bounding_box[c("ymin","ymax")])
-
-print(t_mod)
-
 ```
 
 ### Barn Swallow example

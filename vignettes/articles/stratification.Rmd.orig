@@ -62,7 +62,7 @@ To stratify BBS data, you can use these existing stratifications by
 specifying `by = "name"` in the `stratify()` function.
 
 ```{r}
-s <- stratify(by = "bbs_usgs", species = "Canada Jay")
+s <- stratify(by = "bbs_usgs", species = "Mallard")
 ```
 
 ### The latlong stratification - special note
@@ -70,7 +70,7 @@ s <- stratify(by = "bbs_usgs", species = "Canada Jay")
 The latlong stratification `by = "latlong"` is the finest-scale stratification built into the package, and so it divides the BBS data into many more strata-units than other stratifications.  Therefore, you may wish to adjust the minimum data inclusion criteria when preparing the data. Specifically, setting `min_n_routes = 1` ensures that every grid-cell with at least one BBS route can be included. There are many degree-blocks that have only one route, as this is the original sampling design goal of the BBS (at least one route within each degree-block).
 
 ```{r}
-s <- stratify(by = "latlong", species = "Canada Jay")
+s <- stratify(by = "latlong", species = "Mallard")
 p <- prepare_data(s, min_n_routes = 1)
 
 ```
@@ -93,18 +93,18 @@ To use this file in bbsBayes2, we need to load it as an sf object using the sf
 package.
 ```{r, fig.cap="", fig.alt= "Map of the strata used in the Waterfowl Breeding Population and Habitat Surveys", fig.width = 8, fig.asp = 0.8}
 map <- sf::read_sf("output/WBPHS_stratum_boundaries.shp")
-ggplot(map, aes(fill = factor(STRAT))) +
+ggplot(map, aes(fill = factor(stratum))) +
   geom_sf() +
   scale_fill_viridis_d(guide = "none")
 
 ```
 ### Identify the strata names
 
-We see that it has one column that reflects the stratum names. First we'll
-rename this column to `strata_name`, so that the `stratify()` function knows what attribute includes the names that define each stratum.
+We see that it has one column that reflects the stratum names. First we'll rename this column to `strata_name`, and mutate it into a character value, so that the `stratify()` function knows what attribute includes the names that define each stratum.
 
 ```{r}
-map <- rename(map, strata_name = STRAT)
+map <- rename(map, strata_name = stratum) %>%
+        mutate(strata_name = as.character(strata_name))
 ```
 
 ### Stratify the data
@@ -115,7 +115,7 @@ When using a custom stratification, the `by` argument is just a user-defined arb
 We also need to give the function our map.
 
 ```{r}
-s <- stratify(by = "WBPHS_2019", species = "Canada Jay", strata_custom = map)
+s <- stratify(by = "WBPHS", species = "Mallard", strata_custom = map)
 ```
 
 > Note that strata names are automatically put into lower case for consistency.
@@ -150,7 +150,7 @@ map, it looks as if our custom stratification is excluding some BBS data (i.e., 
 We can re-run the stratification with `return_omitted = TRUE` which will attach
 a data frame of omitted strata to the output.
 ```{r}
-s <- stratify(by = "WBPHS_2019", species = "Canada Jay", strata_custom = map,
+s <- stratify(by = "WBPHS", species = "Mallard", strata_custom = map,
               return_omitted = TRUE)
 s[["routes_omitted"]]
 ```
@@ -180,8 +180,9 @@ To fit the model, we follow the standard workflow using our stratified data.
 p <- prepare_data(s,
                   min_year = 2000,
                   max_year = 2021) #subset a shorter time-span to speed model-fit
-mp <- prepare_model(p,model = "slope",
-                   model_variant = "hier")
+sp <- prepare_spatial(p,map)
+mp <- prepare_model(sp,model = "first_diff",
+                   model_variant = "spatial")
 ```
 
 ```{r, eval=FALSE}
@@ -191,7 +192,7 @@ m <- run_model(mp,
 ```
 
 ```{r,echo=FALSE}
-m <- readRDS("output/BBS_STAN_slope_hier_2023-07-05.rds")
+m <- readRDS("output/BBS_Mallard_first_diff_spatial_202410111214_STAN.rds")
 ```
 ### Predictions from the model using the custom stratification
 
@@ -244,7 +245,7 @@ name, we can pick out which are eastern and which western.
 ggplot(rindex) +
   geom_sf(data = load_map(type = "North America")) +
   geom_sf() +
-  geom_sf_text(aes(label = strata_name))
+  geom_sf_text(aes(label = strata_name), size = 2)
 ```
 
 The western and eastern strata seem to be split numerically, such that the western strata have numbers lower than 50 or greater than 74, eastern strata have numbers in between. So we'll add a column to the `rindex` dataframe with "east" and "west" character names to group the strata.
@@ -312,7 +313,7 @@ head(bbs_strata[["bbs_cws"]])
 We can now modify and use this data frame as we like.
 ```{r}
 my_cws <- filter(bbs_strata[["bbs_cws"]], country == "Canada")
-s <- stratify(by = "bbs_cws", species = "Canada Jay", strata_custom = my_cws)
+s <- stratify(by = "bbs_cws", species = "Mallard", strata_custom = my_cws)
 ```
 
 Note that the stratification is now "bbs_cws" and "subset"
@@ -371,7 +372,7 @@ Looks good! Let's use it in our stratification and take a look at the points
 afterwards to ensure they've been categorized appropriately.
 
 ```{r, fig.cap="", fig.alt= "", fig.width = 8, fig.asp = 0.8}
-s <- stratify(by = "canada_ew", species = "Canada Jay",
+s <- stratify(by = "canada_ew", species = "Mallard",
               strata_custom = new_strata)
 
 s$meta_data
