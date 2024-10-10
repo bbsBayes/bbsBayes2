@@ -59,9 +59,19 @@
 <!-- badges: end -->
 <div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="bbsbayes2-">bbsBayes2 <a class="anchor" aria-label="anchor" href="#bbsbayes2-"></a>
+<img src="logo.png" class="logo" alt=""><h1 id="critical-news">Critical News:<a class="anchor" aria-label="anchor" href="#critical-news"></a>
 </h1>
 </div>
+<div class="section level2">
+<h2 id="error-in-the-non-hierarchical-first-difference-model">Error in the non-hierarchical first-difference model<a class="anchor" aria-label="anchor" href="#error-in-the-non-hierarchical-first-difference-model"></a>
+</h2>
+<p>In versions 1.1.0, 1.1.1, and 1.1.2.0, the non-hierarchical variant of the first-difference model included a coding error. Estimates of trends and population trajectories from this model in these versions will be biased.</p>
+<p>The error was fixed in version 1.1.2.1. I am so sorry folks, please <a href="https://github.com/AdamCSmithCWS" class="external-link">reach out</a> if you would like more information or assistance in fixing/recovering from this.</p>
+</div>
+</div>
+<div class="section level1">
+<h1 id="bbsbayes2-">bbsBayes2 <a class="anchor" aria-label="anchor" href="#bbsbayes2-"></a>
+</h1>
 <p>bbsBayes2 is a package for performing hierarchical Bayesian analysis of North American Breeding Bird Survey (BBS) data. ‘bbsBayes2’ will run a full model analysis for one or more species that you choose, or you can take more control and specify how the data should be stratified, prepared for Stan, or modelled.</p>
 <p>bbsBayes2 is the successor to <a href="https://github.com/bbsBayes/bbsBayes" class="external-link">bbsBayes</a>, with a major shift in functionality. The MCMC backend is now <em>Stan</em> instead of <em>JAGS</em>, the workflow has been streamlined, the syntax has changed, and there are new functions. This vignette should help you get started with the package, and there are three others that should help explain some of the new features, choices, and more advanced uses:</p>
 <p>Installation instructions are below.</p>
