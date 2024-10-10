@@ -210,7 +210,6 @@ model {
 
 for(s in 1:(n_strata)){
     beta_raw[s,] ~ std_normal();
-  sum(beta_raw[s,]) ~ normal(0,0.001*n_years_m1);
 }
 
    strata_raw ~ std_normal();
