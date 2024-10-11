@@ -73,7 +73,6 @@
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/bayesplot/" class="external-link">bayesplot</a></span><span class="op">)</span> <span class="co">#to visually check convergence</span></span>
-<span><span class="co">#&gt; Error in library(bayesplot): there is no package called 'bayesplot'</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="some-more-advanced-options">Some more advanced options<a class="anchor" aria-label="anchor" href="#some-more-advanced-options"></a>
@@ -146,15 +145,13 @@ fitted model object for the Scissor-tailed Flycatcher data fit to the
 <span><span class="va">ppc_overplot</span> <span class="op">&lt;-</span> <span class="fu">bayesplot</span><span class="fu">::</span><span class="fu">ppc_ecdf_overlay</span><span class="op">(</span>y <span class="op">=</span> <span class="va">STFL_gamye_spatial</span><span class="op">$</span><span class="va">raw_data</span><span class="op">$</span><span class="va">count</span>,</span>
 <span>                                    yrep <span class="op">=</span> <span class="va">y_rep</span>,</span>
 <span>                                    discrete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in loadNamespace(x): there is no package called 'bayesplot'</span></span>
 <span><span class="co"># focusing in on the range of observed data</span></span>
 <span><span class="va">ppc_overplot</span> <span class="op">&lt;-</span> <span class="va">ppc_overplot</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">STFL_gamye_spatial</span><span class="op">$</span><span class="va">raw_data</span><span class="op">$</span><span class="va">count</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: object 'ppc_overplot' not found</span></span>
 <span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">ppc_overplot</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: object 'ppc_overplot' not found</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">ppc_overplot</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures%2Fadvanced_unnamed-chunk-3-1.png" alt="Graphical posterior predictive check overlaying the observed proportion of integer count values and the estimated proportion of count values"></p>
 </div>
 <div class="section level3">
 <h3 id="hpdi---highest-posterior-density-intervals">HPDI - Highest posterior density intervals<a class="anchor" aria-label="anchor" href="#hpdi---highest-posterior-density-intervals"></a>
@@ -191,16 +188,13 @@ they are in the upper plot using the default quantiles.</p>
 <p><img src="figures%2Fadvanced_unnamed-chunk-4-1.png" alt="Population trajectories contrasting simple quantiles and HPDI for an example stratum. The HPDI uncertainty bound is more symetrical around the mean"></p>
 </div>
 <div class="section level3">
-<h3 id="example---replicating-the-cws-status-and-trend-estimates-2018-version-onwards">EXAMPLE - Replicating the CWS status and trend estimates (2018
-version onwards)<a class="anchor" aria-label="anchor" href="#example---replicating-the-cws-status-and-trend-estimates-2018-version-onwards"></a>
+<h3 id="example---replicating-the-cws-status-and-trend-estimates-2022-version-and-later">EXAMPLE - Replicating the CWS status and trend estimates (2022
+version and later)<a class="anchor" aria-label="anchor" href="#example---replicating-the-cws-status-and-trend-estimates-2022-version-and-later"></a>
 </h3>
-<p>The CWS analysis, as of the 2018 BBS data-version, uses the gamye
-model.</p>
-<p>The full script to run the CWS analysis for the 2021 BBS data version
-is accessible <a href="https://github.com/AdamCSmithCWS/CWS_BBS_2021_Analyses" class="external-link">here</a>.
-Although those particular analyses were run before bbsBayes2 was
-released, the basic workflow can be replicated in bbsBayes2 for a given
-species as follows.</p>
+<p>The CWS analysis, as of the 2022 BBS data-version, uses the spatial
+gamye model.</p>
+<p>The full script to run the CWS analysis for the 2023 release is
+accessible <a href="https://github.com/AdamCSmithCWS/CWS_BBS_2022_Analyses" class="external-link">here</a>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">species.eng</span> <span class="op">=</span> <span class="st">"Pacific Wren"</span></span>
@@ -213,36 +207,35 @@ species as follows.</p>
 <span>                 min_n_routes <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                 min_max_route_years <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
+<span><span class="va">sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_spatial.html">prepare_spatial</a></span><span class="op">(</span><span class="va">d</span>,<span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span><span class="st">"bbs_cws"</span><span class="op">)</span><span class="op">)</span> <span class="co"># create spatial relationships</span></span>
 <span><span class="va">m</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span></span>
-<span>  prepared_data <span class="op">=</span> <span class="va">d</span>,</span>
+<span>  prepared_data <span class="op">=</span> <span class="va">sd</span>,</span>
 <span>  model<span class="op">=</span><span class="st">"gamye"</span>,</span>
-<span>  model_variant<span class="op">=</span><span class="st">"hier"</span>, <span class="co"># non-spatial version used in 2021</span></span>
+<span>  model_variant<span class="op">=</span><span class="st">"spatial"</span>,</span>
 <span>  use_pois <span class="op">=</span> <span class="cn">FALSE</span> <span class="co">#negative binomial error distribution</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">mod_cws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span> model_data <span class="op">=</span> <span class="va">m</span>,</span>
+<span><span class="va">mod_cws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span>model_data <span class="op">=</span> <span class="va">m</span>,</span>
 <span>                  refresh<span class="op">=</span><span class="fl">500</span>,</span>
 <span>                      iter_sampling <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>                      iter_warmup <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>                     chains <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                     parallel_chains <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<span>                      iter_warmup <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="example---similar-analyses-to-the-usgs-status-and-trend-estimates-2021-data-version">EXAMPLE - Similar analyses to the USGS status and trend estimates
-2021 data version<a class="anchor" aria-label="anchor" href="#example---similar-analyses-to-the-usgs-status-and-trend-estimates-2021-data-version"></a>
+<h3 id="example---similar-analyses-to-the-usgs-status-and-trend-estimates-2023-data-version">EXAMPLE - Similar analyses to the USGS status and trend estimates
+2023 data version<a class="anchor" aria-label="anchor" href="#example---similar-analyses-to-the-usgs-status-and-trend-estimates-2023-data-version"></a>
 </h3>
 <blockquote>
 <p>This example is approximate. The USGS analysis does NOT use the
 bbsBayes2 package, nor have the analysts at the USGS confirmed that this
 example would replicate their analyses.</p>
 </blockquote>
-<p>The USGS analyses for 2021 uses one of two different models (either
-slope or first-difference) and with one of two different error
+<p>The USGS analyses for 2023 relase uses one of two different models
+(either slope or first-difference) and with one of two different error
 distributions (Poisson with either heavy-tailed overdispersion or
 normally distributed overdispersion) (see, <a href="https://doi.org/10.1650/CONDOR-17-1.1" class="external-link">Link et al. 2017</a> and <a href="https://doi.org/10.1002/eap.2137" class="external-link">Link et al. 2020</a> for more
 details).</p>
 <p>Here we provide data preparation and model options to approximate the
-2021 USGS bbs analyses for a species that uses the heavy-tailed Poisson
+2022 USGS bbs analyses for a species that uses the heavy-tailed Poisson
 error distribution and the first-difference model (more on the error
 distributions below).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -263,8 +256,8 @@ distributions below).</p>
 <span> calculate_nu <span class="op">=</span> <span class="cn">TRUE</span>     <span class="co"># estimated the df parameter for the heavy-tailed t-distribution</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># MCMC settings for the usgs analyses are not published, nor would they be relevant here</span></span>
-<span><span class="co"># because the official analyses use JAGS and Gibbs Sampling and not Stan's HMC algorithm</span></span>
+<span><span class="co"># MCMC settings for the usgs analyses would not be relevant here because</span></span>
+<span><span class="co"># the official analyses use JAGS and Gibbs Sampling and not Stan's HMC algorithm</span></span>
 <span><span class="co"># mod &lt;- run_model(model_data = m,</span></span>
 <span><span class="co">#                  ...)</span></span></code></pre></div>
 </div>
