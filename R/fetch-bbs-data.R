@@ -87,6 +87,22 @@ fetch_bbs_data_internal <- function(level = "state", release = 2024,
 
   # Download/load Data --------------
   birds <- get_birds(level, release, quiet, connection, force)
+
+    ## Combine American Crow data 2024 release only ----------------------------
+    ## this was due to an error in the 2024 release where 4882 (unid NWCR/AMCR)
+    ## and 4890 (Northwestern Crow) were removed from the species file, but
+    ## the underlying bird data file was not updated to reflect this
+    ## No message or warning is necessary, since this only reflects a correction
+    ## to the database. A note is included in the release documentation.
+  if(release == 2024){
+    birds <- birds %>%
+      dplyr::mutate(aou = ifelse(aou %in% c(4882,4890),
+                                 4880,
+                                 aou))
+  }
+
+
+
   routes <- get_routes(release, quiet, connection, force)
   weather <- get_weather(release, quiet, connection, force)
   regs <- readr::read_csv(
