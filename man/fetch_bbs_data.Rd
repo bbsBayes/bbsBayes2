@@ -54,6 +54,12 @@ and \code{2024}.
 By default all functions use the most recent release unless otherwise
 specified. For example, the \code{release} argument in \code{stratify()} can be
 changed to \code{2020} to use the 2020 release of state-level counts.
+
+bbsBayes2 automatically removes observations from routes that were not
+established following the stratified random design, the handful of routes
+that are on water (not on roadsides), and any survey that was not conducted
+within acceptable survey conditions (high winds, heavy precipitation,
+outside of the acceptable time windows).
 }
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

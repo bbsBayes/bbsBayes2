@@ -36,6 +36,11 @@
 #' specified. For example, the `release` argument in `stratify()` can be
 #' changed to `2020` to use the 2020 release of state-level counts.
 #'
+#' bbsBayes2 automatically removes observations from routes that were not
+#' established following the stratified random design, the handful of routes
+#' that are on water (not on roadsides), and any survey that was not conducted
+#' within acceptable survey conditions (high winds, heavy precipitation,
+#' outside of the acceptable time windows).
 #'
 #' @examplesIf interactive()
 #'
@@ -117,9 +122,9 @@ fetch_bbs_data_internal <- function(level = "state", release = 2024,
 
   # remove off-road and water routes, as well as non-random and mini-routes
   routes <- routes %>%
-    dplyr::filter(.data$route_type_detail_id == 1,
-                  .data$route_type_id == 1,
-                  .data$run_type == 1) %>%
+    dplyr::filter(.data$route_type_detail_id == 1, # dropping non-random and short routes
+                  .data$route_type_id == 1, # dropping water-based routes
+                  .data$run_type == 1) %>% # dropping surveys outside of acceptable weather and times
     dplyr::select(-"stratum")
 
   routes <- dplyr::inner_join(routes, regs, by = c("country_num", "state_num"))
