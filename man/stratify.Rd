@@ -9,7 +9,7 @@ stratify(
   species,
   strata_custom = NULL,
   combine_species_forms = TRUE,
-  release = 2024,
+  release = 2025,
   sample_data = FALSE,
   return_omitted = FALSE,
   quiet = FALSE
