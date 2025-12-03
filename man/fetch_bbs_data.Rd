@@ -9,7 +9,8 @@ fetch_bbs_data(
   release = 2025,
   force = FALSE,
   quiet = FALSE,
-  compression = "none"
+  compression = "none",
+  include_unacceptable = FALSE
 )
 }
 \arguments{
@@ -29,6 +30,17 @@ FALSE.}
 Default is \code{none} which takes up the most space but is the fastest to
 load. Must be one of \code{none}, \code{gz}, \code{bz2}, or \code{xz} (passed to
 \code{readr::write_rds()}'s \code{compress} argument).}
+
+\item{include_unacceptable}{Logical. DO NOT change this unless you are very
+confident that you want these data. Should the package retain the BBS data
+collected on non-standard BBS routes (including some with fewer than 50
+stops), or outside of the acceptable weather, season, and times-of-day
+structure of the BBS survey design. Default FALSE for good reason.
+If you change this to TRUE and thereby decide you want to include
+the BBS data that do not fit the BBS structured survey design, be sure you
+understand the information in at least the following columns of the route
+survey info: RouteTypeID, RouteTypeDetailID, RPID, RunType, and the rest
+of the information in the data release meta data.}
 }
 \description{
 Fetch and download Breeding Bird Survey data from the United States
@@ -56,7 +68,7 @@ By default all functions use the most recent release unless otherwise
 specified. For example, the \code{release} argument in \code{stratify()} can be
 changed to \code{2020} to use the 2020 release of state-level counts.
 
-bbsBayes2 automatically removes observations from routes that were not
+bbsBayes2 by default removes observations from routes that were not
 established following the stratified random design, the handful of routes
 that are on water (not on roadsides), and any survey that was not conducted
 within acceptable survey conditions (high winds, heavy precipitation,

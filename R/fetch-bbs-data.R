@@ -12,7 +12,16 @@
 #'   Default is `none` which takes up the most space but is the fastest to
 #'   load. Must be one of `none`, `gz`, `bz2`, or `xz` (passed to
 #'   `readr::write_rds()`'s `compress` argument).
-#'
+#' @param include_unacceptable Logical. DO NOT change this unless you are very
+#'   confident that you want these data. Should the package retain the BBS data
+#'   collected on non-standard BBS routes (including some with fewer than 50
+#'   stops), or outside of the acceptable weather, season, and times-of-day
+#'   structure of the BBS survey design. Default FALSE for good reason.
+#'        If you change this to TRUE and thereby decide you want to include
+#'   the BBS data that do not fit the BBS structured survey design, be sure you
+#'   understand the information in at least the following columns of the route
+#'   survey info: RouteTypeID, RouteTypeDetailID, RPID, RunType, and the rest
+#'   of the information in the data release meta data.
 #'
 #' @inheritParams common_docs
 #' @family BBS data functions
@@ -37,11 +46,12 @@
 #' specified. For example, the `release` argument in `stratify()` can be
 #' changed to `2020` to use the 2020 release of state-level counts.
 #'
-#' bbsBayes2 automatically removes observations from routes that were not
-#' established following the stratified random design, the handful of routes
-#' that are on water (not on roadsides), and any survey that was not conducted
-#' within acceptable survey conditions (high winds, heavy precipitation,
-#' outside of the acceptable time windows).
+#'   bbsBayes2 by default removes observations from routes that were not
+#'   established following the stratified random design, the handful of routes
+#'   that are on water (not on roadsides), and any survey that was not conducted
+#'   within acceptable survey conditions (high winds, heavy precipitation,
+#'   outside of the acceptable time windows).
+#'
 #'
 #' @examplesIf interactive()
 #'
@@ -56,7 +66,8 @@ fetch_bbs_data <- function(level = "state",
                            release = 2025,
                            force = FALSE,
                            quiet = FALSE,
-                           compression = "none") {
+                           compression = "none",
+                           include_unacceptable = FALSE) {
 
   check_in(level, c("state", "stop"))
   check_release(release)
@@ -75,13 +86,15 @@ fetch_bbs_data <- function(level = "state",
   agree <- readline(prompt = "Type \"yes\" (without quotes) to agree: ")
   if(agree != "yes") return(NULL)
 
-  fetch_bbs_data_internal(level, release, force, quiet, out_file, compression)
+  fetch_bbs_data_internal(level, release, force, quiet, out_file, compression,
+                          include_unacceptable)
 }
 
 
 fetch_bbs_data_internal <- function(level = "state", release = 2025,
                                     force = FALSE, quiet = TRUE,
-                                    out_file = NULL, compression = "none") {
+                                    out_file = NULL, compression = "none",
+                                    include_unacceptable = FALSE) {
 
   if(is.null(out_file)) out_file <- check_bbs_data(level, release, force, quiet)
 
@@ -122,12 +135,19 @@ fetch_bbs_data_internal <- function(level = "state", release = 2025,
                               by = c("country_num", "state_num", "route"))
 
   # remove off-road and water routes, as well as non-random and mini-routes
+  if(include_unacceptable){
   routes <- routes %>%
-    dplyr::filter(.data$route_type_detail_id == 1, # dropping non-random and short routes
-                  .data$route_type_id == 1, # dropping water-based routes
-                  .data$run_type == 1) %>% # dropping surveys outside of acceptable weather and times
+    # dplyr::filter(.data$route_type_detail_id == 1, # dropping non-random and short routes
+    #               .data$route_type_id == 1, # dropping water-based routes
+    #               .data$run_type == 1) %>% # dropping surveys outside of acceptable weather and times
     dplyr::select(-"stratum")
-
+  }else{
+    routes <- routes %>%
+      dplyr::filter(.data$route_type_detail_id == 1, # dropping non-random and short routes
+                    .data$route_type_id == 1, # dropping water-based routes
+                    .data$run_type == 1) %>% # dropping surveys outside of acceptable weather and times
+      dplyr::select(-"stratum")
+  }
   routes <- dplyr::inner_join(routes, regs, by = c("country_num", "state_num"))
 
   # Combine routes and birds -----------
