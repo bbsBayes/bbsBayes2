@@ -187,7 +187,9 @@ run_model <- function(model_data,
   }
 
   # Compile model
-  model <- cmdstanr::cmdstan_model(meta_data[["model_file"]], dir = bbs_dir())
+  model <- cmdstanr::cmdstan_model(meta_data[["model_file"]],
+                                   dir = bbs_dir(),
+                                   stanc_options = list("O1"))
 
 
   # Run model
