@@ -9,6 +9,7 @@ data {
   int<lower=1> n_counts;
   int<lower=1> n_years;
   int<lower=1> fixed_year;
+  int<lower=0,upper=1> use_likelihood; // if set to 0, then generates predictions from the priors
 
   array[n_counts] int<lower=0> count;              // count observations
   array[n_counts] int<lower=1> strat;               // strata indicators
@@ -204,11 +205,13 @@ model {
   sum(strata_raw) ~ normal(0,0.001*n_strata);
 
 
+if(use_likelihood){
 if(use_pois){
   count_tr ~ poisson_log(E); //vectorized count likelihood with log-transformation
 }else{
    count_tr ~ neg_binomial_2_log(E,phi); //vectorized count likelihood with log-transformation
 
+}
 }
 
 }

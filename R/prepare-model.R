@@ -42,6 +42,8 @@
 #'   the [models
 #'   article](https://bbsBayes.github.io/bbsBayes2/articles/models.html) for more
 #'   details.
+#' @param use_likelihood Logical. If set to FALSE generates prior predictions
+#'    i.e., ignores the likelihood of the count data. Default TRUE
 #'
 #' @inheritParams common_docs
 #' @family Data prep functions
@@ -97,6 +99,7 @@ prepare_model <- function(prepared_data,
                           cv_k = 10,
                           cv_fold_groups = "obs_n",
                           cv_omit_singles = TRUE,
+                          use_likelihood = TRUE,
                           set_seed = NULL,
                           quiet = FALSE) {
 
@@ -133,7 +136,8 @@ prepare_model <- function(prepared_data,
     year = model_data$year,
     n_counts = model_data$n_counts,
     basis, n_knots, heavy_tailed, use_pois,
-    calculate_nu, calculate_log_lik)
+    calculate_nu, calculate_log_lik,
+    use_likelihood)
 
   # Create master parameter list
   model_data <- append(model_data, params)
@@ -177,12 +181,14 @@ model_params <- function(model,
                          model_variant,
                          n_strata, year, n_counts,
                          basis, n_knots, heavy_tailed, use_pois,
-                         calculate_nu, calculate_log_lik) {
+                         calculate_nu, calculate_log_lik,
+                         use_likelihood) {
 
 
   params <- list()
 
   # Model options
+  params[["use_likelihood"]] <- as.integer(use_likelihood)
 
   # Extra Poisson variance options
   # 0 = use df == 3 (do not calculate df for the t-distributed noise)
@@ -207,6 +213,9 @@ model_params <- function(model,
 
   if(model %in% c("slope", "first_diff")) {
     fixed_year <- floor(stats::median(unique(years)))
+    if(!fixed_year %in% years_data){
+      fixed_year <- fixed_year-1
+      }
     params[["fixed_year"]] <- fixed_year
   }
 
@@ -229,25 +238,32 @@ model_params <- function(model,
     # these are used as conditional values in the Stan model to indicate
     # years in which the spatial variance of differences should be estimated
     # equals 1 in all years that are not 2020, and 0 in years that are 2020
-    y_2020 <- rep(NA,(n_years-1))
+    # plus either 2019 or 2021, depending on fixed_year <> 2020
+    y_2020 <- rep(1,(n_years))
 
-    for(y in 1:n_years){
-      if(y %in% years_data){
-        if(y < fixed_year){
-          y_2020[y] <- 1
-        }
-        if(y > fixed_year){
-          y_2020[y-1] <- 1
-        }
-      }else{
-        if(y < fixed_year){
-          y_2020[y] <- 0
-        }
-        if(y > fixed_year){
-          y_2020[y-1] <- 0
-        }
-      }
+    which_2020 <- years[-which(years %in% years_data)] # which year has no surveys
+    if(which_2020 < fixed_year){
+      y_2020[c(which_2020,which_2020-1)] <- 0
+    }else{
+      y_2020[c(which_2020,which_2020+1)] <- 0
     }
+    # for(y in 1:n_years){
+    #   if(y %in% years_data){
+    #     if(y < fixed_year){
+    #       y_2020[y] <- 1
+    #     }
+    #     if(y > fixed_year){
+    #       y_2020[y-1] <- 1
+    #     }
+    #   }else{
+    #     if(y < fixed_year){
+    #       y_2020[y] <- 0
+    #     }
+    #     if(y > fixed_year){
+    #       y_2020[y-1] <- 0
+    #     }
+    #   }
+    # }
     params[["y_2020"]] <- y_2020
   }
 

@@ -19,6 +19,7 @@ prepare_model(
   cv_k = 10,
   cv_fold_groups = "obs_n",
   cv_omit_singles = TRUE,
+  use_likelihood = TRUE,
   set_seed = NULL,
   quiet = FALSE
 )
@@ -79,6 +80,9 @@ details.}
 replication (only relevant if \code{calculate_cv = TRUE}). Default \code{TRUE.} See
 the \href{https://bbsBayes.github.io/bbsBayes2/articles/models.html}{models article} for more
 details.}
+
+\item{use_likelihood}{Logical. If set to FALSE generates prior predictions
+i.e., ignores the likelihood of the count data. Default TRUE}
 
 \item{set_seed}{Numeric. If \code{NULL} (default) no seed is set. Otherwise an
 integer number to be used with \code{withr::with_seed()} internally to ensure
