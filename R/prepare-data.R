@@ -13,6 +13,27 @@
 #'   route with the species observed. Default 1. Only retain strata where the
 #'   average number of years the species was observed per route is greater than
 #'   this value.
+#' @param assume_observer_variation_log_normal Logical. Default FALSE.
+#'   If FALSE, the model will generate indices that adjust only for temporal
+#'   variation in observers and so generate annual indices that are the
+#'   expected counts in a given year averaged across all observers and all
+#'   routes in the stratum. FALSE option may be useful in situations where one
+#'   or more of the 3 assumptions above are questionable, including where the
+#'   observer variation is not log-normal (e.g., heavy-tailed, or skewed). The
+#'   difference can be important because it can change the relative scaling of
+#'   annual indices among strata, which in turn influences the weight of each
+#'   strata-level trend on trends for composite regions.
+#'   If TRUE, the annual indices adjust for both spatial and temporal
+#'   variation in observers by using the same `retrans_obs` retransformation
+#'   factor for all strata, and so generate annual indices that are the expected
+#'   counts in a given year averaged across all routes in the stratum and assume
+#'   all observer variation is 1) noise, 2) approximately log-normally
+#'   distributed (retrans_obs = 0.5*sdobs^2), and observers are exchangeable.
+#'   This alternate TRUE is a more appropriate estimate of the uncertainty in
+#'   an expected count, generating a prediction error across all observers in the
+#'   analysis, however even small departures from the assumption of log-normally
+#'   distributed errors can introduce bias into the annual indices, relative
+#'   to the observed counts in the dataset.
 #'
 #' @inheritParams common_docs
 #' @family Data prep functions
@@ -47,14 +68,15 @@ prepare_data <- function(strata_data,
                          min_n_routes = 3,
                          min_max_route_years = 3,
                          min_mean_route_years = 1,
-                         quiet = FALSE) {
+                         quiet = FALSE,
+                         assume_observer_variation_log_normal = FALSE) {
 
   # Checks
   if(missing(strata_data)) stop("Missing `strata_data`", call. = FALSE)
   check_data(strata_data)
   check_numeric(min_year, max_year, allow_null = TRUE)
   check_numeric(min_n_routes, min_max_route_years, min_mean_route_years)
-  check_logical(quiet)
+  check_logical(quiet,assume_observer_variation_log_normal)
   #warning if stratification == latlong and min_n_routes > 1
   if(strata_data$meta_data$stratify_by == "latlong" & min_n_routes > 1){
     warning("Many strata with data may have been excluded ",
@@ -71,7 +93,8 @@ prepare_data <- function(strata_data,
   # Add in routes
   obs <- strata_data$routes_strata %>%
     dplyr::select("country_num", "state_num", "state", "rpid", "bcr", "year",
-                  "strata_name", "route", "obs_n","latitude","longitude") %>%
+                  "strata_name", "route", "obs_n","latitude","longitude",
+                  "route_data_id","run_type") %>%
     dplyr::left_join(obs, by = c("route", "rpid", "year")) %>%
     dplyr::mutate(count = tidyr::replace_na(.data$count, 0))
 
@@ -199,9 +222,45 @@ prepare_data <- function(strata_data,
     dplyr::distinct() %>%
     dplyr::pull(.data$n_obs_sites)
 
+  sites_by_strata <- obs_final %>%
+    dplyr::select("strata", "site") %>%
+    dplyr::distinct() %>%
+    dplyr::arrange(.data$site)
+
+  n_sites_strata <- obs_final %>%
+    dplyr::select("strata", "n_routes") %>%
+    dplyr::distinct() %>%
+    dplyr::pull(.data$n_routes)
+
   n_strata <- length(unique(obs_final$strata))
 
   # Create matrices
+if(assume_observer_variation_log_normal){ # option to generate indices that
+  # assume all observer variation is noise, approximately log-normally
+  # distributed, and observers are exchangeable. In theory, this makes
+  # adjustments for both spatial and temporal variation in observers
+  # by using the same retrans_obs retransformation factor for all strata
+  # and so generate annual indices that are the expected counts in a given year
+  # averaged across all routes in the stratum and all observers in the analysis
+  # However, the log-normal assumption, and even small departures introduce bias
+  # into the magnitude of the annual indices, relative to the observed mean
+  # counts (biased high).
+  site_mat <- matrix(data = 0,
+                     nrow = n_strata,
+                     ncol = max(n_sites_strata))
+
+  obs_mat <- matrix(data = 0,
+                    nrow = n_strata,
+                    ncol = max(n_sites_strata))
+  for(i in 1:n_strata){
+    site_mat[i,1:n_sites_strata[i]] <- sites_by_strata$site[sites_by_strata$site == i]
+  }
+  n_obs_sites <- n_sites_strata # overwrites n_obs_sites
+
+}else{# alternate option to generate indices that include the
+  # adjustments for only temporal variation in observers
+  # and so generate annual indices that are the expected counts in a given year
+  # averaged across all observers and all routes in the stratum
   site_mat <- matrix(data = 0,
                      nrow = n_strata,
                      ncol = max(n_obs_sites))
@@ -214,6 +273,7 @@ prepare_data <- function(strata_data,
     site_mat[i,1:n_obs_sites[i]] <- obs_by_site$site[obs_by_site$strata == i]
     obs_mat[i,1:n_obs_sites[i]] <- obs_by_site$observer[obs_by_site$strata == i]
   }
+}
 
   model_data <- list(
     # Sample sizes

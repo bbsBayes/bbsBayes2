@@ -91,6 +91,7 @@ transformed data {
      array[n_test] int site_te = site[test];
      array[n_test] int first_year_te = first_year[test];
      array[n_test] int observer_te = observer[test];
+     int obs_type = sum(obs_mat[1,]); // evaluates to 0 if prepare_data(..., assume_observer_variation_log_normal == TRUE)
 
 
 
@@ -347,7 +348,12 @@ for(y in 1:n_years){
         for(t in 1:n_obs_sites_strata[s]){  //n_obs_sites_strata max_n_obs_sites_strata
 
   real ste = sdste*ste_raw[ste_mat[s,t]]; // site intercepts
-  real obs = sdobs*obs_raw[obs_mat[s,t]]; // site intercepts
+  real obs;
+  if(obs_type > 0){
+     obs = retrans_obs;
+  }else{
+   obs = sdobs*obs_raw[obs_mat[s,t]]; // observer intercepts
+    }
 
 
       n_t[t] = exp(strata+ smooth_pred[y,s] + yeareffect[s,y] + retrans_noise + obs + ste);// + retrans_obs);

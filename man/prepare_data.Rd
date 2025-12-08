@@ -11,7 +11,8 @@ prepare_data(
   min_n_routes = 3,
   min_max_route_years = 3,
   min_mean_route_years = 1,
-  quiet = FALSE
+  quiet = FALSE,
+  assume_observer_variation_log_normal = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,28 @@ average number of years the species was observed per route is greater than
 this value.}
 
 \item{quiet}{Logical. Suppress progress messages? Default \code{FALSE}.}
+
+\item{assume_observer_variation_log_normal}{Logical. Default FALSE.
+If FALSE, the model will generate indices that adjust only for temporal
+variation in observers and so generate annual indices that are the
+expected counts in a given year averaged across all observers and all
+routes in the stratum. FALSE option may be useful in situations where one
+or more of the 3 assumptions above are questionable, including where the
+observer variation is not log-normal (e.g., heavy-tailed, or skewed). The
+difference can be important because it can change the relative scaling of
+annual indices among strata, which in turn influences the weight of each
+strata-level trend on trends for composite regions.
+If TRUE, the annual indices adjust for both spatial and temporal
+variation in observers by using the same \code{retrans_obs} retransformation
+factor for all strata, and so generate annual indices that are the expected
+counts in a given year averaged across all routes in the stratum and assume
+all observer variation is 1) noise, 2) approximately log-normally
+distributed (retrans_obs = 0.5*sdobs^2), and observers are exchangeable.
+This alternate TRUE is a more appropriate estimate of the uncertainty in
+an expected count, generating a prediction error across all observers in the
+analysis, however even small departures from the assumption of log-normally
+distributed errors can introduce bias into the annual indices, relative
+to the observed counts in the dataset.}
 }
 \value{
 List of prepared (meta) data to be used for modelling and further
