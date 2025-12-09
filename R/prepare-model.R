@@ -50,15 +50,21 @@
 #'
 #' @details
 #'
-#' There are two ways you can customize the model run. The first is to supply a
-#' custom `model_file` created with the `copy_model_file()` function and then
-#' edited by hand.
+#' There are ways you can customize the model run.
+#' You can supply a custom `model_file` created with the
+#' `copy_model_file()` function and then edited manually.
 #'
-#' Second, you can edit or overwrite the initialization parameters
-#' (`init_values`) in the output of `prepare_model()` to customize the `init`
-#' supplied to `cmdstanr::sample()`. You can supply these parameters in anyway
-#' that `cmdstanr::sample()` accepts the `init` argument. See also the
-#' `init_alternate` argument in `run_model()`.
+#'
+#' You can edit or overwrite the initialization values (`init_values`)
+#' in the output of `prepare_model()` to customize the values
+#' supplied to `cmdstanr::sample()`. In previous versions of bbsBayes2, these
+#' initial values were specific to the model and model version. Since version
+#' 1.1.3, the initial values supplied by defaul in `prepare_model()` are a
+#' single value `$init_values = 1`, which This initializes all parameters
+#' randomly between [-1,1]⁠ on the unconstrained parameter space.
+#' You can change these initial values and supply alternate initialization
+#' values in any way that `cmdstanr::sample()` accepts the `init` argument,
+#' using the `init_alternate` argument in `run_model()`.
 #'
 #' To implement bbsBayes2' version of cross validation, set `calculate_cv =
 #' TRUE`. You can set up your own system for cross validation by modifying the
@@ -341,8 +347,10 @@ model_params <- function(model,
 #' `cmdstanr::sample()`.
 #'
 #' @noRd
-create_init <- function(model, model_variant, model_data) {
+create_init <- function(model, model_variant, model_data,
+                        legacy = FALSE) {
 
+  if(legacy){
   # Generic --------------
   init_generic <-
     list(
@@ -419,6 +427,8 @@ create_init <- function(model, model_variant, model_data) {
 
   # Join with generic values
   append(init_generic, init_specific)
+  }
+  return(1)
 }
 
 

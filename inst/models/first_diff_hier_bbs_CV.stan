@@ -125,6 +125,8 @@ transformed parameters {
   vector[n_years] YearEffect;
   vector[n_strata] strata;
   real<lower=0> phi; //transformed sdnoise if use_pois == 0 (and therefore Negative Binomial)
+  real BETA_2020;
+  vector[n_strata] beta_2020;
 
 
   if(use_pois){

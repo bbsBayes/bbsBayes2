@@ -109,15 +109,20 @@ parameters are definied for different types of models (see \code{?bbs_models} fo
 a list of models included in bbsBayes2).
 }
 \details{
-There are two ways you can customize the model run. The first is to supply a
-custom \code{model_file} created with the \code{copy_model_file()} function and then
-edited by hand.
+There are ways you can customize the model run.
+You can supply a custom \code{model_file} created with the
+\code{copy_model_file()} function and then edited manually.
 
-Second, you can edit or overwrite the initialization parameters
-(\code{init_values}) in the output of \code{prepare_model()} to customize the \code{init}
-supplied to \code{cmdstanr::sample()}. You can supply these parameters in anyway
-that \code{cmdstanr::sample()} accepts the \code{init} argument. See also the
-\code{init_alternate} argument in \code{run_model()}.
+You can edit or overwrite the initialization values (\code{init_values})
+in the output of \code{prepare_model()} to customize the values
+supplied to \code{cmdstanr::sample()}. In previous versions of bbsBayes2, these
+initial values were specific to the model and model version. Since version
+1.1.3, the initial values supplied by defaul in \code{prepare_model()} are a
+single value \verb{$init_values = 1}, which This initializes all parameters
+randomly between \link{-1,1}⁠ on the unconstrained parameter space.
+You can change these initial values and supply alternate initialization
+values in any way that \code{cmdstanr::sample()} accepts the \code{init} argument,
+using the \code{init_alternate} argument in \code{run_model()}.
 
 To implement bbsBayes2' version of cross validation, set \code{calculate_cv = TRUE}. You can set up your own system for cross validation by modifying the
 \code{folds} list-item in the output of \code{prepare_model()}. \strong{Note this is
