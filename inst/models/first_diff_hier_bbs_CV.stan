@@ -362,11 +362,10 @@ for(y in 1:n_years){
   real ste = sdste*ste_raw[ste_mat[s,t]]; // site intercepts
   real obs;
   if(obs_type > 0){
-     obs = retrans_obs;
-  }else{
    obs = sdobs*obs_raw[obs_mat[s,t]]; // observer intercepts
+  }else{
+     obs = retrans_obs;
     }
-
 
 
       n_t[t] = exp(strata[s] + yeareffect[s,y] + retrans_noise + ste + obs);
