@@ -115,9 +115,9 @@ fetch_bbs_data_internal <- function(level = "state", release = 2025,
     ## to the database. A note is included in the release documentation.
   if(release == 2024){
     birds <- birds %>%
-      dplyr::mutate(aou = ifelse(aou %in% c(4882,4890),
+      dplyr::mutate(aou = ifelse(.data$aou %in% c(4882,4890),
                                  4880,
-                                 aou))
+                                 .data$aou))
   }
 
 
