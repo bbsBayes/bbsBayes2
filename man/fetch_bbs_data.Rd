@@ -75,7 +75,7 @@ within acceptable survey conditions (high winds, heavy precipitation,
 outside of the acceptable time windows).
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 
 fetch_bbs_data(force = TRUE)
 fetch_bbs_data(level = "stop", force = TRUE)

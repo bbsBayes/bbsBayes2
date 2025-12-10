@@ -473,7 +473,7 @@ gam_sm <- function(i) {
 
 #' Convert Stan samples matrix to array
 #'
-#' Stan is all matrix [samples, strata_x_years]. Here we convert it to an
+#' Stan is all matrix `[samples, strata_x_years]`. Here we convert it to an
 #' array with by splitting strata and years into separate dimensions.
 #'
 #' Looks like the order of strata_x_years is S1Y1 S2Y1 S3Y1, etc.

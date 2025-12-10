@@ -119,7 +119,7 @@ supplied to \code{cmdstanr::sample()}. In previous versions of bbsBayes2, these
 initial values were specific to the model and model version. Since version
 1.1.3, the initial values supplied by defaul in \code{prepare_model()} are a
 single value \verb{$init_values = 1}, which This initializes all parameters
-randomly between \link{-1,1}⁠ on the unconstrained parameter space.
+randomly between \code{-1} and \code{1}⁠ on the unconstrained parameter space.
 You can change these initial values and supply alternate initialization
 values in any way that \code{cmdstanr::sample()} accepts the \code{init} argument,
 using the \code{init_alternate} argument in \code{run_model()}.

@@ -23,7 +23,7 @@ A helper function for finding the appropriate species name for use in
 \code{stratify()}.
 }
 \examples{
-\dontshow{if (have_bbs_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_bbs_data()) withAutoprint(\{ # examplesIf}
 # Search for various terms
 search_species("Paridae")
 search_species("chickadee")

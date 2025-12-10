@@ -120,7 +120,7 @@ See the \href{https://bbsBayes.github.io/bbsBayes2/articles/models.html}{models 
 advanced examples and explanations.
 }
 \examples{
-\dontshow{if (have_cmdstan()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_cmdstan()) withAutoprint(\{ # examplesIf}
 s <- stratify(by = "bbs_cws", sample_data = TRUE)
 p <- prepare_data(s)
 pm <- prepare_model(p, model = "first_diff", model_variant = "hier")

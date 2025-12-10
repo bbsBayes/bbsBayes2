@@ -61,7 +61,7 @@
 #' initial values were specific to the model and model version. Since version
 #' 1.1.3, the initial values supplied by defaul in `prepare_model()` are a
 #' single value `$init_values = 1`, which This initializes all parameters
-#' randomly between -1 and 1⁠ on the unconstrained parameter space.
+#' randomly between `-1` and `1`⁠ on the unconstrained parameter space.
 #' You can change these initial values and supply alternate initialization
 #' values in any way that `cmdstanr::sample()` accepts the `init` argument,
 #' using the `init_alternate` argument in `run_model()`.
