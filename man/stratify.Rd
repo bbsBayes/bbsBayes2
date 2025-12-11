@@ -94,7 +94,7 @@ for more details.
 # Sample Data - USGS BBS strata
 s <- stratify(by = "bbs_usgs", sample_data = TRUE)
 
-\dontshow{if (have_bbs_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_bbs_data()) withAutoprint(\{ # examplesIf}
 # Full data - species and stratification
 # Use `search_species()` to get correct species name
 

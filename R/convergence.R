@@ -111,5 +111,7 @@ get_summary <- function(model_output, variables = NULL) {
 
   check_data(model_output)
 
-  model_output$model_fit$summary(variables)
+  model_output$model_fit$summary(variables) %>%
+    dplyr::mutate(variable_type = stringr::str_extract(.data$variable, "^\\w+")) %>%
+    dplyr::relocate("variable_type")
 }
