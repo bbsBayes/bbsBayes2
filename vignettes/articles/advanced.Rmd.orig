@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 ```
 
-```{r, message = FALSE}
+```{r, message = FALSE, warning=FALSE}
   library(bbsBayes2)
   library(dplyr)
   library(ggplot2)
@@ -145,18 +145,18 @@ prior_preds <- readRDS("output/BBS_PacificWren_gamye_spatial_prior.rds")
 
 ```
 
-```{r prior_predictions, fig.cap = "Prior predicted population trajectories", fig.alt = "Prior predicted population trajectories showing sample of predicted population trajectories that range from large increases to large decreases", fig.width = 8, fig.asp = 0.8}
+```{r prior_predictions, warning=FALSE, fig.cap = "Prior predicted population trajectories", fig.alt = "Prior predicted population trajectories showing sample of predicted population trajectories that range from large increases to large decreases", fig.width = 8, fig.asp = 0.8}
 prior_inds <- generate_indices(prior_preds, regions = "continent")
 prior_trajs <- plot_indices(prior_inds, spaghetti = TRUE, n_spaghetti = 150)
 prior_trends <- generate_trends(prior_inds)
-
-summ <- get_summary(prior_preds)
 
 #transforming y-axis to log scale due to extreme uncertainty limits
 cont_prior_trajectory <- prior_trajs[[1]]+
 scale_y_continuous(transform = "log10")+
 coord_cartesian(ylim = c(NA,2000)) # some of the mean predictions are extreme
+
 print(cont_prior_trajectory)
+
 ```
 So the predicted population trajectories include everything from extreme increases (upper 95% credible interval of the trends = `r round(prior_trends$trends[1,"trend_q_0.975"],1)` %/year to extreme decreases (lower 95% credible interval of the trends = `r round(prior_trends$trends[1,"trend_q_0.025"],1)` %/year).
 
@@ -357,7 +357,7 @@ ALHU <- run_model(p,
 
 ```{r, echo = FALSE, warnings = FALSE, messages = FALSE}
 
-ALHU <- readRDS("vignettes/articles/output/4340_latlong_first_diff_spatial.rds")
+ALHU <- readRDS("output/4340_latlong_first_diff_spatial.rds")
 
 ```
 
@@ -385,7 +385,7 @@ ALHU_trend_map + geom_sf(data = States_Provinces, fill = NA,
   coord_sf(xlim = bb[c("xmin","xmax")],
            ylim = bb[c("ymin","ymax")])
 
-print(ALHU_trend_map)
+
 
 ```
 

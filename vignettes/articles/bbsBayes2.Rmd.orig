@@ -135,9 +135,9 @@ downloaded, and annual release-versions:
 
 -   Two levels `state` and `stop` (only `state` works with bbsBayes2
     models, the `stop` option is provided to facilitate custom projects and models)
--   Annual releases `2020`, `2022`, `2023`, and '2024' more options will be added as annual releases occur).
+-   Annual releases `2020`, `2022`, `2023`, '2024', and `2025` more options will be added as annual releases occur).
 
-The defaults (level `state` and the most recent release - `2024`) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
+The defaults (level `state` and the most recent release - `2025`) is almost certainly what you are looking for, Unless you have a specific reason to need a different version. The most recent release will include all of the data included in earlier releases.
 However you can download all releases and specify which one you wish to
 use in the `stratify()` step.
 

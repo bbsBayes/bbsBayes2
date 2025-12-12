@@ -96,7 +96,7 @@ ppc_overplot <- ppc_overplot +
 print(ppc_overplot)
 ```
 
-<img src="vignettes/articles/figures/advanced_unnamed-chunk-3-1.png" alt="Graphical posterior predictive check overlaying the observed proportion of integer count values and the estimated proportion of count values"  />
+<img src="figures/advanced_unnamed-chunk-3-1.png" alt="Graphical posterior predictive check overlaying the observed proportion of integer count values and the estimated proportion of count values"  />
 
 ## Prior predictive checks
 
@@ -144,393 +144,18 @@ prior_inds <- generate_indices(prior_preds, regions = "continent")
 prior_trajs <- plot_indices(prior_inds, spaghetti = TRUE, n_spaghetti = 150)
 prior_trends <- generate_trends(prior_inds)
 
-summ <- get_summary(prior_preds)
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-#> Warning: The ESS has been capped to avoid unstable estimates.
-
 #transforming y-axis to log scale due to extreme uncertainty limits
 cont_prior_trajectory <- prior_trajs[[1]]+
 scale_y_continuous(transform = "log10")+
 coord_cartesian(ylim = c(NA,2000)) # some of the mean predictions are extreme
 #> Scale for y is already present.
 #> Adding another scale for y, which will replace the existing scale.
+
 print(cont_prior_trajectory)
 ```
 
 <div class="figure">
-<img src="vignettes/articles/figures/advanced_prior_predictions-1.png" alt="Prior predicted population trajectories showing sample of predicted population trajectories that range from large increases to large decreases"  />
+<img src="figures/advanced_prior_predictions-1.png" alt="Prior predicted population trajectories showing sample of predicted population trajectories that range from large increases to large decreases"  />
 <p class="caption">Prior predicted population trajectories</p>
 </div>
 So the predicted population trajectories include everything from extreme increases (upper 95% credible interval of the trends = 199.4 %/year to extreme decreases (lower 95% credible interval of the trends = -65.5 %/year).
@@ -559,7 +184,7 @@ trajectories_hpdi <- plot_indices(i_hpdi)
 print(trajectories$US_NM_35 / trajectories_hpdi$US_NM_35)
 ```
 
-<img src="vignettes/articles/figures/advanced_unnamed-chunk-5-1.png" alt="Population trajectories contrasting simple quantiles and HPDI for an example stratum. The HPDI uncertainty bound is more symetrical around the mean"  />
+<img src="figures/advanced_unnamed-chunk-5-1.png" alt="Population trajectories contrasting simple quantiles and HPDI for an example stratum. The HPDI uncertainty bound is more symetrical around the mean"  />
 
 
 
@@ -674,7 +299,7 @@ BARS_trend_map <- plot_map(BARS_trends)
 BARS_trend_map
 ```
 
-<img src="vignettes/articles/figures/advanced_unnamed-chunk-9-1.png" alt="Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"  />
+<img src="figures/advanced_unnamed-chunk-9-1.png" alt="Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"  />
 
 Then, to visualise the uncertainty in this pattern of trend estimates, we generate two maps that each display the upper and lower credible intervals of the trends. We can interpret these maps as showing the lower-bound and the upper-bound on the rates of population change for the species. For example, we can be reasonably confident that the species' trends have not been more negative than the map on the left, and are unlikely to be more positive than the map on the right.
 
@@ -691,7 +316,7 @@ BARS_trend_bounds_maps <- BARS_trend_map_lower + BARS_trend_map_upper + plot_lay
 BARS_trend_bounds_maps
 ```
 
-<img src="vignettes/articles/figures/advanced_unnamed-chunk-10-1.png" alt="Population trend maps for Barn Swallow, showing the lower and upper bounds on the population trends, where strata with increasing trends are shown in shades of blue and strata with decreasing trends in shades of red"  />
+<img src="figures/advanced_unnamed-chunk-10-1.png" alt="Population trend maps for Barn Swallow, showing the lower and upper bounds on the population trends, where strata with increasing trends are shown in shades of blue and strata with decreasing trends in shades of red"  />
 
 Alternatively, we could visualise the width of the credible interval on the trends. Here we see that most of the trend estimates have credible intervals that are narrower than approximately 2%/year, but trends for a few strata in northern regions and the south-west are less precise. Note: Because in this case we are not displaying estimates of trends specifically, the function uses the viridis colour scale.
 
@@ -749,12 +374,6 @@ ALHU <- run_model(p,
 ```
 
 
-```
-#> Warning in gzfile(file, "rb"): cannot open compressed file
-#> 'vignettes/articles/output/4340_latlong_first_diff_spatial.rds', probable reason 'No such
-#> file or directory'
-#> Error in gzfile(file, "rb"): cannot open the connection
-```
 
 We generate annual indices of abundance, use those to estimate percent change over the short-term (2012 - 2022), and plot those changes on a map.
 
@@ -782,18 +401,10 @@ ALHU_trend_map + geom_sf(data = States_Provinces, fill = NA,
                           colour = "black") +
   coord_sf(xlim = bb[c("xmin","xmax")],
            ylim = bb[c("ymin","ymax")])
-#> Coordinate system already present. Adding new coordinate system, which will replace the
-#> existing one.
+#> Coordinate system already present. Adding new coordinate system, which will replace the existing one.
 ```
 
-<img src="vignettes/articles/figures/advanced_unnamed-chunk-14-1.png" alt="Percent population change map for Allen's Hummingbird, showing 1-degree grid cells where the population has increased in shades of blue and grid cells where the population has decreased in shades of red"  />
-
-``` r
-
-print(ALHU_trend_map)
-```
-
-<img src="vignettes/articles/figures/advanced_unnamed-chunk-14-2.png" alt="Percent population change map for Allen's Hummingbird, showing 1-degree grid cells where the population has increased in shades of blue and grid cells where the population has decreased in shades of red"  />
+<img src="figures/advanced_unnamed-chunk-14-1.png" alt="Percent population change map for Allen's Hummingbird, showing 1-degree grid cells where the population has increased in shades of blue and grid cells where the population has decreased in shades of red"  />
 
 
 ## Advanced options and customized models
@@ -867,7 +478,7 @@ t_map <- plot_map(t)
 print(t_map)
 ```
 
-<img src="vignettes/articles/figures/advanced_unnamed-chunk-16-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the default end-point trend estimates"  />
+<img src="figures/advanced_unnamed-chunk-16-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the default end-point trend estimates"  />
 
 ### Slope-based Trends
 
@@ -896,7 +507,7 @@ t_map_slope <- plot_map(t,
 print(t_map_slope)
 ```
 
-<img src="vignettes/articles/figures/advanced_unnamed-chunk-17-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the slope-based trend estimates"  />
+<img src="figures/advanced_unnamed-chunk-17-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the slope-based trend estimates"  />
 
 ### Percent Change and probability of change
 
@@ -978,7 +589,7 @@ trajectories <- plot_indices(i_BARS)
 print(trajectories[["North"]] / trajectories[["South"]])
 ```
 
-<img src="vignettes/articles/figures/advanced_unnamed-chunk-21-1.png" alt="Population trajectories for Barn Swallow in the northern and southern parts of their range"  />
+<img src="figures/advanced_unnamed-chunk-21-1.png" alt="Population trajectories for Barn Swallow in the northern and southern parts of their range"  />
 
 ## Exporting and modifying the Stan models
 
@@ -1412,7 +1023,7 @@ dif_by_count <- ggplot(cv_dif) +
 dif_by_count
 ```
 
-<img src="vignettes/articles/figures/advanced_unnamed-chunk-34-1.png" alt="Cross validation differences"  />
+<img src="figures/advanced_unnamed-chunk-34-1.png" alt="Cross validation differences"  />
 
 
 

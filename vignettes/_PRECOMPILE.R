@@ -14,6 +14,7 @@ for(i in v) {
   read_lines(new) %>%
     str_replace_all("\"vignettes(/articles)*/", "\"") %>%
     write_lines(new)
+
 }
 
 cache <- list.files("./vignettes", "cache", include.dirs = TRUE,
