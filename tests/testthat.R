@@ -1,10 +1,9 @@
 library(testthat)
 
-if (requireNamespace("cmdstanr", quietly = TRUE)) {
-  if (is.null(cmdstanr::cmdstan_path(sanitize = FALSE))) {
+  if (is.null(cmdstanr::cmdstan_version(error_on_NA = FALSE))) {
     cmdstanr::install_cmdstan()
   }
-}
+
 
 suppressPackageStartupMessages(library(bbsBayes2))
 
