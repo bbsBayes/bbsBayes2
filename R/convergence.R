@@ -90,7 +90,10 @@ get_model_vars <- function(model_output, all = FALSE) {
 #' @inheritParams common_docs
 #' @family model assessment functions
 #'
-#' @return A data frame of model summary statistics.
+#' @return A data frame of model summary statistics, matching the output of
+#' `cmdstanr::summary()` plus one additional column `variable_type` that
+#' identifies categories of parameters (e.g., `n` for all of the annual
+#' indices for every stratum and year).
 #' @export
 #'
 #' @examples
