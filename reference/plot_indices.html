@@ -30,7 +30,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Generate plots of index trajectories by stratum</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/main/R/plot-indices.R" class="external-link"><code>R/plot-indices.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/v.1.1.3/R/plot-indices.R" class="external-link"><code>R/plot-indices.R</code></a></small>
       <div class="d-none name"><code>plot_indices.Rd</code></div>
     </div>
 
@@ -162,42 +162,50 @@ cases the number of observations increases over time.</p></dd>
 <span class="r-in"><span><span class="co"># Generate country, continent, and stratum indices</span></span></span>
 <span class="r-in"><span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate_indices.html">generate_indices</a></span><span class="op">(</span>model_output <span class="op">=</span> <span class="va">pacific_wren_model</span>,</span></span>
 <span class="r-in"><span>                      regions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"country"</span>, <span class="st">"continent"</span>, <span class="st">"stratum"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assert_valid_draws_format(format):</span> could not find function "assert_valid_draws_format"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region country</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region continent</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Processing region stratum</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Now, plot_indices() will generate a list of plots for all regions</span></span></span>
 <span class="r-in"><span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu">plot_indices</span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'i' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># To view any plot, use [[i]]</span></span></span>
 <span class="r-in"><span><span class="va">plots</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'plots' not found</span>
+<span class="r-plt img"><img src="plot_indices-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">plots</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'plots' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Canada"                   "United_States_of_America"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "continent"                "CA_AB_10"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "CA_BC_10"                 "CA_BC_4"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "CA_BC_5"                  "CA_BC_9"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "US_AK_2"                  "US_AK_4"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "US_AK_5"                  "US_CA_15"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "US_CA_32"                 "US_CA_5"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "US_ID_10"                 "US_MT_10"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "US_OR_10"                 "US_OR_5"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "US_OR_9"                  "US_WA_10"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "US_WA_5"                  "US_WA_9"                 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Suppose we wanted to access the continental plot. We could do so with</span></span></span>
 <span class="r-in"><span><span class="va">plots</span><span class="op">[[</span><span class="st">"continent"</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'plots' not found</span>
+<span class="r-plt img"><img src="plot_indices-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># You can specify to only plot a subset of years using min_year and max_year</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plots indices from 2015 onward</span></span></span>
 <span class="r-in"><span><span class="va">p_2015_min</span> <span class="op">&lt;-</span> <span class="fu">plot_indices</span><span class="op">(</span><span class="va">i</span>, min_year <span class="op">=</span> <span class="fl">2015</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'i' not found</span>
 <span class="r-in"><span><span class="va">p_2015_min</span><span class="op">[[</span><span class="st">"continent"</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'p_2015_min' not found</span>
+<span class="r-plt img"><img src="plot_indices-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#Plot up indices up to the year 2017</span></span></span>
 <span class="r-in"><span><span class="va">p_2017_max</span> <span class="op">&lt;-</span> <span class="fu">plot_indices</span><span class="op">(</span><span class="va">i</span>, max_year <span class="op">=</span> <span class="fl">2017</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'i' not found</span>
 <span class="r-in"><span><span class="va">p_2017_max</span><span class="op">[[</span><span class="st">"continent"</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'p_2017_max' not found</span>
+<span class="r-plt img"><img src="plot_indices-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#Plot indices between 2011 and 2016</span></span></span>
 <span class="r-in"><span><span class="va">p_2011_2016</span> <span class="op">&lt;-</span> <span class="fu">plot_indices</span><span class="op">(</span><span class="va">i</span>, min_year <span class="op">=</span> <span class="fl">2011</span>, max_year <span class="op">=</span> <span class="fl">2016</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'i' not found</span>
 <span class="r-in"><span><span class="va">p_2011_2016</span><span class="op">[[</span><span class="st">"continent"</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'p_2011_2016' not found</span>
+<span class="r-plt img"><img src="plot_indices-5.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

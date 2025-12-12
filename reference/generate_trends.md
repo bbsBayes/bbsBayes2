@@ -237,17 +237,15 @@ Other indices and trends functions:
 
 # Generate the continental and stratum indices
 i <- generate_indices(pacific_wren_model)
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
+#> Processing region continent
+#> Processing region stratum
 
 # Now, generate the trends
 t <- generate_trends(i)
-#> Error: object 'i' not found
 
 # Use the slope method
 t <- generate_trends(i, slope = TRUE)
-#> Error: object 'i' not found
 
 # Calculate probability of the population declining by 50%
 t <- generate_trends(i, prob_decrease = 50)
-#> Error: object 'i' not found
 ```

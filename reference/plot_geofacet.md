@@ -92,29 +92,30 @@ Other indices and trends functions:
 # Generate indices
 i <- generate_indices(pacific_wren_model,
                       regions = c("stratum", "prov_state"))
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
+#> Processing region stratum
+#> Processing region prov_state
 # Generate trends
 t <- generate_trends(i)
-#> Error: object 'i' not found
 
 # Now make the geofacet plot.
 plot_geofacet(i, trends = t, multiple = TRUE)
-#> Error: object 'i' not found
+
 plot_geofacet(i, trends = t, multiple = TRUE, col_viridis = TRUE)
-#> Error: object 'i' not found
+
 plot_geofacet(i, multiple = TRUE)
-#> Error: object 'i' not found
+
 plot_geofacet(i, trends = t, multiple = FALSE)
-#> Error: object 'i' not found
+
 plot_geofacet(i, multiple = FALSE)
-#> Error: object 'i' not found
+
 
 # With different ci_width, specify desired quantiles in indices
 i <- generate_indices(pacific_wren_model,
                       regions = c("stratum", "prov_state"),
                       quantiles = c(0.005, 0.995))
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
+#> Processing region stratum
+#> Processing region prov_state
 
 plot_geofacet(i, multiple = FALSE, ci_width = 0.99)
-#> Error: object 'i' not found
+
 ```

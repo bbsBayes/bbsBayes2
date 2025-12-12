@@ -226,15 +226,17 @@ Other indices and trends functions:
 
 # Generate the continental and stratum indices
 i <- generate_indices(pacific_wren_model)
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
+#> Processing region continent
+#> Processing region stratum
 
 # Generate the continental and stratum indices using hpdi
 i <- generate_indices(pacific_wren_model, hpdi = TRUE)
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
+#> Processing region continent
+#> Processing region stratum
 
 # Generate only country indices
 i_nat <- generate_indices(pacific_wren_model, regions = "country")
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
+#> Processing region country
 
 # Use a custom region specification (dummy example)
 library(dplyr)
@@ -255,5 +257,7 @@ i_custom <- generate_indices(
   pacific_wren_model,
   regions = c("country", "prov_state", "my_region"),
   regions_index = ri)
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
+#> Processing region country
+#> Processing region prov_state
+#> Processing region my_region
 ```

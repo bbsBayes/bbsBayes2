@@ -128,40 +128,48 @@ Other indices and trends functions:
 # Generate country, continent, and stratum indices
 i <- generate_indices(model_output = pacific_wren_model,
                       regions = c("country", "continent", "stratum"))
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
+#> Processing region country
+#> Processing region continent
+#> Processing region stratum
 
 # Now, plot_indices() will generate a list of plots for all regions
 plots <- plot_indices(i)
-#> Error: object 'i' not found
 
 # To view any plot, use [[i]]
 plots[[1]]
-#> Error: object 'plots' not found
+
 
 names(plots)
-#> Error: object 'plots' not found
+#>  [1] "Canada"                   "United_States_of_America"
+#>  [3] "continent"                "CA_AB_10"                
+#>  [5] "CA_BC_10"                 "CA_BC_4"                 
+#>  [7] "CA_BC_5"                  "CA_BC_9"                 
+#>  [9] "US_AK_2"                  "US_AK_4"                 
+#> [11] "US_AK_5"                  "US_CA_15"                
+#> [13] "US_CA_32"                 "US_CA_5"                 
+#> [15] "US_ID_10"                 "US_MT_10"                
+#> [17] "US_OR_10"                 "US_OR_5"                 
+#> [19] "US_OR_9"                  "US_WA_10"                
+#> [21] "US_WA_5"                  "US_WA_9"                 
 
 # Suppose we wanted to access the continental plot. We could do so with
 plots[["continent"]]
-#> Error: object 'plots' not found
+
 
 # You can specify to only plot a subset of years using min_year and max_year
 
 # Plots indices from 2015 onward
 p_2015_min <- plot_indices(i, min_year = 2015)
-#> Error: object 'i' not found
 p_2015_min[["continent"]]
-#> Error: object 'p_2015_min' not found
+
 
 #Plot up indices up to the year 2017
 p_2017_max <- plot_indices(i, max_year = 2017)
-#> Error: object 'i' not found
 p_2017_max[["continent"]]
-#> Error: object 'p_2017_max' not found
+
 
 #Plot indices between 2011 and 2016
 p_2011_2016 <- plot_indices(i, min_year = 2011, max_year = 2016)
-#> Error: object 'i' not found
 p_2011_2016[["continent"]]
-#> Error: object 'p_2011_2016' not found
+
 ```

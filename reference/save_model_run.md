@@ -67,7 +67,6 @@ Other modelling functions:
 
 # But you can also deliberately save the file (here with an example model)
 save_model_run(pacific_wren_model, path = "my_model.rds")
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
 
 # Clean up
 unlink("my_model.rds")

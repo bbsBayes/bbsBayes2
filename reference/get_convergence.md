@@ -45,11 +45,48 @@ opts <- options(warn = -1)
 # Using the example model for Pacific Wrens
 
 get_convergence(pacific_wren_model)
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
+#> # A tibble: 10,917 × 5
+#>    variable_type variable       rhat ess_bulk ess_tail
+#>    <chr>         <chr>         <dbl>    <dbl>    <dbl>
+#>  1 lp__          lp__          1.00      26.9     21.0
+#>  2 strata_raw    strata_raw[1] 1.03      64.1     49.6
+#>  3 strata_raw    strata_raw[2] 1.00      64.1     49.6
+#>  4 strata_raw    strata_raw[3] 0.966     64.1     43.9
+#>  5 strata_raw    strata_raw[4] 0.981     56.4     28.0
+#>  6 strata_raw    strata_raw[5] 1.01      52.3     37.7
+#>  7 strata_raw    strata_raw[6] 1.24      64.1     18.9
+#>  8 strata_raw    strata_raw[7] 1.01      30.7     22.4
+#>  9 strata_raw    strata_raw[8] 1.03      54.7     28.0
+#> 10 strata_raw    strata_raw[9] 0.987     64.1     43.9
+#> # ℹ 10,907 more rows
 get_convergence(pacific_wren_model, variables = "strata_raw")
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
+#> # A tibble: 19 × 5
+#>    variable_type variable        rhat ess_bulk ess_tail
+#>    <chr>         <chr>          <dbl>    <dbl>    <dbl>
+#>  1 strata_raw    strata_raw[1]  1.03      64.1     49.6
+#>  2 strata_raw    strata_raw[2]  1.00      64.1     49.6
+#>  3 strata_raw    strata_raw[3]  0.966     64.1     43.9
+#>  4 strata_raw    strata_raw[4]  0.981     56.4     28.0
+#>  5 strata_raw    strata_raw[5]  1.01      52.3     37.7
+#>  6 strata_raw    strata_raw[6]  1.24      64.1     18.9
+#>  7 strata_raw    strata_raw[7]  1.01      30.7     22.4
+#>  8 strata_raw    strata_raw[8]  1.03      54.7     28.0
+#>  9 strata_raw    strata_raw[9]  0.987     64.1     43.9
+#> 10 strata_raw    strata_raw[10] 1.10      64.1     56.9
+#> 11 strata_raw    strata_raw[11] 0.966     62.5     22.4
+#> 12 strata_raw    strata_raw[12] 1.02      64.1     21.4
+#> 13 strata_raw    strata_raw[13] 0.983     64.1     30.7
+#> 14 strata_raw    strata_raw[14] 1.04      64.1     23.5
+#> 15 strata_raw    strata_raw[15] 1.07      64.1     49.6
+#> 16 strata_raw    strata_raw[16] 1.06      64.1     37.7
+#> 17 strata_raw    strata_raw[17] 0.999     64.1     49.6
+#> 18 strata_raw    strata_raw[18] 0.999     51.9     28.0
+#> 19 strata_raw    strata_raw[19] 1.07      64.1     49.6
 get_convergence(pacific_wren_model, variables = "strata_raw[9]")
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
+#> # A tibble: 1 × 5
+#>   variable_type variable       rhat ess_bulk ess_tail
+#>   <chr>         <chr>         <dbl>    <dbl>    <dbl>
+#> 1 strata_raw    strata_raw[9] 0.987     64.1     43.9
 
 # Restore warnings
 options(opts)

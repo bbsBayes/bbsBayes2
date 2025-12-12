@@ -223,18 +223,18 @@ m <- run_model(pm, iter_warmup = 20, iter_sampling = 20, chains = 2)
 #> Chain 2            adapt_window = 15 
 #> Chain 2            term_buffer = 2 
 #> Chain 2 Iteration:  1 / 40 [  2%]  (Warmup) 
-#> Chain 1 Iteration: 21 / 40 [ 52%]  (Sampling) 
 #> Chain 2 Iteration: 21 / 40 [ 52%]  (Sampling) 
+#> Chain 1 Iteration: 21 / 40 [ 52%]  (Sampling) 
 #> Chain 2 Iteration: 40 / 40 [100%]  (Sampling) 
-#> Chain 2 finished in 50.3 seconds.
+#> Chain 2 finished in 47.4 seconds.
 #> Chain 1 Iteration: 40 / 40 [100%]  (Sampling) 
-#> Chain 1 finished in 74.5 seconds.
+#> Chain 1 finished in 53.7 seconds.
 #> 
 #> Both chains finished successfully.
-#> Mean chain execution time: 62.4 seconds.
-#> Total execution time: 74.7 seconds.
+#> Mean chain execution time: 50.5 seconds.
+#> Total execution time: 53.8 seconds.
 #> 
-#> Warning: 20 of 40 (50.0%) transitions hit the maximum treedepth limit of 11.
+#> Warning: 1 of 2 chains had an E-BFMI less than 0.3.
 #> See https://mc-stan.org/misc/warnings for details.
-#> Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/docs/reference/BBS_PacificWren_first_diff_hier_202512121928_STAN.rds
+#> Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/docs/reference/BBS_PacificWren_first_diff_hier_202512121937_STAN.rds
 ```

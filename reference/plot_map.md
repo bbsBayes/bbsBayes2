@@ -87,29 +87,25 @@ Other indices and trends functions:
 
 # Generate the continental and stratum indices
 i <- generate_indices(pacific_wren_model)
-#> Error in assert_valid_draws_format(format): could not find function "assert_valid_draws_format"
+#> Processing region continent
+#> Processing region stratum
 
 # Now generate trends
 t <- generate_trends(i, slope = TRUE)
-#> Error: object 'i' not found
 
 # Generate the map (without slope trends)
 plot_map(t)
-#> Error: `trends` must a list created by `generate_trends()` containing
-#> `meta_data`, `meta_strata`, `trends`, `raw_data`
+
 
 # Generate the map (with slope trends)
 plot_map(t, slope = TRUE)
-#> Error: `trends` must a list created by `generate_trends()` containing
-#> `meta_data`, `meta_strata`, `trends`, `raw_data`
+
 
 # Viridis
 plot_map(t, col_viridis = TRUE)
-#> Error: `trends` must a list created by `generate_trends()` containing
-#> `meta_data`, `meta_strata`, `trends`, `raw_data`
+
 
 # Generate a map (with alternate column - lower 95% Credible limit)
 plot_map(t, alternate_column = "trend_q_0.05")
-#> Error: `trends` must a list created by `generate_trends()` containing
-#> `meta_data`, `meta_strata`, `trends`, `raw_data`
+
 ```
