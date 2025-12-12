@@ -3,6 +3,7 @@
 ``` r
 library(bbsBayes2)
 library(tidyverse)
+#> Warning: package 'tidyverse' was built under R version 4.5.2
 ```
 
 ## Welcome!
@@ -130,10 +131,10 @@ release-versions:
 - Two levels `state` and `stop` (only `state` works with bbsBayes2
   models, the `stop` option is provided to facilitate custom projects
   and models)
-- Annual releases `2020`, `2022`, `2023`, and ‘2024’ more options will
-  be added as annual releases occur).
+- Annual releases `2020`, `2022`, `2023`, ‘2024’, and `2025` more
+  options will be added as annual releases occur).
 
-The defaults (level `state` and the most recent release - `2024`) is
+The defaults (level `state` and the most recent release - `2025`) is
 almost certainly what you are looking for, Unless you have a specific
 reason to need a different version. The most recent release will include
 all of the data included in earlier releases. However you can download
@@ -270,34 +271,34 @@ search_species("Geai bleu")
 #> 1  4770 Blue Jay Geai bleu Passeriformes Corvidae Cyanocitta cristata TRUE
 search_species("Cyanocitta")
 #> # A tibble: 2 × 8
-#>     aou english       french          order         family   genus      species unid_combined
-#>   <dbl> <chr>         <chr>           <chr>         <chr>    <chr>      <chr>   <lgl>        
-#> 1  4780 Steller's Jay Geai de Steller Passeriformes Corvidae Cyanocitta stelle… TRUE         
-#> 2  4770 Blue Jay      Geai bleu       Passeriformes Corvidae Cyanocitta crista… TRUE
+#>     aou english       french          order         family   genus      species  unid_combined
+#>   <dbl> <chr>         <chr>           <chr>         <chr>    <chr>      <chr>    <lgl>        
+#> 1  4780 Steller's Jay Geai de Steller Passeriformes Corvidae Cyanocitta stelleri TRUE         
+#> 2  4770 Blue Jay      Geai bleu       Passeriformes Corvidae Cyanocitta cristata TRUE
 search_species("Corvidae")
 #> # A tibble: 20 × 8
-#>      aou english                              french order family genus species unid_combined
-#>    <dbl> <chr>                                <chr>  <chr> <chr>  <chr> <chr>   <lgl>        
-#>  1  4840 Canada Jay                           Mésan… Pass… Corvi… Peri… canade… TRUE         
-#>  2  4830 Green Jay                            Geai … Pass… Corvi… Cyan… yncas   TRUE         
-#>  3  4920 Pinyon Jay                           Geai … Pass… Corvi… Gymn… cyanoc… TRUE         
-#>  4  4780 Steller's Jay                        Geai … Pass… Corvi… Cyan… stelle… TRUE         
-#>  5  4770 Blue Jay                             Geai … Pass… Corvi… Cyan… crista… TRUE         
-#>  6  4790 Florida Scrub-Jay                    Geai … Pass… Corvi… Aphe… coerul… TRUE         
-#>  7  4811 Island Scrub-Jay                     Geai … Pass… Corvi… Aphe… insula… TRUE         
-#>  8  4812 California Scrub-Jay                 Geai … Pass… Corvi… Aphe… califo… TRUE         
-#>  9  4813 Woodhouse's Scrub-Jay                Geai … Pass… Corvi… Aphe… woodho… TRUE         
-#> 10  4810 unid. California Scrub-Jay / Woodho… unid … Pass… Corvi… Aphe… califo… TRUE         
-#> 11  4820 Mexican Jay                          Geai … Pass… Corvi… Aphe… wollwe… TRUE         
-#> 12  4910 Clark's Nutcracker                   Casse… Pass… Corvi… Nuci… columb… TRUE         
-#> 13  4750 Black-billed Magpie                  Pie d… Pass… Corvi… Pica  hudson… TRUE         
-#> 14  4760 Yellow-billed Magpie                 Pie à… Pass… Corvi… Pica  nuttal… TRUE         
-#> 15  4880 American Crow                        Corne… Pass… Corvi… Corv… brachy… TRUE         
-#> 16  4900 Fish Crow                            Corne… Pass… Corvi… Corv… ossifr… TRUE         
-#> 17  4881 unid. American Crow / Fish Crow      unid … Pass… Corvi… Corv… brachy… TRUE         
-#> 18  4870 Chihuahuan Raven                     Corbe… Pass… Corvi… Corv… crypto… TRUE         
-#> 19  4860 Common Raven                         Grand… Pass… Corvi… Corv… corax   TRUE         
-#> 20  4865 unid. Chihuahuan Raven / Common Rav… unid … Pass… Corvi… Corv… crypto… TRUE
+#>      aou english                                            french                    order family genus species unid_combined
+#>    <dbl> <chr>                                              <chr>                     <chr> <chr>  <chr> <chr>   <lgl>        
+#>  1  4840 Canada Jay                                         Mésangeai du Canada       Pass… Corvi… Peri… canade… TRUE         
+#>  2  4830 Green Jay                                          Geai vert                 Pass… Corvi… Cyan… yncas   TRUE         
+#>  3  4920 Pinyon Jay                                         Geai des pinèdes          Pass… Corvi… Gymn… cyanoc… TRUE         
+#>  4  4780 Steller's Jay                                      Geai de Steller           Pass… Corvi… Cyan… stelle… TRUE         
+#>  5  4770 Blue Jay                                           Geai bleu                 Pass… Corvi… Cyan… crista… TRUE         
+#>  6  4790 Florida Scrub-Jay                                  Geai à gorge blanche      Pass… Corvi… Aphe… coerul… TRUE         
+#>  7  4811 Island Scrub-Jay                                   Geai de Santa Cruz        Pass… Corvi… Aphe… insula… TRUE         
+#>  8  4812 California Scrub-Jay                               Geai buissonnier          Pass… Corvi… Aphe… califo… TRUE         
+#>  9  4813 Woodhouse's Scrub-Jay                              Geai de Woodhouse         Pass… Corvi… Aphe… woodho… TRUE         
+#> 10  4810 unid. California Scrub-Jay / Woodhouse's Scrub-Jay unid Geai buissonnier / … Pass… Corvi… Aphe… califo… TRUE         
+#> 11  4820 Mexican Jay                                        Geai du Mexique           Pass… Corvi… Aphe… wollwe… TRUE         
+#> 12  4910 Clark's Nutcracker                                 Cassenoix d'Amérique      Pass… Corvi… Nuci… columb… TRUE         
+#> 13  4750 Black-billed Magpie                                Pie d'Amérique            Pass… Corvi… Pica  hudson… TRUE         
+#> 14  4760 Yellow-billed Magpie                               Pie à bec jaune           Pass… Corvi… Pica  nuttal… TRUE         
+#> 15  4880 American Crow                                      Corneille d'Amérique      Pass… Corvi… Corv… brachy… TRUE         
+#> 16  4900 Fish Crow                                          Corneille de rivage       Pass… Corvi… Corv… ossifr… TRUE         
+#> 17  4881 unid. American Crow / Fish Crow                    unid Corneille d'Amériqu… Pass… Corvi… Corv… brachy… TRUE         
+#> 18  4870 Chihuahuan Raven                                   Corbeau à cou blanc       Pass… Corvi… Corv… crypto… TRUE         
+#> 19  4860 Common Raven                                       Grand Corbeau             Pass… Corvi… Corv… corax   TRUE         
+#> 20  4865 unid. Chihuahuan Raven / Common Raven              unid Grand Corbeau / Cor… Pass… Corvi… Corv… crypto… TRUE
 ```
 
 ###### Species groupings
@@ -329,36 +330,21 @@ or time.
 
 ``` r
 bbsBayes2::species_forms
-#>    aou_unid                               english_original
-#> 1      2973              unid. Dusky Grouse / Sooty Grouse
-#> 2      5677                   (unid. race) Dark-eyed Junco
-#> 3      4123    (unid. Red/Yellow Shafted) Northern Flicker
-#> 4      5077      unid. Bullock's Oriole / Baltimore Oriole
-#> 5      3370                                Red-tailed Hawk
-#> 6      4022                                unid. sapsucker
-#> 7      1690                                     Snow Goose
-#> 8      6295       unid. Cassin's Vireo / Blue-headed Vireo
-#> 9      4665     unid. Alder Flycatcher / Willow Flycatcher
-#> 10     4642   unid. Cordilleran / Pacific-slope Flycatcher
-#> 11       12            unid. Western Grebe / Clark's Grebe
-#> 12     6556 (unid. Myrtle/Audubon's) Yellow-rumped Warbler
-#> 13     5275           unid. Common Redpoll / Hoary Redpoll
-#> 14     5012                               unid. Meadowlark
-#>                                                   english_combined
-#> 1                                        Blue Grouse (Dusky/Sooty)
-#> 2                                      Dark-eyed Junco (all forms)
-#> 3                                     Northern Flicker (all forms)
-#> 4                            Northern Oriole (Bullock's/Baltimore)
-#> 5                                      Red-tailed Hawk (all forms)
-#> 6  Sapsuckers (Yellow-bellied/Red-naped/Red-breasted/Williamson's)
-#> 7                                           Snow Goose (all forms)
-#> 8                            Solitary Vireo (Blue-headed/Cassin's)
-#> 9                               Traill's Flycatcher (Alder/Willow)
-#> 10                  Western Flycatcher (Cordilleran/Pacific-slope)
-#> 11                                 Western Grebe (Clark's/Western)
-#> 12                               Yellow-rumped Warbler (all forms)
-#> 13                                          Redpoll (Common/Hoary)
-#> 14                         Meadowlark (Eastern/Western/Chihuahuan)
+#>    aou_unid                               english_original                                                english_combined
+#> 1      2973              unid. Dusky Grouse / Sooty Grouse                                       Blue Grouse (Dusky/Sooty)
+#> 2      5677                   (unid. race) Dark-eyed Junco                                     Dark-eyed Junco (all forms)
+#> 3      4123    (unid. Red/Yellow Shafted) Northern Flicker                                    Northern Flicker (all forms)
+#> 4      5077      unid. Bullock's Oriole / Baltimore Oriole                           Northern Oriole (Bullock's/Baltimore)
+#> 5      3370                                Red-tailed Hawk                                     Red-tailed Hawk (all forms)
+#> 6      4022                                unid. sapsucker Sapsuckers (Yellow-bellied/Red-naped/Red-breasted/Williamson's)
+#> 7      1690                                     Snow Goose                                          Snow Goose (all forms)
+#> 8      6295       unid. Cassin's Vireo / Blue-headed Vireo                           Solitary Vireo (Blue-headed/Cassin's)
+#> 9      4665     unid. Alder Flycatcher / Willow Flycatcher                              Traill's Flycatcher (Alder/Willow)
+#> 10     4642   unid. Cordilleran / Pacific-slope Flycatcher                  Western Flycatcher (Cordilleran/Pacific-slope)
+#> 11       12            unid. Western Grebe / Clark's Grebe                                 Western Grebe (Clark's/Western)
+#> 12     6556 (unid. Myrtle/Audubon's) Yellow-rumped Warbler                               Yellow-rumped Warbler (all forms)
+#> 13     5275           unid. Common Redpoll / Hoary Redpoll                                          Redpoll (Common/Hoary)
+#> 14     5012                               unid. Meadowlark                         Meadowlark (Eastern/Western/Chihuahuan)
 #>                                                french_combined                       aou_id
 #> 1                            Tétras sombre (sombre/fuligineux)                   2970, 2971
 #> 2                            Junco ardoisé (toutes les formes) 5671, 5670, 5680, 5660, 5690
@@ -520,8 +506,7 @@ print(sp$spatial_data$map)
 ```
 
 ![Map showing the strata and neighbourhood relationships among them for
-Scissor-tailed
-Flycatcher](articles/articles/figures/bbsBayes2_unnamed-chunk-23-1.png)
+Scissor-tailed Flycatcher](figures/bbsBayes2_unnamed-chunk-23-1.png)
 
 ### Workflow to explore the model outputs
 
@@ -713,21 +698,20 @@ We can explore or extract these indices for saving as an external file
 ``` r
 i[["indices"]]
 #> # A tibble: 1,508 × 17
-#>     year region  region_type strata_included strata_excluded index index_q_0.025 index_q_0.05
-#>    <dbl> <chr>   <chr>       <chr>           <chr>           <dbl>         <dbl>        <dbl>
-#>  1  1967 contin… continent   US-AR-24 ; US-… ""              13.0          11.6         11.8 
-#>  2  1968 contin… continent   US-AR-24 ; US-… ""              12.9          11.8         12.0 
-#>  3  1969 contin… continent   US-AR-24 ; US-… ""              13.0          12.0         12.1 
-#>  4  1970 contin… continent   US-AR-24 ; US-… ""              13.0          12.0         12.2 
-#>  5  1971 contin… continent   US-AR-24 ; US-… ""              12.9          12.0         12.1 
-#>  6  1972 contin… continent   US-AR-24 ; US-… ""              12.7          11.9         12.1 
-#>  7  1973 contin… continent   US-AR-24 ; US-… ""              11.6          10.9         11.0 
-#>  8  1974 contin… continent   US-AR-24 ; US-… ""              10.9          10.2         10.4 
-#>  9  1975 contin… continent   US-AR-24 ; US-… ""              10.3           9.61         9.72
-#> 10  1976 contin… continent   US-AR-24 ; US-… ""               9.36          8.76         8.86
+#>     year region    region_type strata_included      strata_excluded index index_q_0.025 index_q_0.05 index_q_0.25 index_q_0.75
+#>    <dbl> <chr>     <chr>       <chr>                <chr>           <dbl>         <dbl>        <dbl>        <dbl>        <dbl>
+#>  1  1967 continent continent   US-AR-24 ; US-AR-25… ""              13.0          11.6         11.8         12.5         13.4 
+#>  2  1968 continent continent   US-AR-24 ; US-AR-25… ""              12.9          11.8         12.0         12.5         13.3 
+#>  3  1969 continent continent   US-AR-24 ; US-AR-25… ""              13.0          12.0         12.1         12.6         13.3 
+#>  4  1970 continent continent   US-AR-24 ; US-AR-25… ""              13.0          12.0         12.2         12.7         13.3 
+#>  5  1971 continent continent   US-AR-24 ; US-AR-25… ""              12.9          12.0         12.1         12.6         13.2 
+#>  6  1972 continent continent   US-AR-24 ; US-AR-25… ""              12.7          11.9         12.1         12.4         13.0 
+#>  7  1973 continent continent   US-AR-24 ; US-AR-25… ""              11.6          10.9         11.0         11.4         11.9 
+#>  8  1974 continent continent   US-AR-24 ; US-AR-25… ""              10.9          10.2         10.4         10.7         11.2 
+#>  9  1975 continent continent   US-AR-24 ; US-AR-25… ""              10.3           9.61         9.72        10.1         10.5 
+#> 10  1976 continent continent   US-AR-24 ; US-AR-25… ""               9.36          8.76         8.86         9.16         9.58
 #> # ℹ 1,498 more rows
-#> # ℹ 9 more variables: index_q_0.25 <dbl>, index_q_0.75 <dbl>, index_q_0.95 <dbl>,
-#> #   index_q_0.975 <dbl>, obs_mean <dbl>, n_routes <int>, n_routes_total <int>,
+#> # ℹ 7 more variables: index_q_0.95 <dbl>, index_q_0.975 <dbl>, obs_mean <dbl>, n_routes <int>, n_routes_total <int>,
 #> #   n_non_zero <int>, backcast_flag <dbl>
 ```
 
@@ -747,10 +731,9 @@ case that means one plot for the continent, and one for each stratum.
 
 ``` r
 names(p)
-#>  [1] "continent" "US_AR_24"  "US_AR_25"  "US_AR_26"  "US_KS_18"  "US_KS_19"  "US_KS_22" 
-#>  [8] "US_LA_25"  "US_LA_37"  "US_MO_22"  "US_MO_24"  "US_NM_18"  "US_NM_35"  "US_OK_18" 
-#> [15] "US_OK_19"  "US_OK_21"  "US_OK_22"  "US_OK_25"  "US_TX_18"  "US_TX_19"  "US_TX_20" 
-#> [22] "US_TX_21"  "US_TX_25"  "US_TX_35"  "US_TX_36"  "US_TX_37"
+#>  [1] "continent" "US_AR_24"  "US_AR_25"  "US_AR_26"  "US_KS_18"  "US_KS_19"  "US_KS_22"  "US_LA_25"  "US_LA_37"  "US_MO_22" 
+#> [11] "US_MO_24"  "US_NM_18"  "US_NM_35"  "US_OK_18"  "US_OK_19"  "US_OK_21"  "US_OK_22"  "US_OK_25"  "US_TX_18"  "US_TX_19" 
+#> [21] "US_TX_20"  "US_TX_21"  "US_TX_25"  "US_TX_35"  "US_TX_36"  "US_TX_37"
 ```
 
 We can plot them individually by pulling a plot out of the list
@@ -762,7 +745,7 @@ print(p[["continent"]])
 ![Population trajectory graph, showing the estimated annual relative
 abundances, their associated 95% credible intervals, and points
 representing the raw mean observed
-counts.](articles/articles/figures/bbsBayes2_unnamed-chunk-36-1.png)
+counts.](figures/bbsBayes2_unnamed-chunk-36-1.png)
 
 Each of these plots is a [ggplot2](https://github.com/tidyverse/ggplot2)
 object that can be modified like any other. For example, you can modify
@@ -779,7 +762,7 @@ print(p1_mod)
 
 ![Population trajectory graph, modified to show only the last 20 years
 of the time-series and remove the
-title](articles/articles/figures/bbsBayes2_unnamed-chunk-37-1.png)
+title](figures/bbsBayes2_unnamed-chunk-37-1.png)
 
 ##### Spaghetti plots to show uncertainty in population trajectories
 
@@ -814,8 +797,7 @@ print(p[["continent"]])
 
 ![Population trajectory graph, showing a posterior sample of estimated
 trajectories as multiple overlapping lines, and points representing the
-raw mean observed
-counts.](articles/articles/figures/bbsBayes2_unnamed-chunk-38-1.png)
+raw mean observed counts.](figures/bbsBayes2_unnamed-chunk-38-1.png)
 There are arguments that also allow the user to control the transparency
 of each plotted line, as well as the number of lines to plot (the
 default is to draw 100 random samples).
@@ -836,25 +818,24 @@ We can explore or extract these trends for saving as an external file
 ``` r
 t[["trends"]]
 #> # A tibble: 26 × 27
-#>    start_year end_year region    region_type strata_included          strata_excluded   trend
-#>         <dbl>    <dbl> <chr>     <chr>       <chr>                    <chr>             <dbl>
-#>  1       1967     2024 continent continent   US-AR-24 ; US-AR-25 ; U… ""              -0.907 
-#>  2       1967     2024 US-AR-24  stratum     US-AR-24                 ""               4.39  
-#>  3       1967     2024 US-AR-25  stratum     US-AR-25                 ""               0.291 
-#>  4       1967     2024 US-AR-26  stratum     US-AR-26                 ""               4.73  
-#>  5       1967     2024 US-KS-18  stratum     US-KS-18                 ""               2.93  
-#>  6       1967     2024 US-KS-19  stratum     US-KS-19                 ""              -0.454 
-#>  7       1967     2024 US-KS-22  stratum     US-KS-22                 ""              -0.0757
-#>  8       1967     2024 US-LA-25  stratum     US-LA-25                 ""              -1.20  
-#>  9       1967     2024 US-LA-37  stratum     US-LA-37                 ""               0.324 
-#> 10       1967     2024 US-MO-22  stratum     US-MO-22                 ""              -0.215 
+#>    start_year end_year region    region_type strata_included   strata_excluded   trend trend_q_0.025 trend_q_0.05 trend_q_0.25
+#>         <dbl>    <dbl> <chr>     <chr>       <chr>             <chr>             <dbl>         <dbl>        <dbl>        <dbl>
+#>  1       1967     2024 continent continent   US-AR-24 ; US-AR… ""              -0.907         -1.14        -1.10       -0.985 
+#>  2       1967     2024 US-AR-24  stratum     US-AR-24          ""               4.39           3.12         3.33        3.97  
+#>  3       1967     2024 US-AR-25  stratum     US-AR-25          ""               0.291         -0.415       -0.311       0.0369
+#>  4       1967     2024 US-AR-26  stratum     US-AR-26          ""               4.73           2.82         3.15        4.06  
+#>  5       1967     2024 US-KS-18  stratum     US-KS-18          ""               2.93          -1.08        -0.504       1.50  
+#>  6       1967     2024 US-KS-19  stratum     US-KS-19          ""              -0.454         -1.26        -1.12       -0.715 
+#>  7       1967     2024 US-KS-22  stratum     US-KS-22          ""              -0.0757        -0.798       -0.677      -0.312 
+#>  8       1967     2024 US-LA-25  stratum     US-LA-25          ""              -1.20          -2.79        -2.56       -1.73  
+#>  9       1967     2024 US-LA-37  stratum     US-LA-37          ""               0.324         -1.81        -1.43       -0.387 
+#> 10       1967     2024 US-MO-22  stratum     US-MO-22          ""              -0.215         -2.10        -1.82       -0.858 
 #> # ℹ 16 more rows
-#> # ℹ 20 more variables: trend_q_0.025 <dbl>, trend_q_0.05 <dbl>, trend_q_0.25 <dbl>,
-#> #   trend_q_0.75 <dbl>, trend_q_0.95 <dbl>, trend_q_0.975 <dbl>, percent_change <dbl>,
-#> #   percent_change_q_0.025 <dbl>, percent_change_q_0.05 <dbl>, percent_change_q_0.25 <dbl>,
-#> #   percent_change_q_0.75 <dbl>, percent_change_q_0.95 <dbl>, percent_change_q_0.975 <dbl>,
-#> #   width_of_95_percent_credible_interval <dbl>, rel_abundance <dbl>,
-#> #   obs_rel_abundance <dbl>, n_routes <dbl>, mean_n_routes <dbl>, n_strata_included <dbl>, …
+#> # ℹ 17 more variables: trend_q_0.75 <dbl>, trend_q_0.95 <dbl>, trend_q_0.975 <dbl>, percent_change <dbl>,
+#> #   percent_change_q_0.025 <dbl>, percent_change_q_0.05 <dbl>, percent_change_q_0.25 <dbl>, percent_change_q_0.75 <dbl>,
+#> #   percent_change_q_0.95 <dbl>, percent_change_q_0.975 <dbl>, width_of_95_percent_credible_interval <dbl>,
+#> #   rel_abundance <dbl>, obs_rel_abundance <dbl>, n_routes <dbl>, mean_n_routes <dbl>, n_strata_included <dbl>,
+#> #   backcast_flag <dbl>
 ```
 
 We can generate trends for different periods of time, using any
@@ -867,25 +848,24 @@ t_10 <- generate_trends(i,
 t_10
 #> $trends
 #> # A tibble: 26 × 27
-#>    start_year end_year region    region_type strata_included           strata_excluded  trend
-#>         <dbl>    <dbl> <chr>     <chr>       <chr>                     <chr>            <dbl>
-#>  1       2011     2021 continent continent   US-AR-24 ; US-AR-25 ; US… ""              -2.11 
-#>  2       2011     2021 US-AR-24  stratum     US-AR-24                  ""               1.87 
-#>  3       2011     2021 US-AR-25  stratum     US-AR-25                  ""              -0.424
-#>  4       2011     2021 US-AR-26  stratum     US-AR-26                  ""               3.37 
-#>  5       2011     2021 US-KS-18  stratum     US-KS-18                  ""               3.21 
-#>  6       2011     2021 US-KS-19  stratum     US-KS-19                  ""               0.722
-#>  7       2011     2021 US-KS-22  stratum     US-KS-22                  ""              -4.11 
-#>  8       2011     2021 US-LA-25  stratum     US-LA-25                  ""              -1.99 
-#>  9       2011     2021 US-LA-37  stratum     US-LA-37                  ""               1.17 
-#> 10       2011     2021 US-MO-22  stratum     US-MO-22                  ""              -0.908
+#>    start_year end_year region    region_type strata_included    strata_excluded  trend trend_q_0.025 trend_q_0.05 trend_q_0.25
+#>         <dbl>    <dbl> <chr>     <chr>       <chr>              <chr>            <dbl>         <dbl>        <dbl>        <dbl>
+#>  1       2011     2021 continent continent   US-AR-24 ; US-AR-… ""              -2.11          -2.82       -2.70        -2.35 
+#>  2       2011     2021 US-AR-24  stratum     US-AR-24           ""               1.87          -1.08       -0.644        0.813
+#>  3       2011     2021 US-AR-25  stratum     US-AR-25           ""              -0.424         -2.85       -2.42        -1.23 
+#>  4       2011     2021 US-AR-26  stratum     US-AR-26           ""               3.37          -1.53       -0.708        1.74 
+#>  5       2011     2021 US-KS-18  stratum     US-KS-18           ""               3.21          -3.13       -1.98         1.14 
+#>  6       2011     2021 US-KS-19  stratum     US-KS-19           ""               0.722         -2.22       -1.75        -0.263
+#>  7       2011     2021 US-KS-22  stratum     US-KS-22           ""              -4.11          -6.36       -5.97        -4.85 
+#>  8       2011     2021 US-LA-25  stratum     US-LA-25           ""              -1.99          -8.07       -7.14        -4.20 
+#>  9       2011     2021 US-LA-37  stratum     US-LA-37           ""               1.17          -5.29       -4.26        -1.18 
+#> 10       2011     2021 US-MO-22  stratum     US-MO-22           ""              -0.908         -7.17       -6.08        -3.29 
 #> # ℹ 16 more rows
-#> # ℹ 20 more variables: trend_q_0.025 <dbl>, trend_q_0.05 <dbl>, trend_q_0.25 <dbl>,
-#> #   trend_q_0.75 <dbl>, trend_q_0.95 <dbl>, trend_q_0.975 <dbl>, percent_change <dbl>,
-#> #   percent_change_q_0.025 <dbl>, percent_change_q_0.05 <dbl>, percent_change_q_0.25 <dbl>,
-#> #   percent_change_q_0.75 <dbl>, percent_change_q_0.95 <dbl>, percent_change_q_0.975 <dbl>,
-#> #   width_of_95_percent_credible_interval <dbl>, rel_abundance <dbl>,
-#> #   obs_rel_abundance <dbl>, n_routes <dbl>, mean_n_routes <dbl>, n_strata_included <dbl>, …
+#> # ℹ 17 more variables: trend_q_0.75 <dbl>, trend_q_0.95 <dbl>, trend_q_0.975 <dbl>, percent_change <dbl>,
+#> #   percent_change_q_0.025 <dbl>, percent_change_q_0.05 <dbl>, percent_change_q_0.25 <dbl>, percent_change_q_0.75 <dbl>,
+#> #   percent_change_q_0.95 <dbl>, percent_change_q_0.975 <dbl>, width_of_95_percent_credible_interval <dbl>,
+#> #   rel_abundance <dbl>, obs_rel_abundance <dbl>, n_routes <dbl>, mean_n_routes <dbl>, n_strata_included <dbl>,
+#> #   backcast_flag <dbl>
 #> 
 #> $meta_data
 #> $meta_data$stratify_by
@@ -958,23 +938,22 @@ t_10
 #> 
 #> $raw_data
 #> # A tibble: 13,561 × 27
-#>    country_num state_num state   rpid   bcr  year strata_name route  obs_n latitude longitude
-#>          <dbl>     <dbl> <chr>  <dbl> <dbl> <dbl> <chr>       <chr>  <dbl>    <dbl>     <dbl>
-#>  1         840         7 ARKAN…   101    24  1967 US-AR-24    7-20  1.19e6     35.6     -92.7
-#>  2         840         7 ARKAN…   101    24  1968 US-AR-24    7-20  1.19e6     35.6     -92.7
-#>  3         840         7 ARKAN…   101    24  1969 US-AR-24    7-20  1.19e6     35.6     -92.7
-#>  4         840         7 ARKAN…   101    24  1970 US-AR-24    7-20  1.19e6     35.6     -92.7
-#>  5         840         7 ARKAN…   101    24  1971 US-AR-24    7-20  1.19e6     35.6     -92.7
-#>  6         840         7 ARKAN…   101    24  1972 US-AR-24    7-20  1.19e6     35.6     -92.7
-#>  7         840         7 ARKAN…   101    24  1973 US-AR-24    7-20  1.19e6     35.6     -92.7
-#>  8         840         7 ARKAN…   101    24  1974 US-AR-24    7-20  1.19e6     35.6     -92.7
-#>  9         840         7 ARKAN…   101    24  1975 US-AR-24    7-20  1.19e6     35.6     -92.7
-#> 10         840         7 ARKAN…   101    24  1976 US-AR-24    7-20  1.19e6     35.6     -92.7
+#>    country_num state_num state     rpid   bcr  year strata_name route   obs_n latitude longitude route_data_id run_type count
+#>          <dbl>     <dbl> <chr>    <dbl> <dbl> <dbl> <chr>       <chr>   <dbl>    <dbl>     <dbl>         <dbl>    <dbl> <dbl>
+#>  1         840         7 ARKANSAS   101    24  1967 US-AR-24    7-20  1190020     35.6     -92.7       6234569        1     0
+#>  2         840         7 ARKANSAS   101    24  1968 US-AR-24    7-20  1190020     35.6     -92.7       6167159        1     0
+#>  3         840         7 ARKANSAS   101    24  1969 US-AR-24    7-20  1190020     35.6     -92.7       6167974        1     0
+#>  4         840         7 ARKANSAS   101    24  1970 US-AR-24    7-20  1190020     35.6     -92.7       6170944        1     0
+#>  5         840         7 ARKANSAS   101    24  1971 US-AR-24    7-20  1190020     35.6     -92.7       6169605        1     0
+#>  6         840         7 ARKANSAS   101    24  1972 US-AR-24    7-20  1190020     35.6     -92.7       6174018        1     0
+#>  7         840         7 ARKANSAS   101    24  1973 US-AR-24    7-20  1190020     35.6     -92.7       6174632        1     0
+#>  8         840         7 ARKANSAS   101    24  1974 US-AR-24    7-20  1190020     35.6     -92.7       6174561        1     0
+#>  9         840         7 ARKANSAS   101    24  1975 US-AR-24    7-20  1190020     35.6     -92.7       6179773        1     0
+#> 10         840         7 ARKANSAS   101    24  1976 US-AR-24    7-20  1190020     35.6     -92.7       6179259        1     0
 #> # ℹ 13,551 more rows
-#> # ℹ 16 more variables: route_data_id <dbl>, run_type <dbl>, count <dbl>, n_routes <int>,
-#> #   non_zero_weight <dbl>, first_year <dbl>, max_n_routes_year <int>, n_obs <int>,
-#> #   mean_obs <dbl>, year_num <dbl>, strata <dbl>, observer <int>, site <int>,
-#> #   obs_route <chr>, obs_site <int>, n_obs_sites <int>
+#> # ℹ 13 more variables: n_routes <int>, non_zero_weight <dbl>, first_year <dbl>, max_n_routes_year <int>, n_obs <int>,
+#> #   mean_obs <dbl>, year_num <dbl>, strata <dbl>, observer <int>, site <int>, obs_route <chr>, obs_site <int>,
+#> #   n_obs_sites <int>
 ```
 
 #### Trend maps - visualizing the spatial variation in trends
@@ -989,7 +968,7 @@ print(trend_map)
 
 ![Population trend map showing strata with increasing trends in blues
 and decreasing trends in
-reds.](articles/articles/figures/bbsBayes2_unnamed-chunk-42-1.png)
+reds.](figures/bbsBayes2_unnamed-chunk-42-1.png)
 
 #### Barn Swallow example
 
@@ -1086,7 +1065,7 @@ print(BARS_continent)
 ![Population trajectory graph for Barn Swallow, showing the estimated
 annual relative abundances, their associated 95% credible intervals, and
 points representing the raw mean observed
-counts.](articles/articles/figures/bbsBayes2_unnamed-chunk-46-1.png)
+counts.](figures/bbsBayes2_unnamed-chunk-46-1.png)
 
 #### Smoothed population trajectories - gamye model
 
@@ -1119,8 +1098,7 @@ BARS_trend_map
 
 ![Population trend map for Barn Swallow, showing strata with increasing
 trends in shades of blue and strata with decreasing trends in shades of
-red](articles/articles/figures/bbsBayes2_unnamed-chunk-47-1.png) \###
-Modifying base plots
+red](figures/bbsBayes2_unnamed-chunk-47-1.png) \### Modifying base plots
 
 We can also add the smoothed annual indices to the plots of the full
 annual indices from above, taking advantage of the
@@ -1145,7 +1123,7 @@ print(BARS_continent_both)
 
 ![Population trajectory graph for Barn Swallow, same as above plus the
 smoothed annual indices are added as a grey
-line](articles/articles/figures/bbsBayes2_unnamed-chunk-48-1.png)
+line](figures/bbsBayes2_unnamed-chunk-48-1.png)
 
 Check out the other articles to explore more advanced usage or the
 [function reference](https://bbsbayes.github.io/bbsBayes2/reference/) to

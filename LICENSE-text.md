@@ -1,4 +1,4 @@
 # License
 
-    YEAR: 2024
+    YEAR: 2025
     COPYRIGHT HOLDER: Brandon P.M. Edwards, Adam C. Smith, Steffi LaZerte

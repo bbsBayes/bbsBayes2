@@ -280,8 +280,7 @@ traj_panel <- ggplot(data = saved_trajectories,
   scale_y_continuous(limits = c(0,NA))
 
 print(traj_panel)
-#> Warning: Removed 9 rows containing missing values or values outside the scale range
-#> (`geom_point()`).
+#> Warning: Removed 9 rows containing missing values or values outside the scale range (`geom_point()`).
 ```
 
 ![Population trajectory graphs for Scissor-tailed Flycatcher estimated
