@@ -142,6 +142,7 @@ ggplot() +
   geom_sf(data = rts, aes(colour = factor(strata_name)), size = 1) +
   scale_fill_viridis_d(aesthetics = c("colour", "fill"), guide = "none")
 ```
+
 ### Omitted BBS routes
 
 Based on the message we received during stratification (`Omitting...`) and this

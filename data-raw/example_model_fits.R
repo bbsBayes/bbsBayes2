@@ -41,26 +41,24 @@ for(j in 1:nrow(bbs_models)){
 
 
 
+
+
 s <- stratify("latlong",
               species = species) %>%
-  prepare_data()
+  prepare_data(min_n_routes = 1)
 
-for(j in 1:nrow(bbs_models)){
+for(mod in c("first_diff","gamye")){
 
-  mod <- as.character(bbs_models[j,"model"])
-  var <- as.character(bbs_models[j,"variant"])
+  var <- "spatial"
 
-  if(var == "spatial"){
-    p <- prepare_spatial(s, strata_map = load_map("bbs_usgs")) %>%
+
+    p <- prepare_spatial(s, strata_map = load_map("latlong")) %>%
       prepare_model(model = mod, model_variant = var)
-  }else{
-    p <- prepare_model(s,model = mod,
-                       model_variant = var)
-  }
+
 
   m <- paste0("output/",
               species_number,
-              "_",
+              "_latlong_",
               mod,
               "_",
               var)
@@ -69,6 +67,45 @@ for(j in 1:nrow(bbs_models)){
                   output_dir = "vignettes/articles")
 
 }
+
+
+
+
+species <- "Barn Swallow"
+#species <- "Arctic Warbler"
+
+# extract the unique numerical identifier for this species in the BBS database
+species_number <- search_species(species) %>%
+  select(aou) %>%
+  unlist()
+
+
+s <- stratify("bbs_cws",
+              species = species) %>%
+  prepare_data()
+
+model = "gamye"
+var = "spatial"
+
+p <- prepare_spatial(s, strata_map = load_map("bbs_cws")) %>%
+  prepare_model(model = mod, model_variant = var)
+
+
+m <- paste0("output/",
+            species_number,
+            "_",
+            mod,
+            "_",
+            var)
+m2 <- run_model(p,
+                output_basename = m,
+                output_dir = "vignettes/articles")
+
+
+
+
+
+
 
 
 

@@ -106,32 +106,9 @@ print(ppc_overplot)
 
 ## Prior predictive checks
 
-To perform prior predictive checks on the bbsBayes2 models, we have to modify the model's Stan code.
-First, to access the Stan code, create a new `.stan` file using the function `copy_model_file()`.
+As of version 1.1.3, all of the models in bbsBayes2 can generate predictions from the priors using `prepare_model(..., use_likelihood = FALSE)`. This `use_likelihood = FALSE` argument fits the model while ignoring the observed counts (i.e., ignoring the likelihood of the data, given the model). The resulting predictions are based solely on the priors. These prior predictive checks are especially useful if the user is modifying the default Stan models (e.g., new parameters, alternate prior values, etc.).
+Generating prior predictions for any model, based on the data structure (number of surveys, years, strata, routes, observers, etc.) for a given species is as simple as  setting `prepare_model(..., use_likeihood = FALSE)` and then sending the output from `prepare_model()` to the next stages of the standard modeling workflow.
 
-```{r priorpc}
-# writes a .stan file to the working directory
-copy_model_file(model = "gamye", model_variant = "spatial", dir = getwd())
-
-```
-Then rename the file as *gamye_spatial_bbs_prior.stan* and open it in a text editor (e.g. in an RStudio session) and make the following modifications.
-
-Within the data block of the model e.g., on line 26,
-  // alternate prior predictions
-  int<lower=0,upper=1> use_likelihood; //indicator, set to 0 if generating prior predictions (ignore data)
-
-And then in the model block, wrap a single if(use_likelihood) statement around the code near lines 254 that calls the count data.
-
-if(use_likelihood){  // this if statement uses the count_tr to estimate the likelihood of the data (i.e., the counts)
-if(use_pois){
-  count_tr ~ poisson_log(E); //vectorized count likelihood with log-transformation
-}else{
-   count_tr ~ neg_binomial_2_log(E,phi); //vectorized count likelihood with log-transformation
-
-}
-} // end of the use_likelihood if statement
-
-and when those two changes are made, save the file. Then this alternate model file can fit the same *gamye* model while ignoring the data and therefore all predictions will be drawn from the prior. The only further change is to the data list to add the sd[["model_data"]][["use_likelihood"]] <- 0, which tells Stan not to ignore the lines within the use_likelihood if statement.
 
 ```{R fit_prior, eval=FALSE}
 
@@ -147,27 +124,28 @@ d<- prepare_data(strata_data = stratified_data,
 
 sd <- prepare_spatial(d,load_map("bbs_cws")) # create spatial relationships
 
-## add the necessary data-object to ensure the model ignores the data.
-sd[["model_data"]][["use_likelihood"]] <- 0
-
 m<-prepare_model(
   prepared_data = sd,
   model="gamye",
   model_variant="spatial",
-  model_file = "gamye_spatial_bbs_prior.stan"
+  use_likelihood = FALSE
 )
 
 prior_preds <- run_model(model_data = m,
-                  refresh=100,
+                      refresh=100,
                       iter_sampling = 100,
-                      iter_warmup = 500,
+                      iter_warmup = 200,
                       output_dir = "output",
                       output_basename = "BBS_PacificWren_gamye_spatial_prior")
 
 ```
 
-```{r prior_predictions, fig.cap = "Prior predicted population trajectories", fig.alt = "Prior predicted population trajectories showing sample of predicted population trajectories that range from large increases to large decreases", fig.width = 8, fig.asp = 0.8}
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
 prior_preds <- readRDS("output/BBS_PacificWren_gamye_spatial_prior.rds")
+
+```
+
+```{r prior_predictions, fig.cap = "Prior predicted population trajectories", fig.alt = "Prior predicted population trajectories showing sample of predicted population trajectories that range from large increases to large decreases", fig.width = 8, fig.asp = 0.8}
 prior_inds <- generate_indices(prior_preds, regions = "continent")
 prior_trajs <- plot_indices(prior_inds, spaghetti = TRUE, n_spaghetti = 150)
 prior_trends <- generate_trends(prior_inds)
@@ -180,7 +158,7 @@ scale_y_continuous(transform = "log10")+
 coord_cartesian(ylim = c(NA,2000)) # some of the mean predictions are extreme
 print(cont_prior_trajectory)
 ```
-So the predicted population trajectories include everything from extreme increases (upper 95% credible interval of the trends = `r round(prior_trends$trends[1,"trend_q_0.975"],1) %/year` to extreme decreases (lower 95% credible interval of the trends = `r round(prior_trends$trends[1,"trend_q_0.025"],1) %/year`).
+So the predicted population trajectories include everything from extreme increases (upper 95% credible interval of the trends = `r round(prior_trends$trends[1,"trend_q_0.975"],1)` %/year to extreme decreases (lower 95% credible interval of the trends = `r round(prior_trends$trends[1,"trend_q_0.025"],1)` %/year).
 
 
 
@@ -283,7 +261,7 @@ m<-prepare_model(prepared_data = d,
 
 ## EXAMPLE - mapping uncertainty of trends or estimated abundance
 
-A new feature in version 1.1, is the ability to use the plot_map function to map any of the numerical values provided in the output from `generate_trends()`. For example, you may be interested in understanding the spatial distribution of the upper and lower bounds of a trend estimate, in order to visualise the uncertainty in the spatial distribution of trend estimates.
+A new feature since version 1.1, is the ability to use the plot_map function to map any of the numerical values provided in the output from `generate_trends()`. For example, you may be interested in understanding the spatial distribution of the upper and lower bounds of a trend estimate, in order to visualise the uncertainty in the spatial distribution of trend estimates.
 
 Here, we'll demonstrate this feature using previously generate fitted model output from applying the spatial GAMYE model to the data for Barn Swallow (2022 data-release).
 
@@ -331,6 +309,83 @@ Alternatively, we could visualise the width of the credible interval on the tren
 BARS_trend_map_CI_width <- plot_map(BARS_trends, alternate_column = "width_of_95_percent_credible_interval")
 
 BARS_trend_map_CI_width
+
+```
+
+## EXAMPLE - mapping percent-change in the population
+
+A new mapping option, as of version 1.1.3 includes a colour palette for mapping percent change in population that matches the palette and categories used in the eBird status and trend results.
+
+Here, we'll demonstrate this feature using previously generate fitted model output from applying the spatial first difference `first_diff` model to the data for Allen's Hummingbird using the `latlong` stratification and the 2025 data-release.
+
+First we fit the model, which requires less than an hour using the defaults.
+
+```{r, eval = FALSE}
+
+
+species <- "Allen's Hummingbird"
+
+# extract the unique numerical identifier for this species in the BBS database
+species_number <- search_species(species) %>%
+  filter(!grepl(pattern = "unid", x = english)) %>% #removing observations not clearly identified as Allen's Hummingbird.
+  select(aou) %>%
+  unlist()
+
+s <- stratify("latlong",
+              species = species) %>%
+  prepare_data(min_n_routes = 1) # because the strata are small, we lower the threshold for minimum number of routes
+
+mod <- "first_diff"
+var <= "spatial"
+
+p <- prepare_spatial(s, strata_map = load_map("latlong")) %>%
+ prepare_model(model = mod, model_variant = var)
+
+
+m <- paste0("output/",
+              species_number,
+              "_latlong_",
+              mod,
+              "_",
+              var)
+ALHU <- run_model(p,
+                  output_basename = m,
+                  output_dir = "output")
+
+
+```
+
+```{r, echo = FALSE, warnings = FALSE, messages = FALSE}
+
+ALHU <- readRDS("vignettes/articles/output/4340_latlong_first_diff_spatial.rds")
+
+```
+
+We generate annual indices of abundance, use those to estimate percent change over the short-term (2012 - 2022), and plot those changes on a map.
+
+```{r, fig.cap = "", fig.alt = "Percent population change map for Allen's Hummingbird, showing 1-degree grid cells where the population has increased in shades of blue and grid cells where the population has decreased in shades of red", fig.width = 8, fig.asp = 0.8}
+
+ALHU_smooth_indices <- generate_indices(ALHU)
+ALHU_trends <- generate_trends(ALHU_smooth_indices,
+                               min_year = 2012,
+                               max_year = 2022)
+ALHU_trend_map <- plot_map(ALHU_trends,
+                           alternate_column = "percent_change",
+                           col_ebird = TRUE)
+# load states and province map to overlay the 1-degree grid
+States_Provinces <- load_map("prov_state")
+# create a bounding box for the map, focused on the regions with data.
+bb <- load_map("latlong") %>%
+  filter(strata_name %in% ALHU_trends$meta_strata$strata_name) %>%
+  sf::st_bbox()
+
+# plot the map
+ALHU_trend_map + geom_sf(data = States_Provinces, fill = NA,
+                          colour = "black") +
+  coord_sf(xlim = bb[c("xmin","xmax")],
+           ylim = bb[c("ymin","ymax")])
+
+print(ALHU_trend_map)
 
 ```
 
