@@ -239,7 +239,8 @@ stratify <- function(by,
           paste0(.data$country, "-", .data$st_abrev, "-", .data$bcr)))
 
     if(stratify_type == "subset") {
-      meta_strata <- strata_custom
+      meta_strata <- strata_custom %>%
+        sf::st_drop_geometry()
     } else {
       meta_strata <- bbsBayes2::bbs_strata[[stratify_by]]
     }

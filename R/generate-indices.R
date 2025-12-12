@@ -94,7 +94,16 @@
 #'   - `strata_excluded` - Strata *potentially* excluded from the annual index
 #'   calculations because they have no observations of the species in the first
 #'   part of the time series, see arguments `max_backcast` and `start_year`
-#'   - `index` - Strata-weighted count index (median)
+#'   - `index` - Annual index of relative abundance. Expected mean count
+#'   by an average BBS observer, on an average BBS route in that region, in that
+#'   year. For single strata, these expected mean counts will closely match the
+#'   scale of the observed mean counts (obs_mean), after adjusting for the
+#'   estimated trends as well as variation in the routes and observers with
+#'   data in any given year. For composite regions (any region larger than a
+#'   single stratum), these indices also reflect the relative abundance and
+#'   area-weights of the strata that make up the larger region. Due to these
+#'   area and abundance weights the scale of these indices will not necessarily
+#'   match the scale of the observed mean counts.
 #'   - `index_q_XXX` - Strata-weighted count index (by different quantiles)
 #'   - `obs_mean` - Mean observed annual counts of birds across all routes and
 #'   all years. An alternative estimate of the average relative abundance of the
