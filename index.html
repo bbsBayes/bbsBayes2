@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Hierarchical Bayesian Analysis of North American BBS Data • bbsBayes2</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -29,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,11 +58,11 @@
 <!-- badges: end -->
 <div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="critical-news">Critical News:<a class="anchor" aria-label="anchor" href="#critical-news"></a>
+<img src="logo.png" class="logo" alt=""><h1 id="version-113-release-includes-2024-bbs-data">Version 1.1.3 release includes 2024 BBS data<a class="anchor" aria-label="anchor" href="#version-113-release-includes-2024-bbs-data"></a>
 </h1>
 </div>
 <div class="section level2">
-<h2 id="error-in-the-non-hierarchical-first-difference-model">Error in the non-hierarchical first-difference model<a class="anchor" aria-label="anchor" href="#error-in-the-non-hierarchical-first-difference-model"></a>
+<h2 id="error-in-some-old-versions-of-the-non-hierarchical-first-difference-model">Error in some old versions of the non-hierarchical first-difference model<a class="anchor" aria-label="anchor" href="#error-in-some-old-versions-of-the-non-hierarchical-first-difference-model"></a>
 </h2>
 <p>In versions 1.1.0, 1.1.1, and 1.1.2.0, the non-hierarchical variant of the first-difference model included a coding error. Estimates of trends and population trajectories from this model in these versions will be biased.</p>
 <p>The error was fixed in version 1.1.2.1. I am so sorry folks, please <a href="https://github.com/AdamCSmithCWS" class="external-link">reach out</a> if you would like more information or assistance in fixing/recovering from this.</p>
@@ -73,7 +72,7 @@
 <h1 id="bbsbayes2-">bbsBayes2 <a class="anchor" aria-label="anchor" href="#bbsbayes2-"></a>
 </h1>
 <p>bbsBayes2 is a package for performing hierarchical Bayesian analysis of North American Breeding Bird Survey (BBS) data. ‘bbsBayes2’ will run a full model analysis for one or more species that you choose, or you can take more control and specify how the data should be stratified, prepared for Stan, or modelled.</p>
-<p>bbsBayes2 is the successor to <a href="https://github.com/bbsBayes/bbsBayes" class="external-link">bbsBayes</a>, with a major shift in functionality. The MCMC backend is now <em>Stan</em> instead of <em>JAGS</em>, the workflow has been streamlined, the syntax has changed, and there are new functions. This vignette should help you get started with the package, and there are three others that should help explain some of the new features, choices, and more advanced uses:</p>
+<p>bbsBayes2 replaces <a href="https://github.com/bbsBayes/bbsBayes" class="external-link">bbsBayes</a>, with a major shift in functionality. The MCMC backend is now <em>Stan</em> instead of <em>JAGS</em>, the workflow has been streamlined, the syntax has changed, and there are new functions. This vignette should help you get started with the package, and there are three others that should help explain some of the new features, choices, and more advanced uses:</p>
 <p>Installation instructions are below.</p>
 <p>See the <a href="https://bbsBayes.github.io/bbsBayes2" class="external-link">documentation</a> for an overview of how to use bbsBayes2.</p>
 <p>In addition, there are four vignettes that will help users get familiar with the package and the new functionality.</p>
@@ -143,9 +142,9 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Brandon P.M. Edwards <br><small class="roles"> Author, maintainer </small>  </li>
-<li>Adam C. Smith <br><small class="roles"> Author </small>  </li>
-<li>Steffi LaZerte <br><small class="roles"> Author </small>  </li>
+<li>Brandon P.M. Edwards <br><small class="roles"> Author, maintainer </small>   </li>
+<li>Adam C. Smith <br><small class="roles"> Author </small>   </li>
+<li>Steffi LaZerte <br><small class="roles"> Author </small>   </li>
 </ul>
 </div>
 
@@ -168,7 +167,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

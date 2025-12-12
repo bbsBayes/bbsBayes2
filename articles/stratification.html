@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Stratification • bbsBayes2</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -26,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +59,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Stratification</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/v.1.1.2.2/vignettes/articles/stratification.Rmd" class="external-link"><code>vignettes/articles/stratification.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/main/vignettes/articles/stratification.Rmd" class="external-link"><code>vignettes/articles/stratification.Rmd</code></a></small>
       <div class="d-none name"><code>stratification.Rmd</code></div>
     </div>
 
@@ -113,7 +112,7 @@ included in bbsBayes2 with <code><a href="../reference/load_map.html">load_map()
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span><span class="st">"bbs_usgs"</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">strata_name</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span>guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fstratification_unnamed-chunk-2-1.png" alt="Map of the BBS USGS stratification showing the regions that represent spatial intersections of Bird Conservation Regions with political jurisdictions (Provinces, Territories, States)"></p>
+<p><img src="figures/stratification_unnamed-chunk-2-1.png" alt="Map of the BBS USGS stratification showing the regions that represent spatial intersections of Bird Conservation Regions with political jurisdictions (Provinces, Territories, States)"></p>
 <p>To stratify BBS data, you can use these existing stratifications by
 specifying <code>by = "name"</code> in the <code><a href="../reference/stratify.html">stratify()</a></code>
 function.</p>
@@ -143,7 +142,7 @@ only one route, as this is the original sampling design goal of the BBS
 <span><span class="co">#&gt; Filtering to species Mallard (1320)</span></span>
 <span><span class="co">#&gt; Stratifying data...</span></span>
 <span><span class="co">#&gt;   Renaming routes...</span></span>
-<span><span class="co">#&gt;   Omitting 81/124,900 route-years that do not match a stratum.</span></span>
+<span><span class="co">#&gt;   Omitting 115/127,482 route-years that do not match a stratum.</span></span>
 <span><span class="co">#&gt;     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">s</span>, min_n_routes <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -170,7 +169,7 @@ using the sf package.</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">map</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">stratum</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span>guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fstratification_unnamed-chunk-5-1.png" alt="Map of the strata used in the Waterfowl Breeding Population and Habitat Surveys">
+<p><img src="figures/stratification_unnamed-chunk-5-1.png" alt="Map of the strata used in the Waterfowl Breeding Population and Habitat Surveys">
 ### Identify the strata names</p>
 <p>We see that it has one column that reflects the stratum names. First
 we’ll rename this column to <code>strata_name</code>, and mutate it into
@@ -202,7 +201,7 @@ map.</p>
 <span><span class="co">#&gt;   Calculating area weights...</span></span>
 <span><span class="co">#&gt;   Joining routes to custom spatial data...</span></span>
 <span><span class="co">#&gt;   Renaming routes...</span></span>
-<span><span class="co">#&gt;   Omitting 104,495/124,900 route-years that do not match a stratum.</span></span>
+<span><span class="co">#&gt;   Omitting 106,608/127,482 route-years that do not match a stratum.</span></span>
 <span><span class="co">#&gt;     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span></span></code></pre></div>
 <blockquote>
 <p>Note that strata names are automatically put into lower case for
@@ -225,23 +224,24 @@ and routes contained therein.</p>
 <span><span class="co">#&gt; [1] 1320</span></span>
 <span></span>
 <span><span class="va">s</span><span class="op">[[</span><span class="st">"routes_strata"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; # A tibble: 20,405 × 33</span></span>
-<span><span class="co">#&gt;    strata_name country_num state_num route route_name   active latitude longitude   bcr route_type_id</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
-<span><span class="co">#&gt;  2 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
-<span><span class="co">#&gt;  3 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
-<span><span class="co">#&gt;  4 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
-<span><span class="co">#&gt;  5 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
-<span><span class="co">#&gt;  6 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
-<span><span class="co">#&gt;  7 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
-<span><span class="co">#&gt;  8 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
-<span><span class="co">#&gt;  9 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
-<span><span class="co">#&gt; 10 3                   840         3 3-8   TOWER BLUFFS      1     63.6     -144.     4             1</span></span>
-<span><span class="co">#&gt; # ℹ 20,395 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 23 more variables: route_type_detail_id &lt;dbl&gt;, route_data_id &lt;dbl&gt;, rpid &lt;dbl&gt;, year &lt;dbl&gt;, month &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   day &lt;dbl&gt;, obs_n &lt;dbl&gt;, total_spp &lt;dbl&gt;, start_temp &lt;dbl&gt;, end_temp &lt;dbl&gt;, temp_scale &lt;chr&gt;, start_wind &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   end_wind &lt;dbl&gt;, start_sky &lt;dbl&gt;, end_sky &lt;dbl&gt;, start_time &lt;dbl&gt;, end_time &lt;dbl&gt;, assistant &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; # A tibble: 20,874 × 33</span></span>
+<span><span class="co">#&gt;    strata_name country_num state_num route route_name active latitude longitude   bcr</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4</span></span>
+<span><span class="co">#&gt;  2 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4</span></span>
+<span><span class="co">#&gt;  3 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4</span></span>
+<span><span class="co">#&gt;  4 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4</span></span>
+<span><span class="co">#&gt;  5 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4</span></span>
+<span><span class="co">#&gt;  6 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4</span></span>
+<span><span class="co">#&gt;  7 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4</span></span>
+<span><span class="co">#&gt;  8 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4</span></span>
+<span><span class="co">#&gt;  9 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4</span></span>
+<span><span class="co">#&gt; 10 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4</span></span>
+<span><span class="co">#&gt; # ℹ 20,864 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 24 more variables: route_type_id &lt;dbl&gt;, route_type_detail_id &lt;dbl&gt;, route_data_id &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   rpid &lt;dbl&gt;, year &lt;dbl&gt;, month &lt;dbl&gt;, day &lt;dbl&gt;, obs_n &lt;dbl&gt;, total_spp &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   start_temp &lt;dbl&gt;, end_temp &lt;dbl&gt;, temp_scale &lt;chr&gt;, start_wind &lt;dbl&gt;, end_wind &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   start_sky &lt;dbl&gt;, end_sky &lt;dbl&gt;, start_time &lt;dbl&gt;, end_time &lt;dbl&gt;, assistant &lt;dbl&gt;,</span></span>
 <span><span class="co">#&gt; #   quality_current_id &lt;dbl&gt;, run_type &lt;dbl&gt;, state &lt;chr&gt;, st_abrev &lt;chr&gt;, country &lt;chr&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -258,8 +258,11 @@ strata names are categorical.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">map</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">rts</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span>aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"colour"</span>, <span class="st">"fill"</span><span class="op">)</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fstratification_unnamed-chunk-9-1.png" alt="map showing the strata in our custom stratification">
-### Omitted BBS routes</p>
+<p><img src="figures/stratification_unnamed-chunk-9-1.png" alt="map showing the strata in our custom stratification"></p>
+</div>
+<div class="section level3">
+<h3 id="omitted-bbs-routes">Omitted BBS routes<a class="anchor" aria-label="anchor" href="#omitted-bbs-routes"></a>
+</h3>
 <p>Based on the message we received during stratification
 (<code>Omitting...</code>) and this map, it looks as if our custom
 stratification is excluding some BBS data (i.e., routes with starting
@@ -282,23 +285,23 @@ omitted strata to the output.</p>
 <span><span class="co">#&gt;   Calculating area weights...</span></span>
 <span><span class="co">#&gt;   Joining routes to custom spatial data...</span></span>
 <span><span class="co">#&gt;   Renaming routes...</span></span>
-<span><span class="co">#&gt;   Omitting 104,495/124,900 route-years that do not match a stratum.</span></span>
+<span><span class="co">#&gt;   Omitting 106,608/127,482 route-years that do not match a stratum.</span></span>
 <span><span class="co">#&gt;     Returning omitted routes.</span></span>
 <span><span class="va">s</span><span class="op">[[</span><span class="st">"routes_omitted"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; # A tibble: 104,495 × 11</span></span>
-<span><span class="co">#&gt;     year strata_name country state   route route_name latitude longitude   bcr   obs_n total_spp</span></span>
-<span><span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1  1967 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1140018        56</span></span>
-<span><span class="co">#&gt;  2  1969 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27  990062        52</span></span>
-<span><span class="co">#&gt;  3  1970 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27  990062        52</span></span>
-<span><span class="co">#&gt;  4  1971 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27  990062        56</span></span>
-<span><span class="co">#&gt;  5  1972 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27  990062        54</span></span>
-<span><span class="co">#&gt;  6  1973 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        52</span></span>
-<span><span class="co">#&gt;  7  1974 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        55</span></span>
-<span><span class="co">#&gt;  8  1975 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        59</span></span>
-<span><span class="co">#&gt;  9  1976 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        56</span></span>
-<span><span class="co">#&gt; 10  1977 &lt;NA&gt;        US      ALABAMA 2-1   ST FLORIAN     34.9     -87.6    27 1060057        51</span></span>
-<span><span class="co">#&gt; # ℹ 104,485 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 106,608 × 11</span></span>
+<span><span class="co">#&gt;     year strata_name country state route route_name latitude longitude   bcr  obs_n total_spp</span></span>
+<span><span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1  1967 &lt;NA&gt;        US      ALAB… 2-1   ST FLORIAN     34.9     -87.6    27 1.14e6        56</span></span>
+<span><span class="co">#&gt;  2  1969 &lt;NA&gt;        US      ALAB… 2-1   ST FLORIAN     34.9     -87.6    27 9.90e5        52</span></span>
+<span><span class="co">#&gt;  3  1970 &lt;NA&gt;        US      ALAB… 2-1   ST FLORIAN     34.9     -87.6    27 9.90e5        52</span></span>
+<span><span class="co">#&gt;  4  1971 &lt;NA&gt;        US      ALAB… 2-1   ST FLORIAN     34.9     -87.6    27 9.90e5        56</span></span>
+<span><span class="co">#&gt;  5  1972 &lt;NA&gt;        US      ALAB… 2-1   ST FLORIAN     34.9     -87.6    27 9.90e5        54</span></span>
+<span><span class="co">#&gt;  6  1973 &lt;NA&gt;        US      ALAB… 2-1   ST FLORIAN     34.9     -87.6    27 1.06e6        52</span></span>
+<span><span class="co">#&gt;  7  1974 &lt;NA&gt;        US      ALAB… 2-1   ST FLORIAN     34.9     -87.6    27 1.06e6        55</span></span>
+<span><span class="co">#&gt;  8  1975 &lt;NA&gt;        US      ALAB… 2-1   ST FLORIAN     34.9     -87.6    27 1.06e6        59</span></span>
+<span><span class="co">#&gt;  9  1976 &lt;NA&gt;        US      ALAB… 2-1   ST FLORIAN     34.9     -87.6    27 1.06e6        56</span></span>
+<span><span class="co">#&gt; 10  1977 &lt;NA&gt;        US      ALAB… 2-1   ST FLORIAN     34.9     -87.6    27 1.06e6        51</span></span>
+<span><span class="co">#&gt; # ℹ 106,598 more rows</span></span></code></pre></div>
 <p>Let’s take a look.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">omitted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="va">s</span><span class="op">[[</span><span class="st">"routes_omitted"</span><span class="op">]</span><span class="op">]</span>, coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"longitude"</span>, <span class="st">"latitude"</span><span class="op">)</span>,</span>
@@ -309,7 +312,7 @@ omitted strata to the output.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">rts</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">strata_name</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">omitted</span>, size <span class="op">=</span> <span class="fl">0.75</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_d</a></span><span class="op">(</span>aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"colour"</span>, <span class="st">"fill"</span><span class="op">)</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fstratification_unnamed-chunk-11-1.png" alt="map showing BBS route starting locations that are inside and outside of the custom stratification"></p>
+<p><img src="figures/stratification_unnamed-chunk-11-1.png" alt="map showing BBS route starting locations that are inside and outside of the custom stratification"></p>
 <p>The map shows that most of the omitted routes are routes that are
 clearly outside of our desired stratification. However, it also shows
 that there are some BBS route start-points that are just outside of the
@@ -367,7 +370,7 @@ the same as we would with the built-in stratifications.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trend_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">t</span>, strata_custom <span class="op">=</span> <span class="va">map</span><span class="op">)</span></span>
 <span><span class="va">trend_map</span></span></code></pre></div>
-<p><img src="figures%2Fstratification_unnamed-chunk-16-1.png"></p>
+<p><img src="figures/stratification_unnamed-chunk-16-1.png"></p>
 </div>
 </div>
 <div class="section level2">
@@ -408,7 +411,7 @@ gives us a chance to make a quick assessment of whether we’re happy with
 how the various strata have been assigned.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rindex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assign_prov_state.html">assign_prov_state</a></span><span class="op">(</span><span class="va">map</span>, min_overlap <span class="op">=</span> <span class="fl">0.6</span>, plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fstratification_unnamed-chunk-17-1.png"></p>
+<p><img src="figures/stratification_unnamed-chunk-17-1.png"></p>
 <p>Next we’ll define the east/west divide by hand. If we plot the strata
 by name, we can pick out which are eastern and which western.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -417,9 +420,9 @@ by name, we can pick out which are eastern and which western.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"North America"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">strata_name</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not give correct results for</span></span>
-<span><span class="co">#&gt; longitude/latitude data</span></span></code></pre></div>
-<p><img src="figures%2Fstratification_unnamed-chunk-18-1.png"></p>
+<span><span class="co">#&gt; Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not give correct</span></span>
+<span><span class="co">#&gt; results for longitude/latitude data</span></span></code></pre></div>
+<p><img src="figures/stratification_unnamed-chunk-18-1.png"></p>
 <p>The western and eastern strata seem to be split numerically, such
 that the western strata have numbers lower than 50 or greater than 74,
 eastern strata have numbers in between. So we’ll add a column to the
@@ -436,7 +439,7 @@ group the strata.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">rindex</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"North America"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">rindex</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">east_west</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fstratification_unnamed-chunk-20-1.png"></p>
+<p><img src="figures/stratification_unnamed-chunk-20-1.png"></p>
 <p>Then supply the <code>rindex</code> object to the
 <code>regions_index</code> argument of the
 <code><a href="../reference/generate_indices.html">generate_indices()</a></code> function and include the relevant column
@@ -458,26 +461,31 @@ with <code><a href="../reference/plot_indices.html">plot_indices()</a></code>.</
 <code class="sourceCode R"><span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_indices.html">plot_indices</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "1"                        "14"                       "17"                       "18"                      </span></span>
-<span><span class="co">#&gt;  [5] "2"                        "22"                       "24"                       "26"                      </span></span>
-<span><span class="co">#&gt;  [9] "27"                       "28"                       "29"                       "30"                      </span></span>
-<span><span class="co">#&gt; [13] "31"                       "32"                       "33"                       "34"                      </span></span>
-<span><span class="co">#&gt; [17] "35"                       "37"                       "38"                       "39"                      </span></span>
-<span><span class="co">#&gt; [21] "40"                       "41"                       "42"                       "43"                      </span></span>
-<span><span class="co">#&gt; [25] "44"                       "45"                       "46"                       "47"                      </span></span>
-<span><span class="co">#&gt; [29] "48"                       "49"                       "50"                       "51"                      </span></span>
-<span><span class="co">#&gt; [33] "52"                       "53"                       "54"                       "55"                      </span></span>
-<span><span class="co">#&gt; [37] "56"                       "62"                       "63"                       "64"                      </span></span>
-<span><span class="co">#&gt; [41] "66"                       "68"                       "72"                       "75"                      </span></span>
-<span><span class="co">#&gt; [45] "76"                       "77"                       "Canada"                   "United_States_of_America"</span></span>
-<span><span class="co">#&gt; [49] "AB"                       "AK"                       "MB"                       "ME"                      </span></span>
-<span><span class="co">#&gt; [53] "MT"                       "NB"                       "ND"                       "NL"                      </span></span>
-<span><span class="co">#&gt; [57] "NS"                       "NT"                       "NY"                       "ON"                      </span></span>
-<span><span class="co">#&gt; [61] "QC"                       "SD"                       "SK"                       "east"                    </span></span>
-<span><span class="co">#&gt; [65] "west"</span></span>
+<span><span class="co">#&gt;  [1] "1"                        "14"                       "17"                      </span></span>
+<span><span class="co">#&gt;  [4] "18"                       "2"                        "22"                      </span></span>
+<span><span class="co">#&gt;  [7] "24"                       "26"                       "27"                      </span></span>
+<span><span class="co">#&gt; [10] "28"                       "29"                       "30"                      </span></span>
+<span><span class="co">#&gt; [13] "31"                       "32"                       "33"                      </span></span>
+<span><span class="co">#&gt; [16] "34"                       "35"                       "37"                      </span></span>
+<span><span class="co">#&gt; [19] "38"                       "39"                       "40"                      </span></span>
+<span><span class="co">#&gt; [22] "41"                       "42"                       "43"                      </span></span>
+<span><span class="co">#&gt; [25] "44"                       "45"                       "46"                      </span></span>
+<span><span class="co">#&gt; [28] "47"                       "48"                       "49"                      </span></span>
+<span><span class="co">#&gt; [31] "50"                       "51"                       "52"                      </span></span>
+<span><span class="co">#&gt; [34] "53"                       "54"                       "55"                      </span></span>
+<span><span class="co">#&gt; [37] "56"                       "62"                       "63"                      </span></span>
+<span><span class="co">#&gt; [40] "64"                       "66"                       "68"                      </span></span>
+<span><span class="co">#&gt; [43] "72"                       "75"                       "76"                      </span></span>
+<span><span class="co">#&gt; [46] "77"                       "Canada"                   "United_States_of_America"</span></span>
+<span><span class="co">#&gt; [49] "AB"                       "AK"                       "MB"                      </span></span>
+<span><span class="co">#&gt; [52] "ME"                       "MT"                       "NB"                      </span></span>
+<span><span class="co">#&gt; [55] "ND"                       "NL"                       "NS"                      </span></span>
+<span><span class="co">#&gt; [58] "NT"                       "NY"                       "ON"                      </span></span>
+<span><span class="co">#&gt; [61] "QC"                       "SD"                       "SK"                      </span></span>
+<span><span class="co">#&gt; [64] "east"                     "west"</span></span>
 <span></span>
 <span><span class="va">p</span><span class="op">[[</span><span class="st">"east"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="va">p</span><span class="op">[[</span><span class="st">"west"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p><img src="figures%2Fstratification_unnamed-chunk-22-1.png"></p>
+<p><img src="figures/stratification_unnamed-chunk-22-1.png"></p>
 <p>Finally we can even create geofaceted plots (which is only possible
 in our case because we assigned our strata to Provinces and States and
 calculated indices for these regions). These geofacet plots can be
@@ -485,7 +493,7 @@ useful for visualizing the population trajectories of species with broad
 ranges across many states and provinces.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_geofacet.html">plot_geofacet</a></span><span class="op">(</span><span class="va">i</span>, trends <span class="op">=</span> <span class="va">t</span>, multiple <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fstratification_unnamed-chunk-23-1.png"></p>
+<p><img src="figures/stratification_unnamed-chunk-23-1.png"></p>
 </div>
 <div class="section level2">
 <h2 id="subsetting-an-existing-stratification">Subsetting an existing stratification<a class="anchor" aria-label="anchor" href="#subsetting-an-existing-stratification"></a>
@@ -526,7 +534,7 @@ the <code>bbs_strata</code> object.</p>
 <span><span class="co">#&gt; Stratifying data...</span></span>
 <span><span class="co">#&gt;   Combining BCR 7 and NS and PEI...</span></span>
 <span><span class="co">#&gt;   Renaming routes...</span></span>
-<span><span class="co">#&gt;   Omitting 105,811/124,900 route-years that do not match a stratum.</span></span>
+<span><span class="co">#&gt;   Omitting 107,926/127,482 route-years that do not match a stratum.</span></span>
 <span><span class="co">#&gt;     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span></span></code></pre></div>
 <p>Note that the stratification is now “bbs_cws” and “subset”</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
@@ -616,7 +624,7 @@ CRS</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">map</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">new_strata</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">strata_name</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fstratification_unnamed-chunk-31-1.png"></p>
+<p><img src="figures/stratification_unnamed-chunk-31-1.png"></p>
 <p>Looks good! Let’s use it in our stratification and take a look at the
 points afterwards to ensure they’ve been categorized appropriately.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
@@ -631,7 +639,7 @@ points afterwards to ensure they’ve been categorized appropriately.</p>
 <span><span class="co">#&gt;   Calculating area weights...</span></span>
 <span><span class="co">#&gt;   Joining routes to custom spatial data...</span></span>
 <span><span class="co">#&gt;   Renaming routes...</span></span>
-<span><span class="co">#&gt;   Omitting 107,925/124,900 route-years that do not match a stratum.</span></span>
+<span><span class="co">#&gt;   Omitting 110,107/127,482 route-years that do not match a stratum.</span></span>
 <span><span class="co">#&gt;     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span></span>
 <span></span>
 <span><span class="va">s</span><span class="op">$</span><span class="va">meta_data</span></span>
@@ -652,7 +660,7 @@ points afterwards to ensure they’ve been categorized appropriately.</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">new_strata</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">strata_name</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">routes</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">strata_name</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fstratification_unnamed-chunk-32-1.png"></p>
+<p><img src="figures/stratification_unnamed-chunk-32-1.png"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -665,7 +673,7 @@ points afterwards to ensure they’ve been categorized appropriately.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

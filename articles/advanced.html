@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Advanced Example • bbsBayes2</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -26,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +59,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Advanced Example</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/v.1.1.2.2/vignettes/articles/advanced.Rmd" class="external-link"><code>vignettes/articles/advanced.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/main/vignettes/articles/advanced.Rmd" class="external-link"><code>vignettes/articles/advanced.Rmd</code></a></small>
       <div class="d-none name"><code>advanced.Rmd</code></div>
     </div>
 
@@ -151,7 +150,450 @@ fitted model object for the Scissor-tailed Flycatcher data fit to the
 <span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">ppc_overplot</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fadvanced_unnamed-chunk-3-1.png" alt="Graphical posterior predictive check overlaying the observed proportion of integer count values and the estimated proportion of count values"></p>
+<p><img src="articles/articles/figures/advanced_unnamed-chunk-3-1.png" alt="Graphical posterior predictive check overlaying the observed proportion of integer count values and the estimated proportion of count values"></p>
+</div>
+<div class="section level3">
+<h3 id="prior-predictive-checks">Prior predictive checks<a class="anchor" aria-label="anchor" href="#prior-predictive-checks"></a>
+</h3>
+<p>As of version 1.1.3, all of the models in bbsBayes2 can generate
+predictions from the priors using
+<code>prepare_model(..., use_likelihood = FALSE)</code>. This
+<code>use_likelihood = FALSE</code> argument fits the model while
+ignoring the observed counts (i.e., ignoring the likelihood of the data,
+given the model). The resulting predictions are based solely on the
+priors. These prior predictive checks are especially useful if the user
+is modifying the default Stan models (e.g., new parameters, alternate
+prior values, etc.). Generating prior predictions for any model, based
+on the data structure (number of surveys, years, strata, routes,
+observers, etc.) for a given species is as simple as setting
+<code>prepare_model(..., use_likeihood = FALSE)</code> and then sending
+the output from <code><a href="../reference/prepare_model.html">prepare_model()</a></code> to the next stages of the
+standard modeling workflow.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">species.eng</span> <span class="op">=</span> <span class="st">"Pacific Wren"</span></span>
+<span></span>
+<span><span class="va">stratified_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>,species<span class="op">=</span><span class="va">species.eng</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># to be included a stratum must have at least 3 routes on which the species has been observed</span></span>
+<span><span class="co"># and at least one of those routes must have at least 2 years of observations</span></span>
+<span><span class="va">d</span><span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>strata_data <span class="op">=</span> <span class="va">stratified_data</span>,</span>
+<span>                 min_year <span class="op">=</span> <span class="fl">2013</span>,</span>
+<span>                 max_year <span class="op">=</span> <span class="fl">2023</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_spatial.html">prepare_spatial</a></span><span class="op">(</span><span class="va">d</span>,<span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span><span class="st">"bbs_cws"</span><span class="op">)</span><span class="op">)</span> <span class="co"># create spatial relationships</span></span>
+<span></span>
+<span><span class="va">m</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span></span>
+<span>  prepared_data <span class="op">=</span> <span class="va">sd</span>,</span>
+<span>  model<span class="op">=</span><span class="st">"gamye"</span>,</span>
+<span>  model_variant<span class="op">=</span><span class="st">"spatial"</span>,</span>
+<span>  use_likelihood <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">prior_preds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span>model_data <span class="op">=</span> <span class="va">m</span>,</span>
+<span>                      refresh<span class="op">=</span><span class="fl">100</span>,</span>
+<span>                      iter_sampling <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>                      iter_warmup <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>                      output_dir <span class="op">=</span> <span class="st">"output"</span>,</span>
+<span>                      output_basename <span class="op">=</span> <span class="st">"BBS_PacificWren_gamye_spatial_prior"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">prior_inds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_indices.html">generate_indices</a></span><span class="op">(</span><span class="va">prior_preds</span>, regions <span class="op">=</span> <span class="st">"continent"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Processing region continent</span></span>
+<span><span class="va">prior_trajs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_indices.html">plot_indices</a></span><span class="op">(</span><span class="va">prior_inds</span>, spaghetti <span class="op">=</span> <span class="cn">TRUE</span>, n_spaghetti <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span>
+<span><span class="va">prior_trends</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">prior_inds</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">summ</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_summary.html">get_summary</a></span><span class="op">(</span><span class="va">prior_preds</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span><span class="co">#&gt; Warning: The ESS has been capped to avoid unstable estimates.</span></span>
+<span></span>
+<span><span class="co">#transforming y-axis to log scale due to extreme uncertainty limits</span></span>
+<span><span class="va">cont_prior_trajectory</span> <span class="op">&lt;-</span> <span class="va">prior_trajs</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>transform <span class="op">=</span> <span class="st">"log10"</span><span class="op">)</span><span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>,<span class="fl">2000</span><span class="op">)</span><span class="op">)</span> <span class="co"># some of the mean predictions are extreme</span></span>
+<span><span class="co">#&gt; Scale for y is already present.</span></span>
+<span><span class="co">#&gt; Adding another scale for y, which will replace the existing scale.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cont_prior_trajectory</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="articles/articles/figures/advanced_prior_predictions-1.png" alt="Prior predicted population trajectories showing sample of predicted population trajectories that range from large increases to large decreases"><p class="caption">
+Prior predicted population trajectories
+</p>
+</div>
+<p>So the predicted population trajectories include everything from
+extreme increases (upper 95% credible interval of the trends = 199.4
+%/year to extreme decreases (lower 95% credible interval of the trends =
+-65.5 %/year).</p>
 </div>
 <div class="section level3">
 <h3 id="hpdi---highest-posterior-density-intervals">HPDI - Highest posterior density intervals<a class="anchor" aria-label="anchor" href="#hpdi---highest-posterior-density-intervals"></a>
@@ -171,7 +613,7 @@ logical argument <code>hpdi</code> in both
 example, in the trajectory plots below, the uncertainty bounds are more
 symmetrical around the dark line in the lower plot using the HPDI than
 they are in the upper plot using the default quantiles.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># set of indices for demonstrating HPDI</span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/4430_first_diff_spatial.rds"</span><span class="op">)</span> <span class="co"># Scissor-tailed Flycatcher</span></span>
 <span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_indices.html">generate_indices</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
@@ -185,7 +627,7 @@ they are in the upper plot using the default quantiles.</p>
 <span><span class="va">trajectories_hpdi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_indices.html">plot_indices</a></span><span class="op">(</span><span class="va">i_hpdi</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">trajectories</span><span class="op">$</span><span class="va">US_NM_35</span> <span class="op">/</span> <span class="va">trajectories_hpdi</span><span class="op">$</span><span class="va">US_NM_35</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fadvanced_unnamed-chunk-4-1.png" alt="Population trajectories contrasting simple quantiles and HPDI for an example stratum. The HPDI uncertainty bound is more symetrical around the mean"></p>
+<p><img src="articles/articles/figures/advanced_unnamed-chunk-5-1.png" alt="Population trajectories contrasting simple quantiles and HPDI for an example stratum. The HPDI uncertainty bound is more symetrical around the mean"></p>
 </div>
 <div class="section level3">
 <h3 id="example---replicating-the-cws-status-and-trend-estimates-2022-version-and-later">EXAMPLE - Replicating the CWS status and trend estimates (2022
@@ -195,7 +637,7 @@ version and later)<a class="anchor" aria-label="anchor" href="#example---replica
 gamye model.</p>
 <p>The full script to run the CWS analysis for the 2023 release is
 accessible <a href="https://github.com/AdamCSmithCWS/CWS_BBS_2022_Analyses" class="external-link">here</a>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">species.eng</span> <span class="op">=</span> <span class="st">"Pacific Wren"</span></span>
 <span></span>
@@ -238,7 +680,7 @@ details).</p>
 2022 USGS bbs analyses for a species that uses the heavy-tailed Poisson
 error distribution and the first-difference model (more on the error
 distributions below).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">species.eng</span> <span class="op">=</span> <span class="st">"Pacific Wren"</span></span>
 <span><span class="va">stratified_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_usgs"</span>,species<span class="op">=</span><span class="va">species.eng</span><span class="op">)</span></span>
@@ -264,7 +706,7 @@ distributions below).</p>
 <div class="section level3">
 <h3 id="example---mapping-uncertainty-of-trends-or-estimated-abundance">EXAMPLE - mapping uncertainty of trends or estimated abundance<a class="anchor" aria-label="anchor" href="#example---mapping-uncertainty-of-trends-or-estimated-abundance"></a>
 </h3>
-<p>A new feature in version 1.1, is the ability to use the plot_map
+<p>A new feature since version 1.1, is the ability to use the plot_map
 function to map any of the numerical values provided in the output from
 <code><a href="../reference/generate_trends.html">generate_trends()</a></code>. For example, you may be interested in
 understanding the spatial distribution of the upper and lower bounds of
@@ -281,12 +723,12 @@ Swallow data</a>.</p>
 <p>Unzip the file and store it in a local directory. In this example
 we’ve placed it in a sub-directory of our working directory called
 <em>output</em>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">BARS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/Barn_Swallow_gamye_spatial.rds"</span><span class="op">)</span></span></code></pre></div>
 <p>We generate annual indices of abundance using the smooth-only
 component of the population trajectory. Then use those to estimate
 long-term trends (1966 - 2021), and plot those trends on a map.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">BARS_smooth_indices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_indices.html">generate_indices</a></span><span class="op">(</span><span class="va">BARS</span>,</span>
 <span>                                        alternate_n <span class="op">=</span> <span class="st">"n_smooth"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Processing region continent</span></span>
@@ -294,7 +736,7 @@ long-term trends (1966 - 2021), and plot those trends on a map.</p>
 <span><span class="va">BARS_trends</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">BARS_smooth_indices</span><span class="op">)</span></span>
 <span><span class="va">BARS_trend_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">BARS_trends</span><span class="op">)</span></span>
 <span><span class="va">BARS_trend_map</span></span></code></pre></div>
-<p><img src="figures%2Fadvanced_unnamed-chunk-8-1.png" alt="Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"></p>
+<p><img src="articles/articles/figures/advanced_unnamed-chunk-9-1.png" alt="Population trend map for Barn Swallow, showing strata with increasing trends in shades of blue and strata with decreasing trends in shades of red"></p>
 <p>Then, to visualise the uncertainty in this pattern of trend
 estimates, we generate two maps that each display the upper and lower
 credible intervals of the trends. We can interpret these maps as showing
@@ -302,7 +744,7 @@ the lower-bound and the upper-bound on the rates of population change
 for the species. For example, we can be reasonably confident that the
 species’ trends have not been more negative than the map on the left,
 and are unlikely to be more positive than the map on the right.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">BARS_trend_map_lower</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">BARS_trends</span>, alternate_column <span class="op">=</span> <span class="st">"trend_q_0.05"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Lower bound on trend"</span><span class="op">)</span></span>
@@ -312,19 +754,101 @@ and are unlikely to be more positive than the map on the right.</p>
 <span><span class="co"># combined using the patchwork package</span></span>
 <span><span class="va">BARS_trend_bounds_maps</span> <span class="op">&lt;-</span> <span class="va">BARS_trend_map_lower</span> <span class="op">+</span> <span class="va">BARS_trend_map_upper</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">"collect"</span><span class="op">)</span></span>
 <span><span class="va">BARS_trend_bounds_maps</span></span></code></pre></div>
-<p><img src="figures%2Fadvanced_unnamed-chunk-9-1.png" alt="Population trend maps for Barn Swallow, showing the lower and upper bounds on the population trends, where strata with increasing trends are shown in shades of blue and strata with decreasing trends in shades of red"></p>
+<p><img src="articles/articles/figures/advanced_unnamed-chunk-10-1.png" alt="Population trend maps for Barn Swallow, showing the lower and upper bounds on the population trends, where strata with increasing trends are shown in shades of blue and strata with decreasing trends in shades of red"></p>
 <p>Alternatively, we could visualise the width of the credible interval
 on the trends. Here we see that most of the trend estimates have
 credible intervals that are narrower than approximately 2%/year, but
 trends for a few strata in northern regions and the south-west are less
 precise. Note: Because in this case we are not displaying estimates of
 trends specifically, the function uses the viridis colour scale.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">BARS_trend_map_CI_width</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">BARS_trends</span>, alternate_column <span class="op">=</span> <span class="st">"width_of_95_percent_credible_interval"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in plot_map(BARS_trends, alternate_column = "width_of_95_percent_credible_interval"): object 'pal' not found</span></span>
 <span></span>
-<span><span class="va">BARS_trend_map_CI_width</span></span></code></pre></div>
-<p><img src="figures%2Fadvanced_unnamed-chunk-10-1.png" alt="Map of the width of the credible interval on trend estimates for Barn Swallow"></p>
+<span><span class="va">BARS_trend_map_CI_width</span></span>
+<span><span class="co">#&gt; Error: object 'BARS_trend_map_CI_width' not found</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="example---mapping-percent-change-in-the-population">EXAMPLE - mapping percent-change in the population<a class="anchor" aria-label="anchor" href="#example---mapping-percent-change-in-the-population"></a>
+</h3>
+<p>A new mapping option, as of version 1.1.3 includes a colour palette
+for mapping percent change in population that matches the palette and
+categories used in the eBird status and trend results.</p>
+<p>Here, we’ll demonstrate this feature using previously generate fitted
+model output from applying the spatial first difference
+<code>first_diff</code> model to the data for Allen’s Hummingbird using
+the <code>latlong</code> stratification and the 2025 data-release.</p>
+<p>First we fit the model, which requires less than an hour using the
+defaults.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="va">species</span> <span class="op">&lt;-</span> <span class="st">"Allen's Hummingbird"</span></span>
+<span></span>
+<span><span class="co"># extract the unique numerical identifier for this species in the BBS database</span></span>
+<span><span class="va">species_number</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/search_species.html">search_species</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"unid"</span>, x <span class="op">=</span> <span class="va">english</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#removing observations not clearly identified as Allen's Hummingbird.</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">aou</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="st">"latlong"</span>,</span>
+<span>              species <span class="op">=</span> <span class="va">species</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span>min_n_routes <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># because the strata are small, we lower the threshold for minimum number of routes</span></span>
+<span></span>
+<span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="st">"first_diff"</span></span>
+<span><span class="va">var</span> <span class="op">&lt;=</span> <span class="st">"spatial"</span></span>
+<span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_spatial.html">prepare_spatial</a></span><span class="op">(</span><span class="va">s</span>, strata_map <span class="op">=</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span><span class="st">"latlong"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">mod</span>, model_variant <span class="op">=</span> <span class="va">var</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"output/"</span>,</span>
+<span>              <span class="va">species_number</span>,</span>
+<span>              <span class="st">"_latlong_"</span>,</span>
+<span>              <span class="va">mod</span>,</span>
+<span>              <span class="st">"_"</span>,</span>
+<span>              <span class="va">var</span><span class="op">)</span></span>
+<span><span class="va">ALHU</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">p</span>,</span>
+<span>                  output_basename <span class="op">=</span> <span class="va">m</span>,</span>
+<span>                  output_dir <span class="op">=</span> <span class="st">"output"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; Warning in gzfile(file, "rb"): cannot open compressed file</span></span>
+<span><span class="co">#&gt; 'vignettes/articles/output/4340_latlong_first_diff_spatial.rds', probable reason 'No such</span></span>
+<span><span class="co">#&gt; file or directory'</span></span>
+<span><span class="co">#&gt; Error in gzfile(file, "rb"): cannot open the connection</span></span></code></pre>
+<p>We generate annual indices of abundance, use those to estimate
+percent change over the short-term (2012 - 2022), and plot those changes
+on a map.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">ALHU_smooth_indices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_indices.html">generate_indices</a></span><span class="op">(</span><span class="va">ALHU</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Processing region continent</span></span>
+<span><span class="co">#&gt; Processing region stratum</span></span>
+<span><span class="va">ALHU_trends</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">ALHU_smooth_indices</span>,</span>
+<span>                               min_year <span class="op">=</span> <span class="fl">2012</span>,</span>
+<span>                               max_year <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span></span>
+<span><span class="va">ALHU_trend_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">ALHU_trends</span>,</span>
+<span>                           alternate_column <span class="op">=</span> <span class="st">"percent_change"</span>,</span>
+<span>                           col_ebird <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># load states and province map to overlay the 1-degree grid</span></span>
+<span><span class="va">States_Provinces</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span><span class="st">"prov_state"</span><span class="op">)</span></span>
+<span><span class="co"># create a bounding box for the map, focused on the regions with data.</span></span>
+<span><span class="va">bb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_map.html">load_map</a></span><span class="op">(</span><span class="st">"latlong"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">strata_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">ALHU_trends</span><span class="op">$</span><span class="va">meta_strata</span><span class="op">$</span><span class="va">strata_name</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">st_bbox</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># plot the map</span></span>
+<span><span class="va">ALHU_trend_map</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">States_Provinces</span>, fill <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>                          colour <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="va">bb</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"xmin"</span>,<span class="st">"xmax"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>           ylim <span class="op">=</span> <span class="va">bb</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ymin"</span>,<span class="st">"ymax"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Coordinate system already present. Adding new coordinate system, which will replace the</span></span>
+<span><span class="co">#&gt; existing one.</span></span></code></pre></div>
+<p><img src="articles/articles/figures/advanced_unnamed-chunk-14-1.png" alt="Percent population change map for Allen's Hummingbird, showing 1-degree grid cells where the population has increased in shades of blue and grid cells where the population has decreased in shades of red"></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">ALHU_trend_map</span><span class="op">)</span></span></code></pre></div>
+<p><img src="articles/articles/figures/advanced_unnamed-chunk-14-2.png" alt="Percent population change map for Allen's Hummingbird, showing 1-degree grid cells where the population has increased in shades of blue and grid cells where the population has decreased in shades of red"></p>
 </div>
 <div class="section level3">
 <h3 id="advanced-options-and-customized-models">Advanced options and customized models<a class="anchor" aria-label="anchor" href="#advanced-options-and-customized-models"></a>
@@ -380,7 +904,7 @@ trend (i.e., <em>slope trends</em>) and measures of population change,
 such as the percent change in the population between the first and last
 years of the trend and the probability that a population has decreased
 by a certain amount.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># set of indices for demonstrating trend options</span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/4430_first_diff_spatial.rds"</span><span class="op">)</span> <span class="co"># Scissor-tailed Flycatcher</span></span>
 <span><span class="va">i</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_indices.html">generate_indices</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
@@ -396,13 +920,13 @@ We refer to these as <em>end-point trends</em>. They rely on a
 comparison of the annual indices in the first and last years of the
 trend period to quantify the mean rate of population change. However, it
 ignores the pattern of change between the two end-points.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">i</span>,</span>
 <span>                     slope <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                     min_year <span class="op">=</span> <span class="fl">1980</span><span class="op">)</span> <span class="co">#trends from 1980-2021</span></span>
 <span><span class="va">t_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">t_map</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fadvanced_unnamed-chunk-12-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the default end-point trend estimates"></p>
+<p><img src="articles/articles/figures/advanced_unnamed-chunk-16-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the default end-point trend estimates"></p>
 </div>
 <div class="section level4">
 <h4 id="slope-based-trends">Slope-based Trends<a class="anchor" aria-label="anchor" href="#slope-based-trends"></a>
@@ -426,12 +950,12 @@ are still calculated, but additional columns are added that include the
 alternate estimates. NOTE: the <code><a href="../reference/plot_map.html">plot_map()</a></code> function can map
 slope trends as well with the same <code>slope = TRUE</code>
 argument.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">t_map_slope</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_map.html">plot_map</a></span><span class="op">(</span><span class="va">t</span>,</span>
 <span>                        slope <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">t_map_slope</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fadvanced_unnamed-chunk-13-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the slope-based trend estimates"></p>
+<p><img src="articles/articles/figures/advanced_unnamed-chunk-17-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the slope-based trend estimates"></p>
 </div>
 <div class="section level4">
 <h4 id="percent-change-and-probability-of-change">Percent Change and probability of change<a class="anchor" aria-label="anchor" href="#percent-change-and-probability-of-change"></a>
@@ -445,14 +969,14 @@ deriving statements such as “between 2008 and 2018, the population has
 declined by 20 percent, but that estimate is relatively uncertain and
 the true decline may be as little as 2 percent or as much as 50
 percent”</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">t</span><span class="op">$</span><span class="va">trends</span><span class="op">[</span><span class="fl">1</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"region"</span>,<span class="st">"percent_change"</span>,<span class="st">"percent_change_q_0.95"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   region    percent_change percent_change_q_0.95</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;              &lt;dbl&gt;                 &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 continent          -39.9                 -31.9</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 continent          -44.4                 -37.1</span></span></code></pre></div>
 <p>In addition, the function can optionally calculate the posterior
 conditional probability that a population has changed more or less than
 some user-defined threshold(s), using the <code>prob_decrease</code> and
@@ -461,7 +985,7 @@ probability a species population has decreased, set the argument
 <code>prob_decrease = 0</code>. Similarly if you want to know the
 conditaional probability that the population has decreased by more than
 50% use <code>prob_decrease = 50</code>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_trends.html">generate_trends</a></span><span class="op">(</span><span class="va">i</span>,</span>
 <span>                     prob_decrease <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">50</span><span class="op">)</span><span class="op">)</span> <span class="co"># two thresholds</span></span>
 <span></span>
@@ -469,7 +993,7 @@ conditaional probability that the population has decreased by more than
 <span><span class="co">#&gt; # A tibble: 1 × 3</span></span>
 <span><span class="co">#&gt;   region    prob_decrease_0_percent prob_decrease_50_percent</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                       &lt;dbl&gt;                    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 continent                       1                  0.00775</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 continent                       1                    0.081</span></span></code></pre></div>
 <p>These values can be useful for deriving statements such as “the
 first-difference spatial model suggests that it is extremely likely that
 the Scissor-tailed Flycatcher population monitored by the BBS has
@@ -488,14 +1012,14 @@ groupings of Bird Conservation Regions based approximately on the
 northern and southern portions of the Barn Swallow’s range.</p>
 <p>First we load a <a href="https://drive.google.com/file/d/1hlJ9rljDSGdkV4P_-k07wBSyWyKOy-hm/view?usp=drive_link" class="external-link">fitted
 model object for Barn Swallow</a>.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">BARS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/Barn_Swallow_first_diff_spatial.rds"</span><span class="op">)</span></span></code></pre></div>
 <p>Then we extract the strata list from the fitted model object and
 define a new column <em>north_south</em> that identifies which strata
 belong in each of our new composite regions (<em>North</em> or
 <em>South</em>)</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">comp_regions</span> <span class="op">&lt;-</span> <span class="va">BARS</span><span class="op">$</span><span class="va">meta_strata</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>north_south <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">bcr</span> <span class="op">&lt;</span> <span class="fl">15</span>, <span class="st">"North"</span>,<span class="st">"South"</span><span class="op">)</span><span class="op">)</span></span>
@@ -507,14 +1031,14 @@ belong in each of our new composite regions (<em>North</em> or
 <span></span>
 <span><span class="va">trajectories</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_indices.html">plot_indices</a></span><span class="op">(</span><span class="va">i_BARS</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">trajectories</span><span class="op">[[</span><span class="st">"North"</span><span class="op">]</span><span class="op">]</span> <span class="op">/</span> <span class="va">trajectories</span><span class="op">[[</span><span class="st">"South"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures%2Fadvanced_unnamed-chunk-17-1.png" alt="Population trajectories for Barn Swallow in the northern and southern parts of their range"></p>
+<p><img src="articles/articles/figures/advanced_unnamed-chunk-21-1.png" alt="Population trajectories for Barn Swallow in the northern and southern parts of their range"></p>
 </div>
 <div class="section level3">
 <h3 id="exporting-and-modifying-the-stan-models">Exporting and modifying the Stan models<a class="anchor" aria-label="anchor" href="#exporting-and-modifying-the-stan-models"></a>
 </h3>
 <p>You can easily export any of the bbsBayes2 models to a text file
 (file extension .Stan).</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/copy_model_file.html">copy_model_file</a></span><span class="op">(</span>model<span class="op">=</span><span class="st">"gamye"</span>,</span>
 <span>                model_variant <span class="op">=</span> <span class="st">"hier"</span>,</span>
@@ -536,7 +1060,7 @@ do our best to help.</p>
 <p>After modifying the .stan file, you can use bbsBayes2 to fit the data
 to the modified model using the <code>model_file</code> argment in
 <code><a href="../reference/prepare_model.html">prepare_model()</a></code>.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">prep</span><span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gamye"</span>, model_variant <span class="op">=</span> <span class="st">"spatial"</span>,</span>
 <span>        model_file<span class="op">=</span><span class="st">"gamye_hier_bbs_CV_COPY.stan"</span>,</span>
@@ -572,7 +1096,7 @@ repo</a>.</p>
 <p>The <code><a href="../reference/copy_model_file.html">copy_model_file()</a></code> function writes a text file to a
 local directory containing the full Stan code for the selected bbsBayes2
 model.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># writes a copy of the spatial slope model to the working directory</span></span>
 <span><span class="fu"><a href="../reference/copy_model_file.html">copy_model_file</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gamye"</span>, model_variant <span class="op">=</span> <span class="st">"spatial"</span>, dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -594,7 +1118,7 @@ function of local fluctuations in moisture. The lines below were added
 to the “data”, “parameters”, “transformed parameters”, and “model”
 sections of the Stan code, then saved as a new file, e.g.,
 “gamye_spatial_bbs_CV_year_effect_covariate.stan”.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## modify the model to add the following lines in each of the indicated sections</span></span>
 <span><span class="co">## of the Stan mdoel</span></span>
 <span><span class="co"># data {</span></span>
@@ -629,7 +1153,7 @@ sections of the Stan code, then saved as a new file, e.g.,
 <p>Once the model is saved, the only other necessary modification is to
 add the covariate data to the data list supplied to
 <code>prepare_model</code></p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">## Not Run</span></span>
 <span><span class="co">## example code, but the covariate data are not included</span></span>
@@ -740,7 +1264,7 @@ each) and adding the count-level log_lik parameter doesn’t add too much
 to the file size. Here we compare the approximate leave-one-out
 cross-validation estimate between the ‘gamye’ and the ‘first_diff’
 models.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="st">"latlong"</span>,<span class="st">"Baird's Sparrow"</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">s</span>, min_n_routes <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -760,7 +1284,7 @@ models.</p>
 <span><span class="va">m_gamye</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model.html">run_model</a></span><span class="op">(</span><span class="va">mp_gamye</span>,</span>
 <span>                     iter_sampling <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">m_gamye</span>,<span class="st">"output/BASP_latlong_gamye_spatial.rds"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">m_gamye</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/BASP_latlong_gamye_spatial.rds"</span><span class="op">)</span></span>
 <span></span>
@@ -768,47 +1292,15 @@ models.</p>
 <span></span>
 <span><span class="co"># install.packages("loo") # you may need to install this package</span></span>
 <span><span class="va">loo_gamye</span> <span class="op">&lt;-</span> <span class="va">m_gamye</span><span class="op">$</span><span class="va">model_fit</span><span class="op">$</span><span class="fu">loo</span><span class="op">(</span><span class="op">)</span><span class="co"># loo calculations using the functions built into the cmdstanr model-fit object</span></span>
-<span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
+<span><span class="co">#&gt; Error: Please install the 'loo' package to use this function.</span></span>
 <span><span class="va">loo_first_diff</span> <span class="op">&lt;-</span> <span class="va">m_first_diff</span><span class="op">$</span><span class="va">model_fit</span><span class="op">$</span><span class="fu">loo</span><span class="op">(</span><span class="op">)</span><span class="co"># loo calculations using the functions built into the cmdstanr model-fit object</span></span>
-<span><span class="co">#&gt; Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></span>
+<span><span class="co">#&gt; Error: Please install the 'loo' package to use this function.</span></span>
 <span></span>
 <span></span>
 <span><span class="va">loo_gamye</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Computed from 8000 by 4368 log-likelihood matrix.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;          Estimate    SE</span></span>
-<span><span class="co">#&gt; elpd_loo  -7095.6 106.3</span></span>
-<span><span class="co">#&gt; p_loo       682.1  26.7</span></span>
-<span><span class="co">#&gt; looic     14191.2 212.5</span></span>
-<span><span class="co">#&gt; ------</span></span>
-<span><span class="co">#&gt; MCSE of elpd_loo is NA.</span></span>
-<span><span class="co">#&gt; MCSE and ESS estimates assume MCMC draws (r_eff in [0.3, 1.9]).</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Pareto k diagnostic values:</span></span>
-<span><span class="co">#&gt;                          Count Pct.    Min. ESS</span></span>
-<span><span class="co">#&gt; (-Inf, 0.7]   (good)     4234  96.9%   186     </span></span>
-<span><span class="co">#&gt;    (0.7, 1]   (bad)       112   2.6%   &lt;NA&gt;    </span></span>
-<span><span class="co">#&gt;    (1, Inf)   (very bad)   22   0.5%   &lt;NA&gt;    </span></span>
-<span><span class="co">#&gt; See help('pareto-k-diagnostic') for details.</span></span>
+<span><span class="co">#&gt; Error: object 'loo_gamye' not found</span></span>
 <span><span class="va">loo_first_diff</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Computed from 8000 by 4368 log-likelihood matrix.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;          Estimate    SE</span></span>
-<span><span class="co">#&gt; elpd_loo  -6976.8 105.3</span></span>
-<span><span class="co">#&gt; p_loo       778.8  26.2</span></span>
-<span><span class="co">#&gt; looic     13953.7 210.7</span></span>
-<span><span class="co">#&gt; ------</span></span>
-<span><span class="co">#&gt; MCSE of elpd_loo is NA.</span></span>
-<span><span class="co">#&gt; MCSE and ESS estimates assume MCMC draws (r_eff in [0.3, 1.7]).</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Pareto k diagnostic values:</span></span>
-<span><span class="co">#&gt;                          Count Pct.    Min. ESS</span></span>
-<span><span class="co">#&gt; (-Inf, 0.7]   (good)     4220  96.6%   177     </span></span>
-<span><span class="co">#&gt;    (0.7, 1]   (bad)       130   3.0%   &lt;NA&gt;    </span></span>
-<span><span class="co">#&gt;    (1, Inf)   (very bad)   18   0.4%   &lt;NA&gt;    </span></span>
-<span><span class="co">#&gt; See help('pareto-k-diagnostic') for details.</span></span></code></pre></div>
+<span><span class="co">#&gt; Error: object 'loo_first_diff' not found</span></span></code></pre></div>
 <p>This approximation of leave-one-out crossvalidation suggests that the
 first-difference model may slightly out-perform the gamye model for this
 species and time-period. However, the uncertainty in the calculation of
@@ -856,7 +1348,7 @@ included in the test fold, because there are no “future” observations to
 predict for these observers).</p>
 <p>First we use exactly the same data preparation steps to match the cv
 approximation above.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/stratify.html">stratify</a></span><span class="op">(</span><span class="st">"latlong"</span>,<span class="st">"Baird's Sparrow"</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">s</span>, min_n_routes <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -864,7 +1356,7 @@ approximation above.</p>
 <span><span class="va">sp</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/prepare_spatial.html">prepare_spatial</a></span><span class="op">(</span><span class="va">p</span>,<span class="va">map</span><span class="op">)</span></span></code></pre></div>
 <p>Then we prepare the models to identify the training and testing
 folds.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">m_gamye</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_model.html">prepare_model</a></span><span class="op">(</span><span class="va">sp</span>,<span class="st">"gamye"</span>,</span>
 <span>                        calculate_cv <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -886,7 +1378,7 @@ fit.</p>
 will take a while</strong> We are fitting 20 models in total here. So
 fire it up on a Friday afternoon and we’ll come back to it on Monday
 morning.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## fitting the gamye</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">{</span></span>
 <span></span>
@@ -926,7 +1418,7 @@ morning.</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Now that it’s Monday morning. We want to combine the results for each
 model and each of the k-folds.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="va">orig_data</span> <span class="op">&lt;-</span> <span class="va">m_gamye</span><span class="op">$</span><span class="va">raw_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -970,7 +1462,7 @@ from across the k-folds and the two models, we can summarize these
 values. Again, because of the scaling of log probabilities that smaller
 absolute values (values closer to 0) indicate a better fitting
 model.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sum_cv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/sum_cv.rds"</span><span class="op">)</span></span>
 <span><span class="va">cv_comp</span> <span class="op">&lt;-</span> <span class="va">sum_cv</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html" class="external-link">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#drops the rows for counts that were never in testing datasets</span></span>
@@ -996,7 +1488,7 @@ likelihood values against the value of the observed counts. Here, we can
 see that the high counts, particularly those in the earlier years,
 appear to be better predicted by the gamye model than the
 first-difference model.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cv_dif</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"output/cv_dif.rds"</span><span class="op">)</span></span>
 <span><span class="va">cv_dif_sum</span> <span class="op">&lt;-</span> <span class="va">cv_dif</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>mean_diff <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">diff</span><span class="op">)</span>,</span>
@@ -1019,7 +1511,7 @@ first-difference model.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dif_by_count</span></span></code></pre></div>
-<p><img src="figures%2Fadvanced_unnamed-chunk-30-1.png" alt="Cross validation differences"></p>
+<p><img src="articles/articles/figures/advanced_unnamed-chunk-34-1.png" alt="Cross validation differences"></p>
 </div>
 </div>
 </div>
@@ -1034,7 +1526,7 @@ first-difference model.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
