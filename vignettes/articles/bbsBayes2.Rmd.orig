@@ -489,7 +489,7 @@ converge_n_smooth
 ```
 
 Here we've sorted the convergence diagnostics by rhat values (highest values at the top to highlight any problems). Cut-offs for rhat statistics are somewhat arbitrary and recommendations vary in the literature, but values of
-rhat \> 1.1 indicate a *serious* problem with the convergence of some of the
+rhat \> 1.1 indicate a *very serious* problem with the convergence of some of the
 parameters in the model (i.e., there is more variation among the
 independent chains than within them) and values of ess_bulk \<
 ~400 suggest an imprecise estimate of the parameter. In
@@ -657,7 +657,7 @@ A model with a suitable number of iterations takes a long time to run
 You can download an example of the saved model output for Barn Swallow here:
 
 [An example of the output from applying the spatial gamye model to Barn
-Swallow data](https://drive.google.com/file/d/1jFzzoJel6B2bg6yOmhMHnGTxkLaTRaRn/view?usp=sharing).
+Swallow data, using the 2022 release `fetch_bbs_data(release = 2022)`](https://drive.google.com/file/d/1jFzzoJel6B2bg6yOmhMHnGTxkLaTRaRn/view?usp=sharing).
 
 In this example we've placed it in a sub-directory of our working directory called *output*.
 

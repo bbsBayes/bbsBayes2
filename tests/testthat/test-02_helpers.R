@@ -43,6 +43,7 @@ test_that("load_map()", {
 
 
 test_that("assign_prov_state()", {
+  skip_on_ci() # skipping because it throws error about not having rnaturalearthhires
 
   map <- load_map("prov_state")
 

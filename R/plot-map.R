@@ -12,6 +12,8 @@
 #'   trends dataframe to plot. If one of the columns with "trend" in the title,
 #'   (e.g., trend_q_0.05 then the colour scheme and breaks will match those
 #'   used in the default trend maps)
+#' @param col_ebird Logical, Alternative colour palette for trend values, based
+#'   on the colour palette used for eBird status and trend maps.
 #' @param strata_custom (`sf`) Data Frame. Data frame
 #'   of modified existing stratification, or a `sf` spatial data frame with
 #'   polygons defining the custom stratifications. See details on strata_custom
@@ -54,12 +56,13 @@ plot_map <- function(trends,
                      title = TRUE,
                      alternate_column = NULL,
                      col_viridis = FALSE,
+                     col_ebird = FALSE,
                      strata_custom = NULL,
                      zoom_range = TRUE) {
 
   # Checks
   check_data(trends)
-  check_logical(slope, title, col_viridis)
+  check_logical(slope, title, col_viridis, col_ebird)
   alternate_trend_column <- NULL
   stratify_by <- trends[["meta_data"]]$stratify_by
   species <- trends[["meta_data"]]$species
@@ -111,6 +114,7 @@ plot_map <- function(trends,
   if(is.null(alternate_trend_column)){
   if(slope){ trend_col <- "slope_trend" }else{trend_col <- "trend"}
   }else{
+
     trend_col <- alternate_trend_column
   }
 
@@ -128,7 +132,7 @@ plot_map <- function(trends,
 
   m <- ggplot2::ggplot() +
     ggplot2::geom_sf(data = map, ggplot2::aes(fill = .data$t_plot),
-                     colour = "grey40", size = 0.1) +
+                     colour = "grey40", size = 0.1, show.legend = TRUE) +
     ggplot2::theme_minimal() +
     ggplot2::labs(title = title,
                   fill = paste0(trend_col,"\n", start_year, "-", end_year)) +
@@ -140,19 +144,81 @@ plot_map <- function(trends,
                    axis.title = ggplot2::element_blank()) +
     ggplot2::guides(fill = ggplot2::guide_legend(reverse = TRUE))
   if(!col_viridis) {
+    if(!col_ebird){
     pal <- stats::setNames(
       c("#a50026", "#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf",
         "#e0f3f8", "#abd9e9", "#74add1", "#4575b4", "#313695"),
       levels(map$t_plot))
 
-    m <- m + ggplot2::scale_fill_manual(values = pal, na.value = "white")
+    m <- m + ggplot2::scale_fill_manual(values = pal, na.value = "white",
+                                        drop = FALSE)
+    }else{
+      pal <- stats::setNames(
+        c("#A50F15", "#CB181D", "#EF3B2C", "#FB6A4A", "#FC9272", "#FFFFFF",
+          "#9ECAE1", "#6BAED6", "#4292C6", "#2171B5", "#08519C"),
+        levels(map$t_plot))
+
+      m <- m + ggplot2::scale_fill_manual(values = pal, na.value = "#CCCCCC",
+                                          drop = FALSE)
+    }
   } else {
-    m <- m + ggplot2::scale_fill_viridis_d(na.value = "white")
+    m <- m + ggplot2::scale_fill_viridis_d(na.value = "white",
+                                           drop = FALSE)
   }
 
   }else{ # if plotting alternate_column
+
+
     trend_col <- alternate_column
     trends$t_plot <- as.numeric(as.character(trends[[trend_col]]))
+
+    if(grepl(x = alternate_column,pattern = "percent_change") & col_ebird){
+      breaks <- c(-30, -20, -10, 0, 10, 20, 30)
+      labls <- c(paste0("< ", breaks[1]),
+                 paste0(breaks[-c(length(breaks))],":", breaks[-c(1)]),
+                 paste0("> ",breaks[length(breaks)]))
+      labls <- paste0(labls, " %")
+      trends$t_plot <- cut(trends$t_plot, breaks = c(-Inf, breaks, Inf),
+                           labels = labls)
+
+      pal <- stats::setNames(
+        c( "#CB181D", "#EF3B2C", "#FB6A4A", "#FC9272", # if col_ebird & percent_change match the scale and values of eBird's trend page
+           "#9ECAE1", "#6BAED6", "#4292C6", "#2171B5"),
+        levels(trends$t_plot))
+
+    }
+    if(!col_ebird & grepl(x = alternate_column,pattern = "percent_change")){
+      breaks <- c(-75,-50,-33, -25, -10, 11, 33, 50,100,300)
+      labls <- c(paste0("< ", breaks[1]),
+                 paste0(breaks[-c(length(breaks))],":", breaks[-c(1)]),
+                 paste0("> ",breaks[length(breaks)]))
+      labls <- paste0(labls, " %")
+      trends$t_plot <- cut(trends$t_plot, breaks = c(-Inf, breaks, Inf),
+                           labels = labls)
+      pal <- stats::setNames(
+        c("#a50026", "#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf",
+          "#e0f3f8", "#abd9e9", "#74add1", "#4575b4", "#313695"),
+        levels(trends$t_plot))
+
+
+    }
+  if(grepl(x = alternate_column,pattern = "trend")){
+
+    breaks <- c(-7, -4, -2, -1, -0.5, 0.5, 1, 2, 4, 7)
+    labls <- c(paste0("< ", breaks[1]),
+               paste0(breaks[-c(length(breaks))],":", breaks[-c(1)]),
+               paste0("> ",breaks[length(breaks)]))
+    labls <- paste0(labls, " %")
+    trends$t_plot <- cut(trends$t_plot, breaks = c(-Inf, breaks, Inf),
+                         labels = labls)
+    pal <- stats::setNames(
+      c("#a50026", "#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf",
+        "#e0f3f8", "#abd9e9", "#74add1", "#4575b4", "#313695"),
+      levels(trends$t_plot))
+
+
+  }
+
     if(title) {
       title <- paste(species, alternate_column, start_year, "-", end_year)
     } else title <- NULL
@@ -163,7 +229,7 @@ plot_map <- function(trends,
 
     m <- ggplot2::ggplot() +
       ggplot2::geom_sf(data = map, ggplot2::aes(fill = .data$t_plot),
-                       colour = "grey40", size = 0.1) +
+                       colour = "grey40", size = 0.1, show.legend = TRUE) +
       ggplot2::theme_minimal() +
       ggplot2::labs(title = title,
                     fill = paste0(trend_col,"\n", start_year, "-", end_year)) +
@@ -175,7 +241,20 @@ plot_map <- function(trends,
                      axis.title = ggplot2::element_blank()) +
       ggplot2::guides(fill = ggplot2::guide_legend(reverse = TRUE))
 
-    m <- m + ggplot2::scale_fill_viridis_c(na.value = "white")
+    if(!col_viridis) {
+      if(!col_ebird){
+
+        m <- m + ggplot2::scale_fill_manual(values = pal, na.value = "white",
+                                            drop = FALSE)
+      }else{
+         m <- m + ggplot2::scale_fill_manual(values = pal, na.value = "#CCCCCC",
+                                             drop = FALSE)
+      }
+    } else {
+      m <- m + ggplot2::scale_fill_viridis_d(na.value = "white",
+                                             drop = FALSE)
+    }
+
   }
   if(zoom_range){
     m <- m+zoom

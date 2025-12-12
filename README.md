@@ -7,8 +7,9 @@
 
 <!-- badges: end -->
 
-# Critical News:
-## Error in the non-hierarchical first-difference model
+# Version 1.1.3 release includes 2024 BBS data
+
+## Error in some old versions of the non-hierarchical first-difference model
 In versions 1.1.0, 1.1.1, and 1.1.2.0, the non-hierarchical variant of the first-difference model included a coding error. Estimates of trends and population trajectories from this model in these versions will be biased. 
 
 The error was fixed in version 1.1.2.1.
@@ -21,7 +22,7 @@ American Breeding Bird Survey (BBS) data. 'bbsBayes2' will run a full model
 analysis for one or more species that you choose, or you can take more control
 and specify how the data should be stratified, prepared for Stan, or modelled.
 
-bbsBayes2 is the successor to
+bbsBayes2 replaces
 [bbsBayes](https://github.com/bbsBayes/bbsBayes), with a major shift in
 functionality. The MCMC backend is now *Stan* instead of *JAGS*, the
 workflow has been streamlined, the syntax has changed, and there are new

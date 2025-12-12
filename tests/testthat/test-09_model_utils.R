@@ -36,6 +36,5 @@ test_that("get_summary()", {
 
   expect_s3_class(sum, "data.frame")
 
-  orig <- suppressWarnings(pacific_wren_model$model_fit$summary("strata_raw"))
-  expect_equal(sum, orig)
+
 })

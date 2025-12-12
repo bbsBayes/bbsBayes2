@@ -66,13 +66,13 @@ m <- stratify(by = "bbs_cws", species = "Barn Swallow") %>%
   run_model(output_basename = "cws_basw_gamye")
 
 # Create Tag on GitHub Repo
-piggyback::pb_new_release("bbsBayes/bbsBayes2", "v1.1.2")
+piggyback::pb_new_release("bbsBayes/bbsBayes2", "v1.1.3")
 
 # Save model output
 
 piggyback::pb_upload("cws_basw_gamye",
                      repo = "bbsBayes/bbsBayes2",
-                     tag = "v1.1.2")
+                     tag = "v1.1.3")
 
 
 # Release --------------------------------------

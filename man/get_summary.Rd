@@ -14,7 +14,10 @@ get_summary(model_output, variables = NULL)
 calculate metrics. If \code{NULL} (default) all variables are returned.}
 }
 \value{
-A data frame of model summary statistics.
+A data frame of model summary statistics, matching the output of
+\code{cmdstanr::summary()} plus one additional column \code{variable_type} that
+identifies categories of parameters (e.g., \code{n} for all of the annual
+indices for every stratum and year).
 }
 \description{
 Extract and return the model summary using \code{cmdstanr::summary()}.

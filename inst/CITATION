@@ -1,12 +1,12 @@
-citHeader("To cite bbsBayes2 in publication, please use both: Edwards et al. 2024 and Smith et al. 2024")
+citHeader("To cite bbsBayes2 in publication, please use both: Edwards et al. 2025 and Smith et al. 2024")
 
 citEntry(
   entry = "misc",
-  title = "bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. Version 1.1.2.1",
-  year = "2024",
+  title = "bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. Version 1.1.3",
+  year = "2025",
   url = "https://github.com/bbsBayes/bbsBayes2",
   author = "Edwards, B. P. M., A. C. Smith, and S. LaZerte ",
-  textVersion = "Edwards, B. P. M., A. C. Smith, and S. LaZerte. (2024). bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. https://github.com/bbsBayes/bbsBayes2"
+  textVersion = "Edwards, B. P. M., A. C. Smith, and S. LaZerte. (2025). bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. https://github.com/bbsBayes/bbsBayes2"
 )
 
 citEntry(
@@ -21,14 +21,14 @@ citEntry(
   textVersion = "Smith, A.C., Binley, A., Daly, L., Edwards, B.P.M., Ethier, D., Frei, B., Iles, D., Meehan, T.D., and Michel, N.L., and Smith, P.A. (2024). Spatially explicit Bayesian hierarchical models for avian population status and trends. Ornithological Applications. duad056 https://doi.org/10.1093/ornithapp/duad056"
 )
 
-citHeader("To cite the Breeding Bird Survey data in publication, please use the citation for the relevant data release. This is currently the default 2024 data release")
+citHeader("To cite the Breeding Bird Survey data in publication, please use the citation for the relevant data release. This is currently the default 2025 data release")
 
 citEntry(
   entry = "misc",
-  title = "North American Breeding Bird Survey Dataset 1966 - 2023",
-  version = "2024",
+  title = "North American Breeding Bird Survey Dataset 1966 - 2024",
+  version = "2025",
   publisher = "U.S. Geological Survey, Patuxent Wildlife Research Center.",
   author = "Ziolkowski, D.J., Lutmerding, M., English, W.B., and Hudson, M-A.R.",
-  textVersion = "Ziolkowski, D.J., Lutmerding, M., English, W.B., and Hudson, M-A.R., 2024, North American Breeding Bird Survey Dataset 1966 - 2023: U.S. Geological Survey data release, https://doi.org/10.5066/P136CRBV."
+  textVersion = "Ziolkowski, D.J., Lutmerding, M., English, W.B., and Hudson, M-A.R., 2025, North American Breeding Bird Survey Dataset 1966 - 2024: U.S. Geological Survey data release, https://doi.org/10.5066/P14SNUV4"
 )
 

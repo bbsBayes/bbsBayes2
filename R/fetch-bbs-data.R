@@ -3,7 +3,8 @@
 #' Fetch and download Breeding Bird Survey data from the United States
 #' Geological Survey (USGS) FTP site. This is the raw data that is uploaded to
 #' the site before any analyses are performed. Users can download different
-#' types (`state`, `stop`) and different releases (currently `2020`, `2022`, `2023`, and `2024`).
+#' types (`state`, `stop`) and different releases (currently `2020`, `2022`,
+#' `2023`, `2024`, and `2025`).
 #'
 #' @param force Logical. Should pre-exising BBS data be overwritten? Default
 #'   FALSE.
@@ -11,7 +12,16 @@
 #'   Default is `none` which takes up the most space but is the fastest to
 #'   load. Must be one of `none`, `gz`, `bz2`, or `xz` (passed to
 #'   `readr::write_rds()`'s `compress` argument).
-#'
+#' @param include_unacceptable Logical. DO NOT change this unless you are very
+#'   confident that you want these data. Should the package retain the BBS data
+#'   collected on non-standard BBS routes (including some with fewer than 50
+#'   stops), or outside of the acceptable weather, season, and times-of-day
+#'   structure of the BBS survey design. Default FALSE for good reason.
+#'        If you change this to TRUE and thereby decide you want to include
+#'   the BBS data that do not fit the BBS structured survey design, be sure you
+#'   understand the information in at least the following columns of the route
+#'   survey info: RouteTypeID, RouteTypeDetailID, RPID, RunType, and the rest
+#'   of the information in the data release meta data.
 #'
 #' @inheritParams common_docs
 #' @family BBS data functions
@@ -25,16 +35,22 @@
 #'
 #' BBS `state` level counts provide counts beginning in 1966, aggregated in five
 #' bins, each of which contains cumulative counts from 10 of the 50 stops along
-#' a route. In contrast BBS `stop` level counts provides stop-level data
-#' beginning in 1997, which includes counts for each stop along routes
-#' individually. **Note that stop-level data is not currently supported by the
+#' a route. In contrast, BBS `stop` level counts provides stop-level data
+#' beginning in 1997, which includes counts for each individual stop along
+#' routes. **Note that stop-level data is not currently supported by the
 #' modelling utilities in bbsBayes2.**
 #'
 #' There are multiple releases for each type of data, `2020`, `2022`, `2023`,
-#' and `2024`.
+#' `2024` and `2025`.
 #' By default all functions use the most recent release unless otherwise
 #' specified. For example, the `release` argument in `stratify()` can be
 #' changed to `2020` to use the 2020 release of state-level counts.
+#'
+#'   bbsBayes2 by default removes observations from routes that were not
+#'   established following the stratified random design, the handful of routes
+#'   that are on water (not on roadsides), and any survey that was not conducted
+#'   within acceptable survey conditions (high winds, heavy precipitation,
+#'   outside of the acceptable time windows).
 #'
 #'
 #' @examplesIf interactive()
@@ -47,10 +63,11 @@
 #' @export
 #'
 fetch_bbs_data <- function(level = "state",
-                           release = 2024,
+                           release = 2025,
                            force = FALSE,
                            quiet = FALSE,
-                           compression = "none") {
+                           compression = "none",
+                           include_unacceptable = FALSE) {
 
   check_in(level, c("state", "stop"))
   check_release(release)
@@ -69,13 +86,15 @@ fetch_bbs_data <- function(level = "state",
   agree <- readline(prompt = "Type \"yes\" (without quotes) to agree: ")
   if(agree != "yes") return(NULL)
 
-  fetch_bbs_data_internal(level, release, force, quiet, out_file, compression)
+  fetch_bbs_data_internal(level, release, force, quiet, out_file, compression,
+                          include_unacceptable)
 }
 
 
-fetch_bbs_data_internal <- function(level = "state", release = 2024,
+fetch_bbs_data_internal <- function(level = "state", release = 2025,
                                     force = FALSE, quiet = TRUE,
-                                    out_file = NULL, compression = "none") {
+                                    out_file = NULL, compression = "none",
+                                    include_unacceptable = FALSE) {
 
   if(is.null(out_file)) out_file <- check_bbs_data(level, release, force, quiet)
 
@@ -96,9 +115,9 @@ fetch_bbs_data_internal <- function(level = "state", release = 2024,
     ## to the database. A note is included in the release documentation.
   if(release == 2024){
     birds <- birds %>%
-      dplyr::mutate(aou = ifelse(aou %in% c(4882,4890),
+      dplyr::mutate(aou = ifelse(.data$aou %in% c(4882,4890),
                                  4880,
-                                 aou))
+                                 .data$aou))
   }
 
 
@@ -116,12 +135,19 @@ fetch_bbs_data_internal <- function(level = "state", release = 2024,
                               by = c("country_num", "state_num", "route"))
 
   # remove off-road and water routes, as well as non-random and mini-routes
+  if(include_unacceptable){
   routes <- routes %>%
-    dplyr::filter(.data$route_type_detail_id == 1,
-                  .data$route_type_id == 1,
-                  .data$run_type == 1) %>%
+    # dplyr::filter(.data$route_type_detail_id == 1, # dropping non-random and short routes
+    #               .data$route_type_id == 1, # dropping water-based routes
+    #               .data$run_type == 1) %>% # dropping surveys outside of acceptable weather and times
     dplyr::select(-"stratum")
-
+  }else{
+    routes <- routes %>%
+      dplyr::filter(.data$route_type_detail_id == 1, # dropping non-random and short routes
+                    .data$route_type_id == 1, # dropping water-based routes
+                    .data$run_type == 1) %>% # dropping surveys outside of acceptable weather and times
+      dplyr::select(-"stratum")
+  }
   routes <- dplyr::inner_join(routes, regs, by = c("country_num", "state_num"))
 
   # Combine routes and birds -----------
@@ -187,16 +213,29 @@ fetch_bbs_data_internal <- function(level = "state", release = 2024,
   #     destinations = file.path(tempdir(), rtsfl),
   #     overwrite_file = force)
   # })
+  if(release == 2024){
   species <- readr::read_csv(
     full_path,
     na = c("NA", "", "NULL"),
-    col_types = "iiccccccc", progress = FALSE) %>%
+    col_types = "iiccccccc",
+    progress = FALSE) %>%
     dplyr::rename_with(stringr::str_to_lower) %>%
     dplyr::rename_with(~stringr::str_remove(string = .x,
                                            pattern = "_common_name")) %>%
     dplyr::rename_with(snakecase::to_snake_case)
+  }else{
+    species <- readr::read_csv(
+      full_path,
+      na = c("NA", "", "NULL"),
+      col_types = "iiccccccc", locale = readr::locale(encoding = "latin1"),
+      progress = FALSE) %>%
+      dplyr::rename_with(stringr::str_to_lower) %>%
+      dplyr::rename_with(~stringr::str_remove(string = .x,
+                                              pattern = "_common_name")) %>%
+      dplyr::rename_with(snakecase::to_snake_case)
   }
 
+}
 
 
   # Combine species forms -------------------------------------
@@ -222,6 +261,7 @@ fetch_bbs_data_internal <- function(level = "state", release = 2024,
 
 get_sb_id <- function(release) {
   switch(as.character(release),
+         "2025" = "691cfb53d4be021d1d89b482",
          "2024" = "66d9ed16d34eef5af66d534b",
          "2023" = "64ad9c3dd34e70357a292cee",
          "2022" = "625f151ed34e85fa62b7f926",
@@ -297,7 +337,7 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
       check_release(release, all = TRUE)
 
       if(level == "all") level <- c("state", "stop")
-      if(release == "all") release <- c("2020", "2022", "2023", "2024")
+      if(release == "all") release <- c("2020", "2022", "2023", "2024", "2025")
 
       # To get all combos
       f <- vector()
@@ -339,12 +379,12 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
 #' have_bbs_data(release = 2020)
 #' have_bbs_data(release = "all", level = "all")
 
-have_bbs_data <- function(level = "state", release = 2024, quiet = FALSE){
+have_bbs_data <- function(level = "state", release = 2025, quiet = FALSE){
   check_in(level, c("all", "state", "stop"))
   check_release(release, all = TRUE)
 
   if(level == "all") level <- c("state", "stop")
-  if(release == "all") release <- c("2020", "2022", "2023", "2024")
+  if(release == "all") release <- c("2020", "2022", "2023", "2024", "2025")
 
   # To get all combos
   f <- vector()
@@ -411,7 +451,7 @@ get_routes <- function(release, quiet, connection, force) {
   if(release == 2023){ # format of embedded files changed in 2023
     rtsfl <- "routes.csv"
   }
-  if(release == 2024){ # all file names title case in 2024
+  if(release > 2023){ # all file names title case as of 2024
     rtsfl <- "Routes.csv"
   }
 
@@ -445,7 +485,7 @@ get_weather <- function(release, quiet, connection, force) {
   if(!quiet) message("  - weather...")
 
 
-  if(release == 2024){ # all files have title case names in 2024
+  if(release > 2023){ # all files have title case names in 2024
     wthrfl <- "Weather.csv"
   }
   if(release == 2023){ # this file not in zip format in 2023

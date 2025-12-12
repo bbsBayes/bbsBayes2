@@ -187,7 +187,9 @@ run_model <- function(model_data,
   }
 
   # Compile model
-  model <- cmdstanr::cmdstan_model(meta_data[["model_file"]], dir = bbs_dir())
+  model <- cmdstanr::cmdstan_model(meta_data[["model_file"]],
+                                   dir = bbs_dir(),
+                                   stanc_options = list("O1"))
 
 
   # Run model
@@ -262,7 +264,21 @@ save_model_run <- function(model_output,
   if(is.null(path)) {
     #if(!retain_csv){
     csv_path <- model_fit$output_files()
+
+      if(any(grepl(pattern = "^/mnt/",
+                 x = csv_path))){
+
+      tmp_pth_fix <- gsub(pattern = "^/mnt/", x = csv_path, replacement = "")
+
+      drv <- substr(tmp_pth_fix[1],1,1)
+
+      csv_path <- sub(paste0("^",drv), x = tmp_pth_fix, replacement = paste0(drv,":"))
+
+    }
+
     if(any(!file.exists(csv_path))) {
+
+
       stop("Cannot find original model file location, please specify `path`",
            call. = FALSE)
     }

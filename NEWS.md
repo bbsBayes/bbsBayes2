@@ -4,6 +4,22 @@ editor_options:
     wrap: sentence
 ---
 
+# bbsBayes2 1.1.3
+
+-   2025 release. Includes access to the 2025 release of the BBS database (observations from 1966 through to 2024). 
+
+Some of the key fixes and improvements:
+
+1.  first-difference models (hierarchical and spatial) now better handle the missing data from 2020. The models estimate a single value of change (i.e., the difference between 2021 and 2019) and then use random draws from a beta distribution (beta(1,1)) for each posterior draw to randomly partition the difference between the first interval (2019-2020) and the second (2020-2021). This has the result of forcing the mean trajectory to follow a straight line between 2019 and 2021, while increasing the uncertainty of the estimated index for 2020.
+
+2.  the `fetch_bbs_data()` function now allows the user to retain the BBS observations that do not conform to the survey design. The documentation includes warnings about how this is probably a bad idea. 
+
+3.  all models can now generate prior predictions using `prepare_model(..., use_likelihood = FALSE)`. This should be particularly useful for applications with a custom model.
+
+4.  the function `plot_map(..., col_ebird = TRUE, alternate_column = "percent_change")` will plot the estimated percent change values using the same categories and colour scheme used by the eBird status and trend team.
+
+5.  the function `generate_trends(..., export_full_posterior = TRUE)` will now add a tibble to the output list that includes the full posterior distribution of every trend estimate. Allows for formal tests/estimates of the differences between two trends (e.g., between two time-periods or two regions).
+
 # bbsBayes2 1.1.2.1
 
 -   minor fixes to bugs in 1.1.2

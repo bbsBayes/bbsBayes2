@@ -42,21 +42,29 @@
 #'   the [models
 #'   article](https://bbsBayes.github.io/bbsBayes2/articles/models.html) for more
 #'   details.
+#' @param use_likelihood Logical. If set to FALSE generates prior predictions
+#'    i.e., ignores the likelihood of the count data. Default TRUE
 #'
 #' @inheritParams common_docs
 #' @family Data prep functions
 #'
 #' @details
 #'
-#' There are two ways you can customize the model run. The first is to supply a
-#' custom `model_file` created with the `copy_model_file()` function and then
-#' edited by hand.
+#' There are ways you can customize the model run.
+#' You can supply a custom `model_file` created with the
+#' `copy_model_file()` function and then edited manually.
 #'
-#' Second, you can edit or overwrite the initialization parameters
-#' (`init_values`) in the output of `prepare_model()` to customize the `init`
-#' supplied to `cmdstanr::sample()`. You can supply these parameters in anyway
-#' that `cmdstanr::sample()` accepts the `init` argument. See also the
-#' `init_alternate` argument in `run_model()`.
+#'
+#' You can edit or overwrite the initialization values (`init_values`)
+#' in the output of `prepare_model()` to customize the values
+#' supplied to `cmdstanr::sample()`. In previous versions of bbsBayes2, these
+#' initial values were specific to the model and model version. Since version
+#' 1.1.3, the initial values supplied by defaul in `prepare_model()` are a
+#' single value `$init_values = 1`, which This initializes all parameters
+#' randomly between `-1` and `1`⁠ on the unconstrained parameter space.
+#' You can change these initial values and supply alternate initialization
+#' values in any way that `cmdstanr::sample()` accepts the `init` argument,
+#' using the `init_alternate` argument in `run_model()`.
 #'
 #' To implement bbsBayes2' version of cross validation, set `calculate_cv =
 #' TRUE`. You can set up your own system for cross validation by modifying the
@@ -97,6 +105,7 @@ prepare_model <- function(prepared_data,
                           cv_k = 10,
                           cv_fold_groups = "obs_n",
                           cv_omit_singles = TRUE,
+                          use_likelihood = TRUE,
                           set_seed = NULL,
                           quiet = FALSE) {
 
@@ -133,7 +142,8 @@ prepare_model <- function(prepared_data,
     year = model_data$year,
     n_counts = model_data$n_counts,
     basis, n_knots, heavy_tailed, use_pois,
-    calculate_nu, calculate_log_lik)
+    calculate_nu, calculate_log_lik,
+    use_likelihood)
 
   # Create master parameter list
   model_data <- append(model_data, params)
@@ -177,12 +187,14 @@ model_params <- function(model,
                          model_variant,
                          n_strata, year, n_counts,
                          basis, n_knots, heavy_tailed, use_pois,
-                         calculate_nu, calculate_log_lik) {
+                         calculate_nu, calculate_log_lik,
+                         use_likelihood) {
 
 
   params <- list()
 
   # Model options
+  params[["use_likelihood"]] <- as.integer(use_likelihood)
 
   # Extra Poisson variance options
   # 0 = use df == 3 (do not calculate df for the t-distributed noise)
@@ -207,6 +219,9 @@ model_params <- function(model,
 
   if(model %in% c("slope", "first_diff")) {
     fixed_year <- floor(stats::median(unique(years)))
+    if(!fixed_year %in% years_data){
+      fixed_year <- fixed_year-1
+      }
     params[["fixed_year"]] <- fixed_year
   }
 
@@ -229,25 +244,32 @@ model_params <- function(model,
     # these are used as conditional values in the Stan model to indicate
     # years in which the spatial variance of differences should be estimated
     # equals 1 in all years that are not 2020, and 0 in years that are 2020
-    y_2020 <- rep(NA,(n_years-1))
+    # plus either 2019 or 2021, depending on fixed_year <> 2020
+    y_2020 <- rep(1,(n_years))
 
-    for(y in 1:n_years){
-      if(y %in% years_data){
-        if(y < fixed_year){
-          y_2020[y] <- 1
-        }
-        if(y > fixed_year){
-          y_2020[y-1] <- 1
-        }
-      }else{
-        if(y < fixed_year){
-          y_2020[y] <- 0
-        }
-        if(y > fixed_year){
-          y_2020[y-1] <- 0
-        }
-      }
+    which_2020 <- years[-which(years %in% years_data)] # which year has no surveys
+    if(which_2020 < fixed_year){
+      y_2020[c(which_2020,which_2020-1)] <- 0
+    }else{
+      y_2020[c(which_2020,which_2020+1)] <- 0
     }
+    # for(y in 1:n_years){
+    #   if(y %in% years_data){
+    #     if(y < fixed_year){
+    #       y_2020[y] <- 1
+    #     }
+    #     if(y > fixed_year){
+    #       y_2020[y-1] <- 1
+    #     }
+    #   }else{
+    #     if(y < fixed_year){
+    #       y_2020[y] <- 0
+    #     }
+    #     if(y > fixed_year){
+    #       y_2020[y-1] <- 0
+    #     }
+    #   }
+    # }
     params[["y_2020"]] <- y_2020
   }
 
@@ -325,8 +347,10 @@ model_params <- function(model,
 #' `cmdstanr::sample()`.
 #'
 #' @noRd
-create_init <- function(model, model_variant, model_data) {
+create_init <- function(model, model_variant, model_data,
+                        legacy = FALSE) {
 
+  if(legacy){
   # Generic --------------
   init_generic <-
     list(
@@ -403,6 +427,8 @@ create_init <- function(model, model_variant, model_data) {
 
   # Join with generic values
   append(init_generic, init_specific)
+  }
+  return(1)
 }
 
 

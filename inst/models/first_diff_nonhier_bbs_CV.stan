@@ -14,6 +14,7 @@ data {
   int<lower=1> n_years;
   int<lower=1> fixed_year; //middle year of the time-series scaled to ~(n_years/2)
   int<lower=1> n_years_m1; // n_years-1
+  int<lower=0,upper=1> use_likelihood; // if set to 0, then generates predictions from the priors
 
 
   array[n_counts] int<lower=0> count;              // count observations
@@ -83,6 +84,7 @@ transformed data {
      array[n_test] int site_te = site[test];
      array[n_test] int first_year_te = first_year[test];
      array[n_test] int observer_te = observer[test];
+     int obs_type = sum(obs_mat[1,]); // evaluates to 0 if prepare_data(..., assume_observer_variation_log_normal == TRUE)
 
 
 }
@@ -130,7 +132,6 @@ transformed parameters {
 
   //BETA = sdBETA * BETA_raw;
 
-  beta[,fixed_year] = zero_betas; //fixed at zero
   yeareffect[,fixed_year] = zero_betas; //fixed at zero
  // YearEffect[fixed_year] = 0; //fixed at zero
 
@@ -217,11 +218,13 @@ for(s in 1:(n_strata)){
   sum(strata_raw) ~ normal(0,0.001*n_strata);
 
 
+if(use_likelihood){
 if(use_pois){
   count_tr ~ poisson_log(E); //vectorized count likelihood with log-transformation
 }else{
    count_tr ~ neg_binomial_2_log(E,phi); //vectorized count likelihood with log-transformation
 
+}
 }
 
 }
@@ -313,7 +316,12 @@ for(y in 1:n_years){
         for(t in 1:n_obs_sites_strata[s]){
 
   real ste = sdste*ste_raw[ste_mat[s,t]]; // site intercepts
-  real obs = sdobs*obs_raw[obs_mat[s,t]]; // observer intercepts
+  real obs;
+  if(obs_type > 0){
+   obs = sdobs*obs_raw[obs_mat[s,t]]; // observer intercepts
+  }else{
+     obs = retrans_obs;
+    }
 
 
 

@@ -85,11 +85,11 @@ p <- prepare_data(s, min_max_route_years = 2)
 sp <- prepare_spatial(p, map)
 
 # Visually explore the spatial linkages
-sp$map
+sp$spatial_data$map
 
 # Overlay subset strata map on original mapping data
 sp <- prepare_spatial(p, map, add_map = map)
-sp$map
+sp$spatial_data$map
 
 }
 \seealso{

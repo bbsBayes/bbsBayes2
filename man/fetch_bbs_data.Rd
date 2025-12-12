@@ -6,10 +6,11 @@
 \usage{
 fetch_bbs_data(
   level = "state",
-  release = 2024,
+  release = 2025,
   force = FALSE,
   quiet = FALSE,
-  compression = "none"
+  compression = "none",
+  include_unacceptable = FALSE
 )
 }
 \arguments{
@@ -29,12 +30,24 @@ FALSE.}
 Default is \code{none} which takes up the most space but is the fastest to
 load. Must be one of \code{none}, \code{gz}, \code{bz2}, or \code{xz} (passed to
 \code{readr::write_rds()}'s \code{compress} argument).}
+
+\item{include_unacceptable}{Logical. DO NOT change this unless you are very
+confident that you want these data. Should the package retain the BBS data
+collected on non-standard BBS routes (including some with fewer than 50
+stops), or outside of the acceptable weather, season, and times-of-day
+structure of the BBS survey design. Default FALSE for good reason.
+If you change this to TRUE and thereby decide you want to include
+the BBS data that do not fit the BBS structured survey design, be sure you
+understand the information in at least the following columns of the route
+survey info: RouteTypeID, RouteTypeDetailID, RPID, RunType, and the rest
+of the information in the data release meta data.}
 }
 \description{
 Fetch and download Breeding Bird Survey data from the United States
 Geological Survey (USGS) FTP site. This is the raw data that is uploaded to
 the site before any analyses are performed. Users can download different
-types (\code{state}, \code{stop}) and different releases (currently \code{2020}, \code{2022}, \code{2023}, and \code{2024}).
+types (\code{state}, \code{stop}) and different releases (currently \code{2020}, \code{2022},
+\code{2023}, \code{2024}, and \code{2025}).
 }
 \details{
 Users will be asked before saving the BBS data to a package-specific
@@ -44,19 +57,25 @@ the word "yes" to agree.
 
 BBS \code{state} level counts provide counts beginning in 1966, aggregated in five
 bins, each of which contains cumulative counts from 10 of the 50 stops along
-a route. In contrast BBS \code{stop} level counts provides stop-level data
-beginning in 1997, which includes counts for each stop along routes
-individually. \strong{Note that stop-level data is not currently supported by the
+a route. In contrast, BBS \code{stop} level counts provides stop-level data
+beginning in 1997, which includes counts for each individual stop along
+routes. \strong{Note that stop-level data is not currently supported by the
 modelling utilities in bbsBayes2.}
 
 There are multiple releases for each type of data, \code{2020}, \code{2022}, \code{2023},
-and \code{2024}.
+\code{2024} and \code{2025}.
 By default all functions use the most recent release unless otherwise
 specified. For example, the \code{release} argument in \code{stratify()} can be
 changed to \code{2020} to use the 2020 release of state-level counts.
+
+bbsBayes2 by default removes observations from routes that were not
+established following the stratified random design, the handful of routes
+that are on water (not on roadsides), and any survey that was not conducted
+within acceptable survey conditions (high winds, heavy precipitation,
+outside of the acceptable time windows).
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 
 fetch_bbs_data(force = TRUE)
 fetch_bbs_data(level = "stop", force = TRUE)

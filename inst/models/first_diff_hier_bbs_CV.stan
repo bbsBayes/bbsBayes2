@@ -14,6 +14,7 @@ data {
   int<lower=1> n_years;
   int<lower=1> fixed_year; //middle year of the time-series scaled to ~(n_years/2)
   int<lower=1> n_years_m1; // n_years-1
+  int<lower=0,upper=1> use_likelihood; // if set to 0, then generates predictions from the priors
 
 
   array[n_counts] int<lower=0> count;              // count observations
@@ -22,7 +23,7 @@ data {
   array[n_counts] int<lower=1> site; // site index
   array[n_counts] int<lower=0> first_year; // first year index
   array[n_counts] int<lower=1> observer;              // observer indicators
-  array[n_years_m1] int<lower=0> y_2020; //indicators for 2020 = 0 if 2020 and missing if fixed_year
+  array[n_years] int<lower=0> y_2020; //indicators for 2020 = 0 and 2021 = 0, equals 1 for all other years
 
   int<lower=1> n_observers;// number of observers
 
@@ -84,6 +85,7 @@ transformed data {
      array[n_test] int site_te = site[test];
      array[n_test] int first_year_te = first_year[test];
      array[n_test] int observer_te = observer[test];
+     int obs_type = sum(obs_mat[1,]); // evaluates to 0 if prepare_data(..., assume_observer_variation_log_normal == TRUE)
 
 }
 
@@ -109,6 +111,9 @@ parameters {
 
   vector[n_years_m1] BETA_raw;//_hyperparameter of overall annual change values - "differences" between years
   matrix[n_strata,n_years_m1] beta_raw;         // strata level parameters
+  real BETA_raw_2020;
+  real<lower=0,upper=1> p_2020; // random proportion of 2-year change that took place in the first year
+  vector[n_strata] beta_raw_2020;
 
 }
 
@@ -120,6 +125,8 @@ transformed parameters {
   vector[n_years] YearEffect;
   vector[n_strata] strata;
   real<lower=0> phi; //transformed sdnoise if use_pois == 0 (and therefore Negative Binomial)
+  real BETA_2020;
+  vector[n_strata] beta_2020;
 
 
   if(use_pois){
@@ -128,32 +135,56 @@ transformed parameters {
     phi = 1/sqrt(sdnoise); //as recommended to avoid prior that places most prior mass at very high overdispersion by https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations
   }
 
+// Time series
   BETA = sdBETA * BETA_raw;
+  // change values for the two-year span between 2019 and 2021
+ // BBS was cancelled in 2020, so there are no data
+  BETA_2020 = sdBETA * BETA_raw_2020;
+  beta_2020 = (sdbeta) * beta_raw_2020;
 
-  beta[,fixed_year] = zero_betas; //fixed at zero
+
   yeareffect[,fixed_year] = zero_betas; //fixed at zero
   YearEffect[fixed_year] = 0; //fixed at zero
 
 
 // first half of time-series - runs backwards from fixed_year
   for(t in Iy1){
-  if(y_2020[t]){ // all years not equal to 2020
+
+  if(y_2020[t]){ // all years not equal to 2020 or 2019
     beta[,t] = (sdbeta * beta_raw[,t]) + BETA[t];
-  }else{
-    beta[,t] = (0 * beta_raw[,t]) + BETA[t]; // in 2020 strata-parameters forced to 0
+    YearEffect[t] = YearEffect[t+1] - BETA[t]; // hyperparameter trajectory interesting to monitor but no direct inference
+
+  }else{ // years 2020 and 2019 (so differences from 2021-2020 and 2020-2019)
+    if(y_2020[t+1]){// will only be positive in 2020 negative in 2019 allows splitting based on p_2020
+    beta[,t] = beta_2020*p_2020 + BETA_2020*p_2020; // in 2019 and 2020, difference values represent 2-year change
+    YearEffect[t] = YearEffect[t+1] - BETA_2020*p_2020; // hyperparameter trajectory interesting to monitor but no direct inference
+    }else{
+    beta[,t] = beta_2020*(1-p_2020) + BETA_2020*(1-p_2020); // in 2019 and 2020, difference values represent 2-year change
+    YearEffect[t] = YearEffect[t+1] - BETA_2020*(1-p_2020); // hyperparameter trajectory interesting to monitor but no direct inference
+    }
   }
     yeareffect[,t] = yeareffect[,t+1] - beta[,t];
-    YearEffect[t] = YearEffect[t+1] - BETA[t]; // hyperparameter trajectory interesting to monitor but no direct inference
   }
+
 // second half of time-series - runs forwards from fixed_year
    for(t in Iy2){
-   if(y_2020[t-1]){ // all years not equal to 2020
-    beta[,t] = (sdbeta * beta_raw[,t-1]) + BETA[t-1];//t-1 indicators to match dimensionality
-      }else{
-    beta[,t] = (0 * beta_raw[,t-1]) + BETA[t-1]; // in 2020 strata-parameters forced to 0
-  }
-    yeareffect[,t] = yeareffect[,t-1] + beta[,t];
+
+   if(y_2020[t]){ // all years not equal to 2020 or 2021
+    beta[,t-1] = (sdbeta * beta_raw[,t-1]) + BETA[t-1];//
     YearEffect[t] = YearEffect[t-1] + BETA[t-1];
+
+      }else{ // for years 2020 and 2021 (so differences from 2019-2020 and 2020-2021)
+    if(y_2020[t-1]){// will only be positive in 2020 negative in 2021 allows splitting based on p_2020
+    beta[,t-1] = beta_2020*p_2020  + BETA_2020*p_2020 ; // in 2020 strata-parameters forced to 0
+    YearEffect[t] = YearEffect[t-1] - BETA_2020*p_2020 ; // hyperparameter trajectory interesting to monitor but no direct inference
+
+      }else{
+      beta[,t-1] = beta_2020*(1-p_2020)  + BETA_2020*(1-p_2020) ; // in 2020 strata-parameters forced to 0
+    YearEffect[t] = YearEffect[t-1] - BETA_2020*(1-p_2020) ; // hyperparameter trajectory interesting to monitor but no direct inference
+
+       }
+ }
+    yeareffect[,t] = yeareffect[,t-1] + beta[,t-1];
   }
 
    strata = (sdstrata*strata_raw) + STRATA;
@@ -217,6 +248,10 @@ model {
 
   sdstrata ~ student_t(3,0,1); //prior on sd of intercept variation
 
+  p_2020 ~ beta(1,1); // proportion of 2-year change that took place in the first year
+     p_2020 ~ beta(1,1); // proportion of 2-year change that took place in the first year
+   beta_raw_2020 ~ std_normal(); // spatial difference betwen 2019 and 2021
+    BETA_raw_2020 ~ std_normal(); // overall mean difference between 2019 and 2021
 
 for(t in 1:(n_years_m1)){
     beta_raw[,t] ~ std_normal();
@@ -228,11 +263,13 @@ for(t in 1:(n_years_m1)){
   sum(strata_raw) ~ normal(0,0.001*n_strata);
 
 
+if(use_likelihood){
 if(use_pois){
   count_tr ~ poisson_log(E); //vectorized count likelihood with log-transformation
 }else{
    count_tr ~ neg_binomial_2_log(E,phi); //vectorized count likelihood with log-transformation
 
+}
 }
 
 }
@@ -325,8 +362,12 @@ for(y in 1:n_years){
         for(t in 1:n_obs_sites_strata[s]){
 
   real ste = sdste*ste_raw[ste_mat[s,t]]; // site intercepts
-  real obs = sdobs*obs_raw[obs_mat[s,t]]; // observer intercepts
-
+  real obs;
+  if(obs_type > 0){
+   obs = sdobs*obs_raw[obs_mat[s,t]]; // observer intercepts
+  }else{
+     obs = retrans_obs;
+    }
 
 
       n_t[t] = exp(strata[s] + yeareffect[s,y] + retrans_noise + ste + obs);

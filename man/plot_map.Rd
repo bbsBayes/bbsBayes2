@@ -10,6 +10,7 @@ plot_map(
   title = TRUE,
   alternate_column = NULL,
   col_viridis = FALSE,
+  col_ebird = FALSE,
   strata_custom = NULL,
   zoom_range = TRUE
 )
@@ -31,6 +32,9 @@ used in the default trend maps)}
 
 \item{col_viridis}{Logical. Should the colour-blind-friendly "viridis"
 palette be used. Default \code{FALSE}.}
+
+\item{col_ebird}{Logical, Alternative colour palette for trend values, based
+on the colour palette used for eBird status and trend maps.}
 
 \item{strata_custom}{(\code{sf}) Data Frame. Data frame
 of modified existing stratification, or a \code{sf} spatial data frame with

@@ -25,9 +25,10 @@ test_that("model_params()", {
           basis = b,
           use_pois = FALSE,
           calculate_nu = FALSE,
-          calculate_log_lik = FALSE))
+          calculate_log_lik = FALSE,
+          use_likelihood = TRUE))
 
-      n <- c("calc_nu", "heavy_tailed", "use_pois",
+      n <- c("use_likelihood","calc_nu", "heavy_tailed", "use_pois",
              "calc_log_lik")
 
       if(model %in% c("gam", "gamye")) n <- c(n, "n_knots_year", "year_basis")
@@ -62,13 +63,14 @@ test_that("create_init()", {
                              basis = "mgcv",
                              use_pois = FALSE,
                              calculate_nu = FALSE,
-                             calculate_log_lik = FALSE))
+                             calculate_log_lik = FALSE,
+                             use_likelihood = TRUE))
 
 
     withr::with_seed(111, {
       expect_silent(id <- create_init(bbs_models$model[i], bbs_models$variant[i],
                                       model_data = m)) %>%
-        expect_type("list")
+        expect_type("double")
     })
 
     expect_snapshot_value_safe(id, style = "json2", tolerance = 0.0001)
@@ -127,7 +129,7 @@ test_that("prepare_model() first_diff / slope", {
                      "meta_data", "meta_strata", "raw_data"))
 
     expect_type(md[["model_data"]], "list")
-    expect_type(md[["init_values"]], "list")
+    expect_type(md[["init_values"]], "double")
     expect_type(md[["folds"]], "NULL")
     expect_type(md[["meta_data"]], "list")
     expect_s3_class(md[["meta_strata"]], "data.frame")
