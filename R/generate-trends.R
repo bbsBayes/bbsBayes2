@@ -36,6 +36,9 @@
 #' @param prob_increase Numeric vector. Percent-increase values for which to
 #'   optionally calculate the posterior probabilities (see Details). Default is
 #'   `NULL` (not calculated). Can range from 0 to Inf.
+#' @param export_full_posterior Logical. Default FALSE. If TRUE, the output list
+#'   includes a tibble that contains the full posterior distribution of every
+#'   trend estimate
 #'
 #' @inheritParams common_docs
 #' @family indices and trends functions
@@ -60,6 +63,9 @@
 #'   - `meta_data` - meta data defining the analysis
 #'   - `meta_strata` - data frame listing strata meta data
 #'   - `raw_data` - data frame of summarized counts
+#'   - `trends_full_posterior` - tibble of trends, region names, and full
+#'      posterior distribution of every trend estimate. Can be used for formal
+#'      comparisons of differences in trends between time-periods, regions, etc.
 #'
 #' **`trends`** contains the following columns:
 #'   - `start_year` - First year of the trend
@@ -146,7 +152,8 @@ generate_trends <- function(indices,
                             gam = FALSE,
                             prob_decrease = NULL,
                             prob_increase = NULL,
-                            hpdi = FALSE) {
+                            hpdi = FALSE,
+                            export_full_posterior = FALSE) {
 
   # Checks
   check_data(indices)
@@ -251,7 +258,11 @@ generate_trends <- function(indices,
     tidyr::unnest(cols = c("trend_q", "pc_q")) %>%
     dplyr::arrange(.data$region_type, .data$region)
 
-
+  trends_full_posterior <- trends %>%
+    dplyr::select(region,region_type,
+                  start_year,end_year,
+                  tr) %>%
+    dplyr::rename(trend_full_posterior = .data$tr)
 
   # Reliability Criteria
   q1 <- quantiles[1]
@@ -281,24 +292,6 @@ generate_trends <- function(indices,
           .data[[paste0("slope_trend_q_", q1)]])
   }
 
-
-  # # Optional gam based trends
-  # if(gam) {
-  #   trends <- trends %>%
-  #     dplyr::mutate(
-  #       sl_t = purrr::map(.data$n, calc_gam,
-  #                         .env$min_year_num, .env$max_year_num),
-  #       gam_trend = purrr::map_dbl(.data$sl_t, stats::median),
-  #       gam_trend_q = purrr::map_df(
-  #         .data$sl_t, ~stats::setNames(
-  #           calc_quantiles(.x, quantiles, names = FALSE),
-  #           paste0("gam_trend_q_", quantiles)))) %>%
-  #     tidyr::unnest("gam_trend_q") %>%
-  #     dplyr::mutate(
-  #       "width_of_{q}_percent_credible_interval_gam" :=
-  #         .data[[paste0("gam_trend_q_", q2)]] -
-  #         .data[[paste0("gam_trend_q_", q1)]])
-  # }
 
 
   # Model conditional probabilities of population change during trends period
@@ -338,12 +331,17 @@ generate_trends <- function(indices,
       "n_strata_included", "backcast_flag")
 
 
-  list("trends" = trends,
+  tr_out <- list("trends" = trends,
        "meta_data" = append(indices[["meta_data"]],
                             list("hpdi_trends" = hpdi,
                                  "gam_smooth_trends" = gam)),
        "meta_strata" = indices[["meta_strata"]],
        "raw_data" = indices[["raw_data"]])
+
+  if(export_full_posterior){
+    tr_out[["trends_full_posterior"]] <- trends_full_posterior
+  }
+  return(tr_out)
 }
 
 bsl <- function(i, wy) {

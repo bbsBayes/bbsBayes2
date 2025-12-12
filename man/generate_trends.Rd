@@ -13,7 +13,8 @@ generate_trends(
   gam = FALSE,
   prob_decrease = NULL,
   prob_increase = NULL,
-  hpdi = FALSE
+  hpdi = FALSE,
+  export_full_posterior = FALSE
 )
 }
 \arguments{
@@ -71,6 +72,10 @@ distribution, and so \code{hpdi = TRUE} is ignored for \code{quantiles} values
 between 0.33 and 0.67 (i.e., if the \code{quantiles} value defines a limit for
 a centered hpd interval that would include < 33\% of the
 posterior distribution).}
+
+\item{export_full_posterior}{Logical. Default FALSE. If TRUE, the output list
+includes a tibble that contains the full posterior distribution of every
+trend estimate}
 }
 \value{
 A list containing
@@ -80,6 +85,9 @@ region in the input \code{indices}
 \item \code{meta_data} - meta data defining the analysis
 \item \code{meta_strata} - data frame listing strata meta data
 \item \code{raw_data} - data frame of summarized counts
+\item \code{trends_full_posterior} - tibble of trends, region names, and full
+posterior distribution of every trend estimate. Can be used for formal
+comparisons of differences in trends between time-periods, regions, etc.
 }
 
 \strong{\code{trends}} contains the following columns:
