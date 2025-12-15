@@ -1,5 +1,55 @@
 # Version 1.1.3 release includes 2024 BBS data
 
+Released on December 12, 2025, version 1.1.3 will fetch by default, the
+2025 data release (`fetch_bbs_data(release = 2025)`). The 2025 release
+includes access to the BBS observations from the 2024 field season.
+Previous releases are (as always) available by calling them specifically
+with the release argument in the functions
+`fetch_bbs_data(release = 2024)` or `stratify(release = 2020)`.
+
+The new version includes a number of bug fixes, as well as the following
+new features:
+
+1.  first-difference models (hierarchical and spatial) now better handle
+    the missing data from 2020. The models estimate a single value of
+    change (i.e., the difference between 2021 and 2019) and then use
+    random draws from a beta distribution (beta(1,1)) for each posterior
+    draw to randomly partition the difference between the first interval
+    (2019-2020) and the second (2020-2021). This has the result of
+    forcing the mean trajectory to follow a straight line between 2019
+    and 2021, while increasing the uncertainty of the estimated index
+    for 2020.
+
+2.  the
+    [`fetch_bbs_data()`](https://bbsbayes.github.io/bbsBayes2/reference/fetch_bbs_data.md)
+    function now allows the user to retain the BBS observations that do
+    not conform to the survey design. The documentation includes
+    warnings about how this is probably a bad idea. Some additional
+    columns are now included in the `$routes` object of the list
+    returned by
+    [`load_bbs_data()`](https://bbsbayes.github.io/bbsBayes2/reference/load_bbs_data.md)
+    to help understand these additional *unacceptable* data. The columns
+    `route_type_id`, (RouteTypeID), `route_type_detail_id`
+    (RouteTypeDetailID), `rpid` (RPID), and `run_type` (RunType) are
+    explained in the release
+    [metadata](https://www.sciencebase.gov/catalog/file/get/691cfb53d4be021d1d89b482?f=__disk__d8%2F87%2Fbc%2Fd887bcecf1b47de449eaecb79f2181fdbaf9e969&transform=1&allowOpen=true)
+
+3.  all models can now generate prior predictions using
+    `prepare_model(..., use_likelihood = FALSE)`. This should be
+    particularly useful for applications with a custom model.
+
+4.  the function
+    `plot_map(..., col_ebird = TRUE, alternate_column = "percent_change")`
+    will plot the estimated percent change values using the same
+    categories and colour scheme used by the eBird status and trend
+    team.
+
+5.  the function `generate_trends(..., export_full_posterior = TRUE)`
+    will now add a tibble to the output list that includes the full
+    posterior distribution of every trend estimate. Allows for formal
+    tests/estimates of the differences between two trends (e.g., between
+    two time-periods or two regions).
+
 ## Error in some old versions of the non-hierarchical first-difference model
 
 In versions 1.1.0, 1.1.1, and 1.1.2.0, the non-hierarchical variant of
