@@ -2,13 +2,15 @@ test_that("stratify_map()", {
   routes <- load_bbs_data(sample = TRUE)$routes
   map <- load_map("bbs_cws")
 
-  expect_message(s <- stratify_map(map, routes), "Preparing") %>%
+  expect_message(s <- stratify_map(map, routes,
+                                   stratify_type = "standard",
+                                   distance_to_strata = NULL), "Preparing") %>%
     expect_message("  Calculating area weights") %>%
     expect_message("  Joining routes")
   expect_type(s, "list")
   expect_named(s, c("meta_strata", "routes"))
-  expect_equal(routes, dplyr::select(s[["routes"]], -"strata_name"))
-  expect_named(s[["meta_strata"]], c("strata_name", "area_sq_km"))
+  expect_named(s[["meta_strata"]], c("strata_name", "area_sq_km", "country",
+                                     "country_code", "prov_state", "bcr", "bcr_by_country"))
   expect_equal(nrow(s[["meta_strata"]]), nrow(map))
 })
 
@@ -41,7 +43,7 @@ test_that("stratify - bbs_cws", {
                  "Using 'bbs_cws' \\(standard\\) stratification") %>%
     suppressMessages()
 
-  expect_message(s <- stratify(by = "bbs_cws", species = "Snowy Owl"),
+  expect_message(s <- stratify(by = "bbs_cws", species = "Snowy Owl", use_map = FALSE),
                  "Using 'bbs_cws' \\(standard\\) stratification") %>%
     expect_message("Loading BBS data...") %>%
     expect_message("Filtering to species Snowy Owl") %>%
@@ -103,17 +105,53 @@ test_that("stratify - bbs_usgs", {
 
 })
 
+
+test_that("stratify - bbs", {
+
+  expect_message(stratify(by = "bbs", sample_data = TRUE, distance_to_strata = 3000),
+                 "Using 'bbs' \\(standard\\) stratification") %>%
+    suppressMessages()
+
+  expect_message(s <- stratify(by = "bbs", species = "Snowy Owl", distance_to_strata = 3000),
+                 "Using 'bbs' \\(standard\\) stratification") %>%
+    suppressMessages()
+
+
+  # Check region combining (USGS should have none)
+  expect_true("NS" %in% s$routes_strat$st_abrev)
+  expect_true("PE" %in% s$routes_strat$st_abrev)
+  expect_false(any("NSPE" %in% s$routes_strat$st_abrev))
+
+  all(s$routes_strata$strata_name %in% bbs_strata[["bbs"]]$strata_name) %>%
+    expect_true()
+
+  # Check meta
+  expect_named(s, c("meta_data", "meta_strata", "birds_strata",
+                    "routes_strata"))
+  expect_equal(s$meta_data, list(stratify_by = "bbs",
+                                 stratify_type = "standard",
+                                 species = "Snowy Owl",
+                                 sp_aou = 3760))
+
+  comp <- bbs_strata[["bbs"]] %>%
+    dplyr::filter(strata_name %in% s$meta_strata$strata_name)
+  expect_equal(s$meta_strata, comp)
+
+})
+
+
+
 test_that("stratify - bcr", {
 
-  expect_message(stratify(by = "bcr", sample_data = TRUE),
+  expect_message(stratify(by = "bcr", sample_data = TRUE, distance_to_strata = 3000),
                  "Using 'bcr' \\(standard\\) stratification") %>%
     suppressMessages()
 
-  expect_message(s <- stratify(by = "bcr", species = "Snowy Owl"),
+  expect_message(s <- stratify(by = "bcr", species = "Snowy Owl", distance_to_strata = 3000),
                  "Using 'bcr' \\(standard\\) stratification") %>%
     suppressMessages()
 
-  # Check strata
+
   all(s$routes_strata$strata_name %in% bbs_strata[["bcr"]]$strata_name) %>%
     expect_true()
 
@@ -126,6 +164,36 @@ test_that("stratify - bcr", {
                                  sp_aou = 3760))
 
   comp <- bbs_strata[["bcr"]] %>%
+    dplyr::filter(strata_name %in% s$meta_strata$strata_name)
+  expect_equal(s$meta_strata, comp)
+
+})
+
+
+
+test_that("stratify - bcr_old", {
+
+  expect_message(stratify(by = "bcr_old", sample_data = TRUE),
+                 "Using 'bcr_old' \\(standard\\) stratification") %>%
+    suppressMessages()
+
+  expect_message(s <- stratify(by = "bcr_old", species = "Snowy Owl"),
+                 "Using 'bcr_old' \\(standard\\) stratification") %>%
+    suppressMessages()
+
+  # Check strata
+  all(s$routes_strata$strata_name %in% bbs_strata[["bcr_old"]]$strata_name) %>%
+    expect_true()
+
+  # Check meta
+  expect_named(s, c("meta_data", "meta_strata", "birds_strata",
+                    "routes_strata"))
+  expect_equal(s$meta_data, list(stratify_by = "bcr_old",
+                                 stratify_type = "standard",
+                                 species = "Snowy Owl",
+                                 sp_aou = 3760))
+
+  comp <- bbs_strata[["bcr_old"]] %>%
     dplyr::filter(strata_name %in% s$meta_strata$strata_name)
   expect_equal(s$meta_strata, comp)
 
@@ -207,14 +275,14 @@ test_that("stratify - subset", {
   sub <- dplyr::filter(bbs_strata[["bbs_cws"]], country == "Canada")
 
   expect_message(s <- stratify(by = "bbs_cws", strata_custom = sub,
-                               species = "Snowy Owl"),
+                               species = "Snowy Owl", use_map = FALSE),
                  "Using 'bbs_cws' \\(subset\\) stratification") %>%
     expect_message("Loading BBS data...") %>%
     expect_message("Filtering to species Snowy Owl") %>%
     expect_message("Stratifying") %>%
     expect_message("  Combining BCR") %>%
-    expect_message("  Omitting") %>% # Because subset!
-    expect_message("  Renaming")
+    expect_message("  Renaming") %>%
+    expect_message("  Omitting") # Because subset!
 
   # Check strata
   all(s$routes_strata$strata_name %in% bbs_strata[["bbs_cws"]]$strata_name) %>%
@@ -262,8 +330,7 @@ test_that("stratify - custom", {
 
   # (should match because same map)
   comp <- bbs_strata[["bbs_cws"]] %>%
-    dplyr::filter(strata_name %in% s$meta_strata$strata_name) %>%
-    dplyr::select(strata_name, area_sq_km)
+    dplyr::filter(strata_name %in% s$meta_strata$strata_name)
   expect_equal(s$meta_strata, comp)
 
 })

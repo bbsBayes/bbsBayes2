@@ -8,7 +8,7 @@
 #'
 #'
 #' @param by Character. Stratification type. Either an established type, one of
-#'   "prov_state", "bcr", "latlong", "bbs_cws", "bbs_usgs", or a custom name
+#'   "bbs", prov_state", "bcr", "latlong", "bbs_cws", "bbs_usgs", or a custom name
 #'   (see `strata_custom` for details).
 #' @param species Character. Bird species of interest. Can be specified by
 #'   English, French, or Scientific names, or AOU code. Use `search_species()`
@@ -24,6 +24,29 @@
 #'   route-years which were omitted during stratification as they did not
 #'   overlap with any stratum. For checking and troubleshooting. Default
 #'   `FALSE`.
+#' @param use_map Logical. Whether to stratify the BBS counts and routes based
+#'   on the spatial location of route starting points relative to the polygons
+#'   in the strata map. If one of the `bcr_old`, `prov_state`, `bbs_cws`, or
+#'   `bbs_usgs` is supplied to the `by` argument, the FALSE option allows
+#'   for the routes to be stratified based on the route-specific regional
+#'   allocation in the BBS database. Default is TRUE.
+#'   Ignored if the user supplies a custom stratification, or the `bcr`
+#'   or `bbs` stratifications are supplied to the `by` argument.
+#' @param distance_to_strata numerical. Maximum distance (in meters), within
+#'   which routes with starting locations that do not intersect any strata will
+#'   be joined to the nearest stratum. This is NULL by default, indicating that
+#'   BBS routes with starting locations that do not overlap a stratum will be
+#'   omitted. If supplied, any route with a starting location that falls outside
+#'   of the supplied strata polygons, but less than `distance_to_strata` meters
+#'   from the boundary of at least one of the strata polygons, will be treated
+#'   as if they overlap the nearest stratum. This argument is particularly
+#'   useful to include routes with starting locations on or near the coast or
+#'   shoreline of large lakes, which may be otherwise excluded due to plotting
+#'   errors. For example, the map associated with the standard `bbs`
+#'   stratification excludes 3,877 surveys on 72 routes when this argument is
+#'   NULL. All of these 72 routes have starting locations on the coasts.
+#'   Setting this argument to 3000 (any route within 3 km of a polygon) ensures
+#'   all of these coastal routes are included.
 #'
 #' @inheritParams common_docs
 #' @family Data prep functions
@@ -142,14 +165,21 @@ stratify <- function(by,
                      release = 2025,
                      sample_data = FALSE,
                      return_omitted = FALSE,
-                     quiet = FALSE) {
+                     quiet = FALSE,
+                     use_map = TRUE,
+                     distance_to_strata = NULL) {
 
   # Checks
   by <- check_strata(by, custom = strata_custom, quiet = quiet)
   stratify_by <- by[1]
   stratify_type <- by[2]
+  # always use map for the updated BCRs or custom stratifications
+  if(!use_map & (stratify_by %in% c("bbs","bcr") | stratify_type == "custom")){
+    if(!quiet) message("Forcing use_map = TRUE, because supplied stratification requires spatial overlay.")
+    use_map <- TRUE
+  }
   if(!inherits(strata_custom, "data.frame")) check_sf(strata_custom, col = TRUE)
-  check_logical(combine_species_forms, sample_data, quiet)
+  check_logical(combine_species_forms, sample_data, quiet, use_map)
   check_release(release)
 
   # Load BBS Data (full or sample)
@@ -188,7 +218,7 @@ stratify <- function(by,
     dplyr::left_join(birds, ., by = c("country_num", "state_num", "route")) %>%
     dplyr::semi_join(routes, by = "rid")
 
-  if (stratify_by == "bbs_cws") {
+  if (stratify_by == "bbs_cws" & !use_map) {
 
     if(!quiet) message("  Combining BCR 7 and NS and PEI...")
 
@@ -225,13 +255,13 @@ stratify <- function(by,
   }
 
 
-  if(stratify_type != "custom") {
+  if(stratify_type != "custom" & !use_map) {
     # Stratify by established groups
     routes <- dplyr::mutate(
       routes,
       strata_name = dplyr::case_when(
         stratify_by == "prov_state" ~ .data$st_abrev,
-        stratify_by == "bcr" ~ paste0("BCR", .data$bcr),
+        stratify_by == "bcr_old" ~ paste0("BCR", .data$bcr),
         stratify_by == "latlong" ~ paste0(trunc(.data$latitude),
                                     "_",
                                     trunc(.data$longitude)),
@@ -251,9 +281,25 @@ stratify <- function(by,
 
   } else if (stratify_type == "custom") {
     # Custom stratification
-    strata_custom <- stratify_map(strata_custom, routes, quiet)
+    strata_custom <- stratify_map(strata_custom, routes, quiet, stratify_type,
+                                  distance_to_strata)
     routes <- strata_custom[["routes"]]
     meta_strata <- strata_custom[["meta_strata"]]
+
+  } else if (stratify_type != "custom" & use_map){
+
+    strata_custom <- stratify_map(bbsBayes2::load_map(stratify_by), routes,
+                                  quiet, stratify_type, distance_to_strata)
+    routes <- strata_custom[["routes"]]
+
+    if(stratify_type == "subset") {
+      meta_strata <- strata_custom %>%
+        sf::st_drop_geometry()
+    } else {
+      meta_strata <- bbsBayes2::bbs_strata[[stratify_by]]
+    }
+
+
   }
 
   # routes - create rt_uni and rt_uni_y value with newly defined combined states
@@ -268,6 +314,10 @@ stratify <- function(by,
   n_na <- sum(is.na(routes$strata_name))
 
   if(!quiet & n_na > 0) {
+    n_rt <- routes %>%
+      dplyr::filter(is.na(.data$strata_name)) %>%
+      dplyr::select(route_name) %>%
+      dplyr::distinct()
     if(return_omitted) {
       msg <- "\n    Returning omitted routes."
     } else {
@@ -278,7 +328,8 @@ stratify <- function(by,
     message("  Omitting ",
             format(n_na, big.mark = ","), "/",
             format(nrow(routes), big.mark = ","),
-            " route-years that do not match a stratum.",
+            " surveys, on ",format(nrow(n_rt), big.mark = ",")," unique routes",
+            " that do not match a stratum.",
             msg)
   }
 
@@ -325,22 +376,27 @@ stratify <- function(by,
   out
 }
 
-stratify_map <- function(strata_map, routes, quiet = FALSE) {
+stratify_map <- function(strata_map, routes, quiet = FALSE,
+                         stratify_type, distance_to_strata) {
 
   if(!quiet) {
     c <- sf::st_crs(strata_map, parameters = TRUE)[c("srid", "Name")]
-    message("Preparing custom strata (", c$srid, "; ", c$Name, ")...")
+    message("Preparing strata (", c$srid, "; ", c$Name, ")...")
   }
 
+  strata_map_original <- strata_map # saving original for returning unmodified
+
+#  if(stratify_type == "custom"){
   # Keep strata name column only
   strata_map <- dplyr::select(strata_map, "strata_name") %>%
     dplyr::mutate(strata_name = as.character(.data$strata_name))
+ # }
 
   n_features <- sf::st_drop_geometry(strata_map) %>%
     dplyr::pull(.data$strata_name) %>%
     dplyr::n_distinct()
 
-  # Check if multiple data records per stratum, if so, summarize
+  # Check if multiple polygons records per stratum, if so, summarize
   if(n_features != nrow(strata_map)) {
     if(!quiet) message("  Summarizing strata...")
     strata_map <- strata_map %>%
@@ -356,7 +412,7 @@ stratify_map <- function(strata_map, routes, quiet = FALSE) {
 
 
   # Merge with map polygons and keep coordinates
-  if(!quiet) message("  Joining routes to custom spatial data...")
+  if(!quiet) message("  Joining routes to spatial layer...")
   routes <- routes %>%
     dplyr::mutate(lon = .data$longitude, lat = .data$latitude) %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) %>%
@@ -364,8 +420,58 @@ stratify_map <- function(strata_map, routes, quiet = FALSE) {
     sf::st_join(strata_map) %>%
     sf::st_drop_geometry() %>%
     dplyr::rename("longitude" = "lon", "latitude" = "lat") %>%
-    dplyr::select("strata_name", dplyr::all_of(names(.env$routes))) # reorder
+    dplyr::relocate(strata_name) # reorder
 
-  list("meta_strata" = sf::st_drop_geometry(strata_map),
+  w_miss <- routes %>%
+    dplyr::filter(is.na(.data$strata_name)) %>%
+    dplyr::select(-c("strata_name","area_sq_km")) %>%
+    dplyr::mutate(lon = .data$longitude, lat = .data$latitude) %>%
+    sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) %>%
+    sf::st_transform(sf::st_crs(strata_map))
+
+
+  if(!is.null(distance_to_strata) & nrow(w_miss) > 0){
+
+    if(!quiet) message(paste("Joining routes within",distance_to_strata,"m of strata boundaries"))
+
+    w_miss_join <- which_min_LT(outside = w_miss,
+                             strata_map,
+                             distance_to_strata)
+    routes <- routes %>%
+      dplyr::filter(!is.na(.data$strata_name)) %>%
+      dplyr::bind_rows(w_miss_join)
+  }
+
+  list("meta_strata" = sf::st_drop_geometry(strata_map_original),
        "routes" = routes)
+}
+
+
+# function to identify which rows of sf polygon layer are nearest and less than
+# dist metres from route start lecations.
+which_min_LT <- function(outside,
+                         strata_map,
+                         distance_to_strata = 2000){
+
+ x <- sf::st_is_within_distance(outside,
+                            strata_map,
+                        dist = distance_to_strata,
+                        sparse = TRUE)
+
+ miss_dist <- sf::st_distance(outside,strata_map)
+
+ distance_to_strata <- units::set_units(distance_to_strata, "m")
+  mtch <- vector(mode = "integer",length = nrow(x))
+  for(j in 1:nrow(miss_dist)){
+    tmp <- which.min(miss_dist[j,])
+    mtch[j] <- ifelse(miss_dist[j,tmp] < distance_to_strata, tmp,NA)
+  }
+
+  strata_details <- sf::st_drop_geometry(strata_map)
+  strata_details_join <- strata_details[mtch,]
+  outside_ret <- dplyr::bind_cols(outside,
+                           strata_details_join) %>%
+    sf::st_drop_geometry() %>%
+    dplyr::rename("longitude" = "lon", "latitude" = "lat")
+  return(outside_ret)
 }

@@ -71,7 +71,7 @@ search_col <- function(column, search) {
 #' object (`sf` package)
 #'
 #' @param stratify_by Character. Stratification type. One of
-#'   "prov_state", "bcr", "latlong", "bbs_cws", "bbs_usgs".
+#'   "bbs", prov_state", "bcr", "latlong", "bbs_cws", "bbs_usgs".
 #' @param type Character. "strata" or political map ("North America", "Canada"
 #'   or "US"/"USA"/"United States of America").
 #'
@@ -80,9 +80,9 @@ search_col <- function(column, search) {
 #' @return sf polygon object
 #'
 #' @examples
-#' # Toy example with Pacific Wren sample data
+#'
 #' # First, stratify the sample data
-#' strat_map <- load_map(stratify_by = "bbs_cws")
+#' strat_map <- load_map(stratify_by = "bbs")
 #'
 #' # simple plot of the map
 #' plot(strat_map)

@@ -1,6 +1,8 @@
 test_that("model_params()", {
 
-  p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
+  p <- stratify(by = "bbs", sample_data = TRUE, quiet = TRUE,
+                use_map = TRUE,
+                distance_to_strata = NULL) %>%
     prepare_data(min_max_route_years = 2)
 
   p <- p$model_data
@@ -44,7 +46,9 @@ test_that("model_params()", {
 
 test_that("create_init()", {
 
-  p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
+  p <- stratify(by = "bbs", sample_data = TRUE, quiet = TRUE,
+                use_map = TRUE,
+                distance_to_strata = NULL) %>%
     prepare_data(min_max_route_years = 2)
 
   p <- p$model_data
@@ -78,7 +82,9 @@ test_that("create_init()", {
 })
 
 test_that("cv_folds()", {
-  p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
+  p <- stratify(by = "bbs", sample_data = TRUE, quiet = TRUE,
+                use_map = TRUE,
+                distance_to_strata = NULL) %>%
     prepare_data(min_max_route_years = 2)
 
   expect_message(cv_folds(p[["raw_data"]]), "experimental")
@@ -108,9 +114,11 @@ test_that("cv_folds()", {
 
 test_that("prepare_model() first_diff / slope", {
 
-  p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
+  p <- stratify(by = "bbs", sample_data = TRUE, quiet = TRUE,
+                use_map = TRUE,
+                distance_to_strata = NULL) %>%
     prepare_data(min_max_route_years = 2) %>%
-    prepare_spatial(load_map("bbs_usgs"), quiet = TRUE)
+    prepare_spatial(load_map("bbs"), quiet = TRUE)
 
   m <- dplyr::filter(bbs_models, model %in% c("first_diff", "slope"))
 

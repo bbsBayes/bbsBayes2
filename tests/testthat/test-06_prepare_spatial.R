@@ -63,7 +63,9 @@ test_that("fix_islands()", {
 test_that("prepare_spatial() defaults", {
 
   map <- load_map("bbs_cws")
-  p <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
+  p <- stratify(by = "bbs_cws", sample_data = TRUE,
+                use_map = FALSE,
+                distance_to_strata = NULL) %>%
     prepare_data() %>%
     suppressMessages()
 
@@ -96,7 +98,9 @@ test_that("prepare_spatial() defaults", {
 
 test_that("prepare_spatial(nearest_fill = TRUE)", {
   map <- load_map("latlong")
-  p <- stratify(by = "latlong", sample_data = TRUE) %>%
+  p <- stratify(by = "latlong", sample_data = TRUE,
+                use_map = FALSE,
+                distance_to_strata = NULL) %>%
     prepare_data() %>%
     suppressMessages() %>%
     suppressWarnings()
@@ -124,8 +128,10 @@ test_that("prepare_spatial(nearest_fill = TRUE)", {
 
 test_that("prepare_spatial(voronoi = TRUE)", {
 
-  map <- load_map("bbs_cws")
-  p <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
+  map <- load_map("bbs")
+  p <- stratify(by = "bbs", sample_data = TRUE,
+                use_map = TRUE,
+                distance_to_strata = 3000) %>%
     prepare_data() %>%
     suppressMessages()
 

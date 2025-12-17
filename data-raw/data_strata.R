@@ -12,6 +12,8 @@ library(tidyr)
 library(sf)
 library(stringr)
 library(assertr) # Checks to make sure data is as it should be in the end
+library(rmapshaper) # allows simplification of the polygon boudnaries in a way
+        # that preserves adjacency among polygons.
 
 # See
 # https://stringr.tidyverse.org/articles/regular-expressions.html#look-arounds
@@ -19,6 +21,69 @@ library(assertr) # Checks to make sure data is as it should be in the end
 
 # For all maps, only require `strata_name` (or equivalent), then all other
 # details are calculated from that.
+
+# Updated BCR stratification ----------------------------------------------
+# updated BCR definitions that includes changes to Northern BCRS
+# circa 2025
+
+bcr_new <- "data-raw/maps_orig/bcr_2025_lakes12.gpkg" %>%
+  read_sf() %>%
+  sf::st_transform(crs = bbsBayes2::equal_area_crs) %>%
+  rmapshaper::ms_simplify(keep = 0.1,
+                          keep_shapes = TRUE) %>%
+  mutate(strata_name = paste0("BCR",bcr_label)) %>%
+  filter(!is_lake) %>%
+  group_by(strata_name) %>%
+  summarise(.groups = "drop") %>%
+  sf::st_make_valid() %>%
+  rename_with(.fn = ~"strata_name",
+              .cols = dplyr::any_of(c("strata_name", "ST_12"))) %>%
+  mutate(area_sq_km = as.numeric(units::set_units(st_area(.), "km^2")))
+
+st_write(bcr_new,
+         file.path("inst/maps/",
+                   "bcr_strata.gpkg"), append = FALSE)
+
+
+# New BCR bbs stratification ----------------------------------------------
+
+
+bbs_new <- "data-raw/maps_orig/bcr_2025_lakes12_statprov3.gpkg" %>%
+  read_sf() %>%
+  sf::st_transform(crs = bbsBayes2::equal_area_crs)
+
+bbs_new <- rmapshaper::ms_simplify(bbs_new, keep = 0.1,
+                                keep_shapes = TRUE) %>%
+mutate(strata_name = paste0(country_code,"-",statprov_code,"-",bcr_label)) %>%
+  st_make_valid() %>% # As needed when st_is_valid() fails
+  filter(!is_lake,
+         country_code %in% c("CA","US"), #  removing Mexico, France, and Hawaii
+         statprov_code != "HI") %>%
+  group_by(strata_name,bcr_label) %>%
+  summarise(.groups = "drop") %>%
+  mutate(area_sq_km = as.numeric(units::set_units(st_area(.), "km^2"))) %>%
+  mutate(country_code = str_extract(strata_name, "^(CA)|(US)|(MX)"),
+         bcr = bcr_label,
+         prov_state = str_extract(strata_name, "(?<=-)[A-Z]{2}"),
+         country = case_when(country_code == "CA" ~ "Canada",
+                             country_code == "US" ~ "United States of America",
+                             country_code == "MX" ~ "Mexico"),
+         bcr_by_country = paste0(country, "-BCR_", bcr)) %>%
+  select(strata_name, area_sq_km, country, country_code, prov_state, bcr,
+         bcr_by_country)
+
+st_write(bbs_new,
+         file.path("inst/maps/",
+                   "bbs_strata.gpkg"), append = FALSE)
+
+
+# tst <- ggplot()+
+#   geom_sf(data = bbs_new,
+#           aes(fill = strata_name))+
+#   theme(legend.position = "none")
+#
+# tst
+
 
 # USGS --------------------------------------------------
 strata_bbs_usgs <- "data-raw/maps_orig/BBS_USGS_strata.shp" %>%
@@ -81,8 +146,8 @@ st_write(strata_bbs_cws,
 
 
 # BCR ----------------------------------------------------
-
-strata_bcr <- "data-raw/maps_orig/BBS_BCR_strata.shp" %>%
+# Old BCR stratification
+strata_bcr_old <- "data-raw/maps_orig/BBS_BCR_strata.shp" %>%
   sf::read_sf() %>%
   sf::st_make_valid() %>%
   rename_with(.fn = ~"strata_name",
@@ -97,9 +162,9 @@ strata_bcr <- "data-raw/maps_orig/BBS_BCR_strata.shp" %>%
 # waldo::compare(arrange(load_internal_file("bbs_strata", "bcr"), strata_name),
 #                arrange(s, strata_name), tolerance = 0.1)
 
-st_write(strata_bcr, file.path(system.file("maps", package = "bbsBayes2"),
-                               "bcr_strata.gpkg"), append = FALSE)
-
+st_write(strata_bcr_old, file.path(system.file("maps", package = "bbsBayes2"),
+                               "bcr_old_strata.gpkg"), append = FALSE)
+# #
 # Latitude/Longitude -------------------------------------------------
 
 strata_latlong <- "data-raw/maps_orig/BBS_LatLong_strata.shp" %>%
@@ -159,10 +224,13 @@ st_write(strata_prov_state, file.path(system.file("maps", package = "bbsBayes2")
 
 
 # Save for use by users and functions -------------------
-bbs_strata <- list("bbs_usgs" = st_drop_geometry(strata_bbs_usgs),
+bbs_strata <- list("bbs" = st_drop_geometry(bbs_new),
+                   "bbs_usgs" = st_drop_geometry(strata_bbs_usgs),
                    "bbs_cws" = st_drop_geometry(strata_bbs_cws),
-                   "bcr" = st_drop_geometry(strata_bcr),
+                   "bcr" = st_drop_geometry(bcr_new),
+                   "bcr_old" = st_drop_geometry(strata_bcr_old),
                    "latlong" = st_drop_geometry(strata_latlong),
                    "prov_state" = st_drop_geometry(strata_prov_state))
+
 
 usethis::use_data(bbs_strata, overwrite = TRUE)

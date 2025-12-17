@@ -12,12 +12,14 @@ stratify(
   release = 2025,
   sample_data = FALSE,
   return_omitted = FALSE,
-  quiet = FALSE
+  quiet = FALSE,
+  use_map = TRUE,
+  distance_to_strata = NULL
 )
 }
 \arguments{
 \item{by}{Character. Stratification type. Either an established type, one of
-"prov_state", "bcr", "latlong", "bbs_cws", "bbs_usgs", or a custom name
+"bbs", prov_state", "bcr", "latlong", "bbs_cws", "bbs_usgs", or a custom name
 (see \code{strata_custom} for details).}
 
 \item{species}{Character. Bird species of interest. Can be specified by
@@ -44,6 +46,31 @@ overlap with any stratum. For checking and troubleshooting. Default
 \code{FALSE}.}
 
 \item{quiet}{Logical. Suppress progress messages? Default \code{FALSE}.}
+
+\item{use_map}{Logical. Whether to stratify the BBS counts and routes based
+on the spatial location of route starting points relative to the polygons
+in the strata map. If one of the \code{bcr_old}, \code{prov_state}, \code{bbs_cws}, or
+\code{bbs_usgs} is supplied to the \code{by} argument, the FALSE option allows
+for the routes to be stratified based on the route-specific regional
+allocation in the BBS database. Default is TRUE.
+Ignored if the user supplies a custom stratification, or the \code{bcr}
+or \code{bbs} stratifications are supplied to the \code{by} argument.}
+
+\item{distance_to_strata}{numerical. Maximum distance (in meters), within
+which routes with starting locations that do not intersect any strata will
+be joined to the nearest stratum. This is NULL by default, indicating that
+BBS routes with starting locations that do not overlap a stratum will be
+omitted. If supplied, any route with a starting location that falls outside
+of the supplied strata polygons, but less than \code{distance_to_strata} meters
+from the boundary of at least one of the strata polygons, will be treated
+as if they overlap the nearest stratum. This argument is particularly
+useful to include routes with starting locations on or near the coast or
+shoreline of large lakes, which may be otherwise excluded due to plotting
+errors. For example, the map associated with the standard \code{bbs}
+stratification excludes 3,877 surveys on 72 routes when this argument is
+NULL. All of these 72 routes have starting locations on the coasts.
+Setting this argument to 3000 (any route within 3 km of a polygon) ensures
+all of these coastal routes are included.}
 }
 \value{
 List of (meta) data.
