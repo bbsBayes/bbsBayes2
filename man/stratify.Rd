@@ -179,7 +179,7 @@ s <- stratify(by = "bbs_cws", strata_custom = my_cws, species = "Snowy Owl",
               use_map = FALSE)
 
 my_bcr <- filter(bbs_strata[["bcr_old"]], strata_name == "BCR8")
-s <- stratify(by = "bcr", strata_custom = my_bcr,
+s <- stratify(by = "bcr_old", strata_custom = my_bcr,
               species = "Yellow-rumped Warbler (all forms)",
               use_map = FALSE)
 
