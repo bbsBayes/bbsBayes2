@@ -149,7 +149,7 @@
 #'               use_map = FALSE)
 #'
 #' my_bcr <- filter(bbs_strata[["bcr_old"]], strata_name == "BCR8")
-#' s <- stratify(by = "bcr", strata_custom = my_bcr,
+#' s <- stratify(by = "bcr_old", strata_custom = my_bcr,
 #'               species = "Yellow-rumped Warbler (all forms)",
 #'               use_map = FALSE)
 #'
@@ -326,7 +326,7 @@ stratify <- function(by,
   if(!quiet & n_na > 0) {
     n_rt <- routes %>%
       dplyr::filter(is.na(.data$strata_name)) %>%
-      dplyr::select(route_name) %>%
+      dplyr::select("route_name") %>%
       dplyr::distinct()
     if(return_omitted) {
       msg <- "\n    Returning omitted routes."
@@ -430,7 +430,7 @@ stratify_map <- function(strata_map, routes, quiet = FALSE,
     sf::st_join(strata_map) %>%
     sf::st_drop_geometry() %>%
     dplyr::rename("longitude" = "lon", "latitude" = "lat") %>%
-    dplyr::relocate(strata_name) # reorder
+    dplyr::relocate("strata_name") # reorder
 
   w_miss <- routes %>%
     dplyr::filter(is.na(.data$strata_name)) %>%
