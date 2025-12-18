@@ -96,27 +96,33 @@
 #' # Use `search_species()` to get correct species name
 #'
 #' # Stratify by CWS BBS strata
-#' s <- stratify(by = "bbs_cws", species = "Common Loon")
+#' s <- stratify(by = "bbs_cws", species = "Common Loon",
+#'               use_map = FALSE)
 #'
 #' # Use use English, French, Scientific, or AOU codes for species names
-#' s <- stratify(by = "bbs_cws", species = "Plongeon huard")
-#' s <- stratify(by = "bbs_cws", species = 70)
-#' s <- stratify(by = "bbs_cws", species = "Gavia immer")
+#' s <- stratify(by = "bbs_cws", species = "Plongeon huard",
+#'               use_map = FALSE)
+#' s <- stratify(by = "bbs_cws", species = 70,
+#'               use_map = FALSE)
+#' s <- stratify(by = "bbs_cws", species = "Gavia immer",
+#'               use_map = FALSE)
 #'
-#' # Stratify by Bird Conservation Regions
-#' s <- stratify(by = "bcr", species = "Great Horned Owl")
+#' # Stratify by updated (2025) Bird Conservation Regions
+#' s <- stratify(by = "bcr", species = "Great Horned Owl",
+#'               distance_to_strata = 4000)
 #'
-#' # Stratify by CWS BBS strata
-#' s <- stratify(by = "bbs_cws", species = "Canada Jay")
+#' # Stratify by former CWS BBS strata
+#' s <- stratify(by = "bbs_cws", species = "Canada Jay",
+#'               use_map = FALSE)
 #'
 #' # Stratify by State/Province/Territory only
-#' s <- stratify(by = "prov_state", species = "Common Loon")
-#' s <- stratify(by = "prov_state", species = "Plongeon huard")
-#' s <- stratify(by = "prov_state", species = 70)
+#' s <- stratify(by = "prov_state", species = "Common Loon",
+#'               use_map = FALSE)
 #'
 #'
 #' # Stratify by blocks of 1 degree of latitude X 1 degree of longitude
-#' s <- stratify(by = "latlong", species = "Snowy Owl")
+#' s <- stratify(by = "latlong", species = "Snowy Owl",
+#'               use_map = FALSE)
 #'
 #' # Check routes omitted by stratification
 #' s <- stratify(by = "latlong", species = "Snowy Owl", return_omitted = TRUE)
@@ -125,23 +131,27 @@
 #' # Use combined or non-combined species forms
 #'
 #' search_species("Sooty grouse")
-#' s <- stratify(by = "bbs_usgs", species = "Blue Grouse (Dusky/Sooty)")
+#' s <- stratify(by = "bbs_usgs", species = "Blue Grouse (Dusky/Sooty)",
+#'               use_map = FALSE)
 #' nrow(s$birds_strata) # Contains all Dusky, Sooty and unidentified
 #'
 #' search_species("Sooty grouse", combine_species_forms = FALSE)
 #' s <- stratify(by = "bbs_usgs", species = "unid. Dusky Grouse / Sooty Grouse",
-#'               combine_species_forms = FALSE)
+#'               combine_species_forms = FALSE,
+#'               use_map = FALSE)
 #' nrow(s$birds_strata) # Contains *only* unidentified
 #'
 #'
 #' # Stratify by a subset of an existing stratification
 #' library(dplyr)
 #' my_cws <- filter(bbs_strata[["bbs_cws"]], country_code == "CA")
-#' s <- stratify(by = "bbs_cws", strata_custom = my_cws, species = "Snowy Owl")
+#' s <- stratify(by = "bbs_cws", strata_custom = my_cws, species = "Snowy Owl",
+#'               use_map = FALSE)
 #'
-#' my_bcr <- filter(bbs_strata[["bcr"]], strata_name == "BCR8")
+#' my_bcr <- filter(bbs_strata[["bcr_old"]], strata_name == "BCR8")
 #' s <- stratify(by = "bcr", strata_custom = my_bcr,
-#'               species = "Yellow-rumped Warbler (all forms)")
+#'               species = "Yellow-rumped Warbler (all forms)",
+#'               use_map = FALSE)
 #'
 #' # Stratify by Custom stratification, using sf map object
 #' # e.g. with WBPHS stratum boundaries 2019

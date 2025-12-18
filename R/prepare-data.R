@@ -53,7 +53,8 @@
 #'
 #' # First, stratify the sample data
 #'
-#' s <- stratify(by = "bbs_cws", sample_data = TRUE)
+#' s <- stratify(by = "bbs_cws", sample_data = TRUE,
+#'               use_map = FALSE)
 #'
 #' # Prepare the stratified data for use in a model. In this
 #' #   toy example, we will set the minimum year as 2009 and

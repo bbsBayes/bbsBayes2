@@ -51,7 +51,8 @@
 #'
 #' @examples
 #' map <- load_map("bbs_cws")
-#' s <- stratify(by = "bbs_cws", sample_data = TRUE)
+#' s <- stratify(by = "bbs_cws", sample_data = TRUE,
+#'               use_map = FALSE)
 #' p <- prepare_data(s, min_max_route_years = 2)
 #' sp <- prepare_spatial(p, map)
 #'
