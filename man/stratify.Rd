@@ -49,16 +49,16 @@ overlap with any stratum. For checking and troubleshooting. Default
 
 \item{use_map}{Logical. Whether to stratify the BBS counts and routes based
 on the spatial location of route starting points relative to the polygons
-in the strata map. If one of the \code{bcr_old}, \code{prov_state}, \code{bbs_cws}, or
-\code{bbs_usgs} is supplied to the \code{by} argument, the FALSE option allows
-for the routes to be stratified based on the route-specific regional
-allocation in the BBS database. Default is TRUE.
+in the strata map. If one of the \code{bcr_old}, \code{prov_state}, \code{bbs_cws},
+\code{latlong}, or \code{bbs_usgs} is supplied to the \code{by} argument, the FALSE option
+allows for the routes to be stratified based on the route-specific regional
+allocation in the BBS database.
 Ignored if the user supplies a custom stratification, or the \code{bcr}
-or \code{bbs} stratifications are supplied to the \code{by} argument.}
+or \code{bbs} stratifications are supplied to the \code{by} argument. Default, \code{TRUE}}
 
 \item{distance_to_strata}{numerical. Maximum distance (in meters), within
 which routes with starting locations that do not intersect any strata will
-be joined to the nearest stratum. This is NULL by default, indicating that
+be joined to the nearest stratum. This is \code{NULL} by default, indicating that
 BBS routes with starting locations that do not overlap a stratum will be
 omitted. If supplied, any route with a starting location that falls outside
 of the supplied strata polygons, but less than \code{distance_to_strata} meters
@@ -70,7 +70,14 @@ errors. For example, the map associated with the standard \code{bbs}
 stratification excludes 3,877 surveys on 72 routes when this argument is
 NULL. All of these 72 routes have starting locations on the coasts.
 Setting this argument to 3000 (any route within 3 km of a polygon) ensures
-all of these coastal routes are included.}
+all of these coastal routes are included. Default \code{NULL}.
+Caution: Users should be cautious of using this argument if the strata map
+does not represent the full landmass of Canada and the United States. For
+example using a subset of an existing strata map, such as all of the bbs
+strata within one country will link routes within the set distance of the
+national border (e.g., some routes in the US will be joined to strata in
+Canada) the same way it treats routes that happen to fall just off the
+coast of the supplied strata map.}
 }
 \value{
 List of (meta) data.
@@ -118,8 +125,10 @@ See \code{vignette("stratification", package = "bbsBayes2")} and the article
 for more details.
 }
 \examples{
-# Sample Data - USGS BBS strata
-s <- stratify(by = "bbs_usgs", sample_data = TRUE)
+# Sample Data - BBS strata updated (2025) BBS strata with new BCRs
+s <- stratify(by = "bbs", sample_data = TRUE)
+# omits some routes so using distance_to_strata to capture coastal routes
+s <- stratify(by = "bbs", sample_data = TRUE, distance_to_strata = 2000)
 
 \dontshow{if (have_bbs_data()) withAutoprint(\{ # examplesIf}
 # Full data - species and stratification
