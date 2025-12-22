@@ -1,0 +1,66 @@
+
+{
+  "stan_major_version" : "2",
+  "stan_minor_version" : "37",
+  "stan_patch_version" : "0",
+  "model_name" : "first_diff_hier_bbs_CV_model",
+  "start_datetime" : "2025-12-22 13:31:51 UTC",
+  "method" : {
+    "value" : "sample",
+    "sample" : {
+      "num_samples" : 20,
+      "num_warmup" : 20,
+      "save_warmup" : false,
+      "thin" : 1,
+      "adapt" : {
+        "engaged" : true,
+        "gamma" : 0.05,
+        "delta" : 0.8,
+        "kappa" : 0.75,
+        "t0" : 10,
+        "init_buffer" : 75,
+        "term_buffer" : 50,
+        "window" : 25,
+        "save_metric" : true
+      },
+      "algorithm" : {
+        "value" : "hmc",
+        "hmc" : {
+          "engine" : {
+            "value" : "nuts",
+            "nuts" : {
+              "max_depth" : 11
+            }
+          },
+          "metric" : {
+            "value" : "diag_e"
+          },
+          "metric_file" : "",
+          "stepsize" : 1,
+          "stepsize_jitter" : 0
+        }
+      },
+      "num_chains" : 1
+    }
+  },
+  "id" : 1,
+  "data" : {
+    "file" : "\/tmp\/RtmppOuROG\/standata-26b1725e400d.json"
+  },
+  "init" : "1",
+  "random" : {
+    "seed" : 303628085
+  },
+  "output" : {
+    "file" : "\/home\/runner\/work\/bbsBayes2\/bbsBayes2\/docs\/reference\/.\/BBS_PacificWren_first_diff_hier_202512221331_STAN-1.csv",
+    "diagnostic_file" : "",
+    "refresh" : 100,
+    "sig_figs" : 8,
+    "profile_file" : "\/home\/runner\/work\/bbsBayes2\/bbsBayes2\/docs\/reference\/.\/first_diff_hier_bbs_CV-profile-1.csv",
+    "save_cmdstan_config" : true
+  },
+  "num_threads" : 1,
+  "mpi_enabled" : false,
+  "stanc_version" : "stanc3 v2.37.0",
+  "stancflags" : "--O1 --name=first_diff_hier_bbs_CV_model"
+}

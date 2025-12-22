@@ -192,7 +192,8 @@ Other modelling functions:
 ## Examples
 
 ``` r
-s <- stratify(by = "bbs_cws", sample_data = TRUE)
+s <- stratify(by = "bbs_cws", sample_data = TRUE,
+              use_map = FALSE)
 #> Using 'bbs_cws' (standard) stratification
 #> Using sample BBS data...
 #> Using species Pacific Wren (sample data)
@@ -236,5 +237,5 @@ m <- run_model(pm, iter_warmup = 20, iter_sampling = 20, chains = 2)
 #> 
 #> Warning: 1 of 2 chains had an E-BFMI less than 0.3.
 #> See https://mc-stan.org/misc/warnings for details.
-#> Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/docs/reference/BBS_PacificWren_first_diff_hier_202512151407_STAN.rds
+#> Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/docs/reference/BBS_PacificWren_first_diff_hier_202512221331_STAN.rds
 ```

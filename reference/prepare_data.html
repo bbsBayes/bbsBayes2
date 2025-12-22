@@ -9,7 +9,7 @@ modelling, and prepare data format for use by models."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -143,7 +143,8 @@ steps.</p><ul><li><p><code>model_data</code> - list of data formatted for use in
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># First, stratify the sample data</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>, sample_data <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="stratify.html">stratify</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs_cws"</span>, sample_data <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>              use_map <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'bbs_cws' (standard) stratification</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using sample BBS data...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using species Pacific Wren (sample data)</span>

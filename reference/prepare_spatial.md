@@ -114,7 +114,8 @@ Other Data prep functions:
 
 ``` r
 map <- load_map("bbs_cws")
-s <- stratify(by = "bbs_cws", sample_data = TRUE)
+s <- stratify(by = "bbs_cws", sample_data = TRUE,
+              use_map = FALSE)
 #> Using 'bbs_cws' (standard) stratification
 #> Using sample BBS data...
 #> Using species Pacific Wren (sample data)
