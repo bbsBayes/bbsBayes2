@@ -132,7 +132,8 @@ See the \href{https://bbsBayes.github.io/bbsBayes2/articles/models.html}{models 
 advanced examples and explanations.
 }
 \examples{
-s <- stratify(by = "bbs_cws", sample_data = TRUE)
+s <- stratify(by = "bbs_cws", sample_data = TRUE,
+              use_map = FALSE)
 p <- prepare_data(s)
 pm <- prepare_model(p, model = "first_diff", model_variant = "hier")
 }

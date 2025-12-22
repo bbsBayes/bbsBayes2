@@ -12,12 +12,14 @@ stratify(
   release = 2025,
   sample_data = FALSE,
   return_omitted = FALSE,
-  quiet = FALSE
+  quiet = FALSE,
+  use_map = TRUE,
+  distance_to_strata = NULL
 )
 }
 \arguments{
 \item{by}{Character. Stratification type. Either an established type, one of
-"prov_state", "bcr", "latlong", "bbs_cws", "bbs_usgs", or a custom name
+"bbs", prov_state", "bcr", "latlong", "bbs_cws", "bbs_usgs", or a custom name
 (see \code{strata_custom} for details).}
 
 \item{species}{Character. Bird species of interest. Can be specified by
@@ -44,6 +46,38 @@ overlap with any stratum. For checking and troubleshooting. Default
 \code{FALSE}.}
 
 \item{quiet}{Logical. Suppress progress messages? Default \code{FALSE}.}
+
+\item{use_map}{Logical. Whether to stratify the BBS counts and routes based
+on the spatial location of route starting points relative to the polygons
+in the strata map. If one of the \code{bcr_old}, \code{prov_state}, \code{bbs_cws},
+\code{latlong}, or \code{bbs_usgs} is supplied to the \code{by} argument, the FALSE option
+allows for the routes to be stratified based on the route-specific regional
+allocation in the BBS database.
+Ignored if the user supplies a custom stratification, or the \code{bcr}
+or \code{bbs} stratifications are supplied to the \code{by} argument. Default, \code{TRUE}}
+
+\item{distance_to_strata}{numerical. Maximum distance (in meters), within
+which routes with starting locations that do not intersect any strata will
+be joined to the nearest stratum. This is \code{NULL} by default, indicating that
+BBS routes with starting locations that do not overlap a stratum will be
+omitted. If supplied, any route with a starting location that falls outside
+of the supplied strata polygons, but less than \code{distance_to_strata} meters
+from the boundary of at least one of the strata polygons, will be treated
+as if they overlap the nearest stratum. This argument is particularly
+useful to include routes with starting locations on or near the coast or
+shoreline of large lakes, which may be otherwise excluded due to plotting
+errors. For example, the map associated with the standard \code{bbs}
+stratification excludes 3,877 surveys on 72 routes when this argument is
+NULL. All of these 72 routes have starting locations on the coasts.
+Setting this argument to 3000 (any route within 3 km of a polygon) ensures
+all of these coastal routes are included. Default \code{NULL}.
+Caution: Users should be cautious of using this argument if the strata map
+does not represent the full landmass of Canada and the United States. For
+example using a subset of an existing strata map, such as all of the bbs
+strata within one country will link routes within the set distance of the
+national border (e.g., some routes in the US will be joined to strata in
+Canada) the same way it treats routes that happen to fall just off the
+coast of the supplied strata map.}
 }
 \value{
 List of (meta) data.
@@ -91,35 +125,43 @@ See \code{vignette("stratification", package = "bbsBayes2")} and the article
 for more details.
 }
 \examples{
-# Sample Data - USGS BBS strata
-s <- stratify(by = "bbs_usgs", sample_data = TRUE)
+# Sample Data - BBS strata updated (2025) BBS strata with new BCRs
+s <- stratify(by = "bbs", sample_data = TRUE)
+# omits some routes so using distance_to_strata to capture coastal routes
+s <- stratify(by = "bbs", sample_data = TRUE, distance_to_strata = 2000)
 
 \dontshow{if (have_bbs_data()) withAutoprint(\{ # examplesIf}
 # Full data - species and stratification
 # Use `search_species()` to get correct species name
 
 # Stratify by CWS BBS strata
-s <- stratify(by = "bbs_cws", species = "Common Loon")
+s <- stratify(by = "bbs_cws", species = "Common Loon",
+              use_map = FALSE)
 
 # Use use English, French, Scientific, or AOU codes for species names
-s <- stratify(by = "bbs_cws", species = "Plongeon huard")
-s <- stratify(by = "bbs_cws", species = 70)
-s <- stratify(by = "bbs_cws", species = "Gavia immer")
+s <- stratify(by = "bbs_cws", species = "Plongeon huard",
+              use_map = FALSE)
+s <- stratify(by = "bbs_cws", species = 70,
+              use_map = FALSE)
+s <- stratify(by = "bbs_cws", species = "Gavia immer",
+              use_map = FALSE)
 
-# Stratify by Bird Conservation Regions
-s <- stratify(by = "bcr", species = "Great Horned Owl")
+# Stratify by updated (2025) Bird Conservation Regions
+s <- stratify(by = "bcr", species = "Great Horned Owl",
+              distance_to_strata = 4000)
 
-# Stratify by CWS BBS strata
-s <- stratify(by = "bbs_cws", species = "Canada Jay")
+# Stratify by former CWS BBS strata
+s <- stratify(by = "bbs_cws", species = "Canada Jay",
+              use_map = FALSE)
 
 # Stratify by State/Province/Territory only
-s <- stratify(by = "prov_state", species = "Common Loon")
-s <- stratify(by = "prov_state", species = "Plongeon huard")
-s <- stratify(by = "prov_state", species = 70)
+s <- stratify(by = "prov_state", species = "Common Loon",
+              use_map = FALSE)
 
 
 # Stratify by blocks of 1 degree of latitude X 1 degree of longitude
-s <- stratify(by = "latlong", species = "Snowy Owl")
+s <- stratify(by = "latlong", species = "Snowy Owl",
+              use_map = FALSE)
 
 # Check routes omitted by stratification
 s <- stratify(by = "latlong", species = "Snowy Owl", return_omitted = TRUE)
@@ -128,23 +170,27 @@ s[["routes_omitted"]]
 # Use combined or non-combined species forms
 
 search_species("Sooty grouse")
-s <- stratify(by = "bbs_usgs", species = "Blue Grouse (Dusky/Sooty)")
+s <- stratify(by = "bbs_usgs", species = "Blue Grouse (Dusky/Sooty)",
+              use_map = FALSE)
 nrow(s$birds_strata) # Contains all Dusky, Sooty and unidentified
 
 search_species("Sooty grouse", combine_species_forms = FALSE)
 s <- stratify(by = "bbs_usgs", species = "unid. Dusky Grouse / Sooty Grouse",
-              combine_species_forms = FALSE)
+              combine_species_forms = FALSE,
+              use_map = FALSE)
 nrow(s$birds_strata) # Contains *only* unidentified
 
 
 # Stratify by a subset of an existing stratification
 library(dplyr)
 my_cws <- filter(bbs_strata[["bbs_cws"]], country_code == "CA")
-s <- stratify(by = "bbs_cws", strata_custom = my_cws, species = "Snowy Owl")
+s <- stratify(by = "bbs_cws", strata_custom = my_cws, species = "Snowy Owl",
+              use_map = FALSE)
 
-my_bcr <- filter(bbs_strata[["bcr"]], strata_name == "BCR8")
-s <- stratify(by = "bcr", strata_custom = my_bcr,
-              species = "Yellow-rumped Warbler (all forms)")
+my_bcr <- filter(bbs_strata[["bcr_old"]], strata_name == "BCR8")
+s <- stratify(by = "bcr_old", strata_custom = my_bcr,
+              species = "Yellow-rumped Warbler (all forms)",
+              use_map = FALSE)
 
 # Stratify by Custom stratification, using sf map object
 # e.g. with WBPHS stratum boundaries 2019

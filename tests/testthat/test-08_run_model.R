@@ -4,7 +4,8 @@ test_that("run_model() first_diff short", {
   unlink(list.files(test_path(), "^BBS_PacificWren",
                     full.names = TRUE))
 
-  md <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
+  md <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE,
+                 use_map = FALSE) %>%
     prepare_data(min_max_route_years = 2) %>%
     prepare_model(model = "first_diff", set_seed = 111)
 
@@ -69,7 +70,8 @@ test_that("run_model() first_diff spatial", {
   unlink(list.files(test_path(), "^BBS_PacificWren",
                     full.names = TRUE))
 
-  p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
+  p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE,
+                use_map = FALSE) %>%
     prepare_data(min_max_route_years = 2) %>%
     prepare_spatial(load_map("bbs_usgs"), quiet = TRUE)
 
@@ -122,7 +124,8 @@ test_that("run_model() ... args", {
   unlink(list.files(test_path(), "^BBS_PacificWren",
                     full.names = TRUE))
 
-  md <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
+  md <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE,
+                 use_map = FALSE) %>%
     prepare_data(min_max_route_years = 2) %>%
     prepare_model(model = "first_diff", set_seed = 111)
 
@@ -161,7 +164,8 @@ test_that("run_model() ... args", {
 
 
 test_that("run_model() CV", {
-  p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
+  p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE,
+                use_map = FALSE) %>%
     prepare_data(min_max_route_years = 2)
 
   md <- prepare_model(p, "first_diff")
@@ -193,7 +197,8 @@ test_that("run_model() Full", {
 
   skip("long")
 
-  p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE) %>%
+  p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE,
+                use_map = FALSE) %>%
     prepare_data(min_max_route_years = 2) %>%
     prepare_spatial(load_map("bbs_cws"), quiet = TRUE)
 

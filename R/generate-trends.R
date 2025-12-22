@@ -259,9 +259,9 @@ generate_trends <- function(indices,
     dplyr::arrange(.data$region_type, .data$region)
 
   trends_full_posterior <- trends %>%
-    dplyr::select(region,region_type,
-                  start_year,end_year,
-                  tr) %>%
+    dplyr::select("region","region_type",
+                  "start_year","end_year",
+                  "tr") %>%
     dplyr::rename(trend_full_posterior = .data$tr)
 
   # Reliability Criteria

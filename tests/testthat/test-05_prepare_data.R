@@ -1,6 +1,7 @@
 test_that("prepare_data() - sample", {
 
-  strat_samp <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE)
+  strat_samp <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE,
+                         use_map = FALSE)
 
   expect_silent(p <- prepare_data(strat_samp, min_max_route_years = 2)) %>%
     expect_type("list") %>%
@@ -48,7 +49,9 @@ test_that("prepare_data() - sample", {
 
 test_that("prepare_data() - other", {
 
-  strat_samp <- stratify(by = "bbs_usgs", species = "Gyrfalcon", quiet = TRUE)
+  strat_samp <- stratify(by = "bbs", species = "Common Loon", quiet = TRUE,
+                         use_map = TRUE,
+                         distance_to_strata = 3000)
 
   expect_silent(p <- prepare_data(strat_samp, min_max_route_years = 2)) %>%
     expect_type("list") %>%
@@ -57,8 +60,8 @@ test_that("prepare_data() - other", {
 
 
   # Meta data
-  expect_equal(p$meta_data$species, "Gyrfalcon")
-  expect_equal(p$meta_data$stratify_by, "bbs_usgs")
+  expect_equal(p$meta_data$species, "Common Loon")
+  expect_equal(p$meta_data$stratify_by, "bbs")
   expect_equal(p$meta_data$stratify_type, "standard")
 
 
