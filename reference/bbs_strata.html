@@ -9,7 +9,7 @@ describing the strata for that stratification (name, area, country, etc.)"><meta
 
     <a class="navbar-brand me-2" href="../index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,7 +32,7 @@ describing the strata for that stratification (name, area, country, etc.)"><meta
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>List of included strata</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/v.1.1.3.1/R/data.R" class="external-link"><code>R/data.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/main/R/data.R" class="external-link"><code>R/data.R</code></a></small>
       <div class="d-none name"><code>bbs_strata.Rd</code></div>
     </div>
 
@@ -53,8 +53,26 @@ describing the strata for that stratification (name, area, country, etc.)</p>
 <h3 id="bbs-strata"><code>bbs_strata</code><a class="anchor" aria-label="anchor" href="#bbs-strata"></a></h3>
 
 
-<p>A list of 5 data frames</p>
-<p>Contains <code>bbs_usgs</code>, <code>bbs_cws</code>, <code>bcr</code>, <code>latlong</code> and <code>prov_state</code></p>
+<p>A list of 6 data frames</p>
+<p>Contains
+<code>bbs</code> - New as of version 1.1.3.1
+Intersection of States-Provinces-Territories with the updated (as of 2025)
+Bird Conservation Regions (BCRs). Updated BCRs include changes
+made to the Northern BCRs. BCR "numbers" are now alpha-numeric to account
+for new regions that are subdivisions of previous numbered BCRs. For example,
+BCRs 6S and 6N are southern and northern subregions of the previous BCR 6.
+<code>bbs_usgs</code> - Intersection of States-Provinces-Territories with the previous
+version of the Bird Conservation Regions (BCRs)
+<code>bbs_cws</code>- Same as bbs_usgs, with two modifications to suit Canadian context:
+Intersection of States-Provinces-Territories with the previous version
+of the Bird Conservation Regions (BCRs), and BCR 7 is treated as a single
+stratum (pooled across all provinces and territories), and Prince Edward
+Island is combined with Nova Scotia - pooled across the two provinces
+<code>bcr</code> - Updated (2025) version of the Bird Conservation Regions (BCRs).
+<code>latlong</code> - 1-degree latitude * longitude grid. The design stratification of
+the BBS.
+<code>prov_state</code> - Canadian provinces/territories and states of the continental
+United States of America - excludes Hawaii (there are no BBS routes in HI)</p>
 </div>
 
     </div>

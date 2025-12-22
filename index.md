@@ -1,15 +1,6 @@
-# Version 1.1.3 release includes 2024 BBS data
+# bbsBayes2 1.1.3.1 Released December 2025 - Includes 2024 BBS data (1.1.3) and new stratifications
 
-## Error in some old versions of the non-hierarchical first-difference model
-
-In versions 1.1.0, 1.1.1, and 1.1.2.0, the non-hierarchical variant of
-the first-difference model included a coding error. Estimates of trends
-and population trajectories from this model in these versions will be
-biased.
-
-The error was fixed in version 1.1.2.1. I am so sorry folks, please
-[reach out](https://github.com/AdamCSmithCWS) if you would like more
-information or assistance in fixing/recovering from this.
+Details on new releases below.
 
 # bbsBayes2
 
@@ -87,6 +78,116 @@ limited capacity. The development branch may not be stable.
 
 `{r} pak::pkg_install("bbsBayes/bbsBayes2@dev")`
 
+# bbsBayes2 1.1.3.1 Released December 2025 - Includes 2024 BBS data (1.1.3) and new stratifications
+
+- New Stratifications.
+
+1.  `stratify(by = "bcr",...)`: Includes the 2025 version of the North
+    American Bird Conservation Regions (BCRs). The changes are primarily
+    in Northern Canada, where the largest northern BCRs have been
+    subdivided into regions that are more similar in scale to the BCRs
+    in the rest of the continent. These new BCRs have replaced the
+    previous BCR stratification (i.e., `stratify(by = "bcr",...)` will
+    now use this updated BCR map). For reproducibility, the previous BCR
+    map is still available by calling `stratify(by = "bcr_old",...)`.
+
+2.  `stratify(by = "bbs",...)`: Intersection of the 2025 updated BCRs
+    with states, provinces, and territories in Canada and the United
+    States. This stratification is conceptually the same as
+    `stratify(by = "bbs_usgs",...)` but uses the updated BCRs.
+
+- Two new arguments in
+  [`stratify()`](https://bbsbayes.github.io/bbsBayes2/reference/stratify.md)
+
+1.  `stratify(..., use_map = TRUE)`, the default is TRUE, where the BBS
+    routes are stratified based on the spatial overlay
+    ([`sf::st_join()`](https://r-spatial.github.io/sf/reference/st_join.html))
+    of the strata polygons and the starting locations of each BBS route.
+    This spatial overlay approach has always been used for custom
+    stratifications, and now is also the default for the standard
+    built-in stratifications. In previous versions, the BCR, province,
+    state, or lat_long information for each BBS route was taken from the
+    columns in the BBS database, so not an explictly spatial process. By
+    setting `use_map = FALSE` this previous approach is still available
+    for the following stratifications
+    `"bcr_old", "bbs_cws", "bbs_usgs", "latlong", "prov_state"`. The new
+    stratifications `"bbs" and "bcr"` do not allow `use_map = FALSE`
+    (will be changed to TRUE with a message), because the full list of
+    new BCRs does not yet exist in the BBS database.
+
+2.  `stratify(..., distance_to_strata)`, optional numerical value
+    indicating the distance in meters within which routes will be joined
+    to the nearest stratum polygon, if the route start point does not
+    intersect any strata. This argument is particularly useful to ensure
+    that routes with starting locations on or near the coast or
+    shoreline of large lakes are included. These coastal routes may be
+    otherwise excluded due to errors in the spatial information (either
+    the starting point coordinate or the strata map). For example, the
+    map associated with the standard bbs stratification excludes 3,877
+    surveys on 72 routes when this argument is NULL. All of these 72
+    routes have starting locations on the coasts. Setting this argument
+    to 4000 (any route within 4 km of at least one polygon) ensures all
+    of these coastal routes are included in the nearest stratum. Users
+    should be cautious of using this argument if the strata map does not
+    represent the full landmass of Canada and the United States. For
+    example using a subset of an existing strata map, such as all of the
+    bbs strata within one country will treat routes within the set
+    distance of the national border (e.g., some routes in the US as if
+    they are in Canada) the same way it treats routes that happen to
+    fall just off the coast of the supplied strata map.
+
+# Version 1.1.3 release includes 2024 BBS data
+
+Released on December 12, 2025, version 1.1.3 will fetch by default, the
+2025 data release (`fetch_bbs_data(release = 2025)`). The 2025 release
+includes access to the BBS observations from the 2024 field season.
+Previous releases are (as always) available by calling them specifically
+with the release argument in the functions
+`fetch_bbs_data(release = 2024)` or `stratify(release = 2020)`.
+
+The new version includes a number of bug fixes, as well as the following
+new features:
+
+1.  first-difference models (hierarchical and spatial) now better handle
+    the missing data from 2020. The models estimate a single value of
+    change (i.e., the difference between 2021 and 2019) and then use
+    random draws from a beta distribution (beta(1,1)) for each posterior
+    draw to randomly partition the difference between the first interval
+    (2019-2020) and the second (2020-2021). This has the result of
+    forcing the mean trajectory to follow a straight line between 2019
+    and 2021, while increasing the uncertainty of the estimated index
+    for 2020.
+
+2.  the
+    [`fetch_bbs_data()`](https://bbsbayes.github.io/bbsBayes2/reference/fetch_bbs_data.md)
+    function now allows the user to retain the BBS observations that do
+    not conform to the survey design. The documentation includes
+    warnings about how this is probably a bad idea. Some additional
+    columns are now included in the `$routes` object of the list
+    returned by
+    [`load_bbs_data()`](https://bbsbayes.github.io/bbsBayes2/reference/load_bbs_data.md)
+    to help understand these additional *unacceptable* data. The columns
+    `route_type_id`, (RouteTypeID), `route_type_detail_id`
+    (RouteTypeDetailID), `rpid` (RPID), and `run_type` (RunType) are
+    explained in the release
+    [metadata](https://www.sciencebase.gov/catalog/file/get/691cfb53d4be021d1d89b482?f=__disk__d8%2F87%2Fbc%2Fd887bcecf1b47de449eaecb79f2181fdbaf9e969&transform=1&allowOpen=true)
+
+3.  all models can now generate prior predictions using
+    `prepare_model(..., use_likelihood = FALSE)`. This should be
+    particularly useful for applications with a custom model.
+
+4.  the function
+    `plot_map(..., col_ebird = TRUE, alternate_column = "percent_change")`
+    will plot the estimated percent change values using the same
+    categories and colour scheme used by the eBird status and trend
+    team.
+
+5.  the function `generate_trends(..., export_full_posterior = TRUE)`
+    will now add a tibble to the output list that includes the full
+    posterior distribution of every trend estimate. Allows for formal
+    tests/estimates of the differences between two trends (e.g., between
+    two time-periods or two regions).
+
 ## Why bbsBayes2
 
 We hope you’ll agree that the BBS is a [spectacular
@@ -113,3 +214,14 @@ transparent; and to inspire improvements, elaborations, and critical
 feedback on the models provided here. We hope you enjoy the package and
 we hope you will contribute your ideas and code to this open software
 initiative.
+
+## Error in some older versions of the non-hierarchical first-difference model
+
+In versions 1.1.0, 1.1.1, and 1.1.2.0, the non-hierarchical variant of
+the first-difference model included a coding error. Estimates of trends
+and population trajectories from this model in these versions will be
+biased.
+
+The error was fixed in version 1.1.2.1. I am so sorry folks, please
+[reach out](https://github.com/AdamCSmithCWS) if you would like more
+information or assistance in fixing/recovering from this.

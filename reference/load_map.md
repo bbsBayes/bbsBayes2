@@ -13,8 +13,8 @@ load_map(stratify_by = NULL, type = "strata")
 
 - stratify_by:
 
-  Character. Stratification type. One of "prov_state", "bcr", "latlong",
-  "bbs_cws", "bbs_usgs".
+  Character. Stratification type. One of "bbs", prov_state", "bcr",
+  "latlong", "bbs_cws", "bbs_usgs".
 
 - type:
 
@@ -34,9 +34,8 @@ Other helper functions:
 ## Examples
 
 ``` r
-# Toy example with Pacific Wren sample data
 # First, stratify the sample data
-strat_map <- load_map(stratify_by = "bbs_cws")
+strat_map <- load_map(stratify_by = "bbs")
 
 # simple plot of the map
 plot(strat_map)
