@@ -56,14 +56,14 @@ Other helper functions:
 # Demonstration of why we can't divide BCR by Provinces and States!
 map <- load_map("bcr")
 assign_prov_state(map, plot = TRUE)
-#> Warning: 32 strata are assigned to a province or state based on less than the minimum specified overlap
+#> Warning: 28 strata are assigned to a province or state based on less than the minimum specified overlap
 
-#> Simple feature collection with 228 features and 7 fields
+#> Simple feature collection with 223 features and 7 fields
 #> Geometry type: GEOMETRY
 #> Dimension:     XY
-#> Bounding box:  xmin: -6094275 ymin: -1686335 xmax: 2990016 ymax: 4517219
+#> Bounding box:  xmin: -4748423 ymin: -1638890 xmax: 2988370 ymax: 4517253
 #> Projected CRS: North_America_Albers_Equal_Area_Conic
-#> # A tibble: 228 × 8
+#> # A tibble: 223 × 8
 #>    strata_name prov_state country                  country_code province_state  
 #>  * <chr>       <chr>      <chr>                    <chr>        <chr>           
 #>  1 BCR10       BC         United States of America US           Washington      
@@ -72,11 +72,11 @@ assign_prov_state(map, plot = TRUE)
 #>  4 BCR10       BC         Canada                   CA           British Columbia
 #>  5 BCR4        AK         Canada                   CA           British Columbia
 #>  6 BCR5        BC         Canada                   CA           British Columbia
-#>  7 BCR6N       NT         Canada                   CA           British Columbia
-#>  8 BCR6S       AB         Canada                   CA           British Columbia
-#>  9 BCR9        NV         Canada                   CA           British Columbia
-#> 10 BCR10       BC         United States of America US           Idaho           
-#> # ℹ 218 more rows
+#>  7 BCR6        NT         Canada                   CA           British Columbia
+#>  8 BCR9        NV         Canada                   CA           British Columbia
+#>  9 BCR10       BC         United States of America US           Idaho           
+#> 10 BCR16       CO         United States of America US           Idaho           
+#> # ℹ 213 more rows
 #> # ℹ 3 more variables: geom <GEOMETRY [m]>, p_area <dbl>, note <chr>
 
 # Use custom stratification, using sf map object
