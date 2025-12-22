@@ -310,13 +310,9 @@ stratify <- function(by,
     strata_custom <- stratify_map(bbsBayes2::load_map(stratify_by), routes,
                                   quiet, stratify_type, distance_to_strata)
     routes <- strata_custom[["routes"]]
+    meta_strata <- strata_custom[["meta_strata"]]
 
-    if(stratify_type == "subset") {
-      meta_strata <- strata_custom %>%
-        sf::st_drop_geometry()
-    } else {
-      meta_strata <- bbsBayes2::bbs_strata[[stratify_by]]
-    }
+
 
 
   }
