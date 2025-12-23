@@ -14,26 +14,9 @@ bbs_strata
 
 ### `bbs_strata`
 
-A list of 6 data frames
+A list of 5 data frames
 
-Contains `bbs` - New as of version 1.1.3.1 Intersection of
-States-Provinces-Territories with the updated (as of 2025) Bird
-Conservation Regions (BCRs). Updated BCRs include changes made to the
-Northern BCRs. BCR "numbers" are now alpha-numeric to account for new
-regions that are subdivisions of previous numbered BCRs. For example,
-BCRs 6S and 6N are southern and northern subregions of the previous BCR
-6. `bbs_usgs` - Intersection of States-Provinces-Territories with the
-previous version of the Bird Conservation Regions (BCRs) `bbs_cws`- Same
-as bbs_usgs, with two modifications to suit Canadian context:
-Intersection of States-Provinces-Territories with the previous version
-of the Bird Conservation Regions (BCRs), and BCR 7 is treated as a
-single stratum (pooled across all provinces and territories), and Prince
-Edward Island is combined with Nova Scotia - pooled across the two
-provinces `bcr` - Updated (2025) version of the Bird Conservation
-Regions (BCRs). `latlong` - 1-degree latitude \* longitude grid. The
-design stratification of the BBS. `prov_state` - Canadian
-provinces/territories and states of the continental United States of
-America - excludes Hawaii (there are no BBS routes in HI)
+Contains `bbs_usgs`, `bbs_cws`, `bcr`, `latlong` and `prov_state`
 
 ## Examples
 

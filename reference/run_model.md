@@ -192,8 +192,7 @@ Other modelling functions:
 ## Examples
 
 ``` r
-s <- stratify(by = "bbs_cws", sample_data = TRUE,
-              use_map = FALSE)
+s <- stratify(by = "bbs_cws", sample_data = TRUE)
 #> Using 'bbs_cws' (standard) stratification
 #> Using sample BBS data...
 #> Using species Pacific Wren (sample data)
@@ -227,15 +226,15 @@ m <- run_model(pm, iter_warmup = 20, iter_sampling = 20, chains = 2)
 #> Chain 2 Iteration: 21 / 40 [ 52%]  (Sampling) 
 #> Chain 1 Iteration: 21 / 40 [ 52%]  (Sampling) 
 #> Chain 2 Iteration: 40 / 40 [100%]  (Sampling) 
-#> Chain 2 finished in 47.0 seconds.
+#> Chain 2 finished in 47.2 seconds.
 #> Chain 1 Iteration: 40 / 40 [100%]  (Sampling) 
-#> Chain 1 finished in 53.7 seconds.
+#> Chain 1 finished in 53.9 seconds.
 #> 
 #> Both chains finished successfully.
-#> Mean chain execution time: 50.3 seconds.
-#> Total execution time: 53.9 seconds.
+#> Mean chain execution time: 50.5 seconds.
+#> Total execution time: 54.0 seconds.
 #> 
 #> Warning: 1 of 2 chains had an E-BFMI less than 0.3.
 #> See https://mc-stan.org/misc/warnings for details.
-#> Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/docs/reference/BBS_PacificWren_first_diff_hier_202512222312_STAN.rds
+#> Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/docs/reference/BBS_PacificWren_first_diff_hier_202512230019_STAN.rds
 ```

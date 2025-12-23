@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/bbsBayes/bbsBayes2/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/bbsBayes/bbsBayes2/blob/v.1.1.3.1/inst/CITATION)
 
 Edwards, B. P. M., A. C. Smith, and S. LaZerte. (2025). bbsBayes2:
 Hierarchical Bayesian Analysis of North American BBS Data.
