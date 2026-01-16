@@ -166,25 +166,70 @@ st_write(strata_bcr_old, file.path(system.file("maps", package = "bbsBayes2"),
                                "bcr_old_strata.gpkg"), append = FALSE)
 # #
 # Latitude/Longitude -------------------------------------------------
+# updated to include the land area included in "bbs" stratification
 
-strata_latlong <- "data-raw/maps_orig/BBS_LatLong_strata.shp" %>%
-  sf::read_sf() %>%
-  st_make_valid() %>% # As needed when st_is_valid() fails
-  rename_with(.fn = ~"strata_name",
-              .cols = dplyr::any_of(c("strata_name", "ST_12"))) %>%
-  select(strata_name) %>%
-  mutate(area_sq_km = as.numeric(units::set_units(st_area(.), "km^2"))) %>%
-  verify(nrow(.) == 2995)
+bbs_strat <- load_map("bbs") %>%
+  st_transform(crs = 4326) #wgs84 epsg
 
-# # No differences!
-# s <- st_drop_geometry(strata_latlong)
-# waldo::compare(arrange(load_internal_file("bbs_strata", "latlong"),
-#                strata_name),
-#                arrange(s, strata_name), tolerance = 0.1)
+bbs_boundary <- bbs_strat %>%
+  summarise()
+bb <- st_bbox(bbs_strat)
+
+
+grid <- sf::st_make_grid(bbs_strat,
+                         cellsize = c(1,1),
+                         offset = c(floor(bb["xmin"]),floor(bb["ymin"])))
+
+coords <- st_coordinates(grid) %>%
+  as_tibble() %>%
+  group_by(L2) %>%
+  summarise(X = min(X),  # named by bottom left corner
+            Y = min(Y)) %>% # bottom left corner
+  mutate(strata_name = paste0(Y,"_",
+                              X))
+
+grid <- grid %>%
+  st_as_sf() %>%
+  bind_cols(coords)
+
+
+strata_latlong <- st_intersection(grid,bbs_boundary) %>%
+  st_make_valid() %>%
+  st_transform(crs = bbsBayes2::equal_area_crs) %>%
+  select(strata_name)
+
+areakm <- strata_latlong %>%
+  st_area() %>%
+  as.numeric()
+
+strata_latlong$area_sq_km <- areakm/1e6
+
+strata_latlong <- strata_latlong %>%
+  select(strata_name,area_sq_km)
 
 st_write(strata_latlong, file.path(system.file("maps", package = "bbsBayes2"),
                                    "latlong_strata.gpkg"), append = FALSE)
 
+
+#
+# strata_latlong <- "data-raw/maps_orig/BBS_LatLong_strata.shp" %>%
+#   sf::read_sf() %>%
+#   st_make_valid() %>% # As needed when st_is_valid() fails
+#   rename_with(.fn = ~"strata_name",
+#               .cols = dplyr::any_of(c("strata_name", "ST_12"))) %>%
+#   select(strata_name) %>%
+#   mutate(area_sq_km = as.numeric(units::set_units(st_area(.), "km^2"))) %>%
+#   verify(nrow(.) == 2995)
+#
+# # # No differences!
+# # s <- st_drop_geometry(strata_latlong)
+# # waldo::compare(arrange(load_internal_file("bbs_strata", "latlong"),
+# #                strata_name),
+# #                arrange(s, strata_name), tolerance = 0.1)
+#
+# st_write(strata_latlong, file.path(system.file("maps", package = "bbsBayes2"),
+#                                    "latlong_strata.gpkg"), append = FALSE)
+#
 
 # Province/State ------------------------
 
