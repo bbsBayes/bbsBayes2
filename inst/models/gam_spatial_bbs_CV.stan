@@ -1,21 +1,6 @@
 // This is a Stan implementation of the gamye model
 // Spatial
 
-// Consider moving annual index calculations outside of Stan to
-// facilitate the ragged array issues and to reduce the model output size (greatly)
-// althought nice to have them here where Rhat and ess_ are calculated
-
-// iCAR function, from Morris et al. 2019
-// Morris, M., K. Wheeler-Martin, D. Simpson, S. J. Mooney, A. Gelman, and C. DiMaggio (2019).
-// Bayesian hierarchical spatial models: Implementing the Besag York Mollié model in stan.
-// Spatial and Spatio-temporal Epidemiology 31:100301.
-
- functions {
-   real icar_normal_lpdf(vector bb, int ns, array[] int n1, array[] int n2) {
-     return -0.5 * dot_self(bb[n1] - bb[n2])
-       + normal_lpdf(sum(bb) | 0, 0.001 * ns); //soft sum to zero constraint on bb
-  }
- }
 
 
 
@@ -102,25 +87,24 @@ transformed data {
 parameters {
   vector[n_train*use_pois] noise_raw;             // over-dispersion if use_pois == 1
 
- vector[n_strata] strata_raw;
-   real STRATA;
+  sum_to_zero_vector[n_strata] strata_raw;
+  real STRATA;
 
   real eta; //first-year intercept
 
 
-  vector[n_observers] obs_raw;    // sd of year effects
-  vector[n_sites] ste_raw;   //
+  sum_to_zero_vector[n_observers] obs_raw;    // observer effects
+  sum_to_zero_vector[n_sites] ste_raw;   // site (route) effects
   real<lower=0> sdnoise;    // sd of over-dispersion
   real<lower=0> sdobs;    // sd of observer effects
   real<lower=0> sdste;    // sd of site effects
-  //array[n_knots_year] real<lower=0> sdbeta;    // sd of GAM coefficients among strata
   real<lower=0> sdbeta;    // sd of GAM coefficients among strata - one value across all k and strata
   real<lower=0> sdstrata;    // sd of intercepts
   real<lower=0> sdBETA;    // sd of GAM coefficients
   real<lower=3> nu; // df of t-distribution > 3 so that it has a finite mean, variance, kurtosis
 
   vector[n_knots_year] BETA_raw;//_raw;
-  matrix[n_strata,n_knots_year] beta_raw;         // GAM strata level parameters
+  array[n_knots_year] sum_to_zero_vector[n_strata] beta_raw;         // GAM strata level parameters
 
 }
 
@@ -143,7 +127,7 @@ transformed parameters {
   BETA = sdBETA*BETA_raw;
 
   for(k in 1:n_knots_year){
-    beta[,k] = (sdbeta * beta_raw[,k]) + BETA[k];
+    beta[,k] = (sdbeta * beta_raw[k,]) + BETA[k];
   }
   SMOOTH_pred = year_basis * BETA;
 
@@ -206,10 +190,8 @@ model {
 
 
   obs_raw ~ std_normal(); // ~ student_t(3,0,1);//observer effects
-  //sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint isn't useful here
 
   ste_raw ~ std_normal();//site effects
-  //sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint isn't useful here
 
   BETA_raw ~ std_normal();// prior on fixed effect mean GAM parameters
   //sum to zero constraint built into the basis function
@@ -221,10 +203,9 @@ model {
 
 
 for(k in 1:n_knots_year){
-    beta_raw[,k] ~ icar_normal(n_strata, node1, node2);;
+   target += -0.5 * dot_self(beta_raw[k,node1] - beta_raw[k,node2]); // ICAR prior
 }
-   strata_raw ~ icar_normal(n_strata, node1, node2);
-    //sum(strata_raw) ~ normal(0,0.001*n_strata);
+   target += -0.5 * dot_self(strata_raw[node1] - strata_raw[node2]); // ICAR prior
 
 if(use_likelihood){
 if(use_pois){

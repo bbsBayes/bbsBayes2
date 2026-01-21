@@ -78,15 +78,15 @@ transformed data {
 parameters {
   vector[n_train*use_pois] noise_raw;             // over-dispersion if use_pois == 1
 
- vector[n_strata] strata_raw; // strata intercepts
-   real STRATA; // hyperparameter intercepts
+  sum_to_zero_vector[n_strata] strata_raw; // strata intercepts
+  real STRATA; // hyperparameter intercepts
 
   real eta; //first-year effect
 
-  matrix[n_strata,n_years] yeareffect_raw; // year effects within each strata
+  array[n_strata] sum_to_zero_vector[n_years] yeareffect_raw; // year effects within each strata
 
-  vector[n_observers] obs_raw;    // observer effects
-  vector[n_sites] ste_raw;   // site (route) effects
+  sum_to_zero_vector[n_observers] obs_raw;    // observer effects
+  sum_to_zero_vector[n_sites] ste_raw;   // site (route) effects
   real<lower=0> sdnoise;    // sd of over-dispersion, if use_pois == 1
   real<lower=0> sdobs;    // sd of observer effects
   real<lower=0> sdste;    // sd of site (route) effects
@@ -95,14 +95,14 @@ parameters {
   array[n_strata] real<lower=0> sdyear;    // sd of year effects
   real<lower=3> nu; // df of t-distribution, if calc_nu == 1, > 3 so that it has a finite mean, variance, kurtosis
 
-  vector[n_strata] beta_raw;//strata level slopes non-centered;
+  sum_to_zero_vector[n_strata] beta_raw;//strata level slopes non-centered;
   real BETA; //hyperparameter slope
 }
 
 transformed parameters {
   vector[n_train] E;           // log_scale additive likelihood
   vector[n_strata] beta;         // spatial effect slopes (0-centered deviation from continental mean slope B)
-  matrix[n_strata,n_years] yeareffect;
+  array[n_strata] vector[n_years] yeareffect;
   real<lower=0> phi; //transformed sdnoise if use_pois == 0 (and therefore Negative Binomial)
 
 
@@ -174,16 +174,12 @@ model {
 
 
   obs_raw ~ std_normal(); // ~ student_t(3,0,1);//observer effects
-  sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint may not be necessary
 
   ste_raw ~ std_normal();//site effects
-  sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint may not be necessary
 
  for(s in 1:n_strata){
 
   yeareffect_raw[s,] ~ std_normal();
-  //soft sum to zero constraint on year effects within a stratum
-  sum(yeareffect_raw[s,]) ~ normal(0,0.001*n_years);
 
  }
 
@@ -197,13 +193,9 @@ model {
   sdstrata ~ student_t(3,0,1); //prior on sd of intercept variation
 
 
-    beta_raw ~ std_normal();
-  //soft sum to zero constraint on strata slopes
-  sum(beta_raw) ~ normal(0,0.001*n_strata);
+   beta_raw ~ std_normal();
 
    strata_raw ~ std_normal();
-  //soft sum to zero constraint on strata intercepts
-  sum(strata_raw) ~ normal(0,0.001*n_strata);
 
 
 if(use_likelihood){

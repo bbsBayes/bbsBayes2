@@ -1,8 +1,5 @@
 // This is a Stan implementation of the gamye model
 
-// Consider moving annual index calculations outside of Stan to
-// facilitate the ragged array issues and to reduce the model output size (greatly)
-// althought nice to have them here where Rhat and ess_ are calculated
 
 
 data {
@@ -82,19 +79,18 @@ transformed data {
 parameters {
   vector[n_train*use_pois] noise_raw;             // over-dispersion if use_pois == 1
 
- vector[n_strata] strata_raw;
-   real STRATA;
+  sum_to_zero_vector[n_strata] strata_raw;
+  real STRATA;
 
   real eta; //first-year intercept
 
-  matrix[n_strata,n_years] yeareffect_raw;
+  array[n_strata] sum_to_zero_vector[n_years] yeareffect_raw; // year effects within each strata
 
-  vector[n_observers] obs_raw;    // sd of year effects
-  vector[n_sites] ste_raw;   //
+  sum_to_zero_vector[n_observers] obs_raw;    // observer effects
+  sum_to_zero_vector[n_sites] ste_raw;   // site (route) effects
   real<lower=0> sdnoise;    // sd of over-dispersion
   real<lower=0> sdobs;    // sd of observer effects
   real<lower=0> sdste;    // sd of site effects
-  //array[n_knots_year] real<lower=0> sdbeta;    // sd of GAM coefficients among strata
   array[n_strata] real<lower=0> sdbeta;    // sd of GAM coefficients among strata
   real<lower=0> sdstrata;    // sd of intercepts
   real<lower=0> sdBETA;    // sd of GAM coefficients
@@ -111,7 +107,7 @@ transformed parameters {
   matrix[n_strata,n_knots_year] beta;         // spatial effect slopes (0-centered deviation from continental mean slope B)
   matrix[n_years,n_strata] smooth_pred;
   vector[n_years] SMOOTH_pred;
-  matrix[n_strata,n_years] yeareffect;
+  array[n_strata] vector[n_years] yeareffect;
   vector[n_knots_year] BETA;
   real<lower=0> phi; //transformed sdnoise
 
@@ -197,16 +193,12 @@ model {
 
 
   obs_raw ~ std_normal(); // ~ student_t(3,0,1);//observer effects
-  sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint may not be necessary
 
   ste_raw ~ std_normal();//site effects
-  sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint may not be necessary
 
  for(s in 1:n_strata){
 
   yeareffect_raw[s,] ~ std_normal();
-  //soft sum to zero constraint on year effects within a stratum
-  sum(yeareffect_raw[s,]) ~ normal(0,0.001*n_years);
 
  }
 
@@ -223,7 +215,6 @@ for(s in 1:n_strata){
     beta_raw[s,] ~ normal(0,1);
 }
    strata_raw ~ normal(0,1);
-    sum(strata_raw) ~ normal(0,0.001*n_strata);
 
 if(use_likelihood){
 if(use_pois){

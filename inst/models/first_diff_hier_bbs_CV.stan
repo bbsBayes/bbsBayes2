@@ -93,13 +93,13 @@ transformed data {
 parameters {
   vector[n_train*use_pois] noise_raw;             // over-dispersion if use_pois == 1
 
- vector[n_strata] strata_raw; // strata intercepts
-   real STRATA; // hyperparameter intercepts
+  sum_to_zero_vector[n_strata] strata_raw;
+  real STRATA;
 
   real eta; //first-year effect
 
-  vector[n_observers] obs_raw;    // observer effects
-  vector[n_sites] ste_raw;   // site (route) effects
+  sum_to_zero_vector[n_observers] obs_raw;    // observer effects
+  sum_to_zero_vector[n_sites] ste_raw;   // site (route) effects
   real<lower=0> sdnoise;    // sd of over-dispersion, if use_pois == 1
   real<lower=0> sdobs;    // sd of observer effects
   real<lower=0> sdste;    // sd of site (route) effects
@@ -110,7 +110,7 @@ parameters {
   real<lower=0> sdBETA;    // sd of overall annual changes
 
   vector[n_years_m1] BETA_raw;//_hyperparameter of overall annual change values - "differences" between years
-  matrix[n_strata,n_years_m1] beta_raw;         // strata level parameters
+  array[n_years_m1] sum_to_zero_vector[n_strata] beta_raw; // strata level differences
   real BETA_raw_2020;
   real<lower=0,upper=1> p_2020; // random proportion of 2-year change that took place in the first year
   vector[n_strata] beta_raw_2020;
@@ -119,7 +119,7 @@ parameters {
 
 transformed parameters {
   vector[n_train] E;           // log_scale additive likelihood
-  matrix[n_strata,n_years] beta;         // strata-level mean differences (0-centered deviation from continental mean BETA)
+  matrix[n_strata,n_years_m1] beta;         // strata-level mean differences (0-centered deviation from continental mean BETA)
   matrix[n_strata,n_years] yeareffect;  // matrix of estimated annual values of trajectory
   vector[n_years_m1] BETA; // annual estimates of continental mean differences (n_years - 1, because middle year is fixed at 0)
   vector[n_years] YearEffect;
@@ -151,7 +151,7 @@ transformed parameters {
   for(t in Iy1){
 
   if(y_2020[t]){ // all years not equal to 2020 or 2019
-    beta[,t] = (sdbeta * beta_raw[,t]) + BETA[t];
+    beta[,t] = (sdbeta * beta_raw[t,]) + BETA[t];
     YearEffect[t] = YearEffect[t+1] - BETA[t]; // hyperparameter trajectory interesting to monitor but no direct inference
 
   }else{ // years 2020 and 2019 (so differences from 2021-2020 and 2020-2019)
@@ -170,7 +170,7 @@ transformed parameters {
    for(t in Iy2){
 
    if(y_2020[t]){ // all years not equal to 2020 or 2021
-    beta[,t-1] = (sdbeta * beta_raw[,t-1]) + BETA[t-1];//
+    beta[,t-1] = (sdbeta * beta_raw[t-1,]) + BETA[t-1];//
     YearEffect[t] = YearEffect[t-1] + BETA[t-1];
 
       }else{ // for years 2020 and 2021 (so differences from 2019-2020 and 2020-2021)
@@ -234,10 +234,8 @@ model {
 
 
   obs_raw ~ std_normal(); // ~ student_t(3,0,1);//observer effects
-  sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint may not be necessary
 
   ste_raw ~ std_normal();//site effects
-  sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint may not be necessary
 
 
   BETA_raw ~ std_normal();// prior on fixed effect mean intercept
@@ -249,18 +247,14 @@ model {
   sdstrata ~ student_t(3,0,1); //prior on sd of intercept variation
 
   p_2020 ~ beta(1,1); // proportion of 2-year change that took place in the first year
-     p_2020 ~ beta(1,1); // proportion of 2-year change that took place in the first year
-   beta_raw_2020 ~ std_normal(); // spatial difference betwen 2019 and 2021
-    BETA_raw_2020 ~ std_normal(); // overall mean difference between 2019 and 2021
+  beta_raw_2020 ~ std_normal(); // spatial difference betwen 2019 and 2021
+  BETA_raw_2020 ~ std_normal(); // overall mean difference between 2019 and 2021
 
 for(t in 1:(n_years_m1)){
-    beta_raw[,t] ~ std_normal();
-  sum(beta_raw[,t]) ~ normal(0,0.001*n_strata);
+    beta_raw[t,] ~ std_normal();
 }
 
    strata_raw ~ std_normal();
-  //soft sum to zero constraint on strata intercepts
-  sum(strata_raw) ~ normal(0,0.001*n_strata);
 
 
 if(use_likelihood){

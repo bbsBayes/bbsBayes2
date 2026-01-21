@@ -2,17 +2,6 @@
 // Spatial
 
 // iCAR function, from Morris et al. 2019
-// Morris, M., K. Wheeler-Martin, D. Simpson, S. J. Mooney, A. Gelman, and C. DiMaggio (2019).
-// Bayesian hierarchical spatial models: Implementing the Besag York Mollié model in stan.
-// Spatial and Spatio-temporal Epidemiology 31:100301.
-
- functions {
-   real icar_normal_lpdf(vector bb, int ns, array[] int n1, array[] int n2) {
-     return -0.5 * dot_self(bb[n1] - bb[n2])
-       + normal_lpdf(sum(bb) | 0, 0.001 * ns); //soft sum to zero constraint on bb
-  }
- }
-
 
 
 
@@ -96,15 +85,15 @@ transformed data {
 parameters {
   vector[n_train*use_pois] noise_raw;             // over-dispersion if use_pois == 1
 
- vector[n_strata] strata_raw; // strata intercepts
-   real STRATA; // hyperparameter intercepts
+  sum_to_zero_vector[n_strata] strata_raw; // strata intercepts
+  real STRATA; // hyperparameter intercepts
 
   real eta; //first-year effect
 
-  matrix[n_strata,n_years] yeareffect_raw; // year effects within each strata
+  array[n_strata] sum_to_zero_vector[n_years] yeareffect_raw; // year effects within each strata
 
-  vector[n_observers] obs_raw;    // observer effects
-  vector[n_sites] ste_raw;   // site (route) effects
+  sum_to_zero_vector[n_observers] obs_raw;    // observer effects
+  sum_to_zero_vector[n_sites] ste_raw;   // site (route) effects
   real<lower=0> sdnoise;    // sd of over-dispersion, if use_pois == 1
   real<lower=0> sdobs;    // sd of observer effects
   real<lower=0> sdste;    // sd of site (route) effects
@@ -113,14 +102,14 @@ parameters {
   array[n_strata] real<lower=0> sdyear;    // sd of year effects
   real<lower=3> nu; // df of t-distribution, if calc_nu == 1, > 3 so that it has a finite mean, variance, kurtosis
 
-  vector[n_strata] beta_raw;//strata level slopes non-centered;
+  sum_to_zero_vector[n_strata] beta_raw;//strata level slopes non-centered;
   real BETA; //hyperparameter slope
 }
 
 transformed parameters {
   vector[n_train] E;           // log_scale additive likelihood
   vector[n_strata] beta;         // spatial effect slopes (0-centered deviation from continental mean slope B)
-  matrix[n_strata,n_years] yeareffect;
+  array[n_strata] vector[n_years] yeareffect;
   real<lower=0> phi; //transformed sdnoise if use_pois == 0 (and therefore Negative Binomial)
 
 
@@ -188,25 +177,18 @@ model {
   // sdyear ~ normal(0,0.3); // alternative informative prior on scale of yeareffects - 99% of prior
   // // mass is for values < 0.77, suggesting that annual increases of 50% and decreases
   // // of 35% are relatively common, but 3-4 fold annual increases or decreases are unlikely
- sdbeta ~ normal(0,0.1); // prior on sd of slope parameters
+  sdbeta ~ normal(0,0.1); // prior on sd of slope parameters
 
 
   obs_raw ~ std_normal(); // ~ student_t(3,0,1);//observer effects
-  sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint may not be necessary
 
   ste_raw ~ std_normal();//site effects
-  sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint may not be necessary
 
  for(s in 1:n_strata){
-
   yeareffect_raw[s,] ~ std_normal();
-  //soft sum to zero constraint on year effects within a stratum
-  sum(yeareffect_raw[s,]) ~ normal(0,0.001*n_years);
-
  }
 
   BETA ~ normal(0,0.2);// prior on fixed effect mean GAM parameters
-  //sum to zero constraint built into the basis function
 
 
   STRATA ~ std_normal();// prior on fixed effect mean intercept
@@ -216,9 +198,9 @@ model {
   sdstrata ~ student_t(3,0,1); //prior on sd of intercept variation
 
 
-    beta_raw ~ icar_normal(n_strata, node1, node2);
+   target += -0.5 * dot_self(beta_raw[node1] - beta_raw[node2]); // ICAR prior
 
-   strata_raw ~ icar_normal(n_strata, node1, node2);
+   target += -0.5 * dot_self(strata_raw[node1] - strata_raw[node2]); // ICAR prior
 
 if(use_likelihood){
 if(use_pois){
