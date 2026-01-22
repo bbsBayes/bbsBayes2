@@ -49,6 +49,17 @@
 #'   Replaces the initial values in the `model_data[["init_values"]]` created
 #'   by prepare_model. Should accept any of the acceptable approaches to setting
 #'   inits argment in `?cmdstanr::sample`.
+#' @param compiler_optimization Optional character indicator to pass to compiler
+#'   `cmdstanr::cmdstan_model(stanc_options = )`. Default is "O1" (the basic
+#'   optimization), common options include "O","O1", "Oexperimental" or NULL (the
+#'   default for `cmdstanr`).
+#'   Depending on the model, these alternate optimization options may improve
+#'   or worsen sampling efficiency. If the model has been compiled previously
+#'   you will need to manuall remove the previously compiled model file.
+#'   (i.e.,, if you modify this argument and then you see the message "Model
+#'   executable is up to date!", then you must remove the previously compiled
+#'   model). To remove previously compiled models delete the model file from
+#'   the package directory `bbsBayes2::bbs_dir()`.
 #' @param ... Other arguments passed on to `cmdstanr::sample()`.
 #'
 #' @inheritParams common_docs
@@ -99,6 +110,7 @@ run_model <- function(model_data,
                       quiet = FALSE,
                       show_exceptions = FALSE,
                       init_alternate = NULL,
+                      compiler_optimization = "O1",
                       ...) {
 
   # Check inputs
@@ -188,10 +200,14 @@ run_model <- function(model_data,
   }
 
   # Compile model
+  if(!is.null(compiler_optimization)){
   model <- cmdstanr::cmdstan_model(meta_data[["model_file"]],
                                    dir = bbs_dir(),
-                                   stanc_options = list("O1"))
-
+                                   stanc_options = list(compiler_optimization))
+  }else{
+    model <- cmdstanr::cmdstan_model(meta_data[["model_file"]],
+                                     dir = bbs_dir())
+}
 
   # Run model
   if(!is.null(set_seed)) withr::local_seed(set_seed)
