@@ -1,5 +1,6 @@
 
-library(bbsBayes2)
+#library(bbsBayes2)
+devtools::load_all()
 library(tidyverse)
 
 species <- "Scissor-tailed Flycatcher"
@@ -10,7 +11,7 @@ species_number <- search_species(species) %>%
   select(aou) %>%
   unlist()
 
-s <- stratify("bbs_usgs",
+s <- stratify("bbs",
               species = species) %>%
   prepare_data()
 
@@ -20,7 +21,7 @@ for(j in 1:nrow(bbs_models)){
   var <- as.character(bbs_models[j,"variant"])
 
   if(var == "spatial"){
-  p <- prepare_spatial(s, strata_map = load_map("bbs_usgs")) %>%
+  p <- prepare_spatial(s, strata_map = load_map("bbs")) %>%
     prepare_model(model = mod, model_variant = var)
   }else{
   p <- prepare_model(s,model = mod,

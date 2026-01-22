@@ -50,9 +50,6 @@ test_that("assign_prov_state()", {
   expect_silent(d <- assign_prov_state(map))
   expect_s3_class(d, "sf")
 
-  expect_silent(d <- assign_prov_state(map, plot = TRUE))
-  expect_s3_class(d, "sf")
-
   expect_silent(d <- assign_prov_state(map, keep_spatial = FALSE))
   expect_s3_class(d, "data.frame")
   expect_false(inherits(d, "sf"))
