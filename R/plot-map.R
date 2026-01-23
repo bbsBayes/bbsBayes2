@@ -168,10 +168,21 @@ plot_map <- function(trends,
 
   }else{ # if plotting alternate_column
 
+    if((!grepl(x = alternate_column,pattern = "percent_change") &
+        !grepl(x = alternate_column, pattern = "trend")) & col_ebird){
+      warning("Setting col_viridis = TRUE. \n",
+              "The eBird colour palette is designed for visualising ",
+              "percent population changes or trends. If setting ",
+              "col_ebird = TRUE, then select an alternate_column ",
+              "with a header that starts with trend or percent_change.",
+              call. = FALSE, immediate. = TRUE)
+      }
 
     trend_col <- alternate_column
     trends$t_plot <- as.numeric(as.character(trends[[trend_col]]))
 
+    pal <- NULL # if still NULL after next set of options
+    ## if alternate and ebird colour palette
     if(grepl(x = alternate_column,pattern = "percent_change") & col_ebird){
       breaks <- c(-30, -20, -10, 0, 10, 20, 30)
       labls <- c(paste0("< ", breaks[1]),
@@ -187,6 +198,7 @@ plot_map <- function(trends,
         levels(trends$t_plot))
 
     }
+    ## if alternate == percent_change and NOT ebird colour palette
     if(!col_ebird & grepl(x = alternate_column,pattern = "percent_change")){
       breaks <- c(-75,-50,-33, -25, -10, 11, 33, 50,100,300)
       labls <- c(paste0("< ", breaks[1]),
@@ -202,7 +214,9 @@ plot_map <- function(trends,
 
 
     }
-  if(grepl(x = alternate_column,pattern = "trend")){
+    ## if alternate and includes string "trend" (e.g., uncertainty bounds)
+    ## AND user has not called for either of the alternate palettes
+  if(grepl(x = alternate_column,pattern = "trend") & !col_ebird & !col_viridis){
 
     breaks <- c(-7, -4, -2, -1, -0.5, 0.5, 1, 2, 4, 7)
     labls <- c(paste0("< ", breaks[1]),
@@ -225,7 +239,7 @@ plot_map <- function(trends,
 
     map <- dplyr::left_join(x = map, y = trends, by = c("strata_name" = "region"))
 
-
+    discrete_column <- ifelse(is.numeric(map$t_plot),FALSE,TRUE)
 
     m <- ggplot2::ggplot() +
       ggplot2::geom_sf(data = map, ggplot2::aes(fill = .data$t_plot),
@@ -238,21 +252,34 @@ plot_map <- function(trends,
                      rect = ggplot2::element_rect(linewidth = 0.1),
                      axis.text = ggplot2::element_blank(),
                      axis.line = ggplot2::element_blank(),
-                     axis.title = ggplot2::element_blank()) +
-      ggplot2::guides(fill = ggplot2::guide_legend(reverse = TRUE))
+                     axis.title = ggplot2::element_blank())
 
-    if(!col_viridis) {
-      if(!col_ebird){
+    if(discrete_column){
+      m <- m +
+       ggplot2::guides(fill = ggplot2::guide_legend(reverse = TRUE))
+    }else{
+      m <- m +
+        ggplot2::guides(fill = ggplot2::guide_colourbar(reverse = FALSE))
+    }
 
-        m <- m + ggplot2::scale_fill_manual(values = pal, na.value = "white",
-                                            drop = FALSE)
+    if(col_viridis | is.null(pal)) {
+      if(discrete_column){
+      m <- m + ggplot2::scale_fill_viridis_d(na.value = "white",drop = FALSE)
       }else{
-         m <- m + ggplot2::scale_fill_manual(values = pal, na.value = "#CCCCCC",
-                                             drop = FALSE)
+      m <- m + ggplot2::scale_fill_viridis_c(na.value = "white")
       }
     } else {
-      m <- m + ggplot2::scale_fill_viridis_d(na.value = "white",
-                                             drop = FALSE)
+
+      if(col_ebird){
+        m <- m + ggplot2::scale_fill_manual(values = pal, na.value = "#CCCCCC",
+                                            drop = FALSE)
+
+      }else{
+        m <- m + ggplot2::scale_fill_manual(values = pal, na.value = "white",
+                                            drop = FALSE)
+      }
+
+
     }
 
   }
