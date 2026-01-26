@@ -83,17 +83,16 @@ transformed data {
 parameters {
   vector[n_train*use_pois] noise_raw;             // over-dispersion if use_pois == 1
 
- vector[n_strata] strata_raw;
-   real STRATA;
+  sum_to_zero_vector[n_strata] strata_raw;
+  real STRATA;
 
   real eta; //first-year intercept
 
-  vector[n_observers] obs_raw;    // sd of year effects
-  vector[n_sites] ste_raw;   //
+  sum_to_zero_vector[n_observers] obs_raw;    // observer effects
+  sum_to_zero_vector[n_sites] ste_raw;   // site (route) effects
   real<lower=0> sdnoise;    // sd of over-dispersion
   real<lower=0> sdobs;    // sd of observer effects
   real<lower=0> sdste;    // sd of site effects
-  //array[n_knots_year] real<lower=0> sdbeta;    // sd of GAM coefficients among strata
   array[n_strata] real<lower=0> sdbeta;    // sd of GAM coefficients among strata
   real<lower=0> sdstrata;    // sd of intercepts
   real<lower=0> sdBETA;    // sd of GAM coefficients

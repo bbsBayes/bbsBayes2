@@ -9,7 +9,7 @@
 
 
 
-# bbsBayes2 1.1.3.1 Released December 2025 - Includes 2024 BBS data (1.1.3) and new stratifications
+# bbsBayes2 1.1.3.2 Released January 2026 - Includes 2024 BBS data (1.1.3) and new stratifications, and improved sampling of contrained random effects (including spatial variation)
 
 Details on new releases below. 
 
@@ -81,6 +81,17 @@ NOTE: bbsBayes2 is supported by a small team of committed researchers with limit
 ```{r}
 pak::pkg_install("bbsBayes/bbsBayes2@dev")
 ```
+
+# bbsBayes2 1.1.3.2 Released January 2026 - Model fitting options.
+
+-   Model fitting options and optimization.
+1.  Changed model files to take advantage of the sum_to_zero_vector constrained
+parameter type in Stan. This parameter type is now used for all of the random effects and spatial random effects that previously used a soft sum-to-zero constraint. This parameter type improves sampling efficiency for all models, but has no effect on the parameter estimates.
+
+2. Added an optional argument to `run_model(compiler_optimization = "O1")`. The 
+default `"O1"` is the same compiler settings used in v.1.1.3.1. These compiler 
+optmization options can improve sampling efficiency for some models. 
+ 
 
 
 # bbsBayes2 1.1.3.1 Released December 2025 - Includes 2024 BBS data (1.1.3) and new stratifications

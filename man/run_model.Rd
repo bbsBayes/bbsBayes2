@@ -23,6 +23,7 @@ run_model(
   quiet = FALSE,
   show_exceptions = FALSE,
   init_alternate = NULL,
+  compiler_optimization = "O1",
   ...
 )
 }
@@ -94,6 +95,18 @@ custom model, recommend setting this to TRUE.}
 Replaces the initial values in the \code{model_data[["init_values"]]} created
 by prepare_model. Should accept any of the acceptable approaches to setting
 inits argment in \code{?cmdstanr::sample}.}
+
+\item{compiler_optimization}{Optional character indicator to pass to compiler
+\code{cmdstanr::cmdstan_model(stanc_options = )}. Default is "O1" (the basic
+optimization), common options include "O","O1", "Oexperimental" or NULL (the
+default for \code{cmdstanr}).
+Depending on the model, these alternate optimization options may improve
+or worsen sampling efficiency. If the model has been compiled previously
+you will need to manuall remove the previously compiled model file.
+(i.e.,, if you modify this argument and then you see the message "Model
+executable is up to date!", then you must remove the previously compiled
+model). To remove previously compiled models delete the model file from
+the package directory \code{bbsBayes2::bbs_dir()}.}
 
 \item{...}{Other arguments passed on to \code{cmdstanr::sample()}.}
 }

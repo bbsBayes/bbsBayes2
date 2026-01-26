@@ -18,7 +18,7 @@
 #'   variation in observers and so generate annual indices that are the
 #'   expected counts in a given year averaged across all observers and all
 #'   routes in the stratum. FALSE option may be useful in situations where one
-#'   or more of the 3 assumptions above are questionable, including where the
+#'   or more of the 3 assumptions below are questionable, including where the
 #'   observer variation is not log-normal (e.g., heavy-tailed, or skewed). The
 #'   difference can be important because it can change the relative scaling of
 #'   annual indices among strata, which in turn influences the weight of each

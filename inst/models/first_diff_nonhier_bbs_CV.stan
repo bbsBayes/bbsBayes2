@@ -93,13 +93,13 @@ transformed data {
 parameters {
   vector[n_train*use_pois] noise_raw;             // over-dispersion if use_pois == 1
 
- vector[n_strata] strata_raw; // strata intercepts
-   real STRATA; // hyperparameter intercepts
+  sum_to_zero_vector[n_strata] strata_raw;
+  real STRATA;
 
   real eta; //first-year effect
 
-  vector[n_observers] obs_raw;    // observer effects
-  vector[n_sites] ste_raw;   // site (route) effects
+  sum_to_zero_vector[n_observers] obs_raw;    // observer effects
+  sum_to_zero_vector[n_sites] ste_raw;   // site (route) effects
   real<lower=0> sdnoise;    // sd of over-dispersion, if use_pois == 1
   real<lower=0> sdobs;    // sd of observer effects
   real<lower=0> sdste;    // sd of site (route) effects
@@ -194,11 +194,8 @@ model {
 
 
   obs_raw ~ std_normal(); // ~ student_t(3,0,1);//observer effects
-  sum(obs_raw) ~ normal(0,0.001*n_observers); // constraint may not be necessary
 
   ste_raw ~ std_normal();//site effects
-  sum(ste_raw) ~ normal(0,0.001*n_sites); //constraint may not be necessary
-
 
   //BETA_raw ~ std_normal();// prior on fixed effect mean intercept
 
@@ -214,8 +211,6 @@ for(s in 1:(n_strata)){
 }
 
    strata_raw ~ std_normal();
-  //soft sum to zero constraint on strata intercepts
-  sum(strata_raw) ~ normal(0,0.001*n_strata);
 
 
 if(use_likelihood){
