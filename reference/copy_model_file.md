@@ -48,14 +48,14 @@ Other modelling functions:
 ``` r
 # Save the Slope model in temp directory
 copy_model_file(model = "slope", model_variant = "spatial", dir = tempdir())
-#> Copying model file slope_spatial_bbs_CV.stan to /tmp/Rtmpe9hyza/slope_spatial_bbs_CV_COPY.stan
-#> [1] "/tmp/Rtmpe9hyza/slope_spatial_bbs_CV_COPY.stan"
+#> Copying model file slope_spatial_bbs_CV.stan to /tmp/RtmpKkEtpk/slope_spatial_bbs_CV_COPY.stan
+#> [1] "/tmp/RtmpKkEtpk/slope_spatial_bbs_CV_COPY.stan"
 
 # Overwrite an existing copy
 copy_model_file(model = "slope", model_variant = "spatial", dir = tempdir(),
                 overwrite = TRUE)
-#> Copying model file slope_spatial_bbs_CV.stan to /tmp/Rtmpe9hyza/slope_spatial_bbs_CV_COPY.stan
-#> [1] "/tmp/Rtmpe9hyza/slope_spatial_bbs_CV_COPY.stan"
+#> Copying model file slope_spatial_bbs_CV.stan to /tmp/RtmpKkEtpk/slope_spatial_bbs_CV_COPY.stan
+#> [1] "/tmp/RtmpKkEtpk/slope_spatial_bbs_CV_COPY.stan"
 
 # Clean up
 unlink(file.path(tempdir(), "slope_spatial_bbs_CV_COPY.stan"))
