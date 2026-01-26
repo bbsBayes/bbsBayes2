@@ -25,6 +25,7 @@ run_model(
   quiet = FALSE,
   show_exceptions = FALSE,
   init_alternate = NULL,
+  compiler_optimization = "O1",
   ...
 )
 ```
@@ -152,6 +153,20 @@ run_model(
   approaches to setting inits argment in
   [`?cmdstanr::sample`](https://mc-stan.org/cmdstanr/reference/model-method-sample.html).
 
+- compiler_optimization:
+
+  Optional character indicator to pass to compiler
+  `cmdstanr::cmdstan_model(stanc_options = )`. Default is "O1" (the
+  basic optimization), common options include "O","O1", "Oexperimental"
+  or NULL (the default for `cmdstanr`). Depending on the model, these
+  alternate optimization options may improve or worsen sampling
+  efficiency. If the model has been compiled previously you will need to
+  manuall remove the previously compiled model file. (i.e.,, if you
+  modify this argument and then you see the message "Model executable is
+  up to date!", then you must remove the previously compiled model). To
+  remove previously compiled models delete the model file from the
+  package directory `bbsBayes2::bbs_dir()`.
+
 - ...:
 
   Other arguments passed on to
@@ -192,7 +207,8 @@ Other modelling functions:
 ## Examples
 
 ``` r
-s <- stratify(by = "bbs_cws", sample_data = TRUE)
+s <- stratify(by = "bbs_cws", sample_data = TRUE,
+              use_map = FALSE)
 #> Using 'bbs_cws' (standard) stratification
 #> Using sample BBS data...
 #> Using species Pacific Wren (sample data)
@@ -223,18 +239,18 @@ m <- run_model(pm, iter_warmup = 20, iter_sampling = 20, chains = 2)
 #> Chain 2            adapt_window = 15 
 #> Chain 2            term_buffer = 2 
 #> Chain 2 Iteration:  1 / 40 [  2%]  (Warmup) 
-#> Chain 2 Iteration: 21 / 40 [ 52%]  (Sampling) 
 #> Chain 1 Iteration: 21 / 40 [ 52%]  (Sampling) 
-#> Chain 2 Iteration: 40 / 40 [100%]  (Sampling) 
-#> Chain 2 finished in 47.2 seconds.
+#> Chain 2 Iteration: 21 / 40 [ 52%]  (Sampling) 
 #> Chain 1 Iteration: 40 / 40 [100%]  (Sampling) 
-#> Chain 1 finished in 53.9 seconds.
+#> Chain 1 finished in 24.1 seconds.
+#> Chain 2 Iteration: 40 / 40 [100%]  (Sampling) 
+#> Chain 2 finished in 47.7 seconds.
 #> 
 #> Both chains finished successfully.
-#> Mean chain execution time: 50.5 seconds.
-#> Total execution time: 54.0 seconds.
+#> Mean chain execution time: 35.9 seconds.
+#> Total execution time: 47.9 seconds.
 #> 
 #> Warning: 1 of 2 chains had an E-BFMI less than 0.3.
 #> See https://mc-stan.org/misc/warnings for details.
-#> Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/docs/reference/BBS_PacificWren_first_diff_hier_202512230019_STAN.rds
+#> Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/docs/reference/BBS_PacificWren_first_diff_hier_202601262117_STAN.rds
 ```

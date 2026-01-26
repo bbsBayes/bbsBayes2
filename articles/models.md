@@ -5,6 +5,7 @@ library(bbsBayes2)
 library(dplyr)
 library(ggplot2)
 library(patchwork)
+#> Warning: package 'patchwork' was built under R version 4.5.2
 ```
 
 There are 9 types of models that can be run with bbsBayes2. For a quick
@@ -280,7 +281,8 @@ traj_panel <- ggplot(data = saved_trajectories,
   scale_y_continuous(limits = c(0,NA))
 
 print(traj_panel)
-#> Warning: Removed 9 rows containing missing values or values outside the scale range (`geom_point()`).
+#> Warning: Removed 9 rows containing missing values or values outside the scale range
+#> (`geom_point()`).
 ```
 
 ![Population trajectory graphs for Scissor-tailed Flycatcher estimated

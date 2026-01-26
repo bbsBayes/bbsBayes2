@@ -63,7 +63,7 @@ prepare_data(
   adjust only for temporal variation in observers and so generate annual
   indices that are the expected counts in a given year averaged across
   all observers and all routes in the stratum. FALSE option may be
-  useful in situations where one or more of the 3 assumptions above are
+  useful in situations where one or more of the 3 assumptions below are
   questionable, including where the observer variation is not log-normal
   (e.g., heavy-tailed, or skewed). The difference can be important
   because it can change the relative scaling of annual indices among
@@ -108,7 +108,8 @@ Other Data prep functions:
 
 # First, stratify the sample data
 
-s <- stratify(by = "bbs_cws", sample_data = TRUE)
+s <- stratify(by = "bbs_cws", sample_data = TRUE,
+              use_map = FALSE)
 #> Using 'bbs_cws' (standard) stratification
 #> Using sample BBS data...
 #> Using species Pacific Wren (sample data)

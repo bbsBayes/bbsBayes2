@@ -19,7 +19,9 @@ stratify(
   release = 2025,
   sample_data = FALSE,
   return_omitted = FALSE,
-  quiet = FALSE
+  quiet = FALSE,
+  use_map = TRUE,
+  distance_to_strata = NULL
 )
 ```
 
@@ -28,8 +30,8 @@ stratify(
 - by:
 
   Character. Stratification type. Either an established type, one of
-  "prov_state", "bcr", "latlong", "bbs_cws", "bbs_usgs", or a custom
-  name (see `strata_custom` for details).
+  "bbs", prov_state", "bcr", "latlong", "bbs_cws", "bbs_usgs", or a
+  custom name (see `strata_custom` for details).
 
 - species:
 
@@ -68,6 +70,43 @@ stratify(
 - quiet:
 
   Logical. Suppress progress messages? Default `FALSE`.
+
+- use_map:
+
+  Logical. Whether to stratify the BBS counts and routes based on the
+  spatial location of route starting points relative to the polygons in
+  the strata map. If one of the `bcr_old`, `prov_state`, `bbs_cws`,
+  `latlong`, or `bbs_usgs` is supplied to the `by` argument, the FALSE
+  option allows for the routes to be stratified based on the
+  route-specific regional allocation in the BBS database. Ignored if the
+  user supplies a custom stratification, or the `bcr` or `bbs`
+  stratifications are supplied to the `by` argument. Default, `TRUE`
+
+- distance_to_strata:
+
+  numerical. Maximum distance (in meters), within which routes with
+  starting locations that do not intersect any strata will be joined to
+  the nearest stratum. This is `NULL` by default, indicating that BBS
+  routes with starting locations that do not overlap a stratum will be
+  omitted. If supplied, any route with a starting location that falls
+  outside of the supplied strata polygons, but less than
+  `distance_to_strata` meters from the boundary of at least one of the
+  strata polygons, will be treated as if they overlap the nearest
+  stratum. This argument is particularly useful to include routes with
+  starting locations on or near the coast or shoreline of large lakes,
+  which may be otherwise excluded due to plotting errors. For example,
+  the map associated with the standard `bbs` stratification excludes
+  3,877 surveys on 72 routes when this argument is NULL. All of these 72
+  routes have starting locations on the coasts. Setting this argument to
+  3000 (any route within 3 km of a polygon) ensures all of these coastal
+  routes are included. Default `NULL`. Caution: Users should be cautious
+  of using this argument if the strata map does not represent the full
+  landmass of Canada and the United States. For example using a subset
+  of an existing strata map, such as all of the bbs strata within one
+  country will link routes within the set distance of the national
+  border (e.g., some routes in the US will be joined to strata in
+  Canada) the same way it treats routes that happen to fall just off the
+  coast of the supplied strata map.
 
 ## Value
 
@@ -122,20 +161,38 @@ Other Data prep functions:
 ## Examples
 
 ``` r
-# Sample Data - USGS BBS strata
-s <- stratify(by = "bbs_usgs", sample_data = TRUE)
-#> Using 'bbs_usgs' (standard) stratification
+# Sample Data - BBS strata updated (2025) BBS strata with new BCRs
+s <- stratify(by = "bbs", sample_data = TRUE)
+#> Using 'bbs' (standard) stratification
 #> Using sample BBS data...
 #> Using species Pacific Wren (sample data)
 #> Filtering to species Pacific Wren (7221)
 #> Stratifying data...
+#> Preparing strata (ESRI:102008; North_America_Albers_Equal_Area_Conic)...
+#>   Calculating area weights...
+#>   Joining routes to spatial layer...
+#>   Renaming routes...
+#>   Omitting 316/5,366 surveys, on 14 unique routes that do not match a stratum.
+#>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
+# omits some routes so using distance_to_strata to capture coastal routes
+s <- stratify(by = "bbs", sample_data = TRUE, distance_to_strata = 2000)
+#> Using 'bbs' (standard) stratification
+#> Using sample BBS data...
+#> Using species Pacific Wren (sample data)
+#> Filtering to species Pacific Wren (7221)
+#> Stratifying data...
+#> Preparing strata (ESRI:102008; North_America_Albers_Equal_Area_Conic)...
+#>   Calculating area weights...
+#>   Joining routes to spatial layer...
+#> Joining routes within 2000 m of strata boundaries
 #>   Renaming routes...
 
 # Full data - species and stratification
 # Use `search_species()` to get correct species name
 
 # Stratify by CWS BBS strata
-s <- stratify(by = "bbs_cws", species = "Common Loon")
+s <- stratify(by = "bbs_cws", species = "Common Loon",
+              use_map = FALSE)
 #> Using 'bbs_cws' (standard) stratification
 #> Loading BBS data...
 #> Filtering to species Common Loon (70)
@@ -144,21 +201,24 @@ s <- stratify(by = "bbs_cws", species = "Common Loon")
 #>   Renaming routes...
 
 # Use use English, French, Scientific, or AOU codes for species names
-s <- stratify(by = "bbs_cws", species = "Plongeon huard")
+s <- stratify(by = "bbs_cws", species = "Plongeon huard",
+              use_map = FALSE)
 #> Using 'bbs_cws' (standard) stratification
 #> Loading BBS data...
 #> Filtering to species Common Loon (70)
 #> Stratifying data...
 #>   Combining BCR 7 and NS and PEI...
 #>   Renaming routes...
-s <- stratify(by = "bbs_cws", species = 70)
+s <- stratify(by = "bbs_cws", species = 70,
+              use_map = FALSE)
 #> Using 'bbs_cws' (standard) stratification
 #> Loading BBS data...
 #> Filtering to species Common Loon (70)
 #> Stratifying data...
 #>   Combining BCR 7 and NS and PEI...
 #>   Renaming routes...
-s <- stratify(by = "bbs_cws", species = "Gavia immer")
+s <- stratify(by = "bbs_cws", species = "Gavia immer",
+              use_map = FALSE)
 #> Using 'bbs_cws' (standard) stratification
 #> Loading BBS data...
 #> Filtering to species Common Loon (70)
@@ -166,16 +226,22 @@ s <- stratify(by = "bbs_cws", species = "Gavia immer")
 #>   Combining BCR 7 and NS and PEI...
 #>   Renaming routes...
 
-# Stratify by Bird Conservation Regions
-s <- stratify(by = "bcr", species = "Great Horned Owl")
+# Stratify by updated (2025) Bird Conservation Regions
+s <- stratify(by = "bcr", species = "Great Horned Owl",
+              distance_to_strata = 4000)
 #> Using 'bcr' (standard) stratification
 #> Loading BBS data...
 #> Filtering to species Great Horned Owl (3750)
 #> Stratifying data...
+#> Preparing strata (ESRI:102008; North_America_Albers_Equal_Area_Conic)...
+#>   Calculating area weights...
+#>   Joining routes to spatial layer...
+#> Joining routes within 4000 m of strata boundaries
 #>   Renaming routes...
 
-# Stratify by CWS BBS strata
-s <- stratify(by = "bbs_cws", species = "Canada Jay")
+# Stratify by former CWS BBS strata
+s <- stratify(by = "bbs_cws", species = "Canada Jay",
+              use_map = FALSE)
 #> Using 'bbs_cws' (standard) stratification
 #> Loading BBS data...
 #> Filtering to species Canada Jay (4840)
@@ -184,19 +250,8 @@ s <- stratify(by = "bbs_cws", species = "Canada Jay")
 #>   Renaming routes...
 
 # Stratify by State/Province/Territory only
-s <- stratify(by = "prov_state", species = "Common Loon")
-#> Using 'prov_state' (standard) stratification
-#> Loading BBS data...
-#> Filtering to species Common Loon (70)
-#> Stratifying data...
-#>   Renaming routes...
-s <- stratify(by = "prov_state", species = "Plongeon huard")
-#> Using 'prov_state' (standard) stratification
-#> Loading BBS data...
-#> Filtering to species Common Loon (70)
-#> Stratifying data...
-#>   Renaming routes...
-s <- stratify(by = "prov_state", species = 70)
+s <- stratify(by = "prov_state", species = "Common Loon",
+              use_map = FALSE)
 #> Using 'prov_state' (standard) stratification
 #> Loading BBS data...
 #> Filtering to species Common Loon (70)
@@ -205,13 +260,14 @@ s <- stratify(by = "prov_state", species = 70)
 
 
 # Stratify by blocks of 1 degree of latitude X 1 degree of longitude
-s <- stratify(by = "latlong", species = "Snowy Owl")
+s <- stratify(by = "latlong", species = "Snowy Owl",
+              use_map = FALSE)
 #> Using 'latlong' (standard) stratification
 #> Loading BBS data...
 #> Filtering to species Snowy Owl (3760)
 #> Stratifying data...
 #>   Renaming routes...
-#>   Omitting 115/127,482 route-years that do not match a stratum.
+#>   Omitting 115/127,482 surveys, on 7 unique routes that do not match a stratum.
 #>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
 
 # Check routes omitted by stratification
@@ -220,24 +276,27 @@ s <- stratify(by = "latlong", species = "Snowy Owl", return_omitted = TRUE)
 #> Loading BBS data...
 #> Filtering to species Snowy Owl (3760)
 #> Stratifying data...
+#> Preparing strata (ESRI:102008; North_America_Albers_Equal_Area_Conic)...
+#>   Calculating area weights...
+#>   Joining routes to spatial layer...
 #>   Renaming routes...
-#>   Omitting 115/127,482 route-years that do not match a stratum.
+#>   Omitting 2,436/127,482 surveys, on 111 unique routes that do not match a stratum.
 #>     Returning omitted routes.
 s[["routes_omitted"]]
-#> # A tibble: 115 × 11
-#>     year strata_name country state     route route_name latitude longitude   bcr
-#>    <dbl> <chr>       <chr>   <chr>     <chr> <chr>         <dbl>     <dbl> <dbl>
-#>  1  1988 NA          US      CALIFORN… 14-1… SANTA CRU…     34.0    -120.     32
-#>  2  1966 NA          US      FLORIDA   25-36 PLANTATIO…     25.0     -80.5    31
-#>  3  1967 NA          US      FLORIDA   25-36 PLANTATIO…     25.0     -80.5    31
-#>  4  1969 NA          US      FLORIDA   25-36 PLANTATIO…     25.0     -80.5    31
-#>  5  1970 NA          US      FLORIDA   25-36 PLANTATIO…     25.0     -80.5    31
-#>  6  1971 NA          US      FLORIDA   25-36 PLANTATIO…     25.0     -80.5    31
-#>  7  1972 NA          US      FLORIDA   25-36 PLANTATIO…     25.0     -80.5    31
-#>  8  1973 NA          US      FLORIDA   25-36 PLANTATIO…     25.0     -80.5    31
-#>  9  1974 NA          US      FLORIDA   25-36 PLANTATIO…     25.0     -80.5    31
-#> 10  1975 NA          US      FLORIDA   25-36 PLANTATIO…     25.0     -80.5    31
-#> # ℹ 105 more rows
+#> # A tibble: 2,436 × 11
+#>     year strata_name country state   route route_name latitude longitude   bcr
+#>    <dbl> <chr>       <chr>   <chr>   <chr> <chr>         <dbl>     <dbl> <dbl>
+#>  1  1966 NA          US      ALABAMA 2-40  DAUPHIN IS     30.2     -88.1    27
+#>  2  1967 NA          US      ALABAMA 2-40  DAUPHIN IS     30.2     -88.1    27
+#>  3  1969 NA          US      ALABAMA 2-40  DAUPHIN IS     30.2     -88.1    27
+#>  4  1970 NA          US      ALABAMA 2-40  DAUPHIN IS     30.2     -88.1    27
+#>  5  1971 NA          US      ALABAMA 2-40  DAUPHIN IS     30.2     -88.1    27
+#>  6  1972 NA          US      ALABAMA 2-40  DAUPHIN IS     30.2     -88.1    27
+#>  7  1973 NA          US      ALABAMA 2-40  DAUPHIN IS     30.2     -88.1    27
+#>  8  1974 NA          US      ALABAMA 2-40  DAUPHIN IS     30.2     -88.1    27
+#>  9  1975 NA          US      ALABAMA 2-40  DAUPHIN IS     30.2     -88.1    27
+#> 10  1976 NA          US      ALABAMA 2-40  DAUPHIN IS     30.2     -88.1    27
+#> # ℹ 2,426 more rows
 #> # ℹ 2 more variables: obs_n <dbl>, total_spp <dbl>
 
 # Use combined or non-combined species forms
@@ -248,7 +307,8 @@ search_species("Sooty grouse")
 #>   <dbl> <chr>                    <chr>  <chr> <chr>  <chr> <chr>   <lgl>        
 #> 1  2971 Sooty Grouse             Tétra… Gall… Phasi… Dend… fuligi… TRUE         
 #> 2  2973 Blue Grouse (Dusky/Soot… Tétra… Gall… Phasi… Dend… obscur… TRUE         
-s <- stratify(by = "bbs_usgs", species = "Blue Grouse (Dusky/Sooty)")
+s <- stratify(by = "bbs_usgs", species = "Blue Grouse (Dusky/Sooty)",
+              use_map = FALSE)
 #> Using 'bbs_usgs' (standard) stratification
 #> Loading BBS data...
 #> Filtering to species Blue Grouse (Dusky/Sooty) (2973)
@@ -264,7 +324,8 @@ search_species("Sooty grouse", combine_species_forms = FALSE)
 #> 1  2971 Sooty Grouse             Tétra… Gall… Phasi… Dend… fuligi… FALSE        
 #> 2  2973 unid. Dusky Grouse / So… unid … Gall… Phasi… Dend… obscur… FALSE        
 s <- stratify(by = "bbs_usgs", species = "unid. Dusky Grouse / Sooty Grouse",
-              combine_species_forms = FALSE)
+              combine_species_forms = FALSE,
+              use_map = FALSE)
 #> Using 'bbs_usgs' (standard) stratification
 #> Loading BBS data...
 #> Filtering to species unid. Dusky Grouse / Sooty Grouse (2973)
@@ -277,25 +338,27 @@ nrow(s$birds_strata) # Contains *only* unidentified
 # Stratify by a subset of an existing stratification
 library(dplyr)
 my_cws <- filter(bbs_strata[["bbs_cws"]], country_code == "CA")
-s <- stratify(by = "bbs_cws", strata_custom = my_cws, species = "Snowy Owl")
+s <- stratify(by = "bbs_cws", strata_custom = my_cws, species = "Snowy Owl",
+              use_map = FALSE)
 #> Using 'bbs_cws' (subset) stratification
 #> Loading BBS data...
 #> Filtering to species Snowy Owl (3760)
 #> Stratifying data...
 #>   Combining BCR 7 and NS and PEI...
 #>   Renaming routes...
-#>   Omitting 107,926/127,482 route-years that do not match a stratum.
+#>   Omitting 107,926/127,482 surveys, on 3,681 unique routes that do not match a stratum.
 #>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
 
-my_bcr <- filter(bbs_strata[["bcr"]], strata_name == "BCR8")
-s <- stratify(by = "bcr", strata_custom = my_bcr,
-              species = "Yellow-rumped Warbler (all forms)")
-#> Using 'bcr' (subset) stratification
+my_bcr <- filter(bbs_strata[["bcr_old"]], strata_name == "BCR8")
+s <- stratify(by = "bcr_old", strata_custom = my_bcr,
+              species = "Yellow-rumped Warbler (all forms)",
+              use_map = FALSE)
+#> Using 'bcr_old' (subset) stratification
 #> Loading BBS data...
 #> Filtering to species Yellow-rumped Warbler (all forms) (6556)
 #> Stratifying data...
 #>   Renaming routes...
-#>   Omitting 125,934/127,482 route-years that do not match a stratum.
+#>   Omitting 125,934/127,482 surveys, on 4,678 unique routes that do not match a stratum.
 #>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
 
 # Stratify by Custom stratification, using sf map object
