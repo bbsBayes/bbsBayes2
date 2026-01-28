@@ -400,11 +400,11 @@ stratify_map <- function(strata_map, routes, quiet = FALSE,
   }
 
 
-#  if(stratify_type == "custom"){
-  # Keep strata name column only
-  strata_map <- dplyr::select(strata_map, "strata_name") %>%
-    dplyr::mutate(strata_name = as.character(.data$strata_name))
- # }
+  # if(stratify_type == "custom"){
+  # # Keep strata name column only
+  # strata_map <- dplyr::select(strata_map, "strata_name") %>%
+  #   dplyr::mutate(strata_name = as.character(.data$strata_name))
+  # }
 
   n_features <- sf::st_drop_geometry(strata_map) %>%
     dplyr::pull(.data$strata_name) %>%
