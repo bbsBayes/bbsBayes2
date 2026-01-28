@@ -294,7 +294,7 @@ stratify <- function(by,
       meta_strata <- bbsBayes2::bbs_strata[[stratify_by]]
     }
 
-    # Assing NA to all routes not in stratification (omitted below)
+    # Adding NA to all routes not in stratification (omitted below)
     keep <- routes$strata_name %in% meta_strata$strata_name
     routes$strata_name[!keep] <- NA_character_
 
@@ -399,7 +399,6 @@ stratify_map <- function(strata_map, routes, quiet = FALSE,
     message("Preparing strata (", c$srid, "; ", c$Name, ")...")
   }
 
-  strata_map_original <- strata_map # saving original for returning unmodified
 
 #  if(stratify_type == "custom"){
   # Keep strata name column only
@@ -457,7 +456,7 @@ stratify_map <- function(strata_map, routes, quiet = FALSE,
       dplyr::bind_rows(w_miss_join)
   }
 
-  list("meta_strata" = sf::st_drop_geometry(strata_map_original),
+  list("meta_strata" = sf::st_drop_geometry(strata_map),
        "routes" = routes)
 }
 
