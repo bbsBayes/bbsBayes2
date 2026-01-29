@@ -9,7 +9,7 @@
 
 
 
-# bbsBayes2 1.1.3.2 Released January 2026 - Includes 2024 BBS data (1.1.3) and new stratifications, and improved sampling of contrained random effects (including spatial variation)
+# bbsBayes2 1.1.3.3 January 29, 2026 - Includes 2024 BBS data (1.1.3) and new stratifications, and improved sampling of contrained random effects (including spatial variation)
 
 Details on new releases below. 
 
