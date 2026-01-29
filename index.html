@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@
 <!-- badges: end -->
 <div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="bbsbayes2-1132-released-january-2026---includes-2024-bbs-data-113-and-new-stratifications-and-improved-sampling-of-contrained-random-effects-including-spatial-variation">bbsBayes2 1.1.3.2 Released January 2026 - Includes 2024 BBS data (1.1.3) and new stratifications, and improved sampling of contrained random effects (including spatial variation)<a class="anchor" aria-label="anchor" href="#bbsbayes2-1132-released-january-2026---includes-2024-bbs-data-113-and-new-stratifications-and-improved-sampling-of-contrained-random-effects-including-spatial-variation"></a>
+<img src="logo.png" class="logo" alt=""><h1 id="bbsbayes2-1133-january-29-2026---includes-2024-bbs-data-113-and-new-stratifications-and-improved-sampling-of-contrained-random-effects-including-spatial-variation">bbsBayes2 1.1.3.3 January 29, 2026 - Includes 2024 BBS data (1.1.3) and new stratifications, and improved sampling of contrained random effects (including spatial variation)<a class="anchor" aria-label="anchor" href="#bbsbayes2-1133-january-29-2026---includes-2024-bbs-data-113-and-new-stratifications-and-improved-sampling-of-contrained-random-effects-including-spatial-variation"></a>
 </h1>
 </div>
 <p>Details on new releases below.</p>
@@ -93,6 +93,13 @@
 <p>If you want to install the developmental branch (which often includes additional options and newest updates), you can use the following. NOTE: bbsBayes2 is supported by a small team of committed researchers with limited capacity. The development branch may not be stable.</p>
 <p><code>{r} pak::pkg_install("bbsBayes/bbsBayes2@dev")</code></p>
 </div>
+</div>
+<div class="section level1">
+<h1 id="bbsbayes2-1133-released-january-29-2026---bug-fix-for-custom-stratifications">bbsBayes2 1.1.3.3 Released January 29, 2026 - Bug fix for custom stratifications.<a class="anchor" aria-label="anchor" href="#bbsbayes2-1133-released-january-29-2026---bug-fix-for-custom-stratifications"></a>
+</h1>
+<ul>
+<li>Fixed bug in <code><a href="reference/stratify.html">stratify()</a></code> (bug introduced in v.1.1.3) that removed the area weights for custom stratifcations. Bug did not affect built-in stratifications or subsets of those stratifications.</li>
+</ul>
 </div>
 <div class="section level1">
 <h1 id="bbsbayes2-1132-released-january-2026---model-fitting-options">bbsBayes2 1.1.3.2 Released January 2026 - Model fitting options.<a class="anchor" aria-label="anchor" href="#bbsbayes2-1132-released-january-2026---model-fitting-options"></a>
