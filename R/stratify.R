@@ -294,7 +294,7 @@ stratify <- function(by,
       meta_strata <- bbsBayes2::bbs_strata[[stratify_by]]
     }
 
-    # Assing NA to all routes not in stratification (omitted below)
+    # Adding NA to all routes not in stratification (omitted below)
     keep <- routes$strata_name %in% meta_strata$strata_name
     routes$strata_name[!keep] <- NA_character_
 
@@ -399,13 +399,8 @@ stratify_map <- function(strata_map, routes, quiet = FALSE,
     message("Preparing strata (", c$srid, "; ", c$Name, ")...")
   }
 
-  strata_map_original <- strata_map # saving original for returning unmodified
 
-#  if(stratify_type == "custom"){
-  # Keep strata name column only
-  strata_map <- dplyr::select(strata_map, "strata_name") %>%
-    dplyr::mutate(strata_name = as.character(.data$strata_name))
- # }
+
 
   n_features <- sf::st_drop_geometry(strata_map) %>%
     dplyr::pull(.data$strata_name) %>%
@@ -425,6 +420,13 @@ stratify_map <- function(strata_map, routes, quiet = FALSE,
                   area_sq_km = units::set_units(.data$area_sq_km, "km^2"),
                   area_sq_km = as.numeric(.data$area_sq_km))
 
+  strata_map_original <- strata_map # saving original for returning unmodified
+
+  # if(stratify_type == "custom"){
+  # # Keep strata name column only
+  strata_map <- dplyr::select(strata_map, c("strata_name","area_sq_km")) %>%
+    dplyr::mutate(strata_name = as.character(.data$strata_name))
+  # }
 
   # Merge with map polygons and keep coordinates
   if(!quiet) message("  Joining routes to spatial layer...")

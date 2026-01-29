@@ -9,7 +9,7 @@
 
 
 
-# bbsBayes2 1.1.3.2 Released January 2026 - Includes 2024 BBS data (1.1.3) and new stratifications, and improved sampling of contrained random effects (including spatial variation)
+# bbsBayes2 1.1.3.3 January 29, 2026 - Includes 2024 BBS data (1.1.3) and new stratifications, and improved sampling of contrained random effects (including spatial variation)
 
 Details on new releases below. 
 
@@ -81,6 +81,10 @@ NOTE: bbsBayes2 is supported by a small team of committed researchers with limit
 ```{r}
 pak::pkg_install("bbsBayes/bbsBayes2@dev")
 ```
+
+# bbsBayes2 1.1.3.3 Released January 29, 2026 - Bug fix for custom stratifications.
+
+-   Fixed bug in `stratify()` (bug introduced in v.1.1.3) that removed the area weights for custom stratifcations. Bug did not affect built-in stratifications or subsets of those stratifications.
 
 # bbsBayes2 1.1.3.2 Released January 2026 - Model fitting options.
 
