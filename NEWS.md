@@ -4,6 +4,11 @@ editor_options:
     wrap: sentence
 ---
 
+
+# bbsBayes2 1.1.3.3 Released January 29, 2026 - Bug fix for custom stratifications.
+
+-   Fixed bug in `stratify()` (bug introduced in v.1.1.3) that removed the area weights for custom stratifcations. Bug did not affect built-in stratifications or subsets of those stratifications.
+
 # bbsBayes2 1.1.3.2
 
 -   Model fitting options and optimization.

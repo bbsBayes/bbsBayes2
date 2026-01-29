@@ -82,6 +82,10 @@ NOTE: bbsBayes2 is supported by a small team of committed researchers with limit
 pak::pkg_install("bbsBayes/bbsBayes2@dev")
 ```
 
+# bbsBayes2 1.1.3.3 Released January 29, 2026 - Bug fix for custom stratifications.
+
+-   Fixed bug in `stratify()` (bug introduced in v.1.1.3) that removed the area weights for custom stratifcations. Bug did not affect built-in stratifications or subsets of those stratifications.
+
 # bbsBayes2 1.1.3.2 Released January 2026 - Model fitting options.
 
 -   Model fitting options and optimization.
