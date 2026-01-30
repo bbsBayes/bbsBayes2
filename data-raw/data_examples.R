@@ -25,19 +25,25 @@ usethis::use_data(bbs_data_sample, overwrite = TRUE)
 # NOTE: That this code is included in the examples of pacific_wren_model
 #  in R/data.R. So if updated here, should also be updated there.
 
-pacific_wren_model <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
+pacific_wren_model <- stratify(by = "bbs_cws", sample_data = TRUE,
+                               use_map = FALSE) %>%
   prepare_data() %>%
   prepare_model(model = "first_diff", set_seed = 111) %>%
-  run_model(chains = 2, iter_sampling = 20, iter_warmup = 20, set_seed = 111)
+  run_model(chains = 4, iter_sampling = 1000,
+            iter_warmup = 1000,
+            thin = 50, set_seed = 111)
 
 usethis::use_data(pacific_wren_model, overwrite = TRUE)
-unlink(list.files(pattern = paste0("BBS_STAN_first_diff_hier_")))
+unlink(list.files(pattern = paste0("BBS_PacificWren_first_diff_hier_")))
 
 # Testing models (internal data)
-slope_test_model <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
+slope_test_model <- stratify(by = "bbs_cws", sample_data = TRUE,
+                             use_map = FALSE) %>%
   prepare_data() %>%
   prepare_model(model = "slope", set_seed = 111) %>%
-  run_model(chains = 2, iter_sampling = 20, iter_warmup = 20, set_seed = 111)
+  run_model(chains = 4, iter_sampling = 1000,
+            iter_warmup = 1000,
+            thin = 50, set_seed = 111)
 
 usethis::use_data(slope_test_model, internal = TRUE, overwrite = TRUE)
-unlink(list.files(pattern = paste0("BBS_STAN_slope_hier_")))
+unlink(list.files(pattern = paste0("BBS_PacificWren_slope_hier_")))

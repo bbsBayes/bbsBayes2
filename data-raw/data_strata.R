@@ -198,11 +198,11 @@ strata_latlong <- st_intersection(grid,bbs_boundary) %>%
   st_transform(crs = bbsBayes2::equal_area_crs) %>%
   select(strata_name)
 
-areakm <- strata_latlong %>%
+aream <- strata_latlong %>%
   st_area() %>%
   as.numeric()
 
-strata_latlong$area_sq_km <- areakm/1e6
+strata_latlong$area_sq_km <- aream/1e6
 
 strata_latlong <- strata_latlong %>%
   select(strata_name,area_sq_km)
