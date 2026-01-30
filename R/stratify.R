@@ -298,14 +298,14 @@ stratify <- function(by,
     keep <- routes$strata_name %in% meta_strata$strata_name
     routes$strata_name[!keep] <- NA_character_
 
-  } else if (stratify_type == "custom") {
+  } else if (stratify_type %in% c("custom","subset")) {
     # Custom stratification
     strata_custom <- stratify_map(strata_custom, routes, quiet, stratify_type,
                                   distance_to_strata)
     routes <- strata_custom[["routes"]]
     meta_strata <- strata_custom[["meta_strata"]]
 
-  } else if (stratify_type != "custom" & use_map){
+  } else if (stratify_type == "standard" & use_map){
 
     strata_custom <- stratify_map(bbsBayes2::load_map(stratify_by), routes,
                                   quiet, stratify_type, distance_to_strata)
