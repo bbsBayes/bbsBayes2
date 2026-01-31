@@ -9,17 +9,17 @@ test_that("prepare_data() - sample", {
 
 
   # By run (i.e. single value)
-  expect_equal(p$model_data$n_sites, 388)
+  expect_equal(p$model_data$n_sites, 387)
   expect_equal(p$model_data$n_strata, 19)
-  expect_equal(p$model_data$n_counts, 5358)
-  expect_equal(p$model_data$n_years, 56)
-  expect_equal(p$model_data$n_observers, 659)
-  expect_equal(p$model_data$max_n_obs_sites_strata, 114)
+  expect_equal(p$model_data$n_counts, 5472)
+  expect_equal(p$model_data$n_years, 57)
+  expect_equal(p$model_data$n_observers, 677)
+  expect_equal(p$model_data$max_n_obs_sites_strata, 118)
 
   # By strata
   expect_equal(
     p$model_data$n_obs_sites_strata,
-    c(15, 99, 6, 110, 59, 8, 4, 88, 49, 20, 86, 49, 43, 32, 114, 7, 28, 96, 55))
+    c(16, 99, 6, 114, 59, 8, 4, 86, 49, 21, 87, 49, 44, 35, 118, 7, 29, 100, 56))
 
   expect_equal(
     p$model_data$non_zero_weight,
