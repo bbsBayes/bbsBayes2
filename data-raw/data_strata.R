@@ -26,22 +26,27 @@ library(rmapshaper) # allows simplification of the polygon boudnaries in a way
 # updated BCR definitions that includes changes to Northern BCRS
 # circa 2025
 
-bcr_new <- "data-raw/maps_orig/bcr_2025_lakes12.gpkg" %>%
+bcr_new <- "data-raw/maps_orig/bcr_2025_lakes12_statprov3.gpkg" %>%
   read_sf() %>%
+  filter(!is_lake,
+         country_code %in% c("CA","US","MX"), #  removing Mexico, France, and Hawaii
+         statprov_code != "HI") %>%
   sf::st_transform(crs = bbsBayes2::equal_area_crs) %>%
-  rmapshaper::ms_simplify(keep = 0.1,
+  rmapshaper::ms_simplify(keep = 0.05,
                           keep_shapes = TRUE) %>%
-  mutate(strata_name = paste0("BCR",bcr_label)) %>%
-  filter(!is_lake) %>%
+  sf::st_make_valid() %>%
+  mutate(strata_name = paste0("BCR",bcr_label))   %>%
   group_by(strata_name) %>%
   summarise(.groups = "drop") %>%
-  sf::st_make_valid() %>%
-  rename_with(.fn = ~"strata_name",
-              .cols = dplyr::any_of(c("strata_name", "ST_12"))) %>%
-  mutate(area_sq_km = as.numeric(units::set_units(st_area(.), "km^2")))
+  #st_cast("POLYGON") %>%
+  mutate(area_sq_km = as.numeric(units::set_units(st_area(.), "km^2"))) %>%
+  filter(area_sq_km > 1)
 
 st_write(bcr_new,
          file.path("inst/maps/",
+                   "bcr_strata.gpkg"), append = FALSE)
+st_write(bcr_new,
+         file.path(system.file("maps", package = "bbsBayes2"),
                    "bcr_strata.gpkg"), append = FALSE)
 
 
@@ -52,7 +57,7 @@ bbs_new <- "data-raw/maps_orig/bcr_2025_lakes12_statprov3.gpkg" %>%
   read_sf() %>%
   sf::st_transform(crs = bbsBayes2::equal_area_crs)
 
-bbs_new <- rmapshaper::ms_simplify(bbs_new, keep = 0.1,
+bbs_new <- rmapshaper::ms_simplify(bbs_new, keep = 0.05,
                                 keep_shapes = TRUE) %>%
 mutate(strata_name = paste0(country_code,"-",statprov_code,"-",bcr_label)) %>%
   st_make_valid() %>% # As needed when st_is_valid() fails
@@ -75,6 +80,9 @@ mutate(strata_name = paste0(country_code,"-",statprov_code,"-",bcr_label)) %>%
 st_write(bbs_new,
          file.path("inst/maps/",
                    "bbs_strata.gpkg"), append = FALSE)
+st_write(bbs_new,
+file.path(system.file("maps", package = "bbsBayes2"),
+          "bbs_strata.gpkg"), append = FALSE)
 
 
 # tst <- ggplot()+
