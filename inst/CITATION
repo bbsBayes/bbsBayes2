@@ -2,7 +2,7 @@ citHeader("To cite bbsBayes2 in publication, please use both: Edwards et al. 202
 
 citEntry(
   entry = "misc",
-  title = "bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. Version 1.1.3.3",
+  title = "bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. Version 1.1.3.4",
   year = "2026",
   url = "https://github.com/bbsBayes/bbsBayes2",
   author = "Edwards, B. P. M., A. C. Smith, and S. LaZerte ",

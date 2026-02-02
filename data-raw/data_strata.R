@@ -112,7 +112,9 @@ strata_bbs_usgs <- "data-raw/maps_orig/BBS_USGS_strata.shp" %>%
 #                  select(names(s)),
 #                arrange(s, strata_name), tolerance = 0.1)
 
-
+st_write(strata_bbs_usgs,
+         file.path("inst/maps/",
+                   "bbs_usgs_strata.gpkg"), append = FALSE)
 st_write(strata_bbs_usgs,
          file.path(system.file("maps", package = "bbsBayes2"),
                    "bbs_usgs_strata.gpkg"), append = FALSE)
@@ -145,7 +147,10 @@ st_write(strata_bbs_cws,
                    "bbs_cws_strata.gpkg"), append = FALSE)
 
 
-# BCR ----------------------------------------------------
+st_write(strata_bbs_cws,
+         file.path("inst/maps/",
+                   "bbs_cws_strata.gpkg"), append = FALSE)
+# BCR Old ----------------------------------------------------
 # Old BCR stratification
 strata_bcr_old <- "data-raw/maps_orig/BBS_BCR_strata.shp" %>%
   sf::read_sf() %>%
@@ -164,21 +169,33 @@ strata_bcr_old <- "data-raw/maps_orig/BBS_BCR_strata.shp" %>%
 
 st_write(strata_bcr_old, file.path(system.file("maps", package = "bbsBayes2"),
                                "bcr_old_strata.gpkg"), append = FALSE)
+
+st_write(strata_bcr_old,
+         file.path("inst/maps/",
+                   "bcr_old_strata.gpkg"), append = FALSE)
 # #
+
+
+
 # Latitude/Longitude -------------------------------------------------
 # updated to include the land area included in "bbs" stratification
 
-bbs_strat <- load_map("bbs") %>%
+sf_use_s2(FALSE) # for some reason with spherical geometry on this intersection
+  # caused invalid polygons.
+bbs_strat <- bbsBayes2::load_map("bbs") %>%
   st_transform(crs = 4326) #wgs84 epsg
 
 bbs_boundary <- bbs_strat %>%
-  summarise()
+  summarise()%>%
+  st_make_valid()
 bb <- st_bbox(bbs_strat)
 
 
 grid <- sf::st_make_grid(bbs_strat,
                          cellsize = c(1,1),
-                         offset = c(floor(bb["xmin"]),floor(bb["ymin"])))
+                         offset = c(floor(bb["xmin"]),floor(bb["ymin"])))%>%
+  st_make_valid()%>%
+  st_cast("POLYGON")
 
 coords <- st_coordinates(grid) %>%
   as_tibble() %>%
@@ -190,13 +207,20 @@ coords <- st_coordinates(grid) %>%
 
 grid <- grid %>%
   st_as_sf() %>%
-  bind_cols(coords)
+  bind_cols(coords)%>%
+  st_make_valid()%>%
+  st_cast("POLYGON")
 
 
 strata_latlong <- st_intersection(grid,bbs_boundary) %>%
   st_make_valid() %>%
-  st_transform(crs = bbsBayes2::equal_area_crs) %>%
-  select(strata_name)
+  select(strata_name) %>%
+  group_by(strata_name) %>%
+  summarise() %>%
+  st_make_valid() %>%
+  st_cast("POLYGON") %>%
+  st_transform(crs = bbsBayes2::equal_area_crs)
+
 
 aream <- strata_latlong %>%
   st_area() %>%
@@ -205,10 +229,28 @@ aream <- strata_latlong %>%
 strata_latlong$area_sq_km <- aream/1e6
 
 strata_latlong <- strata_latlong %>%
-  select(strata_name,area_sq_km)
+  select(strata_name,area_sq_km)%>%
+  filter(area_sq_km > 1) %>%
+  st_make_valid() %>%
+  st_cast("POLYGON")
 
 st_write(strata_latlong, file.path(system.file("maps", package = "bbsBayes2"),
                                    "latlong_strata.gpkg"), append = FALSE)
+st_write(strata_latlong,
+         file.path("inst/maps/",
+                   "latlong_strata.gpkg"), append = FALSE)
+
+# confirming that the routes fall in the correct strata based on floor(coordinate)
+# s <- stratify("latlong","American Robin", distance_to_strata = 3000)
+# tmp <- s$routes_strata
+# rt_sum <- tmp %>%
+#   select(route,latitude,longitude,strata_name) %>%
+#   mutate(lat = as.integer(floor(latitude)),
+#          long = as.integer(floor(longitude))) %>%
+#   distinct() %>%
+#   mutate(strat_alt = paste0(lat,"_",long),
+#          check = ifelse(strat_alt == strata_name,TRUE,FALSE))
+#
 
 
 #
@@ -267,6 +309,9 @@ strata_prov_state <- "data-raw/maps_orig/BBS_ProvState_strata.shp" %>%
 st_write(strata_prov_state, file.path(system.file("maps", package = "bbsBayes2"),
                                       "prov_state_strata.gpkg"), append = FALSE)
 
+st_write(strata_prov_state,
+         file.path("inst/maps/",
+                   "prov_state_strata.gpkg"), append = FALSE)
 
 # Save for use by users and functions -------------------
 bbs_strata <- list("bbs" = st_drop_geometry(bbs_new),
