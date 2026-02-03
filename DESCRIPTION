@@ -48,6 +48,7 @@ Description: The North American Breeding Bird Survey (BBS) is a long-running
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+LazyDataCompression: bzip2
 RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Suggests: 

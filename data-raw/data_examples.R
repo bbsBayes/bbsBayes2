@@ -29,7 +29,7 @@ pacific_wren_model <- stratify(by = "bbs_cws", sample_data = TRUE,
                                use_map = FALSE) %>%
   prepare_data() %>%
   prepare_model(model = "first_diff", set_seed = 111) %>%
-  run_model(chains = 4, iter_sampling = 1000,
+  run_model(chains = 2, iter_sampling = 1000,
             iter_warmup = 1000,
             thin = 50, set_seed = 111)
 
@@ -41,7 +41,7 @@ slope_test_model <- stratify(by = "bbs_cws", sample_data = TRUE,
                              use_map = FALSE) %>%
   prepare_data() %>%
   prepare_model(model = "slope", set_seed = 111) %>%
-  run_model(chains = 4, iter_sampling = 1000,
+  run_model(chains = 2, iter_sampling = 1000,
             iter_warmup = 1000,
             thin = 50, set_seed = 111)
 

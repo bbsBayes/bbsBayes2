@@ -235,8 +235,8 @@ test_that("generate_indices(alternate_n)", {
 
   expect_named(s, paste0("stratum_", unique(i[["raw_data"]]$strata_name)))
 
-  # Samples for all iterations x all years  (20 iterations x 4 chains = 80)
-  expect_true(all(vapply(s, FUN = dim, FUN.VALUE = c(1, 1)) == c(80, n_yrs)))
+  # Samples for all iterations x all years  (20 iterations x 2 chains = 40)
+  expect_true(all(vapply(s, FUN = dim, FUN.VALUE = c(1, 1)) == c(40, n_yrs)))
 
   # Expect quantiles based on samples: Check a bunch of combinations
   year <- c(1, 20, 50)

@@ -113,9 +113,9 @@
 #' use_map = FALSE) %>%
 #'   prepare_data() %>%
 #'   prepare_model(model = "first_diff", set_seed = 111) %>%
-#'   run_model(chains = 4, iter_sampling = 400,
+#'   run_model(chains = 2, iter_sampling = 1000,
 #'             iter_warmup = 1000,
-#'             thin = 20, set_seed = 111)
+#'             thin = 50, set_seed = 111)
 #' }
 #'
 "pacific_wren_model"

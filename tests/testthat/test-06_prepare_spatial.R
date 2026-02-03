@@ -121,7 +121,6 @@ test_that("prepare_spatial(nearest_fill = TRUE)", {
     expect_message("  Islands found") %>%
     expect_message("  Islands found") %>%
     expect_message("  Islands found") %>%
-    expect_message("  Islands found") %>%
     expect_message("Formating") %>%
     expect_message("Plotting")
 
