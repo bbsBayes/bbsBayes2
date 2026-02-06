@@ -80,3 +80,17 @@ test_that("prepare_data() - other", {
 })
 
 
+test_that("prepare_data() - minimums", {
+
+  strat_samp <- stratify(by = "bbs", species = "Common Loon", quiet = TRUE,
+                         use_map = TRUE,
+                         distance_to_strata = 6000)
+
+  # test error where span is longer than available years
+  expect_error(p <- prepare_data(strat_samp, min_max_route_years = 2,
+                                  min_span = 40,
+                                 min_year = 2000))
+
+})
+
+
