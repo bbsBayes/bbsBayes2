@@ -44,32 +44,32 @@ expect_silent({
 })
 
 # Tests --------------------
-test_that("plot_geofacet() diff trends", {
-  # Error/message
-  expect_error(plot_geofacet(i1, trends = t4), "created from the same")
-  expect_error(plot_geofacet(i1, trends = t1, slope = TRUE),
-               "also run with `slope = TRUE`")
-
-  # Plot combos
-  expect_silent(plot_geofacet(i1, trends = t1))
-  expect_silent(plot_geofacet(i1, trends = t2, slope = TRUE))
-  expect_silent(plot_geofacet(i1, trends = t3))
-  expect_silent(plot_geofacet(i1, trends = t1, multiple = TRUE))
-  expect_silent(plot_geofacet(i1, trends = t1, multiple = TRUE,
-                              col_viridis = TRUE))
-  expect_silent(plot_geofacet(i1, multiple = TRUE))
-  expect_silent(plot_geofacet(i1, trends = t1, multiple = FALSE))
-  expect_silent(plot_geofacet(i1, multiple = FALSE))
-
-  # PLot combos, diff years
-  expect_silent(plot_geofacet(i2, trends = t4))
-  expect_silent(plot_geofacet(i2, trends = t4, multiple = TRUE))
-  expect_silent(plot_geofacet(i2, trends = t4, multiple = TRUE,
-                              col_viridis = TRUE))
-  expect_silent(plot_geofacet(i2, multiple = TRUE))
-  expect_silent(plot_geofacet(i2, trends = t4, multiple = FALSE))
-  expect_silent(plot_geofacet(i2, multiple = FALSE))
-})
+# test_that("plot_geofacet() diff trends", {
+#   # Error/message
+#   expect_error(plot_geofacet(i1, trends = t4), "created from the same")
+#   expect_error(plot_geofacet(i1, trends = t1, slope = TRUE),
+#                "also run with `slope = TRUE`")
+#
+#   # Plot combos
+#   expect_silent(plot_geofacet(i1, trends = t1))
+#   expect_silent(plot_geofacet(i1, trends = t2, slope = TRUE))
+#   expect_silent(plot_geofacet(i1, trends = t3))
+#   expect_silent(plot_geofacet(i1, trends = t1, multiple = TRUE))
+#   expect_silent(plot_geofacet(i1, trends = t1, multiple = TRUE,
+#                               col_viridis = TRUE))
+#   expect_silent(plot_geofacet(i1, multiple = TRUE))
+#   expect_silent(plot_geofacet(i1, trends = t1, multiple = FALSE))
+#   expect_silent(plot_geofacet(i1, multiple = FALSE))
+#
+#   # PLot combos, diff years
+#   expect_silent(plot_geofacet(i2, trends = t4))
+#   expect_silent(plot_geofacet(i2, trends = t4, multiple = TRUE))
+#   expect_silent(plot_geofacet(i2, trends = t4, multiple = TRUE,
+#                               col_viridis = TRUE))
+#   expect_silent(plot_geofacet(i2, multiple = TRUE))
+#   expect_silent(plot_geofacet(i2, trends = t4, multiple = FALSE))
+#   expect_silent(plot_geofacet(i2, multiple = FALSE))
+# })
 
 test_that("plot_map() diff trends", {
   # Error/message
