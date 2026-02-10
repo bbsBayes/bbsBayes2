@@ -52,7 +52,7 @@ LazyDataCompression: bzip2
 RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Suggests: 
-    cmdstanr,
+    cmdstanr (>= 0.9.0),
     covr,
     knitr,
     rmarkdown,
