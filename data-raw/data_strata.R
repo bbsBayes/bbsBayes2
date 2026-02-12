@@ -29,7 +29,7 @@ library(rmapshaper) # allows simplification of the polygon boudnaries in a way
 bcr_new <- "data-raw/maps_orig/bcr_2025_lakes12_statprov3.gpkg" %>%
   read_sf() %>%
   filter(!is_lake,
-         country_code %in% c("CA","US","MX"), #  removing Mexico, France, and Hawaii
+         country_code %in% c("CA","US","MX"), #  removing France, and Hawaii
          statprov_code != "HI") %>%
   sf::st_transform(crs = bbsBayes2::equal_area_crs) %>%
   rmapshaper::ms_simplify(keep = 0.05,
@@ -40,7 +40,8 @@ bcr_new <- "data-raw/maps_orig/bcr_2025_lakes12_statprov3.gpkg" %>%
   summarise(.groups = "drop") %>%
   #st_cast("POLYGON") %>%
   mutate(area_sq_km = as.numeric(units::set_units(st_area(.), "km^2"))) %>%
-  filter(area_sq_km > 1)
+  filter(area_sq_km > 1) %>%
+  st_cast("MULTIPOLYGON")
 
 st_write(bcr_new,
          file.path("inst/maps/",
@@ -75,7 +76,8 @@ mutate(strata_name = paste0(country_code,"-",statprov_code,"-",bcr_label)) %>%
                              country_code == "MX" ~ "Mexico"),
          bcr_by_country = paste0(country, "-BCR_", bcr)) %>%
   select(strata_name, area_sq_km, country, country_code, prov_state, bcr,
-         bcr_by_country)
+         bcr_by_country) %>%
+  st_cast("MULTIPOLYGON")
 
 st_write(bbs_new,
          file.path("inst/maps/",
@@ -188,18 +190,16 @@ st_write(strata_bcr_old,
 # Latitude/Longitude -------------------------------------------------
 # updated to include the land area included in "bbs" stratification
 
-sf_use_s2(FALSE) # for some reason with spherical geometry on this intersection
-  # caused invalid polygons.
-bbs_strat <- bbsBayes2::load_map("bbs") %>%
-  st_transform(crs = 4326) #wgs84 epsg
 
-bbs_boundary <- bbs_strat %>%
+bbs_boundary <- bcr_new %>%
   summarise()%>%
+  st_transform(crs = 4326)%>%
   st_make_valid()
-bb <- st_bbox(bbs_strat)
+
+bb <- st_bbox(bbs_boundary)
 
 
-grid <- sf::st_make_grid(bbs_strat,
+grid <- sf::st_make_grid(bbs_boundary,
                          cellsize = c(1,1),
                          offset = c(floor(bb["xmin"]),floor(bb["ymin"])))%>%
   st_make_valid()%>%
@@ -219,15 +219,17 @@ grid <- grid %>%
   st_make_valid()%>%
   st_cast("POLYGON")
 
+#put both boundary and grid into the equal area projection before intersection
+grid2 <- grid %>% st_transform(crs = st_crs(bbs_new))
+bbs_boundary2 <- bbs_boundary %>% st_transform(crs = st_crs(bbs_new))
 
-strata_latlong <- st_intersection(grid,bbs_boundary) %>%
+strata_latlong <- st_intersection(grid2,bbs_boundary2) %>%
   st_make_valid() %>%
   select(strata_name) %>%
   group_by(strata_name) %>%
   summarise() %>%
-  st_make_valid() %>%
-  st_cast("POLYGON") %>%
-  st_transform(crs = bbsBayes2::equal_area_crs)
+  st_make_valid()%>%
+  st_cast("MULTIPOLYGON")
 
 
 aream <- strata_latlong %>%
@@ -239,8 +241,7 @@ strata_latlong$area_sq_km <- aream/1e6
 strata_latlong <- strata_latlong %>%
   select(strata_name,area_sq_km)%>%
   filter(area_sq_km > 1) %>%
-  st_make_valid() %>%
-  st_cast("POLYGON")
+  st_make_valid()
 
 st_write(strata_latlong, file.path(system.file("maps", package = "bbsBayes2"),
                                    "latlong_strata.gpkg"), append = FALSE)

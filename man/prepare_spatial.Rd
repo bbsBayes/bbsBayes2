@@ -14,6 +14,7 @@ prepare_spatial(
   buffer_dist = 10000,
   add_map = NULL,
   label_size = 3,
+  queen = FALSE,
   quiet = FALSE
 )
 }
@@ -49,6 +50,16 @@ connected when using the Voronoi method. Units are that of
 \item{label_size}{Numeric. Size of the labels on the map. For data with many
 different strata it can be useful to reduce the size of the labels. Default
 3.}
+
+\item{queen}{Logical. Default is FALSE. if TRUE, a single shared boundary point
+defines strata as neighbours, if FALSE, more than one shared point is required.
+With a regular rectangular grid, if TRUE each grid-cell will have 8 neighbours,
+(analogous to the queen's moves in chess). If FALSE, each grid-cell will
+have 4 neighbours (analogous to the rook's move). note that for irregular grids
+more than one shared boundary point does not necessarily mean a shared
+boundary line. Setting to TRUE can increase the realised spatial smoothing
+of parameters in the model because it increases the number of neighbours with
+which each strata is sharing information. Value is passed to \code{spdep::poly2nb()}}
 
 \item{quiet}{Logical. Suppress progress messages? Default \code{FALSE}.}
 }
