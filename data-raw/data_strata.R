@@ -208,8 +208,8 @@ grid <- sf::st_make_grid(bbs_boundary,
 coords <- st_coordinates(grid) %>%
   as_tibble() %>%
   group_by(L2) %>%
-  summarise(X = min(X),  # named by bottom left corner
-            Y = min(Y)) %>% # bottom left corner
+  summarise(X = max(X),  # named by bottom right corner because longitude values negative
+            Y = min(Y)) %>% # bottom right corner
   mutate(strata_name = paste0(Y,"_",
                               X))
 
