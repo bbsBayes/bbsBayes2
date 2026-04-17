@@ -129,7 +129,7 @@
 #' A data frame with 13 rows and 5 columns
 #'
 #' - `aou_unid` - The AOU id number which will identify the combined unidentified form
-#' - `ensligh_original` - The English name of the original 'unidentified' form
+#' - `english_original` - The English name of the original 'unidentified' form
 #' - `english_combined` - The English name of the new 'combined' forms
 #' - `french_combined` - The French name of the new 'combined' forms
 #' - `aou_id` - The AOU id numbers of all the forms which will be combined
