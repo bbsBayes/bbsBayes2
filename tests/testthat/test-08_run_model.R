@@ -72,7 +72,8 @@ test_that("run_model() first_diff spatial", {
 
   p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE,
                 use_map = FALSE) %>%
-    prepare_data(min_max_route_years = 2) %>%
+    prepare_data(min_max_route_years = 2,
+                 min_year = 2014) %>%
     prepare_spatial(load_map("bbs_usgs"), quiet = TRUE)
 
   md <- prepare_model(p, model = "first_diff",
@@ -82,7 +83,7 @@ test_that("run_model() first_diff spatial", {
   expect_message(r <- run_model(md,
                                 output_dir = test_path(),
                                 chains = 2,
-                                iter_sampling = 10, iter_warmup = 10,
+                                iter_sampling = 50, iter_warmup = 100,
                                 refresh = 0,
                                 set_seed = 111)) %>%
     # Catch all messages and notes

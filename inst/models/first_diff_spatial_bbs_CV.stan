@@ -254,7 +254,7 @@ model {
 for(t in Iy1){
   if(y_2020[t]){ // all years not equal to 2020
     target += -0.5 * dot_self(beta_raw[t,node1] - beta_raw[t,node2]); // ICAR prior
-/  }else{ //if year is on either side of 2020 - no spatial variance because there are no BBS observations in 2020
+  }else{ //if year is on either side of 2020 - no spatial variance because there are no BBS observations in 2020
 // //These values are currently meaningless because they are not included in the likelihood
 // // for years with y_2020[t] == 1, these values are ignored in favour of the values
 // // from gamma_2020 + GAMMA_2020
