@@ -3,8 +3,8 @@
 #' Fetch and download Breeding Bird Survey data from the United States
 #' Geological Survey (USGS) FTP site. This is the raw data that is uploaded to
 #' the site before any analyses are performed. Users can download different
-#' types (`state`, `stop`) and different releases (currently `2020`, `2022`,
-#' `2023`, `2024`, and `2025`).
+#' types (`state`, `stop`) and different releases (currently `2020`, and annually
+#' for years `2022` though `2026`).
 #'
 #' @param force Logical. Should pre-exising BBS data be overwritten? Default
 #'   FALSE.
@@ -40,17 +40,20 @@
 #' routes. **Note that stop-level data is not currently supported by the
 #' modelling utilities in bbsBayes2.**
 #'
-#' There are multiple releases for each type of data, `2020`, `2022`, `2023`,
-#' `2024` and `2025`.
+#' There are multiple releases for each type of data, `2020`, and annual releases
+#' for years `2022` through `2026`.
 #' By default all functions use the most recent release unless otherwise
 #' specified. For example, the `release` argument in `stratify()` can be
 #' changed to `2020` to use the 2020 release of state-level counts.
 #'
 #'   bbsBayes2 by default removes observations from routes that were not
 #'   established following the stratified random design, the handful of routes
-#'   that are on water (not on roadsides), and any survey that was not conducted
-#'   within acceptable survey conditions (high winds, heavy precipitation,
-#'   outside of the acceptable time windows).
+#'   that are on water (not on roadsides), that we established without using
+#'   the stratified random design (e.g., within protected areas), any survey
+#'   that was not conducted during acceptable survey conditions (high winds,
+#'   heavy precipitation, or outside of the acceptable time windows), and surfeys
+#'   that were not completed (< 45 of the 50 stops were surveyed, often for unsafe
+#'   survey conditions or degrading weather conditions).
 #'
 #'
 #' @examplesIf interactive()
@@ -63,7 +66,7 @@
 #' @export
 #'
 fetch_bbs_data <- function(level = "state",
-                           release = 2025,
+                           release = 2026,
                            force = FALSE,
                            quiet = FALSE,
                            compression = "none",
@@ -91,7 +94,7 @@ fetch_bbs_data <- function(level = "state",
 }
 
 
-fetch_bbs_data_internal <- function(level = "state", release = 2025,
+fetch_bbs_data_internal <- function(level = "state", release = 2026,
                                     force = FALSE, quiet = TRUE,
                                     out_file = NULL, compression = "none",
                                     include_unacceptable = FALSE) {
@@ -261,6 +264,7 @@ fetch_bbs_data_internal <- function(level = "state", release = 2025,
 
 get_sb_id <- function(release) {
   switch(as.character(release),
+         "2026" = "6a0b0b0ab66b0188da36aedd",
          "2025" = "691cfb53d4be021d1d89b482",
          "2024" = "66d9ed16d34eef5af66d534b",
          "2023" = "64ad9c3dd34e70357a292cee",
@@ -296,7 +300,8 @@ bbs_dir <- function(quiet = TRUE) {
 #' @param level Character. BBS data to remove, one of "all", "state", or "stop".
 #'   Only applies if `type = "bbs_data"`. Default "all".
 #' @param release Character/Numeric. BBS data to remove, one of "all", 2020,
-#'   2022, 2024, or 2024. Only applies if `type = "bbs_data"`. Default "all".
+#'   or years 2022 through 2026. Only applies if `type = "bbs_data"`. Default
+#'   "all".
 #'
 #' @family BBS data functions
 #'
@@ -337,7 +342,7 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
       check_release(release, all = TRUE)
 
       if(level == "all") level <- c("state", "stop")
-      if(release == "all") release <- c("2020", "2022", "2023", "2024", "2025")
+      if(release == "all") release <- c("2020", as.character(2022:2026))
 
       # To get all combos
       f <- vector()
@@ -379,12 +384,12 @@ remove_cache <- function(type = "bbs_data", level = "all", release = "all") {
 #' have_bbs_data(release = 2020)
 #' have_bbs_data(release = "all", level = "all")
 
-have_bbs_data <- function(level = "state", release = 2025, quiet = FALSE){
+have_bbs_data <- function(level = "state", release = 2026, quiet = FALSE){
   check_in(level, c("all", "state", "stop"))
   check_release(release, all = TRUE)
 
   if(level == "all") level <- c("state", "stop")
-  if(release == "all") release <- c("2020", "2022", "2023", "2024", "2025")
+  if(release == "all") release <- c("2020", as.character(2022:2026))
 
   # To get all combos
   f <- vector()

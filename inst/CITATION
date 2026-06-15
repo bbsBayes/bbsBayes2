@@ -2,7 +2,7 @@ citHeader("To cite bbsBayes2 in publication, please use both: Edwards et al. 202
 
 citEntry(
   entry = "misc",
-  title = "bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. Version 1.1.3.4",
+  title = "bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. Version 1.2026.0",
   year = "2026",
   url = "https://github.com/bbsBayes/bbsBayes2",
   author = "Edwards, B. P. M., A. C. Smith, and S. LaZerte ",
@@ -21,14 +21,14 @@ citEntry(
   textVersion = "Smith, A.C., Binley, A., Daly, L., Edwards, B.P.M., Ethier, D., Frei, B., Iles, D., Meehan, T.D., and Michel, N.L., and Smith, P.A. (2024). Spatially explicit Bayesian hierarchical models for avian population status and trends. Ornithological Applications. duad056 https://doi.org/10.1093/ornithapp/duad056"
 )
 
-citHeader("To cite the Breeding Bird Survey data in publication, please use the citation for the relevant data release. This is currently the default 2025 data release")
+citHeader("To cite the Breeding Bird Survey data in publication, please use the citation for the relevant data release. This is currently the default 2026 data release")
 
 citEntry(
   entry = "misc",
-  title = "North American Breeding Bird Survey Dataset 1966 - 2024",
-  version = "2025",
+  title = "North American Breeding Bird Survey Dataset 1966 - 2025",
+  version = "2026",
   publisher = "U.S. Geological Survey, Patuxent Wildlife Research Center.",
   author = "Ziolkowski, D.J., Lutmerding, M., English, W.B., and Hudson, M-A.R.",
-  textVersion = "Ziolkowski, D.J., Lutmerding, M., English, W.B., and Hudson, M-A.R., 2025, North American Breeding Bird Survey Dataset 1966 - 2024: U.S. Geological Survey data release, https://doi.org/10.5066/P14SNUV4"
+  textVersion = "Ziolkowski, D.J., Lutmerding, M., Skalos, S.M., English, W.B., and Hudson, M-A.R., 2026, North American Breeding Bird Survey Dataset 1966 - 2025: U.S. Geological Survey data release, https://doi.org/10.5066/P144YU3S"
 )
 

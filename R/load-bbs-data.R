@@ -18,7 +18,7 @@
 #'
 #' @export
 
-load_bbs_data <- function(level = "state", release = 2025,
+load_bbs_data <- function(level = "state", release = 2026,
                           sample = FALSE, quiet = TRUE) {
 
   # Checks
