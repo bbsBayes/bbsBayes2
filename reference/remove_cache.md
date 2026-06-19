@@ -32,8 +32,8 @@ remove_cache(type = "bbs_data", level = "all", release = "all")
 
 - release:
 
-  Character/Numeric. BBS data to remove, one of "all", 2020, 2022, 2024,
-  or 2024. Only applies if `type = "bbs_data"`. Default "all".
+  Character/Numeric. BBS data to remove, one of "all", 2020, or years
+  2022 through 2026. Only applies if `type = "bbs_data"`. Default "all".
 
 ## Value
 

@@ -46,50 +46,50 @@ opts <- options(warn = -1)
 # Using the example model for Pacific Wrens
 
 get_summary(pacific_wren_model)
-#> # A tibble: 10,917 × 11
+#> # A tibble: 11,150 × 11
 #>    variable_type variable          mean   median     sd    mad       q5      q95
 #>    <chr>         <chr>            <dbl>    <dbl>  <dbl>  <dbl>    <dbl>    <dbl>
-#>  1 lp__          lp__          -1.44e+4 -1.44e+4 36.0   33.6   -1.45e+4 -1.44e+4
-#>  2 strata_raw    strata_raw[1] -9.51e-1 -9.96e-1  0.514  0.625 -1.71e+0 -1.67e-1
-#>  3 strata_raw    strata_raw[2] -2.70e-1 -2.49e-1  0.231  0.162 -6.31e-1  4.68e-2
-#>  4 strata_raw    strata_raw[3] -1.33e-1 -1.86e-1  0.570  0.605 -9.74e-1  7.05e-1
-#>  5 strata_raw    strata_raw[4]  1.53e+0  1.57e+0  0.279  0.266  1.08e+0  2.03e+0
-#>  6 strata_raw    strata_raw[5] -2.25e-1 -1.75e-1  0.260  0.216 -5.83e-1  1.38e-1
-#>  7 strata_raw    strata_raw[6]  1.24e+0  1.27e+0  0.607  0.647  2.96e-1  2.04e+0
-#>  8 strata_raw    strata_raw[7] -9.12e-1 -9.86e-1  0.485  0.448 -1.49e+0 -1.33e-1
-#>  9 strata_raw    strata_raw[8]  1.82e+0  1.82e+0  0.390  0.387  1.27e+0  2.42e+0
-#> 10 strata_raw    strata_raw[9] -9.54e-1 -8.51e-1  0.334  0.301 -1.51e+0 -5.56e-1
-#> # ℹ 10,907 more rows
+#>  1 lp__          lp__          -1.47e+4 -1.47e+4 43.3   49.4   -1.47e+4 -1.46e+4
+#>  2 strata_raw    strata_raw[1] -8.78e-1 -9.08e-1  0.416  0.357 -1.42e+0 -2.68e-1
+#>  3 strata_raw    strata_raw[2] -1.62e-1 -1.79e-1  0.181  0.163 -5.34e-1  1.05e-1
+#>  4 strata_raw    strata_raw[3] -2.19e-1 -2.27e-1  0.516  0.486 -1.20e+0  4.65e-1
+#>  5 strata_raw    strata_raw[4]  1.51e+0  1.57e+0  0.280  0.268  1.03e+0  1.86e+0
+#>  6 strata_raw    strata_raw[5] -2.35e-1 -2.31e-1  0.251  0.258 -6.48e-1  1.73e-1
+#>  7 strata_raw    strata_raw[6]  1.17e+0  1.15e+0  0.489  0.463  3.51e-1  1.97e+0
+#>  8 strata_raw    strata_raw[7] -1.10e+0 -1.06e+0  0.478  0.585 -1.75e+0 -3.99e-1
+#>  9 strata_raw    strata_raw[8]  1.87e+0  1.82e+0  0.406  0.391  1.24e+0  2.41e+0
+#> 10 strata_raw    strata_raw[9] -9.28e-1 -9.52e-1  0.349  0.364 -1.41e+0 -4.19e-1
+#> # ℹ 11,140 more rows
 #> # ℹ 3 more variables: rhat <dbl>, ess_bulk <dbl>, ess_tail <dbl>
 get_summary(pacific_wren_model, variables = "strata_raw")
 #> # A tibble: 19 × 11
 #>    variable_type variable         mean median    sd   mad      q5     q95  rhat
 #>    <chr>         <chr>           <dbl>  <dbl> <dbl> <dbl>   <dbl>   <dbl> <dbl>
-#>  1 strata_raw    strata_raw[1]  -0.951 -0.996 0.514 0.625 -1.71   -0.167  1.03 
-#>  2 strata_raw    strata_raw[2]  -0.270 -0.249 0.231 0.162 -0.631   0.0468 1.00 
-#>  3 strata_raw    strata_raw[3]  -0.133 -0.186 0.570 0.605 -0.974   0.705  0.966
-#>  4 strata_raw    strata_raw[4]   1.53   1.57  0.279 0.266  1.08    2.03   0.981
-#>  5 strata_raw    strata_raw[5]  -0.225 -0.175 0.260 0.216 -0.583   0.138  1.01 
-#>  6 strata_raw    strata_raw[6]   1.24   1.27  0.607 0.647  0.296   2.04   1.24 
-#>  7 strata_raw    strata_raw[7]  -0.912 -0.986 0.485 0.448 -1.49   -0.133  1.01 
-#>  8 strata_raw    strata_raw[8]   1.82   1.82  0.390 0.387  1.27    2.42   1.03 
-#>  9 strata_raw    strata_raw[9]  -0.954 -0.851 0.334 0.301 -1.51   -0.556  0.987
-#> 10 strata_raw    strata_raw[10] -0.414 -0.423 0.388 0.333 -1.15    0.204  1.10 
-#> 11 strata_raw    strata_raw[11] -0.241 -0.200 0.253 0.220 -0.786   0.0617 0.966
-#> 12 strata_raw    strata_raw[12]  0.358  0.336 0.242 0.207  0.0146  0.680  1.02 
-#> 13 strata_raw    strata_raw[13] -0.673 -0.605 0.329 0.255 -1.10   -0.196  0.983
-#> 14 strata_raw    strata_raw[14] -0.966 -0.932 0.336 0.323 -1.48   -0.486  1.04 
-#> 15 strata_raw    strata_raw[15]  0.639  0.672 0.240 0.302  0.289   0.967  1.07 
-#> 16 strata_raw    strata_raw[16] -0.822 -0.808 0.456 0.385 -1.45   -0.210  1.06 
-#> 17 strata_raw    strata_raw[17] -0.689 -0.614 0.395 0.274 -1.27   -0.224  0.999
-#> 18 strata_raw    strata_raw[18]  1.19   1.19  0.358 0.203  0.752   1.71   0.999
-#> 19 strata_raw    strata_raw[19]  0.478  0.489 0.330 0.317 -0.0779  1.01   1.07 
+#>  1 strata_raw    strata_raw[1]  -0.878 -0.908 0.416 0.357 -1.42   -0.268  1.03 
+#>  2 strata_raw    strata_raw[2]  -0.162 -0.179 0.181 0.163 -0.534   0.105  0.999
+#>  3 strata_raw    strata_raw[3]  -0.219 -0.227 0.516 0.486 -1.20    0.465  1.03 
+#>  4 strata_raw    strata_raw[4]   1.51   1.57  0.280 0.268  1.03    1.86   1.02 
+#>  5 strata_raw    strata_raw[5]  -0.235 -0.231 0.251 0.258 -0.648   0.173  1.05 
+#>  6 strata_raw    strata_raw[6]   1.17   1.15  0.489 0.463  0.351   1.97   0.970
+#>  7 strata_raw    strata_raw[7]  -1.10  -1.06  0.478 0.585 -1.75   -0.399  1.06 
+#>  8 strata_raw    strata_raw[8]   1.87   1.82  0.406 0.391  1.24    2.41   1.09 
+#>  9 strata_raw    strata_raw[9]  -0.928 -0.952 0.349 0.364 -1.41   -0.419  0.997
+#> 10 strata_raw    strata_raw[10] -0.442 -0.465 0.329 0.209 -1.10    0.0573 0.980
+#> 11 strata_raw    strata_raw[11] -0.298 -0.325 0.251 0.241 -0.672   0.0890 1.02 
+#> 12 strata_raw    strata_raw[12]  0.425  0.428 0.304 0.267  0.0362  1.01   1.14 
+#> 13 strata_raw    strata_raw[13] -0.667 -0.653 0.337 0.341 -1.20   -0.147  1.01 
+#> 14 strata_raw    strata_raw[14] -1.07  -1.06  0.365 0.318 -1.72   -0.441  1.15 
+#> 15 strata_raw    strata_raw[15]  0.623  0.643 0.174 0.182  0.369   0.830  1.01 
+#> 16 strata_raw    strata_raw[16] -0.845 -0.763 0.541 0.500 -1.87   -0.285  1.02 
+#> 17 strata_raw    strata_raw[17] -0.578 -0.547 0.385 0.388 -1.15   -0.0237 1.01 
+#> 18 strata_raw    strata_raw[18]  1.25   1.20  0.310 0.246  0.816   1.75   1.25 
+#> 19 strata_raw    strata_raw[19]  0.559  0.587 0.270 0.264  0.180   0.946  1.06 
 #> # ℹ 2 more variables: ess_bulk <dbl>, ess_tail <dbl>
 get_summary(pacific_wren_model, variables = "strata_raw[9]")
 #> # A tibble: 1 × 11
 #>   variable_type variable     mean median    sd   mad    q5    q95  rhat ess_bulk
 #>   <chr>         <chr>       <dbl>  <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl>    <dbl>
-#> 1 strata_raw    strata_ra… -0.954 -0.851 0.334 0.301 -1.51 -0.556 0.987     64.1
+#> 1 strata_raw    strata_ra… -0.928 -0.952 0.349 0.364 -1.41 -0.419 0.997     58.6
 #> # ℹ 1 more variable: ess_tail <dbl>
 
 # Restore warnings

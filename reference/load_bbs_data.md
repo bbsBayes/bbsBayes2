@@ -11,7 +11,7 @@ will do the loading for you.
 ## Usage
 
 ``` r
-load_bbs_data(level = "state", release = 2025, sample = FALSE, quiet = TRUE)
+load_bbs_data(level = "state", release = 2026, sample = FALSE, quiet = TRUE)
 ```
 
 ## Arguments

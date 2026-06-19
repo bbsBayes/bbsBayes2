@@ -1,6 +1,7 @@
 # Advanced Example
 
 ``` r
+
   library(bbsBayes2)
   library(dplyr)
   library(ggplot2)
@@ -35,13 +36,14 @@ you will also need to extract the posterior samples for the parameter
 `phi` (the inverse negative binomial dispersion parameter). In the [Stan
 negative binomial
 distribution](https://mc-stan.org/docs/functions-reference/neg-binom-2-log.html),
-$\phi$ is the same parameter as `size` in `base::rnbinom()`, with
+$`\phi`$ is the same parameter as `size` in `base::rnbinom()`, with
 arguments `mu = exp(E), size = phi`. Here’s an example, using the fitted
 model object for the Scissor-tailed Flycatcher data fit to the `gamye`
 model with the ‘spatial’ variant, and the using the `bbs_usgs`
 stratification.
 
 ``` r
+
 STFL_gamye_spatial <- readRDS("output/4430_gamye_spatial.rds")
 
 # tibble with one row for each posterior draw and one column for each parameter (i.e., each count)
@@ -112,6 +114,7 @@ to the next stages of the standard modeling workflow.
 
 ``` r
 
+
 species.eng = "Pacific Wren"
 
 stratified_data <- stratify(by = "bbs_usgs",species=species.eng)
@@ -140,6 +143,7 @@ prior_preds <- run_model(model_data = m,
 ```
 
 ``` r
+
 prior_inds <- generate_indices(prior_preds, regions = "continent")
 #> Processing region continent
 prior_trajs <- plot_indices(prior_inds, spaghetti = TRUE, n_spaghetti = 150)
@@ -188,6 +192,7 @@ more symmetrical around the dark line in the lower plot using the HPDI
 than they are in the upper plot using the default quantiles.
 
 ``` r
+
 # set of indices for demonstrating HPDI
 m <- readRDS("output/4430_first_diff_spatial.rds") # Scissor-tailed Flycatcher
 i <- generate_indices(m)
@@ -217,6 +222,7 @@ accessible
 [here](https://github.com/AdamCSmithCWS/CWS_BBS_2022_Analyses).
 
 ``` r
+
 
 species.eng = "Pacific Wren"
 
@@ -261,6 +267,7 @@ error distribution and the first-difference model (more on the error
 distributions below).
 
 ``` r
+
 
 species.eng = "Pacific Wren"
 stratified_data <- stratify(by = "bbs_usgs",species=species.eng)
@@ -309,6 +316,7 @@ Unzip the file and store it in a local directory. In this example we’ve
 placed it in a sub-directory of our working directory called *output*.
 
 ``` r
+
 BARS <- readRDS("output/Barn_Swallow_gamye_spatial.rds")
 ```
 
@@ -317,6 +325,7 @@ of the population trajectory. Then use those to estimate long-term
 trends (1966 - 2021), and plot those trends on a map.
 
 ``` r
+
 BARS_smooth_indices <- generate_indices(BARS,
                                         alternate_n = "n_smooth")
 #> Processing region continent
@@ -339,6 +348,7 @@ species’ trends have not been more negative than the map on the left,
 and are unlikely to be more positive than the map on the right.
 
 ``` r
+
 
 BARS_trend_map_lower <- plot_map(BARS_trends, alternate_column = "trend_q_0.05") +
   labs(title = "Lower bound on trend")
@@ -364,12 +374,14 @@ specifically, the function uses the viridis colour scale.
 
 ``` r
 
+
 BARS_trend_map_CI_width <- plot_map(BARS_trends, alternate_column = "width_of_95_percent_credible_interval")
-#> Error in plot_map(BARS_trends, alternate_column = "width_of_95_percent_credible_interval"): object 'pal' not found
 
 BARS_trend_map_CI_width
-#> Error: object 'BARS_trend_map_CI_width' not found
 ```
+
+![Map of the width of the credible interval on trend estimates for Barn
+Swallow](figures/advanced_unnamed-chunk-11-1.png)
 
 ### EXAMPLE - mapping percent-change in the population
 
@@ -386,6 +398,7 @@ First we fit the model, which requires less than an hour using the
 defaults.
 
 ``` r
+
 
 
 species <- "Allen's Hummingbird"
@@ -424,6 +437,7 @@ map.
 
 ``` r
 
+
 ALHU_smooth_indices <- generate_indices(ALHU)
 #> Processing region continent
 #> Processing region stratum
@@ -445,7 +459,8 @@ ALHU_trend_map + geom_sf(data = States_Provinces, fill = NA,
                           colour = "black") +
   coord_sf(xlim = bb[c("xmin","xmax")],
            ylim = bb[c("ymin","ymax")])
-#> Coordinate system already present. Adding new coordinate system, which will replace the existing one.
+#> Coordinate system already present.
+#> ℹ Adding new coordinate system, which will replace the existing one.
 ```
 
 ![Percent population change map for Allen's Hummingbird, showing
@@ -505,6 +520,7 @@ population between the first and last years of the trend and the
 probability that a population has decreased by a certain amount.
 
 ``` r
+
 # set of indices for demonstrating trend options
 m <- readRDS("output/4430_first_diff_spatial.rds") # Scissor-tailed Flycatcher
 i <- generate_indices(m)
@@ -516,13 +532,14 @@ i <- generate_indices(m)
 
 The default trend calculation is an interval-specific estimate of the
 geometric mean annual change in the population.
-$Trend = \left( \frac{n\lbrack min - year\rbrack}{n\lbrack max - year\rbrack} \right)^{(1/{(max - year - min - year)})}$
+$`Trend = (\frac {n[min-year]}{n[max-year]})^{(1/(max-year-min-year))}`$
 We refer to these as *end-point trends*. They rely on a comparison of
 the annual indices in the first and last years of the trend period to
 quantify the mean rate of population change. However, it ignores the
 pattern of change between the two end-points.
 
 ``` r
+
 t <- generate_trends(i,
                      slope = TRUE,
                      min_year = 1980) #trends from 1980-2021
@@ -559,6 +576,7 @@ argument.
 
 ``` r
 
+
 t_map_slope <- plot_map(t,
                         slope = TRUE)
 print(t_map_slope)
@@ -582,13 +600,14 @@ but that estimate is relatively uncertain and the true decline may be as
 little as 2 percent or as much as 50 percent”
 
 ``` r
+
 t <- generate_trends(i)
 
 t$trends[1,c("region","percent_change","percent_change_q_0.95")]
 #> # A tibble: 1 × 3
 #>   region    percent_change percent_change_q_0.95
 #>   <chr>              <dbl>                 <dbl>
-#> 1 continent          -44.4                 -37.1
+#> 1 continent          -46.3                 -39.1
 ```
 
 In addition, the function can optionally calculate the posterior
@@ -600,6 +619,7 @@ Similarly if you want to know the conditaional probability that the
 population has decreased by more than 50% use `prob_decrease = 50`.
 
 ``` r
+
 t <- generate_trends(i,
                      prob_decrease = c(0,50)) # two thresholds
 
@@ -607,7 +627,7 @@ t$trends[1,c("region","prob_decrease_0_percent","prob_decrease_50_percent")]
 #> # A tibble: 1 × 3
 #>   region    prob_decrease_0_percent prob_decrease_50_percent
 #>   <chr>                       <dbl>                    <dbl>
-#> 1 continent                       1                    0.081
+#> 1 continent                       1                    0.191
 ```
 
 These values can be useful for deriving statements such as “the
@@ -630,6 +650,7 @@ Swallow](https://drive.google.com/file/d/1hlJ9rljDSGdkV4P_-k07wBSyWyKOy-hm/view?
 
 ``` r
 
+
 BARS <- readRDS("output/Barn_Swallow_first_diff_spatial.rds")
 ```
 
@@ -638,6 +659,7 @@ a new column *north_south* that identifies which strata belong in each
 of our new composite regions (*North* or *South*)
 
 ``` r
+
 
 comp_regions <- BARS$meta_strata %>%
   mutate(north_south = ifelse(bcr < 15, "North","South"))
@@ -660,6 +682,7 @@ You can easily export any of the bbsBayes2 models to a text file (file
 extension .Stan).
 
 ``` r
+
 
 copy_model_file(model="gamye",
                 model_variant = "hier",
@@ -687,6 +710,7 @@ the modified model using the `model_file` argment in
 [`prepare_model()`](https://bbsbayes.github.io/bbsBayes2/reference/prepare_model.md).
 
 ``` r
+
 
 prep<- prepare_model(model = "gamye", model_variant = "spatial",
         model_file="gamye_hier_bbs_CV_COPY.stan",
@@ -727,6 +751,7 @@ function writes a text file to a local directory containing the full
 Stan code for the selected bbsBayes2 model.
 
 ``` r
+
 # writes a copy of the spatial slope model to the working directory
 copy_model_file(model = "gamye", model_variant = "spatial", dir = getwd())
 ```
@@ -751,6 +776,7 @@ sections of the Stan code, then saved as a new file, e.g.,
 “gamye_spatial_bbs_CV_year_effect_covariate.stan”.
 
 ``` r
+
 ## modify the model to add the following lines in each of the indicated sections
 ## of the Stan mdoel
 # data {
@@ -788,6 +814,7 @@ Once the model is saved, the only other necessary modification is to add
 the covariate data to the data list supplied to `prepare_model`
 
 ``` r
+
 
 ## Not Run
 ## example code, but the covariate data are not included
@@ -902,6 +929,7 @@ models.
 
 ``` r
 
+
 s <- stratify("latlong","Baird's Sparrow")
 p <- prepare_data(s, min_n_routes = 1)
 map<-load_map(stratify_by = "latlong")
@@ -923,6 +951,7 @@ saveRDS(m_gamye,"output/BASP_latlong_gamye_spatial.rds")
 ```
 
 ``` r
+
 
 m_gamye <- readRDS("output/BASP_latlong_gamye_spatial.rds")
 
@@ -993,6 +1022,7 @@ approximation above.
 
 ``` r
 
+
 s <- stratify("latlong","Baird's Sparrow")
 p <- prepare_data(s, min_n_routes = 1)
 map<-load_map(stratify_by = "latlong")
@@ -1002,6 +1032,7 @@ sp<-prepare_spatial(p,map)
 Then we prepare the models to identify the training and testing folds.
 
 ``` r
+
 
 m_gamye <- prepare_model(sp,"gamye",
                         calculate_cv = TRUE)
@@ -1026,6 +1057,7 @@ while** We are fitting 20 models in total here. So fire it up on a
 Friday afternoon and we’ll come back to it on Monday morning.
 
 ``` r
+
 ## fitting the gamye
 for(k in 1:10){
 
@@ -1069,6 +1101,7 @@ Now that it’s Monday morning. We want to combine the results for each
 model and each of the k-folds.
 
 ``` r
+
 
 
 orig_data <- m_gamye$raw_data %>%
@@ -1115,6 +1148,7 @@ values. Again, because of the scaling of log probabilities that smaller
 absolute values (values closer to 0) indicate a better fitting model.
 
 ``` r
+
 sum_cv <- readRDS("output/sum_cv.rds")
 cv_comp <- sum_cv %>%
   drop_na() %>% #drops the rows for counts that were never in testing datasets
@@ -1145,6 +1179,7 @@ appear to be better predicted by the gamye model than the
 first-difference model.
 
 ``` r
+
 cv_dif <- readRDS("output/cv_dif.rds")
 cv_dif_sum <- cv_dif %>%
   summarise(mean_diff = mean(diff),

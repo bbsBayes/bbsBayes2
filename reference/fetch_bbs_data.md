@@ -4,14 +4,14 @@ Fetch and download Breeding Bird Survey data from the United States
 Geological Survey (USGS) FTP site. This is the raw data that is uploaded
 to the site before any analyses are performed. Users can download
 different types (`state`, `stop`) and different releases (currently
-`2020`, `2022`, `2023`, `2024`, and `2025`).
+`2020`, and annually for years `2022` though `2026`).
 
 ## Usage
 
 ``` r
 fetch_bbs_data(
   level = "state",
-  release = 2025,
+  release = 2026,
   force = FALSE,
   quiet = FALSE,
   compression = "none",
@@ -75,18 +75,22 @@ stop-level data beginning in 1997, which includes counts for each
 individual stop along routes. **Note that stop-level data is not
 currently supported by the modelling utilities in bbsBayes2.**
 
-There are multiple releases for each type of data, `2020`, `2022`,
-`2023`, `2024` and `2025`. By default all functions use the most recent
-release unless otherwise specified. For example, the `release` argument
-in
+There are multiple releases for each type of data, `2020`, and annual
+releases for years `2022` through `2026`. By default all functions use
+the most recent release unless otherwise specified. For example, the
+`release` argument in
 [`stratify()`](https://bbsbayes.github.io/bbsBayes2/reference/stratify.md)
 can be changed to `2020` to use the 2020 release of state-level counts.
 
 bbsBayes2 by default removes observations from routes that were not
 established following the stratified random design, the handful of
-routes that are on water (not on roadsides), and any survey that was not
-conducted within acceptable survey conditions (high winds, heavy
-precipitation, outside of the acceptable time windows).
+routes that are on water (not on roadsides), that we established without
+using the stratified random design (e.g., within protected areas), any
+survey that was not conducted during acceptable survey conditions (high
+winds, heavy precipitation, or outside of the acceptable time windows),
+and surfeys that were not completed (\< 45 of the 50 stops were
+surveyed, often for unsafe survey conditions or degrading weather
+conditions).
 
 ## See also
 

@@ -19,7 +19,7 @@ A data frame with 13 rows and 5 columns
 - `aou_unid` - The AOU id number which will identify the combined
   unidentified form
 
-- `ensligh_original` - The English name of the original 'unidentified'
+- `english_original` - The English name of the original 'unidentified'
   form
 
 - `english_combined` - The English name of the new 'combined' forms
@@ -47,21 +47,21 @@ species_forms
 #> 12     6556 (unid. Myrtle/Audubon's) Yellow-rumped Warbler
 #> 13     5275           unid. Common Redpoll / Hoary Redpoll
 #> 14     5012                               unid. Meadowlark
-#>                                                   english_combined
-#> 1                                        Blue Grouse (Dusky/Sooty)
-#> 2                                      Dark-eyed Junco (all forms)
-#> 3                                     Northern Flicker (all forms)
-#> 4                            Northern Oriole (Bullock's/Baltimore)
-#> 5                                      Red-tailed Hawk (all forms)
-#> 6  Sapsuckers (Yellow-bellied/Red-naped/Red-breasted/Williamson's)
-#> 7                                           Snow Goose (all forms)
-#> 8                            Solitary Vireo (Blue-headed/Cassin's)
-#> 9                               Traill's Flycatcher (Alder/Willow)
-#> 10                  Western Flycatcher (Cordilleran/Pacific-slope)
-#> 11                                 Western Grebe (Clark's/Western)
-#> 12                               Yellow-rumped Warbler (all forms)
-#> 13                                          Redpoll (Common/Hoary)
-#> 14                         Meadowlark (Eastern/Western/Chihuahuan)
+#>                                      english_combined
+#> 1                           Blue Grouse (Dusky/Sooty)
+#> 2                         Dark-eyed Junco (all forms)
+#> 3                        Northern Flicker (all forms)
+#> 4               Northern Oriole (Bullock's/Baltimore)
+#> 5                         Red-tailed Hawk (all forms)
+#> 6  Sapsuckers (Yellow-bellied/Red-naped/Red-breasted)
+#> 7                              Snow Goose (all forms)
+#> 8               Solitary Vireo (Blue-headed/Cassin's)
+#> 9                  Traill's Flycatcher (Alder/Willow)
+#> 10     Western Flycatcher (Cordilleran/Pacific-slope)
+#> 11                    Western Grebe (Clark's/Western)
+#> 12                  Yellow-rumped Warbler (all forms)
+#> 13                             Redpoll (Common/Hoary)
+#> 14            Meadowlark (Eastern/Western/Chihuahuan)
 #>                                                french_combined
 #> 1                            Tétras sombre (sombre/fuligineux)
 #> 2                            Junco ardoisé (toutes les formes)

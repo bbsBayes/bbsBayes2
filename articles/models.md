@@ -1,17 +1,18 @@
 # Models in bbsBayes2
 
 ``` r
+
 library(bbsBayes2)
 library(dplyr)
 library(ggplot2)
 library(patchwork)
-#> Warning: package 'patchwork' was built under R version 4.5.2
 ```
 
 There are 9 types of models that can be run with bbsBayes2. For a quick
 overview you can access the `bbs_models` data frame.
 
 ``` r
+
 bbs_models
 #> # A tibble: 9 × 3
 #>   model      variant file                          
@@ -168,6 +169,7 @@ trajectories and the long-term (1966-2023) trend maps.
 This code was used to generate these fitted model results.
 
 ``` r
+
 library(bbsBayes2)
 library(tidyverse)
 
@@ -209,6 +211,7 @@ for(j in 1:nrow(bbs_models)){
 ```
 
 ``` r
+
 saved_trajectories <- NULL
 saved_trend_maps <- vector("list",9)
 species <- "Scissor-tailed Flycatcher"
@@ -267,6 +270,7 @@ population trajectories are very similar across the different models.
 ``` r
 
 
+
 traj_panel <- ggplot(data = saved_trajectories,
                      aes(x = year, y = index)) +
   geom_ribbon(aes(ymin = index_q_0.025,
@@ -281,8 +285,7 @@ traj_panel <- ggplot(data = saved_trajectories,
   scale_y_continuous(limits = c(0,NA))
 
 print(traj_panel)
-#> Warning: Removed 9 rows containing missing values or values outside the scale range
-#> (`geom_point()`).
+#> Warning: Removed 9 rows containing missing values or values outside the scale range (`geom_point()`).
 ```
 
 ![Population trajectory graphs for Scissor-tailed Flycatcher estimated
@@ -293,6 +296,7 @@ Similarly, the long-term trend maps are generally similar across the
 different models and variants.
 
 ``` r
+
 
 map_panel <- patchwork::wrap_plots(saved_trend_maps,
                                     ncol = 3,

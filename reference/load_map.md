@@ -34,6 +34,7 @@ Other helper functions:
 ## Examples
 
 ``` r
+
 # First, stratify the sample data
 strat_map <- load_map(stratify_by = "bbs")
 

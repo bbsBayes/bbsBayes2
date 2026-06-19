@@ -11,15 +11,15 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/bbsBayes/bbsBayes2/blob/v.1.1.3.3/inst/CITATION)
+[`inst/CITATION`](https://github.com/bbsBayes/bbsBayes2/blob/main/inst/CITATION)
 
-Edwards, B. P. M., A. C. Smith, and S. LaZerte. (2025). bbsBayes2:
+Edwards, B. P. M., A. C. Smith, and S. LaZerte. (2026). bbsBayes2:
 Hierarchical Bayesian Analysis of North American BBS Data.
 https://github.com/bbsBayes/bbsBayes2
 
     @Misc{,
-      title = {bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. Version 1.1.3},
-      year = {2025},
+      title = {bbsBayes2: Hierarchical Bayesian Analysis of North American BBS Data. Version 1.2026.0},
+      year = {2026},
       url = {https://github.com/bbsBayes/bbsBayes2},
       author = {{Edwards} and B. P. M. and A. C. Smith and S. LaZerte},
     }
@@ -40,13 +40,14 @@ https://doi.org/10.1093/ornithapp/duad056
       author = {{Smith} and {A.C.} and {Binley} and {A.} and {Daly} and {L.} and {Edwards} and {B.P.M.} and {Ethier} and {D.} and {Frei} and {B.} and {Iles} and {D.} and {Meehan} and {T.D.} and {Michel} and {N.L.} and {Smith} and {P.A.}},
     }
 
-Ziolkowski, D.J., Lutmerding, M., English, W.B., and Hudson, M-A.R.,
-2025, North American Breeding Bird Survey Dataset 1966 - 2024: U.S.
-Geological Survey data release, https://doi.org/10.5066/P14SNUV4
+Ziolkowski, D.J., Lutmerding, M., Skalos, S.M., English, W.B., and
+Hudson, M-A.R., 2026, North American Breeding Bird Survey Dataset 1966 -
+2025: U.S. Geological Survey data release,
+https://doi.org/10.5066/P144YU3S
 
     @Misc{,
-      title = {North American Breeding Bird Survey Dataset 1966 - 2024},
-      version = {2025},
+      title = {North American Breeding Bird Survey Dataset 1966 - 2025},
+      version = {2026},
       publisher = {U.S. Geological Survey, Patuxent Wildlife Research Center.},
       author = {{Ziolkowski} and {D.J.} and {Lutmerding} and {M.} and {English} and {W.B.} and {Hudson} and {M-A.R.}},
     }

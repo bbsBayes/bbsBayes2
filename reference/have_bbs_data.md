@@ -9,7 +9,7 @@ to retrieve it.
 ## Usage
 
 ``` r
-have_bbs_data(level = "state", release = 2025, quiet = FALSE)
+have_bbs_data(level = "state", release = 2026, quiet = FALSE)
 ```
 
 ## Arguments
@@ -43,7 +43,7 @@ Other BBS data functions:
 
 ``` r
 have_bbs_data()
-#> Expected BBS state data 2025: '/home/runner/.local/share/R/bbsBayes2/bbs_state_data_2025.rds'
+#> Expected BBS state data 2026: '/home/runner/.local/share/R/bbsBayes2/bbs_state_data_2026.rds'
 #> [1] TRUE
 have_bbs_data(release = 2020)
 #> Expected BBS state data 2020: '/home/runner/.local/share/R/bbsBayes2/bbs_state_data_2020.rds'
@@ -54,10 +54,12 @@ have_bbs_data(release = "all", level = "all")
 #> Expected BBS state data 2023: '/home/runner/.local/share/R/bbsBayes2/bbs_state_data_2022.rds'
 #> Expected BBS stop data 2024: '/home/runner/.local/share/R/bbsBayes2/bbs_stop_data_2022.rds'
 #> Expected BBS state data 2025: '/home/runner/.local/share/R/bbsBayes2/bbs_state_data_2023.rds'
-#> Expected BBS stop data 2020: '/home/runner/.local/share/R/bbsBayes2/bbs_stop_data_2023.rds'
-#> Expected BBS state data 2022: '/home/runner/.local/share/R/bbsBayes2/bbs_state_data_2024.rds'
-#> Expected BBS stop data 2023: '/home/runner/.local/share/R/bbsBayes2/bbs_stop_data_2024.rds'
-#> Expected BBS state data 2024: '/home/runner/.local/share/R/bbsBayes2/bbs_state_data_2025.rds'
-#> Expected BBS stop data 2025: '/home/runner/.local/share/R/bbsBayes2/bbs_stop_data_2025.rds'
-#>  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE
+#> Expected BBS stop data 2026: '/home/runner/.local/share/R/bbsBayes2/bbs_stop_data_2023.rds'
+#> Expected BBS state data 2020: '/home/runner/.local/share/R/bbsBayes2/bbs_state_data_2024.rds'
+#> Expected BBS stop data 2022: '/home/runner/.local/share/R/bbsBayes2/bbs_stop_data_2024.rds'
+#> Expected BBS state data 2023: '/home/runner/.local/share/R/bbsBayes2/bbs_state_data_2025.rds'
+#> Expected BBS stop data 2024: '/home/runner/.local/share/R/bbsBayes2/bbs_stop_data_2025.rds'
+#> Expected BBS state data 2025: '/home/runner/.local/share/R/bbsBayes2/bbs_state_data_2026.rds'
+#> Expected BBS stop data 2026: '/home/runner/.local/share/R/bbsBayes2/bbs_stop_data_2026.rds'
+#>  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE
 ```

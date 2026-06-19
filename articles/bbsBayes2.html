@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Get Started">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2026.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Get Started</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/v.1.1.3.3/vignettes/articles/bbsBayes2.Rmd" class="external-link"><code>vignettes/articles/bbsBayes2.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/main/vignettes/articles/bbsBayes2.Rmd" class="external-link"><code>vignettes/articles/bbsBayes2.Rmd</code></a></small>
       <div class="d-none name"><code>bbsBayes2.Rmd</code></div>
     </div>
 
@@ -68,7 +68,8 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bbsBayes/bbsBayes2" class="external-link">bbsBayes2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: package 'tidyverse' was built under R version 4.5.2</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: package 'tidyverse' was built under R version 4.5.2</span></span>
+<span><span class="co">#&gt; Warning: package 'ggplot2' was built under R version 4.5.2</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="welcome">Welcome!<a class="anchor" aria-label="anchor" href="#welcome"></a>
 </h2>
@@ -176,12 +177,12 @@ release-versions:</p>
 <li>Two levels <code>state</code> and <code>stop</code> (only
 <code>state</code> works with bbsBayes2 models, the <code>stop</code>
 option is provided to facilitate custom projects and models)</li>
-<li>Annual releases <code>2020</code>, <code>2022</code>,
-<code>2023</code>, ‘2024’, and <code>2025</code> more options will be
-added as annual releases occur).</li>
+<li>Annual releases <code>2020</code>, and <code>2022</code> through
+<code>2026</code> more options will be added as annual releases
+occur).</li>
 </ul>
 <p>The defaults (level <code>state</code> and the most recent release -
-<code>2025</code>) is almost certainly what you are looking for, Unless
+<code>2026</code>) is almost certainly what you are looking for, Unless
 you have a specific reason to need a different version. The most recent
 release will include all of the data included in earlier releases.
 However you can download all releases and specify which one you wish to
@@ -263,7 +264,12 @@ explore.</p>
 <span><span class="co">#&gt; Loading BBS data...</span></span>
 <span><span class="co">#&gt; Filtering to species Scissor-tailed Flycatcher (4430)</span></span>
 <span><span class="co">#&gt; Stratifying data...</span></span>
-<span><span class="co">#&gt;   Renaming routes...</span></span></code></pre></div>
+<span><span class="co">#&gt; Preparing strata (ESRI:102008; North_America_Albers_Equal_Area_Conic)...</span></span>
+<span><span class="co">#&gt;   Calculating area weights...</span></span>
+<span><span class="co">#&gt;   Joining routes to spatial layer...</span></span>
+<span><span class="co">#&gt;   Renaming routes...</span></span>
+<span><span class="co">#&gt;   Omitting 2,489/130,138 surveys, on 111 unique routes that do not match a stratum.</span></span>
+<span><span class="co">#&gt;     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span></span></code></pre></div>
 <p>We can also play around with the included sample data (Pacific
 Wrens)</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -273,10 +279,14 @@ Wrens)</p>
 <span><span class="co">#&gt; Using species Pacific Wren (sample data)</span></span>
 <span><span class="co">#&gt; Filtering to species Pacific Wren (7221)</span></span>
 <span><span class="co">#&gt; Stratifying data...</span></span>
-<span><span class="co">#&gt;   Combining BCR 7 and NS and PEI...</span></span>
-<span><span class="co">#&gt;   Renaming routes...</span></span></code></pre></div>
-<p>Stratifications included in bbsBayes2 are bbs_usgs, bbs_cws, bcr,
-latlong, prov_state. See the article on <a href="articles/stratification">stratifications</a> for more details and
+<span><span class="co">#&gt; Preparing strata (ESRI:102008; North_America_Albers_Equal_Area_Conic)...</span></span>
+<span><span class="co">#&gt;   Calculating area weights...</span></span>
+<span><span class="co">#&gt;   Joining routes to spatial layer...</span></span>
+<span><span class="co">#&gt;   Renaming routes...</span></span>
+<span><span class="co">#&gt;   Omitting 503/5,480 surveys, on 25 unique routes that do not match a stratum.</span></span>
+<span><span class="co">#&gt;     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span></span></code></pre></div>
+<p>Stratifications included in bbsBayes2 are bbs, bbs_usgs, bbs_cws,
+bcr, bcr_old, latlong, prov_state. See the article on <a href="articles/stratification">stratifications</a> for more details and
 examples.</p>
 <div class="section level5">
 <h5 id="species-names-in-bbsbayes2">Species names in bbsBayes2<a class="anchor" aria-label="anchor" href="#species-names-in-bbsbayes2"></a>
@@ -354,21 +364,21 @@ groups that make them up.</li>
 </ul>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">bbsBayes2</span><span class="fu">::</span><span class="va"><a href="../reference/species_forms.html">species_forms</a></span></span>
-<span><span class="co">#&gt;    aou_unid                               english_original                                                english_combined</span></span>
-<span><span class="co">#&gt; 1      2973              unid. Dusky Grouse / Sooty Grouse                                       Blue Grouse (Dusky/Sooty)</span></span>
-<span><span class="co">#&gt; 2      5677                   (unid. race) Dark-eyed Junco                                     Dark-eyed Junco (all forms)</span></span>
-<span><span class="co">#&gt; 3      4123    (unid. Red/Yellow Shafted) Northern Flicker                                    Northern Flicker (all forms)</span></span>
-<span><span class="co">#&gt; 4      5077      unid. Bullock's Oriole / Baltimore Oriole                           Northern Oriole (Bullock's/Baltimore)</span></span>
-<span><span class="co">#&gt; 5      3370                                Red-tailed Hawk                                     Red-tailed Hawk (all forms)</span></span>
-<span><span class="co">#&gt; 6      4022                                unid. sapsucker Sapsuckers (Yellow-bellied/Red-naped/Red-breasted/Williamson's)</span></span>
-<span><span class="co">#&gt; 7      1690                                     Snow Goose                                          Snow Goose (all forms)</span></span>
-<span><span class="co">#&gt; 8      6295       unid. Cassin's Vireo / Blue-headed Vireo                           Solitary Vireo (Blue-headed/Cassin's)</span></span>
-<span><span class="co">#&gt; 9      4665     unid. Alder Flycatcher / Willow Flycatcher                              Traill's Flycatcher (Alder/Willow)</span></span>
-<span><span class="co">#&gt; 10     4642   unid. Cordilleran / Pacific-slope Flycatcher                  Western Flycatcher (Cordilleran/Pacific-slope)</span></span>
-<span><span class="co">#&gt; 11       12            unid. Western Grebe / Clark's Grebe                                 Western Grebe (Clark's/Western)</span></span>
-<span><span class="co">#&gt; 12     6556 (unid. Myrtle/Audubon's) Yellow-rumped Warbler                               Yellow-rumped Warbler (all forms)</span></span>
-<span><span class="co">#&gt; 13     5275           unid. Common Redpoll / Hoary Redpoll                                          Redpoll (Common/Hoary)</span></span>
-<span><span class="co">#&gt; 14     5012                               unid. Meadowlark                         Meadowlark (Eastern/Western/Chihuahuan)</span></span>
+<span><span class="co">#&gt;    aou_unid                               english_original                                   english_combined</span></span>
+<span><span class="co">#&gt; 1      2973              unid. Dusky Grouse / Sooty Grouse                          Blue Grouse (Dusky/Sooty)</span></span>
+<span><span class="co">#&gt; 2      5677                   (unid. race) Dark-eyed Junco                        Dark-eyed Junco (all forms)</span></span>
+<span><span class="co">#&gt; 3      4123    (unid. Red/Yellow Shafted) Northern Flicker                       Northern Flicker (all forms)</span></span>
+<span><span class="co">#&gt; 4      5077      unid. Bullock's Oriole / Baltimore Oriole              Northern Oriole (Bullock's/Baltimore)</span></span>
+<span><span class="co">#&gt; 5      3370                                Red-tailed Hawk                        Red-tailed Hawk (all forms)</span></span>
+<span><span class="co">#&gt; 6      4022                                unid. sapsucker Sapsuckers (Yellow-bellied/Red-naped/Red-breasted)</span></span>
+<span><span class="co">#&gt; 7      1690                                     Snow Goose                             Snow Goose (all forms)</span></span>
+<span><span class="co">#&gt; 8      6295       unid. Cassin's Vireo / Blue-headed Vireo              Solitary Vireo (Blue-headed/Cassin's)</span></span>
+<span><span class="co">#&gt; 9      4665     unid. Alder Flycatcher / Willow Flycatcher                 Traill's Flycatcher (Alder/Willow)</span></span>
+<span><span class="co">#&gt; 10     4642   unid. Cordilleran / Pacific-slope Flycatcher     Western Flycatcher (Cordilleran/Pacific-slope)</span></span>
+<span><span class="co">#&gt; 11       12            unid. Western Grebe / Clark's Grebe                    Western Grebe (Clark's/Western)</span></span>
+<span><span class="co">#&gt; 12     6556 (unid. Myrtle/Audubon's) Yellow-rumped Warbler                  Yellow-rumped Warbler (all forms)</span></span>
+<span><span class="co">#&gt; 13     5275           unid. Common Redpoll / Hoary Redpoll                             Redpoll (Common/Hoary)</span></span>
+<span><span class="co">#&gt; 14     5012                               unid. Meadowlark            Meadowlark (Eastern/Western/Chihuahuan)</span></span>
 <span><span class="co">#&gt;                                                french_combined                       aou_id</span></span>
 <span><span class="co">#&gt; 1                            Tétras sombre (sombre/fuligineux)                   2970, 2971</span></span>
 <span><span class="co">#&gt; 2                            Junco ardoisé (toutes les formes) 5671, 5670, 5680, 5660, 5690</span></span>
@@ -470,7 +480,12 @@ map and the spatial data. An example is below.</p>
 <span><span class="co">#&gt; Loading BBS data...</span></span>
 <span><span class="co">#&gt; Filtering to species Scissor-tailed Flycatcher (4430)</span></span>
 <span><span class="co">#&gt; Stratifying data...</span></span>
+<span><span class="co">#&gt; Preparing strata (ESRI:102008; North_America_Albers_Equal_Area_Conic)...</span></span>
+<span><span class="co">#&gt;   Calculating area weights...</span></span>
+<span><span class="co">#&gt;   Joining routes to spatial layer...</span></span>
 <span><span class="co">#&gt;   Renaming routes...</span></span>
+<span><span class="co">#&gt;   Omitting 2,489/130,138 surveys, on 111 unique routes that do not match a stratum.</span></span>
+<span><span class="co">#&gt;     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prepare_data.html">prepare_data</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p>And now the additional steps…</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -575,20 +590,20 @@ parameters in a fitted model.</p>
 <span><span class="va">converge_n_smooth</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_convergence.html">get_convergence</a></span><span class="op">(</span><span class="va">m</span>, variables <span class="op">=</span> <span class="st">"n_smooth"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="op">-</span><span class="va">rhat</span><span class="op">)</span></span>
 <span><span class="va">converge_n_smooth</span></span>
-<span><span class="co">#&gt; # A tibble: 1,450 × 5</span></span>
+<span><span class="co">#&gt; # A tibble: 1,508 × 5</span></span>
 <span><span class="co">#&gt;    variable_type variable         rhat ess_bulk ess_tail</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;           &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 n_smooth      n_smooth[2,15]   1.00    3798.    3468.</span></span>
-<span><span class="co">#&gt;  2 n_smooth      n_smooth[2,14]   1.00    3795.    3415.</span></span>
-<span><span class="co">#&gt;  3 n_smooth      n_smooth[2,16]   1.00    3789.    3352.</span></span>
-<span><span class="co">#&gt;  4 n_smooth      n_smooth[2,13]   1.00    3771.    3403.</span></span>
-<span><span class="co">#&gt;  5 n_smooth      n_smooth[2,17]   1.00    3770.    3418.</span></span>
-<span><span class="co">#&gt;  6 n_smooth      n_smooth[2,12]   1.00    3690.    3435.</span></span>
-<span><span class="co">#&gt;  7 n_smooth      n_smooth[16,16]  1.00    4101.    3576.</span></span>
-<span><span class="co">#&gt;  8 n_smooth      n_smooth[2,11]   1.00    3618.    3283.</span></span>
-<span><span class="co">#&gt;  9 n_smooth      n_smooth[2,10]   1.00    3584.    3470.</span></span>
-<span><span class="co">#&gt; 10 n_smooth      n_smooth[2,18]   1.00    3765.    3550.</span></span>
-<span><span class="co">#&gt; # ℹ 1,440 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt;  1 n_smooth      n_smooth[22,33]  1.00    5336.    3849.</span></span>
+<span><span class="co">#&gt;  2 n_smooth      n_smooth[20,47]  1.00    5026.    4011.</span></span>
+<span><span class="co">#&gt;  3 n_smooth      n_smooth[15,35]  1.00    5596.    3152.</span></span>
+<span><span class="co">#&gt;  4 n_smooth      n_smooth[15,33]  1.00    5680.    3508.</span></span>
+<span><span class="co">#&gt;  5 n_smooth      n_smooth[8,1]    1.00    4823.    3289.</span></span>
+<span><span class="co">#&gt;  6 n_smooth      n_smooth[22,32]  1.00    5323.    3855.</span></span>
+<span><span class="co">#&gt;  7 n_smooth      n_smooth[14,13]  1.00    5787.    3749.</span></span>
+<span><span class="co">#&gt;  8 n_smooth      n_smooth[15,34]  1.00    5641.    3408.</span></span>
+<span><span class="co">#&gt;  9 n_smooth      n_smooth[20,46]  1.00    5222.    4099.</span></span>
+<span><span class="co">#&gt; 10 n_smooth      n_smooth[7,20]   1.00    5197.    3682.</span></span>
+<span><span class="co">#&gt; # ℹ 1,498 more rows</span></span></code></pre></div>
 <p>Here we’ve sorted the convergence diagnostics by rhat values (highest
 values at the top to highlight any problems). Cut-offs for rhat
 statistics are somewhat arbitrary and recommendations vary in the
@@ -627,20 +642,20 @@ more useful.</p>
 <span><span class="va">summary_stats_n_smooth</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_summary.html">get_summary</a></span><span class="op">(</span><span class="va">m</span>, variables <span class="op">=</span> <span class="st">"n_smooth"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="op">-</span><span class="va">rhat</span><span class="op">)</span></span>
 <span><span class="va">summary_stats_n_smooth</span></span>
-<span><span class="co">#&gt; # A tibble: 1,450 × 11</span></span>
-<span><span class="co">#&gt;    variable_type variable         mean median    sd   mad    q5   q95  rhat ess_bulk ess_tail</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;           &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 n_smooth      n_smooth[2,15]   1.75   1.74 0.160 0.158  1.50  2.02  1.00    3798.    3468.</span></span>
-<span><span class="co">#&gt;  2 n_smooth      n_smooth[2,14]   1.66   1.66 0.157 0.155  1.42  1.94  1.00    3795.    3415.</span></span>
-<span><span class="co">#&gt;  3 n_smooth      n_smooth[2,16]   1.85   1.84 0.166 0.161  1.59  2.13  1.00    3789.    3352.</span></span>
-<span><span class="co">#&gt;  4 n_smooth      n_smooth[2,13]   1.62   1.61 0.157 0.152  1.37  1.89  1.00    3771.    3403.</span></span>
-<span><span class="co">#&gt;  5 n_smooth      n_smooth[2,17]   1.94   1.93 0.170 0.171  1.68  2.23  1.00    3770.    3418.</span></span>
-<span><span class="co">#&gt;  6 n_smooth      n_smooth[2,12]   1.61   1.61 0.161 0.156  1.36  1.90  1.00    3690.    3435.</span></span>
-<span><span class="co">#&gt;  7 n_smooth      n_smooth[16,16] 17.9   17.8  1.65  1.65  15.3  20.6   1.00    4101.    3576.</span></span>
-<span><span class="co">#&gt;  8 n_smooth      n_smooth[2,11]   1.66   1.65 0.170 0.166  1.40  1.96  1.00    3618.    3283.</span></span>
-<span><span class="co">#&gt;  9 n_smooth      n_smooth[2,10]   1.77   1.75 0.185 0.180  1.48  2.09  1.00    3584.    3470.</span></span>
-<span><span class="co">#&gt; 10 n_smooth      n_smooth[2,18]   2.01   2.00 0.173 0.170  1.74  2.31  1.00    3765.    3550.</span></span>
-<span><span class="co">#&gt; # ℹ 1,440 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 1,508 × 11</span></span>
+<span><span class="co">#&gt;    variable_type variable          mean median    sd   mad     q5    q95  rhat ess_bulk ess_tail</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;            &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 n_smooth      n_smooth[22,33] 28.4   28.4   1.01  0.987 26.8   30.1    1.00    5336.    3849.</span></span>
+<span><span class="co">#&gt;  2 n_smooth      n_smooth[20,47] 28.5   28.5   1.65  1.64  25.9   31.3    1.00    5026.    4011.</span></span>
+<span><span class="co">#&gt;  3 n_smooth      n_smooth[15,35] 19.5   19.5   1.24  1.23  17.6   21.6    1.00    5596.    3152.</span></span>
+<span><span class="co">#&gt;  4 n_smooth      n_smooth[15,33] 17.7   17.6   1.12  1.10  15.9   19.6    1.00    5680.    3508.</span></span>
+<span><span class="co">#&gt;  5 n_smooth      n_smooth[8,1]    0.294  0.271 0.120 0.103  0.144  0.517  1.00    4823.    3289.</span></span>
+<span><span class="co">#&gt;  6 n_smooth      n_smooth[22,32] 28.4   28.4   1.00  0.967 26.8   30.0    1.00    5323.    3855.</span></span>
+<span><span class="co">#&gt;  7 n_smooth      n_smooth[14,13] 18.6   18.6   1.09  1.08  16.9   20.5    1.00    5787.    3749.</span></span>
+<span><span class="co">#&gt;  8 n_smooth      n_smooth[15,34] 18.6   18.5   1.18  1.17  16.7   20.5    1.00    5641.    3408.</span></span>
+<span><span class="co">#&gt;  9 n_smooth      n_smooth[20,46] 28.1   28.0   1.62  1.62  25.5   30.8    1.00    5222.    4099.</span></span>
+<span><span class="co">#&gt; 10 n_smooth      n_smooth[7,20]   0.729  0.718 0.122 0.120  0.549  0.942  1.00    5197.    3682.</span></span>
+<span><span class="co">#&gt; # ℹ 1,498 more rows</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="indices---predictions-of-annual-relative-abundance">Indices - predictions of annual relative abundance<a class="anchor" aria-label="anchor" href="#indices---predictions-of-annual-relative-abundance"></a>
@@ -670,20 +685,20 @@ file (e.g., export to .csv), by accessing the <code>indices</code> item
 in the list.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">i</span><span class="op">[[</span><span class="st">"indices"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; # A tibble: 1,508 × 17</span></span>
+<span><span class="co">#&gt; # A tibble: 1,566 × 17</span></span>
 <span><span class="co">#&gt;     year region    region_type strata_included      strata_excluded index index_q_0.025 index_q_0.05 index_q_0.25 index_q_0.75</span></span>
 <span><span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;                &lt;chr&gt;           &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1  1967 continent continent   US-AR-24 ; US-AR-25… ""              13.0          11.6         11.8         12.5         13.4 </span></span>
-<span><span class="co">#&gt;  2  1968 continent continent   US-AR-24 ; US-AR-25… ""              12.9          11.8         12.0         12.5         13.3 </span></span>
-<span><span class="co">#&gt;  3  1969 continent continent   US-AR-24 ; US-AR-25… ""              13.0          12.0         12.1         12.6         13.3 </span></span>
-<span><span class="co">#&gt;  4  1970 continent continent   US-AR-24 ; US-AR-25… ""              13.0          12.0         12.2         12.7         13.3 </span></span>
-<span><span class="co">#&gt;  5  1971 continent continent   US-AR-24 ; US-AR-25… ""              12.9          12.0         12.1         12.6         13.2 </span></span>
-<span><span class="co">#&gt;  6  1972 continent continent   US-AR-24 ; US-AR-25… ""              12.7          11.9         12.1         12.4         13.0 </span></span>
-<span><span class="co">#&gt;  7  1973 continent continent   US-AR-24 ; US-AR-25… ""              11.6          10.9         11.0         11.4         11.9 </span></span>
-<span><span class="co">#&gt;  8  1974 continent continent   US-AR-24 ; US-AR-25… ""              10.9          10.2         10.4         10.7         11.2 </span></span>
-<span><span class="co">#&gt;  9  1975 continent continent   US-AR-24 ; US-AR-25… ""              10.3           9.61         9.72        10.1         10.5 </span></span>
-<span><span class="co">#&gt; 10  1976 continent continent   US-AR-24 ; US-AR-25… ""               9.36          8.76         8.86         9.16         9.58</span></span>
-<span><span class="co">#&gt; # ℹ 1,498 more rows</span></span>
+<span><span class="co">#&gt;  1  1967 continent continent   US-AR-24 ; US-AR-25… ""              13.5          12.1         12.3         13.0          14.0</span></span>
+<span><span class="co">#&gt;  2  1968 continent continent   US-AR-24 ; US-AR-25… ""              13.5          12.2         12.4         13.0          13.9</span></span>
+<span><span class="co">#&gt;  3  1969 continent continent   US-AR-24 ; US-AR-25… ""              13.4          12.3         12.5         13.0          13.8</span></span>
+<span><span class="co">#&gt;  4  1970 continent continent   US-AR-24 ; US-AR-25… ""              13.5          12.5         12.6         13.2          13.9</span></span>
+<span><span class="co">#&gt;  5  1971 continent continent   US-AR-24 ; US-AR-25… ""              13.4          12.5         12.6         13.0          13.7</span></span>
+<span><span class="co">#&gt;  6  1972 continent continent   US-AR-24 ; US-AR-25… ""              13.2          12.4         12.5         12.9          13.6</span></span>
+<span><span class="co">#&gt;  7  1973 continent continent   US-AR-24 ; US-AR-25… ""              12.1          11.3         11.4         11.8          12.4</span></span>
+<span><span class="co">#&gt;  8  1974 continent continent   US-AR-24 ; US-AR-25… ""              11.4          10.7         10.8         11.2          11.7</span></span>
+<span><span class="co">#&gt;  9  1975 continent continent   US-AR-24 ; US-AR-25… ""              10.7          10.0         10.1         10.5          11.0</span></span>
+<span><span class="co">#&gt; 10  1976 continent continent   US-AR-24 ; US-AR-25… ""               9.84          9.19         9.29         9.60         10.1</span></span>
+<span><span class="co">#&gt; # ℹ 1,556 more rows</span></span>
 <span><span class="co">#&gt; # ℹ 7 more variables: index_q_0.95 &lt;dbl&gt;, index_q_0.975 &lt;dbl&gt;, obs_mean &lt;dbl&gt;, n_routes &lt;int&gt;, n_routes_total &lt;int&gt;,</span></span>
 <span><span class="co">#&gt; #   n_non_zero &lt;int&gt;, backcast_flag &lt;dbl&gt;</span></span></code></pre></div>
 </div>
@@ -702,8 +717,8 @@ stratum.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "continent" "US_AR_24"  "US_AR_25"  "US_AR_26"  "US_KS_18"  "US_KS_19"  "US_KS_22"  "US_LA_25"  "US_LA_37"  "US_MO_22" </span></span>
-<span><span class="co">#&gt; [11] "US_MO_24"  "US_NM_18"  "US_NM_35"  "US_OK_18"  "US_OK_19"  "US_OK_21"  "US_OK_22"  "US_OK_25"  "US_TX_18"  "US_TX_19" </span></span>
-<span><span class="co">#&gt; [21] "US_TX_20"  "US_TX_21"  "US_TX_25"  "US_TX_35"  "US_TX_36"  "US_TX_37"</span></span></code></pre></div>
+<span><span class="co">#&gt; [11] "US_MO_24"  "US_NM_18"  "US_NM_35"  "US_OK_18"  "US_OK_19"  "US_OK_21"  "US_OK_22"  "US_OK_24"  "US_OK_25"  "US_TX_18" </span></span>
+<span><span class="co">#&gt; [21] "US_TX_19"  "US_TX_20"  "US_TX_21"  "US_TX_25"  "US_TX_35"  "US_TX_36"  "US_TX_37"</span></span></code></pre></div>
 <p>We can plot them individually by pulling a plot out of the list</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p</span><span class="op">[[</span><span class="st">"continent"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
@@ -765,20 +780,20 @@ indices through time or between two points in time.</p>
 list.</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t</span><span class="op">[[</span><span class="st">"trends"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; # A tibble: 26 × 27</span></span>
+<span><span class="co">#&gt; # A tibble: 27 × 27</span></span>
 <span><span class="co">#&gt;    start_year end_year region    region_type strata_included   strata_excluded   trend trend_q_0.025 trend_q_0.05 trend_q_0.25</span></span>
 <span><span class="co">#&gt;         &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;             &lt;chr&gt;             &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1       1967     2024 continent continent   US-AR-24 ; US-AR… ""              -0.907         -1.14        -1.10       -0.985 </span></span>
-<span><span class="co">#&gt;  2       1967     2024 US-AR-24  stratum     US-AR-24          ""               4.39           3.12         3.33        3.97  </span></span>
-<span><span class="co">#&gt;  3       1967     2024 US-AR-25  stratum     US-AR-25          ""               0.291         -0.415       -0.311       0.0369</span></span>
-<span><span class="co">#&gt;  4       1967     2024 US-AR-26  stratum     US-AR-26          ""               4.73           2.82         3.15        4.06  </span></span>
-<span><span class="co">#&gt;  5       1967     2024 US-KS-18  stratum     US-KS-18          ""               2.93          -1.08        -0.504       1.50  </span></span>
-<span><span class="co">#&gt;  6       1967     2024 US-KS-19  stratum     US-KS-19          ""              -0.454         -1.26        -1.12       -0.715 </span></span>
-<span><span class="co">#&gt;  7       1967     2024 US-KS-22  stratum     US-KS-22          ""              -0.0757        -0.798       -0.677      -0.312 </span></span>
-<span><span class="co">#&gt;  8       1967     2024 US-LA-25  stratum     US-LA-25          ""              -1.20          -2.79        -2.56       -1.73  </span></span>
-<span><span class="co">#&gt;  9       1967     2024 US-LA-37  stratum     US-LA-37          ""               0.324         -1.81        -1.43       -0.387 </span></span>
-<span><span class="co">#&gt; 10       1967     2024 US-MO-22  stratum     US-MO-22          ""              -0.215         -2.10        -1.82       -0.858 </span></span>
-<span><span class="co">#&gt; # ℹ 16 more rows</span></span>
+<span><span class="co">#&gt;  1       1967     2024 continent continent   US-AR-24 ; US-AR… ""              -0.965         -1.22        -1.18       -1.05  </span></span>
+<span><span class="co">#&gt;  2       1967     2024 US-AR-24  stratum     US-AR-24          ""               4.81           3.75         3.91        4.43  </span></span>
+<span><span class="co">#&gt;  3       1967     2024 US-AR-25  stratum     US-AR-25          ""              -0.304         -1.10        -0.946      -0.554 </span></span>
+<span><span class="co">#&gt;  4       1967     2024 US-AR-26  stratum     US-AR-26          ""               3.40           1.15         1.54        2.63  </span></span>
+<span><span class="co">#&gt;  5       1967     2024 US-KS-18  stratum     US-KS-18          ""               2.75          -1.33        -0.650       1.29  </span></span>
+<span><span class="co">#&gt;  6       1967     2024 US-KS-19  stratum     US-KS-19          ""              -0.458         -1.23        -1.11       -0.723 </span></span>
+<span><span class="co">#&gt;  7       1967     2024 US-KS-22  stratum     US-KS-22          ""              -0.0114        -0.691       -0.587      -0.249 </span></span>
+<span><span class="co">#&gt;  8       1967     2024 US-LA-25  stratum     US-LA-25          ""              -1.21          -2.79        -2.55       -1.73  </span></span>
+<span><span class="co">#&gt;  9       1967     2024 US-LA-37  stratum     US-LA-37          ""               0.301         -1.81        -1.47       -0.385 </span></span>
+<span><span class="co">#&gt; 10       1967     2024 US-MO-22  stratum     US-MO-22          ""               0.655         -0.979       -0.707       0.0825</span></span>
+<span><span class="co">#&gt; # ℹ 17 more rows</span></span>
 <span><span class="co">#&gt; # ℹ 17 more variables: trend_q_0.75 &lt;dbl&gt;, trend_q_0.95 &lt;dbl&gt;, trend_q_0.975 &lt;dbl&gt;, percent_change &lt;dbl&gt;,</span></span>
 <span><span class="co">#&gt; #   percent_change_q_0.025 &lt;dbl&gt;, percent_change_q_0.05 &lt;dbl&gt;, percent_change_q_0.25 &lt;dbl&gt;, percent_change_q_0.75 &lt;dbl&gt;,</span></span>
 <span><span class="co">#&gt; #   percent_change_q_0.95 &lt;dbl&gt;, percent_change_q_0.975 &lt;dbl&gt;, width_of_95_percent_credible_interval &lt;dbl&gt;,</span></span>
@@ -793,20 +808,20 @@ combination of a starting year <code>min_year</code> and ending year
 <span>                        max_year <span class="op">=</span> <span class="fl">2021</span><span class="op">)</span></span>
 <span><span class="va">t_10</span></span>
 <span><span class="co">#&gt; $trends</span></span>
-<span><span class="co">#&gt; # A tibble: 26 × 27</span></span>
+<span><span class="co">#&gt; # A tibble: 27 × 27</span></span>
 <span><span class="co">#&gt;    start_year end_year region    region_type strata_included    strata_excluded  trend trend_q_0.025 trend_q_0.05 trend_q_0.25</span></span>
 <span><span class="co">#&gt;         &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;              &lt;chr&gt;            &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1       2011     2021 continent continent   US-AR-24 ; US-AR-… ""              -2.11          -2.82       -2.70        -2.35 </span></span>
-<span><span class="co">#&gt;  2       2011     2021 US-AR-24  stratum     US-AR-24           ""               1.87          -1.08       -0.644        0.813</span></span>
-<span><span class="co">#&gt;  3       2011     2021 US-AR-25  stratum     US-AR-25           ""              -0.424         -2.85       -2.42        -1.23 </span></span>
-<span><span class="co">#&gt;  4       2011     2021 US-AR-26  stratum     US-AR-26           ""               3.37          -1.53       -0.708        1.74 </span></span>
-<span><span class="co">#&gt;  5       2011     2021 US-KS-18  stratum     US-KS-18           ""               3.21          -3.13       -1.98         1.14 </span></span>
-<span><span class="co">#&gt;  6       2011     2021 US-KS-19  stratum     US-KS-19           ""               0.722         -2.22       -1.75        -0.263</span></span>
-<span><span class="co">#&gt;  7       2011     2021 US-KS-22  stratum     US-KS-22           ""              -4.11          -6.36       -5.97        -4.85 </span></span>
-<span><span class="co">#&gt;  8       2011     2021 US-LA-25  stratum     US-LA-25           ""              -1.99          -8.07       -7.14        -4.20 </span></span>
-<span><span class="co">#&gt;  9       2011     2021 US-LA-37  stratum     US-LA-37           ""               1.17          -5.29       -4.26        -1.18 </span></span>
-<span><span class="co">#&gt; 10       2011     2021 US-MO-22  stratum     US-MO-22           ""              -0.908         -7.17       -6.08        -3.29 </span></span>
-<span><span class="co">#&gt; # ℹ 16 more rows</span></span>
+<span><span class="co">#&gt;  1       2011     2021 continent continent   US-AR-24 ; US-AR-… ""              -2.15         -2.90        -2.77        -2.40 </span></span>
+<span><span class="co">#&gt;  2       2011     2021 US-AR-24  stratum     US-AR-24           ""               1.78         -0.972       -0.528        0.831</span></span>
+<span><span class="co">#&gt;  3       2011     2021 US-AR-25  stratum     US-AR-25           ""              -0.634        -3.17        -2.67        -1.44 </span></span>
+<span><span class="co">#&gt;  4       2011     2021 US-AR-26  stratum     US-AR-26           ""               4.23         -1.20        -0.360        2.39 </span></span>
+<span><span class="co">#&gt;  5       2011     2021 US-KS-18  stratum     US-KS-18           ""               3.06         -3.01        -2.05         1.02 </span></span>
+<span><span class="co">#&gt;  6       2011     2021 US-KS-19  stratum     US-KS-19           ""               0.602        -2.23        -1.76        -0.395</span></span>
+<span><span class="co">#&gt;  7       2011     2021 US-KS-22  stratum     US-KS-22           ""              -3.80         -6.11        -5.67        -4.57 </span></span>
+<span><span class="co">#&gt;  8       2011     2021 US-LA-25  stratum     US-LA-25           ""              -1.94         -8.71        -7.74        -4.23 </span></span>
+<span><span class="co">#&gt;  9       2011     2021 US-LA-37  stratum     US-LA-37           ""               1.81         -4.87        -3.96        -0.768</span></span>
+<span><span class="co">#&gt; 10       2011     2021 US-MO-22  stratum     US-MO-22           ""              -2.19         -6.90        -6.02        -3.81 </span></span>
+<span><span class="co">#&gt; # ℹ 17 more rows</span></span>
 <span><span class="co">#&gt; # ℹ 17 more variables: trend_q_0.75 &lt;dbl&gt;, trend_q_0.95 &lt;dbl&gt;, trend_q_0.975 &lt;dbl&gt;, percent_change &lt;dbl&gt;,</span></span>
 <span><span class="co">#&gt; #   percent_change_q_0.025 &lt;dbl&gt;, percent_change_q_0.05 &lt;dbl&gt;, percent_change_q_0.25 &lt;dbl&gt;, percent_change_q_0.75 &lt;dbl&gt;,</span></span>
 <span><span class="co">#&gt; #   percent_change_q_0.95 &lt;dbl&gt;, percent_change_q_0.975 &lt;dbl&gt;, width_of_95_percent_credible_interval &lt;dbl&gt;,</span></span>
@@ -815,7 +830,7 @@ combination of a starting year <code>min_year</code> and ending year
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $meta_data</span></span>
 <span><span class="co">#&gt; $meta_data$stratify_by</span></span>
-<span><span class="co">#&gt; [1] "bbs_usgs"</span></span>
+<span><span class="co">#&gt; [1] "bbs"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $meta_data$stratify_type</span></span>
 <span><span class="co">#&gt; [1] "standard"</span></span>
@@ -833,19 +848,19 @@ combination of a starting year <code>min_year</code> and ending year
 <span><span class="co">#&gt; [1] "spatial"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $meta_data$model_file</span></span>
-<span><span class="co">#&gt; [1] "C:/github/bbsBayes2/inst/models/gamye_spatial_bbs_CV.stan"</span></span>
+<span><span class="co">#&gt; [1] "C:/Users/SmithAC/AppData/Local/R/win-library/4.5/bbsBayes2/models/gamye_spatial_bbs_CV.stan"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $meta_data$run_date</span></span>
-<span><span class="co">#&gt; [1] "2025-12-10 21:44:28 EST"</span></span>
+<span><span class="co">#&gt; [1] "2026-01-28 00:14:49 EST"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $meta_data$bbsBayes2_version</span></span>
-<span><span class="co">#&gt; [1] "1.1.3"</span></span>
+<span><span class="co">#&gt; [1] "1.1.3.2"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $meta_data$cmdstan_path</span></span>
-<span><span class="co">#&gt; [1] "//wsl$/ECCC-WSL-UBUNTU-24/home/acsmith/.cmdstan/cmdstan-2.36.0"</span></span>
+<span><span class="co">#&gt; [1] "//wsl$/ECCC-WSL-UBUNTU-24/home/acsmith/.cmdstan/cmdstan-2.37.0"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $meta_data$cmdstan_version</span></span>
-<span><span class="co">#&gt; [1] "2.36.0"</span></span>
+<span><span class="co">#&gt; [1] "2.37.0"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $meta_data$regions</span></span>
 <span><span class="co">#&gt; [1] "continent" "stratum"  </span></span>
@@ -867,36 +882,36 @@ combination of a starting year <code>min_year</code> and ending year
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $meta_strata</span></span>
-<span><span class="co">#&gt; # A tibble: 25 × 5</span></span>
+<span><span class="co">#&gt; # A tibble: 26 × 5</span></span>
 <span><span class="co">#&gt;    strata_name strata area_sq_km continent stratum </span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;   </span></span>
-<span><span class="co">#&gt;  1 US-AR-24         1     33232. continent US-AR-24</span></span>
-<span><span class="co">#&gt;  2 US-AR-25         2     65340. continent US-AR-25</span></span>
-<span><span class="co">#&gt;  3 US-AR-26         3     39366. continent US-AR-26</span></span>
-<span><span class="co">#&gt;  4 US-KS-18         4     37179. continent US-KS-18</span></span>
-<span><span class="co">#&gt;  5 US-KS-19         5    109390. continent US-KS-19</span></span>
-<span><span class="co">#&gt;  6 US-KS-22         6     66243. continent US-KS-22</span></span>
-<span><span class="co">#&gt;  7 US-LA-25         7     47075. continent US-LA-25</span></span>
-<span><span class="co">#&gt;  8 US-LA-37         8     24987. continent US-LA-37</span></span>
-<span><span class="co">#&gt;  9 US-MO-22         9     83079. continent US-MO-22</span></span>
-<span><span class="co">#&gt; 10 US-MO-24        10     87034. continent US-MO-24</span></span>
-<span><span class="co">#&gt; # ℹ 15 more rows</span></span>
+<span><span class="co">#&gt;  1 US-AR-24         1     33282. continent US-AR-24</span></span>
+<span><span class="co">#&gt;  2 US-AR-25         2     65413. continent US-AR-25</span></span>
+<span><span class="co">#&gt;  3 US-AR-26         3     38825. continent US-AR-26</span></span>
+<span><span class="co">#&gt;  4 US-KS-18         4     36499. continent US-KS-18</span></span>
+<span><span class="co">#&gt;  5 US-KS-19         5    109257. continent US-KS-19</span></span>
+<span><span class="co">#&gt;  6 US-KS-22         6     65859. continent US-KS-22</span></span>
+<span><span class="co">#&gt;  7 US-LA-25         7     47058. continent US-LA-25</span></span>
+<span><span class="co">#&gt;  8 US-LA-37         8     27890. continent US-LA-37</span></span>
+<span><span class="co">#&gt;  9 US-MO-22         9     83314. continent US-MO-22</span></span>
+<span><span class="co">#&gt; 10 US-MO-24        10     86717. continent US-MO-24</span></span>
+<span><span class="co">#&gt; # ℹ 16 more rows</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $raw_data</span></span>
-<span><span class="co">#&gt; # A tibble: 13,561 × 27</span></span>
+<span><span class="co">#&gt; # A tibble: 13,485 × 27</span></span>
 <span><span class="co">#&gt;    country_num state_num state     rpid   bcr  year strata_name route   obs_n latitude longitude route_data_id run_type count</span></span>
 <span><span class="co">#&gt;          &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1         840         7 ARKANSAS   101    24  1967 US-AR-24    7-20  1190020     35.6     -92.7       6234569        1     0</span></span>
-<span><span class="co">#&gt;  2         840         7 ARKANSAS   101    24  1968 US-AR-24    7-20  1190020     35.6     -92.7       6167159        1     0</span></span>
-<span><span class="co">#&gt;  3         840         7 ARKANSAS   101    24  1969 US-AR-24    7-20  1190020     35.6     -92.7       6167974        1     0</span></span>
-<span><span class="co">#&gt;  4         840         7 ARKANSAS   101    24  1970 US-AR-24    7-20  1190020     35.6     -92.7       6170944        1     0</span></span>
-<span><span class="co">#&gt;  5         840         7 ARKANSAS   101    24  1971 US-AR-24    7-20  1190020     35.6     -92.7       6169605        1     0</span></span>
-<span><span class="co">#&gt;  6         840         7 ARKANSAS   101    24  1972 US-AR-24    7-20  1190020     35.6     -92.7       6174018        1     0</span></span>
-<span><span class="co">#&gt;  7         840         7 ARKANSAS   101    24  1973 US-AR-24    7-20  1190020     35.6     -92.7       6174632        1     0</span></span>
-<span><span class="co">#&gt;  8         840         7 ARKANSAS   101    24  1974 US-AR-24    7-20  1190020     35.6     -92.7       6174561        1     0</span></span>
-<span><span class="co">#&gt;  9         840         7 ARKANSAS   101    24  1975 US-AR-24    7-20  1190020     35.6     -92.7       6179773        1     0</span></span>
-<span><span class="co">#&gt; 10         840         7 ARKANSAS   101    24  1976 US-AR-24    7-20  1190020     35.6     -92.7       6179259        1     0</span></span>
-<span><span class="co">#&gt; # ℹ 13,551 more rows</span></span>
+<span><span class="co">#&gt;  1         840         7 ARKANSAS   101    26  1969 US-AR-24    7-19  1070050     35.9     -91.3       6167138        1     0</span></span>
+<span><span class="co">#&gt;  2         840         7 ARKANSAS   101    26  1971 US-AR-24    7-19  1070050     35.9     -91.3       6168780        1     0</span></span>
+<span><span class="co">#&gt;  3         840         7 ARKANSAS   101    26  1972 US-AR-24    7-19  1070050     35.9     -91.3       6174037        1     0</span></span>
+<span><span class="co">#&gt;  4         840         7 ARKANSAS   101    26  1973 US-AR-24    7-19  1070050     35.9     -91.3       6174466        1     0</span></span>
+<span><span class="co">#&gt;  5         840         7 ARKANSAS   101    26  1975 US-AR-24    7-19  1070050     35.9     -91.3       6179441        1     0</span></span>
+<span><span class="co">#&gt;  6         840         7 ARKANSAS   101    26  1977 US-AR-24    7-19  1080130     35.9     -91.3       6183099        1     0</span></span>
+<span><span class="co">#&gt;  7         840         7 ARKANSAS   101    26  1978 US-AR-24    7-19  1080130     35.9     -91.3       6187774        1     0</span></span>
+<span><span class="co">#&gt;  8         840         7 ARKANSAS   101    26  1979 US-AR-24    7-19  1040020     35.9     -91.3       6185565        1     0</span></span>
+<span><span class="co">#&gt;  9         840         7 ARKANSAS   101    26  1980 US-AR-24    7-19  1040020     35.9     -91.3       6186949        1     0</span></span>
+<span><span class="co">#&gt; 10         840         7 ARKANSAS   101    26  1981 US-AR-24    7-19  1040020     35.9     -91.3       6191114        1     0</span></span>
+<span><span class="co">#&gt; # ℹ 13,475 more rows</span></span>
 <span><span class="co">#&gt; # ℹ 13 more variables: n_routes &lt;int&gt;, non_zero_weight &lt;dbl&gt;, first_year &lt;dbl&gt;, max_n_routes_year &lt;int&gt;, n_obs &lt;int&gt;,</span></span>
 <span><span class="co">#&gt; #   mean_obs &lt;dbl&gt;, year_num &lt;dbl&gt;, strata &lt;dbl&gt;, observer &lt;int&gt;, site &lt;int&gt;, obs_route &lt;chr&gt;, obs_site &lt;int&gt;,</span></span>
 <span><span class="co">#&gt; #   n_obs_sites &lt;int&gt;</span></span></code></pre></div>

@@ -13,6 +13,7 @@ prepare_data(
   min_n_routes = 3,
   min_max_route_years = 3,
   min_mean_route_years = 1,
+  min_span = 2,
   quiet = FALSE,
   assume_observer_variation_log_normal = FALSE
 )
@@ -52,6 +53,19 @@ prepare_data(
   Numeric. Required minimum average of years per route with the species
   observed. Default 1. Only retain strata where the average number of
   years the species was observed per route is greater than this value.
+
+- min_span:
+
+  Numeric. Required minimum span of years with surveys conducted in a
+  stratum. Default 2. Only retain strata where the time-span between the
+  earliest and most recent surveys is greater than this value. Must be
+  less than the number of years between min_year and max_year. Useful
+  for removing strata that only have observations in recent years when
+  running long-term analyses. For example many northern strata in BCRs
+  1 - 3 (Alaska, Northwest Territories, and Nunavut) have relatively new
+  BBS routes that have only been surveyed since the early 2000s.
+  Long-term analyses that include these strata can generate extremely
+  uncertain population trajectories in the years with no data.
 
 - quiet:
 

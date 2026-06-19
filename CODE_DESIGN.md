@@ -91,8 +91,8 @@ of making collaboration and future modifications easier.
   reference column names on the right-hand side of = inside tidyverse
   functions. Use
   \`.env\$var`to reference environmental variables. e.g.,`dplyr::mutate(mtcars,
-  cyl = .data$hp*.data$am)`or`dplyr::mutate(mtcars, mpg =
-  .data$mpg/.env$ratio)\`
+  cyl = .data$`hp * .data`$am)`or`dplyr::mutate(mtcars, mpg =
+  .data$`mpg / .env`$ratio)\`
 - This also allows more complex programmatic expressions, e.g., in
   [`generate_indices()`](https://bbsbayes.github.io/bbsBayes2/reference/generate_indices.md)
   we iterate over regions in a for loop.

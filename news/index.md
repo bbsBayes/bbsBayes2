@@ -1,5 +1,15 @@
 # Changelog
 
+## bbsBayes2 1.1.3.4 Released February, 2026 - Updating example data and latlong stratification.
+
+- The sample data now include observations from `release = 2025`.
+- The latlong stratification grid updated to have the same land area as
+  the bbs stratification. The internal grid is the same (1-degree grid
+  cells that group routes together spatially based on truncating the
+  longitude and latitude coordinates for their start points), only the
+  coastlines are updated to improve the spatial overlay of route start
+  points with the map.
+
 ## bbsBayes2 1.1.3.3 Released January 29, 2026 - Bug fix for custom stratifications.
 
 - Fixed bug in

@@ -58,12 +58,12 @@ map <- load_map("bcr")
 assign_prov_state(map, plot = TRUE)
 #> Warning: 32 strata are assigned to a province or state based on less than the minimum specified overlap
 
-#> Simple feature collection with 228 features and 7 fields
+#> Simple feature collection with 227 features and 7 fields
 #> Geometry type: GEOMETRY
 #> Dimension:     XY
-#> Bounding box:  xmin: -6094275 ymin: -1686335 xmax: 2990016 ymax: 4517219
+#> Bounding box:  xmin: -5030340 ymin: -1683720 xmax: 2990016 ymax: 4517219
 #> Projected CRS: North_America_Albers_Equal_Area_Conic
-#> # A tibble: 228 × 8
+#> # A tibble: 227 × 8
 #>    strata_name prov_state country                  country_code province_state  
 #>  * <chr>       <chr>      <chr>                    <chr>        <chr>           
 #>  1 BCR10       BC         United States of America US           Washington      
@@ -76,7 +76,7 @@ assign_prov_state(map, plot = TRUE)
 #>  8 BCR6S       AB         Canada                   CA           British Columbia
 #>  9 BCR9        NV         Canada                   CA           British Columbia
 #> 10 BCR10       BC         United States of America US           Idaho           
-#> # ℹ 218 more rows
+#> # ℹ 217 more rows
 #> # ℹ 3 more variables: geom <GEOMETRY [m]>, p_area <dbl>, note <chr>
 
 # Use custom stratification, using sf map object
