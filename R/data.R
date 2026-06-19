@@ -2,10 +2,10 @@
 #'
 #' Contains only Pacific Wren data
 #'
-#' A sample dataset containing only data for Pacific Wrens for the 2022
+#' A sample dataset containing only data for Pacific Wrens for the 2025
 #' state-level BBS data. The full count set is obtained via the function
-#' `fetch_bbs_data()`. The data is obtained from the United States Geological
-#' Survey and is subject to change as new data is added each year. See
+#' `fetch_bbs_data(release = 2025)`. The data are obtained from the BBS
+#' database and is subject to change as new data are added each year. See
 #' References for citation.
 #'
 #' @format ## `bbs_data_sample`
@@ -18,9 +18,10 @@
 #'
 #' @references
 #'
-#' Ziolkowski Jr., D.J., Lutmerding, M., Aponte, V.I., and Hudson, M-A.R., 2022,
-#'  North American Breeding Bird Survey Dataset 1966 - 2021: U.S. Geological
-#'  Survey data release, https://doi.org/10.5066/P97WAZE5
+#' Ziolkowski Jr., D.J., Lutmerding, M., Skalos, S.M., English, W.B., and
+#' Hudson, M-A.R., 2025, North American Breeding Bird Survey Dataset
+#' 1966 - 2024: U.S. Geological Survey data release,
+#' https://doi.org/10.5066/P14SNUV4.
 #'
 "bbs_data_sample"
 
@@ -108,10 +109,13 @@
 #' @examples
 #' # Code to replicate:
 #' \dontrun{
-#' pacific_wren_model <- stratify(by = "bbs_cws", sample_data = TRUE) %>%
+#' pacific_wren_model <- stratify(by = "bbs_cws", sample_data = TRUE,
+#' use_map = FALSE) %>%
 #'   prepare_data() %>%
 #'   prepare_model(model = "first_diff", set_seed = 111) %>%
-#'   run_model(chains = 2, iter_sampling = 20, iter_warmup = 20, set_seed = 111)
+#'   run_model(chains = 2, iter_sampling = 1000,
+#'             iter_warmup = 1000,
+#'             thin = 50, set_seed = 111)
 #' }
 #'
 "pacific_wren_model"
@@ -125,7 +129,7 @@
 #' A data frame with 13 rows and 5 columns
 #'
 #' - `aou_unid` - The AOU id number which will identify the combined unidentified form
-#' - `ensligh_original` - The English name of the original 'unidentified' form
+#' - `english_original` - The English name of the original 'unidentified' form
 #' - `english_combined` - The English name of the new 'combined' forms
 #' - `french_combined` - The French name of the new 'combined' forms
 #' - `aou_id` - The AOU id numbers of all the forms which will be combined

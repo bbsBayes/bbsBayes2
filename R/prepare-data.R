@@ -13,6 +13,16 @@
 #'   route with the species observed. Default 1. Only retain strata where the
 #'   average number of years the species was observed per route is greater than
 #'   this value.
+#' @param min_span Numeric. Required minimum span of years with surveys
+#'   conducted in a stratum. Default 2. Only retain strata where the time-span
+#'   between the earliest and most recent surveys is greater than this value.
+#'   Must be less than the number of years between min_year and max_year. Useful
+#'   for removing strata that only have observations in recent years when running
+#'   long-term analyses. For example many northern strata in BCRs 1 - 3 (Alaska,
+#'   Northwest Territories, and Nunavut) have relatively new BBS routes that have
+#'   only been surveyed since the early 2000s. Long-term analyses that include
+#'   these strata can generate extremely uncertain population trajectories in
+#'   the years with no data.
 #' @param assume_observer_variation_log_normal Logical. Default FALSE.
 #'   If FALSE, the model will generate indices that adjust only for temporal
 #'   variation in observers and so generate annual indices that are the
@@ -69,13 +79,14 @@ prepare_data <- function(strata_data,
                          min_n_routes = 3,
                          min_max_route_years = 3,
                          min_mean_route_years = 1,
+                         min_span = 2,
                          quiet = FALSE,
                          assume_observer_variation_log_normal = FALSE) {
 
   # Checks
   if(missing(strata_data)) stop("Missing `strata_data`", call. = FALSE)
   check_data(strata_data)
-  check_numeric(min_year, max_year, allow_null = TRUE)
+  check_numeric(min_year, max_year, min_span, allow_null = TRUE)
   check_numeric(min_n_routes, min_max_route_years, min_mean_route_years)
   check_logical(quiet,assume_observer_variation_log_normal)
   #warning if stratification == latlong and min_n_routes > 1
@@ -129,8 +140,28 @@ prepare_data <- function(strata_data,
 
 
   # Filter observations
-  if(!is.null(min_year)) obs <- dplyr::filter(obs, .data$year >= .env$min_year)
-  if(!is.null(max_year)) obs <- dplyr::filter(obs, .data$year <= .env$max_year)
+  if(!is.null(min_year)){
+
+    obs <- dplyr::filter(obs, .data$year >= .env$min_year)
+  }else{
+    min_year <- min(obs$year)
+  }
+  if(!is.null(max_year)){
+    obs <- dplyr::filter(obs, .data$year <= .env$max_year)
+  }else{
+    max_year <- max(obs$year,na.rm = TRUE)
+  }
+
+  min_span_start <- max_year-min_span
+## insert error message if min_span is > number of years desired
+  if(min_span_start < min_year){
+    stop(paste("The min_span specified",min_span,"is longer",
+               "than the number of years available",
+               "for this species between",min_year,"and",max_year,".",
+               "Reduce the min_span value or adjust min_year",
+               "and/or max_year."),
+         call. = FALSE, immediate. = TRUE)
+  }
 
   routes <- obs %>%
     dplyr::group_by(.data$strata_name, .data$route) %>%
@@ -171,7 +202,8 @@ prepare_data <- function(strata_data,
                                  as.integer(.data$max_n_routes_year))) %>%
       dplyr::filter(.data$n_routes_ever >= .env$min_n_routes,
                     .data$max_n_routes_year >= .env$min_max_route_years,
-                    .data$mean_obs >= .env$min_mean_route_years)
+                    .data$mean_obs >= .env$min_mean_route_years,
+                    .data$first_year <= .env$min_span_start)
 
     if(nrow(routes_by_strata) == 0) {
       stop("Not enough routes where this species was counted.\nConsider ",

@@ -9,7 +9,7 @@
 
 
 
-# bbsBayes2 1.1.3.3 January 29, 2026 - Includes 2024 BBS data (1.1.3) and new stratifications, and improved sampling of contrained random effects (including spatial variation)
+# bbsBayes2 1.2026.0 Released June, 2026 - Access to 2026 data release.
 
 Details on new releases below. 
 
@@ -81,6 +81,16 @@ NOTE: bbsBayes2 is supported by a small team of committed researchers with limit
 ```{r}
 pak::pkg_install("bbsBayes/bbsBayes2@dev")
 ```
+# bbsBayes2 1.2026.0 Released June, 2026 - Access to 2026 data release.
+
+-   Updated to access the most recent data release
+-   Note the new approach to bbsBayes2 version names to include the most recent release year
+
+
+# bbsBayes2 1.1.3.4 Released February, 2026 - Updating example data and latlong stratification.
+
+-   The sample data now include observations from `release = 2025`.
+-   The latlong stratification grid updated to have the same land area as the bbs stratification. The internal grid is the same (1-degree grid cells that group routes together spatially based on truncating the longitude and latitude coordinates for their start points), only the coastlines are updated to improve the spatial overlay of route start points with the map. 
 
 # bbsBayes2 1.1.3.3 Released January 29, 2026 - Bug fix for custom stratifications.
 

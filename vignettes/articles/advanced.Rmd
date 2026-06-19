@@ -324,11 +324,11 @@ Alternatively, we could visualise the width of the credible interval on the tren
 ``` r
 
 BARS_trend_map_CI_width <- plot_map(BARS_trends, alternate_column = "width_of_95_percent_credible_interval")
-#> Error in plot_map(BARS_trends, alternate_column = "width_of_95_percent_credible_interval"): object 'pal' not found
 
 BARS_trend_map_CI_width
-#> Error: object 'BARS_trend_map_CI_width' not found
 ```
+
+<img src="figures/advanced_unnamed-chunk-11-1.png" alt="Map of the width of the credible interval on trend estimates for Barn Swallow"  />
 
 ## EXAMPLE - mapping percent-change in the population
 
@@ -401,7 +401,8 @@ ALHU_trend_map + geom_sf(data = States_Provinces, fill = NA,
                           colour = "black") +
   coord_sf(xlim = bb[c("xmin","xmax")],
            ylim = bb[c("ymin","ymax")])
-#> Coordinate system already present. Adding new coordinate system, which will replace the existing one.
+#> Coordinate system already present.
+#> ℹ Adding new coordinate system, which will replace the existing one.
 ```
 
 <img src="figures/advanced_unnamed-chunk-14-1.png" alt="Percent population change map for Allen's Hummingbird, showing 1-degree grid cells where the population has increased in shades of blue and grid cells where the population has decreased in shades of red"  />
@@ -528,7 +529,7 @@ t$trends[1,c("region","percent_change","percent_change_q_0.95")]
 #> # A tibble: 1 × 3
 #>   region    percent_change percent_change_q_0.95
 #>   <chr>              <dbl>                 <dbl>
-#> 1 continent          -44.4                 -37.1
+#> 1 continent          -46.3                 -39.1
 ```
 
 In addition, the function can optionally calculate the posterior
@@ -543,7 +544,7 @@ t$trends[1,c("region","prob_decrease_0_percent","prob_decrease_50_percent")]
 #> # A tibble: 1 × 3
 #>   region    prob_decrease_0_percent prob_decrease_50_percent
 #>   <chr>                       <dbl>                    <dbl>
-#> 1 continent                       1                    0.081
+#> 1 continent                       1                    0.191
 ```
 
 These values can be useful for deriving statements such as "the

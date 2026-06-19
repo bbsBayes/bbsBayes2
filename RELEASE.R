@@ -3,12 +3,26 @@
 # Generally have main (release) branch, and dev (or whatever name) (production)
 # branches.
 #
-# Main has version 1.0.0
-# Dev has version 1.0.0.9000
+# Main has version 1.2026.0 (versions include most recent release year)
+# Dev has version 1.2026.0.9000
 #
 # Ready to release, fix dev version, merge dev into main, done!
 
 
+# annual updates ----------------------------------------------------------
+
+# get science base file name for new release
+# modify the following files
+# R/fetch_bbs_data.R - replace all default release vlues with newest
+# inst/citation - update with most recent release citation
+# R/checks.R - update check_release()
+# R/stratify.R - updated the default release
+# R/load_bbs_data.R - update the default release
+# DESCRIPTION - update the version number
+# Create the file inst/data-terms-YYYY (YYYY = release year) - update citation
+# and release information/disclaimer
+# Optional: update the sample data to the newest release
+#   requires updating all of the examples and the rcmd check files
 
 
 # Get local BBS data ---------------------------------------------------------

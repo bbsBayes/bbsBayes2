@@ -12,7 +12,7 @@ test_that("load_internal_file()", {
 })
 
 test_that("get_geo_types()", {
-  m <- load_map("bbs_cws")
+  m <- load_map("bbs")
   expect_silent(get_geo_types(m)) %>%
     expect_equal("POLYGON")
 

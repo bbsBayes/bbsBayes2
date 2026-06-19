@@ -26,22 +26,28 @@ library(rmapshaper) # allows simplification of the polygon boudnaries in a way
 # updated BCR definitions that includes changes to Northern BCRS
 # circa 2025
 
-bcr_new <- "data-raw/maps_orig/bcr_2025_lakes12.gpkg" %>%
+bcr_new <- "data-raw/maps_orig/bcr_2025_lakes12_statprov3.gpkg" %>%
   read_sf() %>%
+  filter(!is_lake,
+         country_code %in% c("CA","US","MX"), #  removing France, and Hawaii
+         statprov_code != "HI") %>%
   sf::st_transform(crs = bbsBayes2::equal_area_crs) %>%
-  rmapshaper::ms_simplify(keep = 0.1,
+  rmapshaper::ms_simplify(keep = 0.05,
                           keep_shapes = TRUE) %>%
-  mutate(strata_name = paste0("BCR",bcr_label)) %>%
-  filter(!is_lake) %>%
+  sf::st_make_valid() %>%
+  mutate(strata_name = paste0("BCR",bcr_label))   %>%
   group_by(strata_name) %>%
   summarise(.groups = "drop") %>%
-  sf::st_make_valid() %>%
-  rename_with(.fn = ~"strata_name",
-              .cols = dplyr::any_of(c("strata_name", "ST_12"))) %>%
-  mutate(area_sq_km = as.numeric(units::set_units(st_area(.), "km^2")))
+  #st_cast("POLYGON") %>%
+  mutate(area_sq_km = as.numeric(units::set_units(st_area(.), "km^2"))) %>%
+  filter(area_sq_km > 1) %>%
+  st_cast("MULTIPOLYGON")
 
 st_write(bcr_new,
          file.path("inst/maps/",
+                   "bcr_strata.gpkg"), append = FALSE)
+st_write(bcr_new,
+         file.path(system.file("maps", package = "bbsBayes2"),
                    "bcr_strata.gpkg"), append = FALSE)
 
 
@@ -52,7 +58,7 @@ bbs_new <- "data-raw/maps_orig/bcr_2025_lakes12_statprov3.gpkg" %>%
   read_sf() %>%
   sf::st_transform(crs = bbsBayes2::equal_area_crs)
 
-bbs_new <- rmapshaper::ms_simplify(bbs_new, keep = 0.1,
+bbs_new <- rmapshaper::ms_simplify(bbs_new, keep = 0.05,
                                 keep_shapes = TRUE) %>%
 mutate(strata_name = paste0(country_code,"-",statprov_code,"-",bcr_label)) %>%
   st_make_valid() %>% # As needed when st_is_valid() fails
@@ -70,11 +76,15 @@ mutate(strata_name = paste0(country_code,"-",statprov_code,"-",bcr_label)) %>%
                              country_code == "MX" ~ "Mexico"),
          bcr_by_country = paste0(country, "-BCR_", bcr)) %>%
   select(strata_name, area_sq_km, country, country_code, prov_state, bcr,
-         bcr_by_country)
+         bcr_by_country) %>%
+  st_cast("MULTIPOLYGON")
 
 st_write(bbs_new,
          file.path("inst/maps/",
                    "bbs_strata.gpkg"), append = FALSE)
+st_write(bbs_new,
+file.path(system.file("maps", package = "bbsBayes2"),
+          "bbs_strata.gpkg"), append = FALSE)
 
 
 # tst <- ggplot()+
@@ -112,7 +122,9 @@ strata_bbs_usgs <- "data-raw/maps_orig/BBS_USGS_strata.shp" %>%
 #                  select(names(s)),
 #                arrange(s, strata_name), tolerance = 0.1)
 
-
+st_write(strata_bbs_usgs,
+         file.path("inst/maps/",
+                   "bbs_usgs_strata.gpkg"), append = FALSE)
 st_write(strata_bbs_usgs,
          file.path(system.file("maps", package = "bbsBayes2"),
                    "bbs_usgs_strata.gpkg"), append = FALSE)
@@ -145,7 +157,10 @@ st_write(strata_bbs_cws,
                    "bbs_cws_strata.gpkg"), append = FALSE)
 
 
-# BCR ----------------------------------------------------
+st_write(strata_bbs_cws,
+         file.path("inst/maps/",
+                   "bbs_cws_strata.gpkg"), append = FALSE)
+# BCR Old ----------------------------------------------------
 # Old BCR stratification
 strata_bcr_old <- "data-raw/maps_orig/BBS_BCR_strata.shp" %>%
   sf::read_sf() %>%
@@ -164,51 +179,87 @@ strata_bcr_old <- "data-raw/maps_orig/BBS_BCR_strata.shp" %>%
 
 st_write(strata_bcr_old, file.path(system.file("maps", package = "bbsBayes2"),
                                "bcr_old_strata.gpkg"), append = FALSE)
+
+st_write(strata_bcr_old,
+         file.path("inst/maps/",
+                   "bcr_old_strata.gpkg"), append = FALSE)
 # #
+
+
+
 # Latitude/Longitude -------------------------------------------------
 # updated to include the land area included in "bbs" stratification
 
-bbs_strat <- load_map("bbs") %>%
-  st_transform(crs = 4326) #wgs84 epsg
 
-bbs_boundary <- bbs_strat %>%
-  summarise()
-bb <- st_bbox(bbs_strat)
+bbs_boundary <- bcr_new %>%
+  summarise()%>%
+  st_transform(crs = 4326)%>%
+  st_make_valid()
+
+bb <- st_bbox(bbs_boundary)
 
 
-grid <- sf::st_make_grid(bbs_strat,
+grid <- sf::st_make_grid(bbs_boundary,
                          cellsize = c(1,1),
-                         offset = c(floor(bb["xmin"]),floor(bb["ymin"])))
+                         offset = c(floor(bb["xmin"]),floor(bb["ymin"])))%>%
+  st_make_valid()%>%
+  st_cast("POLYGON")
 
 coords <- st_coordinates(grid) %>%
   as_tibble() %>%
   group_by(L2) %>%
-  summarise(X = min(X),  # named by bottom left corner
-            Y = min(Y)) %>% # bottom left corner
+  summarise(X = max(X),  # named by bottom right corner because longitude values negative
+            Y = min(Y)) %>% # bottom right corner
   mutate(strata_name = paste0(Y,"_",
                               X))
 
 grid <- grid %>%
   st_as_sf() %>%
-  bind_cols(coords)
+  bind_cols(coords)%>%
+  st_make_valid()%>%
+  st_cast("POLYGON")
 
+#put both boundary and grid into the equal area projection before intersection
+grid2 <- grid %>% st_transform(crs = st_crs(bbs_new))
+bbs_boundary2 <- bbs_boundary %>% st_transform(crs = st_crs(bbs_new))
 
-strata_latlong <- st_intersection(grid,bbs_boundary) %>%
+strata_latlong <- st_intersection(grid2,bbs_boundary2) %>%
   st_make_valid() %>%
-  st_transform(crs = bbsBayes2::equal_area_crs) %>%
-  select(strata_name)
+  select(strata_name) %>%
+  group_by(strata_name) %>%
+  summarise() %>%
+  st_make_valid()%>%
+  st_cast("MULTIPOLYGON")
 
-areakm <- strata_latlong %>%
+
+aream <- strata_latlong %>%
   st_area() %>%
   as.numeric()
 
-strata_latlong$area_sq_km <- areakm/1e6
+strata_latlong$area_sq_km <- aream/1e6
 
 strata_latlong <- strata_latlong %>%
-  select(strata_name,area_sq_km)
+  select(strata_name,area_sq_km)%>%
+  filter(area_sq_km > 1) %>%
+  st_make_valid()
 
 st_write(strata_latlong, file.path(system.file("maps", package = "bbsBayes2"),
                                    "latlong_strata.gpkg"), append = FALSE)
+st_write(strata_latlong,
+         file.path("inst/maps/",
+                   "latlong_strata.gpkg"), append = FALSE)
+
+# confirming that the routes fall in the correct strata based on floor(coordinate)
+# s <- stratify("latlong","American Robin", distance_to_strata = 3000)
+# tmp <- s$routes_strata
+# rt_sum <- tmp %>%
+#   select(route,latitude,longitude,strata_name) %>%
+#   mutate(lat = as.integer(floor(latitude)),
+#          long = as.integer(floor(longitude))) %>%
+#   distinct() %>%
+#   mutate(strat_alt = paste0(lat,"_",long),
+#          check = ifelse(strat_alt == strata_name,TRUE,FALSE))
+#
 
 
 #
@@ -267,6 +318,9 @@ strata_prov_state <- "data-raw/maps_orig/BBS_ProvState_strata.shp" %>%
 st_write(strata_prov_state, file.path(system.file("maps", package = "bbsBayes2"),
                                       "prov_state_strata.gpkg"), append = FALSE)
 
+st_write(strata_prov_state,
+         file.path("inst/maps/",
+                   "prov_state_strata.gpkg"), append = FALSE)
 
 # Save for use by users and functions -------------------
 bbs_strata <- list("bbs" = st_drop_geometry(bbs_new),

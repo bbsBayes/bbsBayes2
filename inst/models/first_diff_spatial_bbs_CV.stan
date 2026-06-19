@@ -251,19 +251,33 @@ model {
 
   BETA_raw_2020 ~ std_normal(); // overall mean difference between 2019 and 2021
 
-for(t in 1:(n_years_m1)){
-
+for(t in Iy1){
   if(y_2020[t]){ // all years not equal to 2020
     target += -0.5 * dot_self(beta_raw[t,node1] - beta_raw[t,node2]); // ICAR prior
   }else{ //if year is on either side of 2020 - no spatial variance because there are no BBS observations in 2020
-//These values are currently meaningless because they are not included in the likelihood
-// for years with y_2020[t] == 1, these values are ignored in favour of the values
-// from gamma_2020 + GAMMA_2020
-     beta_raw[t,] ~ std_normal(); //random values but ignored in likelihood and calculation of beta[s,t] values
+// //These values are currently meaningless because they are not included in the likelihood
+// // for years with y_2020[t] == 1, these values are ignored in favour of the values
+// // from gamma_2020 + GAMMA_2020
+      beta_raw[t,] ~ std_normal(); //random values but ignored in likelihood and calculation of beta[s,t] values
+//
+//   }
+}
+}
 
-  }
+for(t in Iy2){
+  if(y_2020[t]){ // all years not equal to 2020
+    target += -0.5 * dot_self(beta_raw[t-1,node1] - beta_raw[t-1,node2]); // ICAR prior
+  }else{ //if year is on either side of 2020 - no spatial variance because there are no BBS observations in 2020
+// //These values are currently meaningless because they are not included in the likelihood
+// // for years with y_2020[t] == 1, these values are ignored in favour of the values
+// // from gamma_2020 + GAMMA_2020
+      beta_raw[t-1,] ~ std_normal(); //random values but ignored in likelihood and calculation of beta[s,t] values
+//
+//   }
 
 }
+}
+
 
    target += -0.5 * dot_self(strata_raw[node1] - strata_raw[node2]); // ICAR prior
 

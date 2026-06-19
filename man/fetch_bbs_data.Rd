@@ -6,7 +6,7 @@
 \usage{
 fetch_bbs_data(
   level = "state",
-  release = 2025,
+  release = 2026,
   force = FALSE,
   quiet = FALSE,
   compression = "none",
@@ -46,8 +46,8 @@ of the information in the data release meta data.}
 Fetch and download Breeding Bird Survey data from the United States
 Geological Survey (USGS) FTP site. This is the raw data that is uploaded to
 the site before any analyses are performed. Users can download different
-types (\code{state}, \code{stop}) and different releases (currently \code{2020}, \code{2022},
-\code{2023}, \code{2024}, and \code{2025}).
+types (\code{state}, \code{stop}) and different releases (currently \code{2020}, and annually
+for years \code{2022} though \code{2026}).
 }
 \details{
 Users will be asked before saving the BBS data to a package-specific
@@ -62,17 +62,20 @@ beginning in 1997, which includes counts for each individual stop along
 routes. \strong{Note that stop-level data is not currently supported by the
 modelling utilities in bbsBayes2.}
 
-There are multiple releases for each type of data, \code{2020}, \code{2022}, \code{2023},
-\code{2024} and \code{2025}.
+There are multiple releases for each type of data, \code{2020}, and annual releases
+for years \code{2022} through \code{2026}.
 By default all functions use the most recent release unless otherwise
 specified. For example, the \code{release} argument in \code{stratify()} can be
 changed to \code{2020} to use the 2020 release of state-level counts.
 
 bbsBayes2 by default removes observations from routes that were not
 established following the stratified random design, the handful of routes
-that are on water (not on roadsides), and any survey that was not conducted
-within acceptable survey conditions (high winds, heavy precipitation,
-outside of the acceptable time windows).
+that are on water (not on roadsides), that we established without using
+the stratified random design (e.g., within protected areas), any survey
+that was not conducted during acceptable survey conditions (high winds,
+heavy precipitation, or outside of the acceptable time windows), and surfeys
+that were not completed (< 45 of the 50 stops were surveyed, often for unsafe
+survey conditions or degrading weather conditions).
 }
 \examples{
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}

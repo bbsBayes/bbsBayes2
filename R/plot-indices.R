@@ -156,8 +156,7 @@ plot_indices <- function(indices = NULL,
       ggplot2::labs(title = t,
                     x = "Year",
                     y = "Annual index of abundance\n(mean count)") +
-      ggplot2::scale_x_continuous(breaks = ~floor(pretty(.x))) +
-      ggplot2::scale_y_continuous(limits = c(0, NA))
+      ggplot2::scale_x_continuous(breaks = ~floor(pretty(.x)))
 
 
 
@@ -167,9 +166,13 @@ plot_indices <- function(indices = NULL,
                             ggplot2::aes(x = as.integer(.data$year),
                                          y = .data$obs_mean),
                             colour = "grey60", na.rm = TRUE)
+      max_uci <- max(to_plot$obs_mean,na.rm = TRUE)*1.0
+    }else{
+      max_uci <- 0
     }
 
     if(spaghetti){
+      max_uci <- max(c(max_uci,max(to_plot_spaghetti$index,na.rm = TRUE)),na.rm = TRUE)
     p <- p +
       ggplot2::geom_line(
         data = to_plot_spaghetti, ggplot2::aes(x = .data$year, y = .data$index,
@@ -177,6 +180,7 @@ plot_indices <- function(indices = NULL,
         colour = cl, linewidth = line_width,
         alpha = alpha_spaghetti)
     }else{
+      max_uci <- max(c(max_uci,max(to_plot$uci,na.rm = TRUE)),na.rm = TRUE)
       p <- p +
         ggplot2::geom_line(
           data = to_plot, ggplot2::aes(x = .data$year, y = .data$index),
@@ -195,7 +199,11 @@ plot_indices <- function(indices = NULL,
           colour = "grey60", alpha = 0.2, dotsize = 0.3) +
         ggplot2::annotate(
           geom = "text", x = min(dattc$year) + 5, y = 0, label = annot,
-          alpha = 0.4, colour = "grey60")
+          alpha = 0.4, colour = "grey60")+
+        ggplot2::scale_y_continuous(limits = c(0, max_uci))
+    }else{
+      p <- p  +
+        ggplot2::scale_y_continuous(limits = c(0, NA))
     }
 
     plot_list[[stringr::str_replace_all(paste(i), "[[:punct:]\\s]+", "_")]] <- p

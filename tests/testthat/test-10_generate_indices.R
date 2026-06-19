@@ -1,7 +1,7 @@
 expect_silent({
   r <- pacific_wren_model
-  #20 iterations x 2 chains = 40
-  n_iter <- r$model_fit$metadata()$iter_sampling * r$model_fit$num_chains()
+  #20 iterations x 2 chains = 40 includes thinning by 50
+  n_iter <- r$model_fit$metadata()$iter_sampling * r$model_fit$num_chains() / 50
 
   n_yrs <- r$model_data$n_years
   n_strata <- dplyr::n_distinct(r$raw_data$strata_name)
@@ -10,7 +10,7 @@ expect_silent({
 
 test_that("samples_to_array()", {
 
-  n <- r$model_fit$draws(variables = "n", format = "draws_matrix")
+  n <- r$model_fit$draws(variables = "n", format = "draws_matrix") #n[s,y] in model
 
   yrs <- sort(unique(r$raw_data$year))
   expect_silent(n2 <- samples_to_array(
@@ -25,10 +25,9 @@ test_that("samples_to_array()", {
 
   n1 <- unclass(n)
 
-  expect_equal(n1[, 1:19], n2[, , 1], ignore_attr = TRUE)
-  expect_equal(n1[, 20:38], n2[, , 2], ignore_attr = TRUE)
-  expect_equal(n1[, 39:57], n2[, , 3], ignore_attr = TRUE)
-  expect_equal(n1[, 96:114], n2[, , 6], ignore_attr = TRUE)
+  expect_equal(n1[, 1:r$model_data$n_strata], n2[, 1:r$model_data$n_strata, 1], ignore_attr = TRUE)
+  expect_equal(n1[, (r$model_data$n_strata+1):(r$model_data$n_strata*2)], n2[, 1:(r$model_data$n_strata), 2], ignore_attr = TRUE)
+
 
   # Check year range
   yrs <- 1995:2018
