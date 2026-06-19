@@ -28,7 +28,8 @@ Imports:
     stringr,
     tidyr (>= 1.2.0),
     units (>= 0.8.0),
-    withr (>= 2.5.0)
+    withr (>= 2.5.0),
+    cmdstanr
 Depends: R (>= 3.5)
 SystemRequirements: CmdStan (https://mc-stan.org/users/interfaces/cmdstan)
 URL: https://github.com/bbsBayes/bbsBayes2,
