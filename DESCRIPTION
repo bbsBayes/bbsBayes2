@@ -30,7 +30,7 @@ Imports:
     units (>= 0.8.0),
     withr (>= 2.5.0),
     cmdstanr
-Depends: R (>= 3.5)
+Depends: R (>= 4.1)
 SystemRequirements: CmdStan (https://mc-stan.org/users/interfaces/cmdstan)
 URL: https://github.com/bbsBayes/bbsBayes2,
     https://bbsbayes.github.io/bbsBayes2/
@@ -54,7 +54,6 @@ LazyData: true
 LazyDataCompression: bzip2
 Roxygen: list(markdown = TRUE)
 Suggests: 
-    cmdstanr,
     covr,
     knitr,
     rmarkdown,
