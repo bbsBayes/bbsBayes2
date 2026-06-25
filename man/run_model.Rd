@@ -144,8 +144,8 @@ m <- run_model(pm, iter_warmup = 20, iter_sampling = 20, chains = 2)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other modelling functions: 
-\code{\link{copy_model_file}()},
-\code{\link{save_model_run}()}
+Other modelling functions:
+\code{\link[=copy_model_file]{copy_model_file()}},
+\code{\link[=save_model_run]{save_model_run()}}
 }
 \concept{modelling functions}

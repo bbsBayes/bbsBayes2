@@ -24,6 +24,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Brandon P.M. Edwards \email{brandonedwards3@cmail.carleton.ca}
   \item Adam C. Smith \email{adam.smith@ec.gc.ca}
   \item Steffi LaZerte \email{steffi@steffi.ca}
 }

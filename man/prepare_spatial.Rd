@@ -105,9 +105,9 @@ sp$spatial_data$map
 
 }
 \seealso{
-Other Data prep functions: 
-\code{\link{prepare_data}()},
-\code{\link{prepare_model}()},
-\code{\link{stratify}()}
+Other Data prep functions:
+\code{\link[=prepare_data]{prepare_data()}},
+\code{\link[=prepare_model]{prepare_model()}},
+\code{\link[=stratify]{stratify()}}
 }
 \concept{Data prep functions}

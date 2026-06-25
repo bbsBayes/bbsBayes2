@@ -187,10 +187,10 @@ t <- generate_trends(i, prob_decrease = 50)
 
 }
 \seealso{
-Other indices and trends functions: 
-\code{\link{generate_indices}()},
-\code{\link{plot_geofacet}()},
-\code{\link{plot_indices}()},
-\code{\link{plot_map}()}
+Other indices and trends functions:
+\code{\link[=generate_indices]{generate_indices()}},
+\code{\link[=plot_geofacet]{plot_geofacet()}},
+\code{\link[=plot_indices]{plot_indices()}},
+\code{\link[=plot_map]{plot_map()}}
 }
 \concept{indices and trends functions}

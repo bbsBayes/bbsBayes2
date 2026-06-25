@@ -52,7 +52,6 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: bzip2
-RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Suggests: 
     cmdstanr,
@@ -66,3 +65,4 @@ Suggests:
 Additional_repositories: https://mc-stan.org/r-packages/, https://ropensci.r-universe.dev
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

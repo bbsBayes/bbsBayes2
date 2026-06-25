@@ -43,8 +43,8 @@ search_species("northern flicker", combine_species_forms = FALSE)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other helper functions: 
-\code{\link{assign_prov_state}()},
-\code{\link{load_map}()}
+Other helper functions:
+\code{\link[=assign_prov_state]{assign_prov_state()}},
+\code{\link[=load_map]{load_map()}}
 }
 \concept{helper functions}

@@ -41,8 +41,8 @@ unlink(file.path(tempdir(), "slope_spatial_bbs_CV_COPY.stan"))
 
 }
 \seealso{
-Other modelling functions: 
-\code{\link{run_model}()},
-\code{\link{save_model_run}()}
+Other modelling functions:
+\code{\link[=run_model]{run_model()}},
+\code{\link[=save_model_run]{save_model_run()}}
 }
 \concept{modelling functions}

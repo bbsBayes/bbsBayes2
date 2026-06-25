@@ -207,9 +207,9 @@ s <- stratify(by = "WBPHS_2019", strata_map = map)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other Data prep functions: 
-\code{\link{prepare_data}()},
-\code{\link{prepare_model}()},
-\code{\link{prepare_spatial}()}
+Other Data prep functions:
+\code{\link[=prepare_data]{prepare_data()}},
+\code{\link[=prepare_model]{prepare_model()}},
+\code{\link[=prepare_spatial]{prepare_spatial()}}
 }
 \concept{Data prep functions}

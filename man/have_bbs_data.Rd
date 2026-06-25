@@ -29,9 +29,9 @@ have_bbs_data(release = 2020)
 have_bbs_data(release = "all", level = "all")
 }
 \seealso{
-Other BBS data functions: 
-\code{\link{fetch_bbs_data}()},
-\code{\link{load_bbs_data}()},
-\code{\link{remove_cache}()}
+Other BBS data functions:
+\code{\link[=fetch_bbs_data]{fetch_bbs_data()}},
+\code{\link[=load_bbs_data]{load_bbs_data()}},
+\code{\link[=remove_cache]{remove_cache()}}
 }
 \concept{BBS data functions}

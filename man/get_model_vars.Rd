@@ -31,8 +31,8 @@ get_model_vars(pacific_wren_model, all = TRUE)
 
 }
 \seealso{
-Other model assessment functions: 
-\code{\link{get_convergence}()},
-\code{\link{get_summary}()}
+Other model assessment functions:
+\code{\link[=get_convergence]{get_convergence()}},
+\code{\link[=get_summary]{get_summary()}}
 }
 \concept{model assessment functions}
