@@ -45,7 +45,7 @@
 #'   errors. For example, the map associated with the standard `bbs`
 #'   stratification excludes 3,877 surveys on 72 routes when this argument is
 #'   NULL. All of these 72 routes have starting locations on the coasts.
-#'   Setting this argument to 3000 (any route within 3 km of a polygon) ensures
+#'   Setting this argument to 4000 (any route within 4 km of a polygon) ensures
 #'   all of these coastal routes are included. Default `NULL`.
 #'   Caution: Users should be cautious of using this argument if the strata map
 #'   does not represent the full landmass of Canada and the United States. For
