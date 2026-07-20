@@ -276,16 +276,29 @@ stratify <- function(by,
 
   if(stratify_type != "custom" & !use_map) {
     # Stratify by established groups
-    routes <- dplyr::mutate(
-      routes,
-      strata_name = dplyr::case_when(
-        stratify_by == "prov_state" ~ .data$st_abrev,
-        stratify_by == "bcr_old" ~ paste0("BCR", .data$bcr),
-        stratify_by == "latlong" ~ paste0(trunc(.data$latitude),
-                                    "_",
-                                    trunc(.data$longitude)),
-        stratify_by %in% c("bbs_usgs", "bbs_cws") ~
-          paste0(.data$country, "-", .data$st_abrev, "-", .data$bcr)))
+
+    if(stratify_by == "prov_state"){
+      routes <- dplyr::mutate(
+        routes,
+        strata_name = .data$st_abrev)
+    } else if(stratify_by == "bcr_old") {
+      routes <- dplyr::mutate(
+        routes,
+        strata_name = paste0("BCR", .data$bcr))
+    } else if(stratify_by == "latlong") {
+      routes <- dplyr::mutate(
+        routes,
+        strata_name = paste0(trunc(.data$latitude),
+                             "_",
+                             trunc(.data$longitude)))
+    } else if( stratify_by %in% c("bbs_usgs", "bbs_cws")) {
+      routes <- dplyr::mutate(
+        routes,
+        strata_name = paste0(.data$country, "-",
+                             .data$st_abrev, "-",
+                             .data$bcr))
+    }
+
 
     if(stratify_type == "subset") {
       meta_strata <- strata_custom %>%
