@@ -22,6 +22,10 @@
 #'   understand the information in at least the following columns of the route
 #'   survey info: RouteTypeID, RouteTypeDetailID, RPID, RunType, and the rest
 #'   of the information in the data release meta data.
+#' @param interactive Logical. Default is TRUE, to allow users to see and agree
+#'   to the data terms. If set to FALSE, then the download takes place without
+#'   the user's input, useful for scripted processes such as running analyses
+#'   in HPC environments or building containers.
 #'
 #' @inheritParams common_docs
 #' @family BBS data functions
@@ -70,15 +74,17 @@ fetch_bbs_data <- function(level = "state",
                            force = FALSE,
                            quiet = FALSE,
                            compression = "none",
-                           include_unacceptable = FALSE) {
+                           include_unacceptable = FALSE,
+                           interactive = TRUE) {
 
   check_in(level, c("state", "stop"))
   check_release(release)
 
-  check_logical(c(quiet, force))
+  check_logical(c(quiet, force, interactive))
 
   out_file <- check_bbs_data(level, release, force, quiet)
 
+  if(interactive){
   # Print Terms of Use
   terms <- readChar(system.file(paste0("data-terms-",release),
                                 package = "bbsBayes2"),
@@ -88,7 +94,7 @@ fetch_bbs_data <- function(level = "state",
   message(terms)
   agree <- readline(prompt = "Type \"yes\" (without quotes) to agree: ")
   if(agree != "yes") return(NULL)
-
+  }
   fetch_bbs_data_internal(level, release, force, quiet, out_file, compression,
                           include_unacceptable)
 }
