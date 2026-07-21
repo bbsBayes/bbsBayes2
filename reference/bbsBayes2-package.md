@@ -32,6 +32,8 @@ Useful links:
 
 Authors:
 
+- Brandon P.M. Edwards <brandonedwards3@cmail.carleton.ca>
+
 - Adam C. Smith <adam.smith@ec.gc.ca>
 
 - Steffi LaZerte <steffi@steffi.ca>

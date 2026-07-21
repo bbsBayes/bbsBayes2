@@ -1,12 +1,12 @@
 pandoc: 3.8.3
-pkgdown: 2.2.0
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   articles/advanced: advanced.html
   articles/bbsBayes2: bbsBayes2.html
   articles/models: models.html
   articles/stratification: stratification.html
-last_built: 2026-06-19T19:56Z
+last_built: 2026-07-21T14:33Z
 urls:
   reference: https://bbsbayes.github.io/bbsBayes2/reference
   article: https://bbsbayes.github.io/bbsBayes2/articles

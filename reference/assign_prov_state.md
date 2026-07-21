@@ -61,21 +61,21 @@ assign_prov_state(map, plot = TRUE)
 #> Simple feature collection with 227 features and 7 fields
 #> Geometry type: GEOMETRY
 #> Dimension:     XY
-#> Bounding box:  xmin: -5030340 ymin: -1683720 xmax: 2990016 ymax: 4517219
+#> Bounding box:  xmin: -5030219 ymin: -1687082 xmax: 2990016 ymax: 4517219
 #> Projected CRS: North_America_Albers_Equal_Area_Conic
 #> # A tibble: 227 × 8
 #>    strata_name prov_state country                  country_code province_state  
 #>  * <chr>       <chr>      <chr>                    <chr>        <chr>           
-#>  1 BCR10       BC         United States of America US           Washington      
-#>  2 BCR5        BC         United States of America US           Washington      
-#>  3 BCR9        NV         United States of America US           Washington      
-#>  4 BCR10       BC         Canada                   CA           British Columbia
-#>  5 BCR4        AK         Canada                   CA           British Columbia
-#>  6 BCR5        BC         Canada                   CA           British Columbia
-#>  7 BCR6N       NT         Canada                   CA           British Columbia
-#>  8 BCR6S       AB         Canada                   CA           British Columbia
-#>  9 BCR9        NV         Canada                   CA           British Columbia
-#> 10 BCR10       BC         United States of America US           Idaho           
+#>  1 bcr10       BC         United States of America US           Washington      
+#>  2 bcr5        BC         United States of America US           Washington      
+#>  3 bcr9        NV         United States of America US           Washington      
+#>  4 bcr10       BC         Canada                   CA           British Columbia
+#>  5 bcr4        AK         Canada                   CA           British Columbia
+#>  6 bcr5        BC         Canada                   CA           British Columbia
+#>  7 bcr71       NT         Canada                   CA           British Columbia
+#>  8 bcr72       AB         Canada                   CA           British Columbia
+#>  9 bcr9        NV         Canada                   CA           British Columbia
+#> 10 bcr10       BC         United States of America US           Idaho           
 #> # ℹ 217 more rows
 #> # ℹ 3 more variables: geom <GEOMETRY [m]>, p_area <dbl>, note <chr>
 

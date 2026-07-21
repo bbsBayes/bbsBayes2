@@ -98,7 +98,7 @@ stratify(
   the map associated with the standard `bbs` stratification excludes
   3,877 surveys on 72 routes when this argument is NULL. All of these 72
   routes have starting locations on the coasts. Setting this argument to
-  3000 (any route within 3 km of a polygon) ensures all of these coastal
+  4000 (any route within 4 km of a polygon) ensures all of these coastal
   routes are included. Default `NULL`. Caution: Users should be cautious
   of using this argument if the strata map does not represent the full
   landmass of Canada and the United States. For example using a subset
@@ -172,7 +172,7 @@ s <- stratify(by = "bbs", sample_data = TRUE)
 #>   Calculating area weights...
 #>   Joining routes to spatial layer...
 #>   Renaming routes...
-#>   Omitting 362/5,480 surveys, on 17 unique routes that do not match a stratum.
+#>   Omitting 329/5,480 surveys, on 15 unique routes that do not match a stratum.
 #>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
 # omits some routes so using distance_to_strata to capture coastal routes
 s <- stratify(by = "bbs", sample_data = TRUE, distance_to_strata = 2000)
@@ -186,8 +186,6 @@ s <- stratify(by = "bbs", sample_data = TRUE, distance_to_strata = 2000)
 #>   Joining routes to spatial layer...
 #> Joining routes within 2000 m of strata boundaries
 #>   Renaming routes...
-#>   Omitting 32/5,480 surveys, on 1 unique routes that do not match a stratum.
-#>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
 
 # Full data - species and stratification
 # Use `search_species()` to get correct species name
@@ -240,8 +238,6 @@ s <- stratify(by = "bcr", species = "Great Horned Owl",
 #>   Joining routes to spatial layer...
 #> Joining routes within 4000 m of strata boundaries
 #>   Renaming routes...
-#>   Omitting 92/130,138 surveys, on 4 unique routes that do not match a stratum.
-#>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
 
 # Stratify by former CWS BBS strata
 s <- stratify(by = "bbs_cws", species = "Canada Jay",
@@ -271,8 +267,6 @@ s <- stratify(by = "latlong", species = "Snowy Owl",
 #> Filtering to species Snowy Owl (3760)
 #> Stratifying data...
 #>   Renaming routes...
-#>   Omitting 33/130,138 surveys, on 1 unique routes that do not match a stratum.
-#>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
 
 # Check routes omitted by stratification
 s <- stratify(by = "latlong", species = "Snowy Owl", return_omitted = TRUE)
@@ -284,10 +278,10 @@ s <- stratify(by = "latlong", species = "Snowy Owl", return_omitted = TRUE)
 #>   Calculating area weights...
 #>   Joining routes to spatial layer...
 #>   Renaming routes...
-#>   Omitting 1,448/130,138 surveys, on 73 unique routes that do not match a stratum.
+#>   Omitting 1,447/130,138 surveys, on 71 unique routes that do not match a stratum.
 #>     Returning omitted routes.
 s[["routes_omitted"]]
-#> # A tibble: 1,448 × 11
+#> # A tibble: 1,447 × 11
 #>     year strata_name country state   route route_name latitude longitude   bcr
 #>    <dbl> <chr>       <chr>   <chr>   <chr> <chr>         <dbl>     <dbl> <dbl>
 #>  1  1967 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
@@ -300,7 +294,7 @@ s[["routes_omitted"]]
 #>  8  1975 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
 #>  9  1977 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
 #> 10  1981 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
-#> # ℹ 1,438 more rows
+#> # ℹ 1,437 more rows
 #> # ℹ 2 more variables: obs_n <dbl>, total_spp <dbl>
 
 # Use combined or non-combined species forms
