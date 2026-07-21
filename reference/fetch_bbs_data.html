@@ -15,7 +15,7 @@ for years 2022 though 2026)."><meta property="og:image" content="https://bbsbaye
 
     <a class="navbar-brand me-2" href="../index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2026.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2026.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,8 @@ for years <code>2022</code> though <code>2026</code>).</p>
 <span>  force <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  compression <span class="op">=</span> <span class="st">"none"</span>,</span>
-<span>  include_unacceptable <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  include_unacceptable <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -104,6 +105,13 @@ the BBS data that do not fit the BBS structured survey design, be sure you
 understand the information in at least the following columns of the route
 survey info: RouteTypeID, RouteTypeDetailID, RPID, RunType, and the rest
 of the information in the data release meta data.</p></dd>
+
+
+<dt id="arg-interactive">interactive<a class="anchor" aria-label="anchor" href="#arg-interactive"></a></dt>
+<dd><p>Logical. Default is TRUE, to allow users to see and agree
+to the data terms. If set to FALSE, then the download takes place without
+the user's input, useful for scripted processes such as running analyses
+in HPC environments or building containers.</p></dd>
 
 </dl></div>
     <div class="section level2">

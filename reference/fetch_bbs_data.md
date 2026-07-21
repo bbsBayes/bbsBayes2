@@ -15,7 +15,8 @@ fetch_bbs_data(
   force = FALSE,
   quiet = FALSE,
   compression = "none",
-  include_unacceptable = FALSE
+  include_unacceptable = FALSE,
+  interactive = TRUE
 )
 ```
 
@@ -60,6 +61,13 @@ fetch_bbs_data(
   the information in at least the following columns of the route survey
   info: RouteTypeID, RouteTypeDetailID, RPID, RunType, and the rest of
   the information in the data release meta data.
+
+- interactive:
+
+  Logical. Default is TRUE, to allow users to see and agree to the data
+  terms. If set to FALSE, then the download takes place without the
+  user's input, useful for scripted processes such as running analyses
+  in HPC environments or building containers.
 
 ## Details
 

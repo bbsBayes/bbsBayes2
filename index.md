@@ -1,4 +1,4 @@
-# bbsBayes2 1.2026.1 Released July, 2026 - Updated BCRs and BCR names.
+# bbsBayes2 1.2026.2 Released July, 2026 - Updated BCRs and BCR names.
 
 Details on new releases below.
 
@@ -77,8 +77,13 @@ additional options and newest updates), you can use the following. NOTE:
 bbsBayes2 is supported by a small team of committed researchers with
 limited capacity. The development branch may not be stable.
 
-`{r} pak::pkg_install("bbsBayes/bbsBayes2@dev")` \# bbsBayes2 1.2026.1
-Released July, 2026 - Updated BCRs and BCR names.
+`{r} pak::pkg_install("bbsBayes/bbsBayes2@dev")` \# bbsBayes2 1.2026.2
+Released July, 2026 - Non-interactive data download.
+
+- Adding option to run `fetch_bbs_data(interactive = FALSE)`, to allow
+  non-interactive data download.
+
+# bbsBayes2 1.2026.1 Released July, 2026 - Updated BCRs and BCR names.
 
 - Small update to reconcile the *bbs* and *bcr* stratifications to
   include the updated BCR names for the split northern BCRs. BCRs 3, 6,
