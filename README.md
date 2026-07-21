@@ -80,6 +80,11 @@ NOTE: bbsBayes2 is supported by a small team of committed researchers with limit
 ```{r}
 pak::pkg_install("bbsBayes/bbsBayes2@dev")
 ```
+# bbsBayes2 1.2026.1 Released July, 2026 - Updated BCRs and BCR names.
+
+-   Small update to reconcile the *bbs* and *bcr* stratifications to include the updated BCR names for the split northern BCRs. BCRs 3, 6, 7, and 8 are now split and renumbered to 69 through 77.
+
+  
 # bbsBayes2 1.2026.0 Released June, 2026 - Access to 2026 data release.
 
 -   Updated to access the most recent data release
