@@ -45,7 +45,7 @@
 #'   errors. For example, the map associated with the standard `bbs`
 #'   stratification excludes 3,877 surveys on 72 routes when this argument is
 #'   NULL. All of these 72 routes have starting locations on the coasts.
-#'   Setting this argument to 3000 (any route within 3 km of a polygon) ensures
+#'   Setting this argument to 4000 (any route within 4 km of a polygon) ensures
 #'   all of these coastal routes are included. Default `NULL`.
 #'   Caution: Users should be cautious of using this argument if the strata map
 #'   does not represent the full landmass of Canada and the United States. For
@@ -276,16 +276,29 @@ stratify <- function(by,
 
   if(stratify_type != "custom" & !use_map) {
     # Stratify by established groups
-    routes <- dplyr::mutate(
-      routes,
-      strata_name = dplyr::case_when(
-        stratify_by == "prov_state" ~ .data$st_abrev,
-        stratify_by == "bcr_old" ~ paste0("BCR", .data$bcr),
-        stratify_by == "latlong" ~ paste0(trunc(.data$latitude),
-                                    "_",
-                                    trunc(.data$longitude)),
-        stratify_by %in% c("bbs_usgs", "bbs_cws") ~
-          paste0(.data$country, "-", .data$st_abrev, "-", .data$bcr)))
+
+    if(stratify_by == "prov_state"){
+      routes <- dplyr::mutate(
+        routes,
+        strata_name = .data$st_abrev)
+    } else if(stratify_by == "bcr_old") {
+      routes <- dplyr::mutate(
+        routes,
+        strata_name = paste0("BCR", .data$bcr))
+    } else if(stratify_by == "latlong") {
+      routes <- dplyr::mutate(
+        routes,
+        strata_name = paste0(trunc(.data$latitude),
+                             "_",
+                             trunc(.data$longitude)))
+    } else if( stratify_by %in% c("bbs_usgs", "bbs_cws")) {
+      routes <- dplyr::mutate(
+        routes,
+        strata_name = paste0(.data$country, "-",
+                             .data$st_abrev, "-",
+                             .data$bcr))
+    }
+
 
     if(stratify_type == "subset") {
       meta_strata <- strata_custom %>%

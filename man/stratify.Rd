@@ -69,7 +69,7 @@ shoreline of large lakes, which may be otherwise excluded due to plotting
 errors. For example, the map associated with the standard \code{bbs}
 stratification excludes 3,877 surveys on 72 routes when this argument is
 NULL. All of these 72 routes have starting locations on the coasts.
-Setting this argument to 3000 (any route within 3 km of a polygon) ensures
+Setting this argument to 4000 (any route within 4 km of a polygon) ensures
 all of these coastal routes are included. Default \code{NULL}.
 Caution: Users should be cautious of using this argument if the strata map
 does not represent the full landmass of Canada and the United States. For
@@ -207,9 +207,9 @@ s <- stratify(by = "WBPHS_2019", strata_map = map)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other Data prep functions: 
-\code{\link{prepare_data}()},
-\code{\link{prepare_model}()},
-\code{\link{prepare_spatial}()}
+Other Data prep functions:
+\code{\link[=prepare_data]{prepare_data()}},
+\code{\link[=prepare_model]{prepare_model()}},
+\code{\link[=prepare_spatial]{prepare_spatial()}}
 }
 \concept{Data prep functions}

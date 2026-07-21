@@ -35,8 +35,8 @@ ggplot(data = strat_map) +
 
 }
 \seealso{
-Other helper functions: 
-\code{\link{assign_prov_state}()},
-\code{\link{search_species}()}
+Other helper functions:
+\code{\link[=assign_prov_state]{assign_prov_state()}},
+\code{\link[=search_species]{search_species()}}
 }
 \concept{helper functions}

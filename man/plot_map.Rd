@@ -75,10 +75,10 @@ plot_map(t, alternate_column = "trend_q_0.05")
 
 }
 \seealso{
-Other indices and trends functions: 
-\code{\link{generate_indices}()},
-\code{\link{generate_trends}()},
-\code{\link{plot_geofacet}()},
-\code{\link{plot_indices}()}
+Other indices and trends functions:
+\code{\link[=generate_indices]{generate_indices()}},
+\code{\link[=generate_trends]{generate_trends()}},
+\code{\link[=plot_geofacet]{plot_geofacet()}},
+\code{\link[=plot_indices]{plot_indices()}}
 }
 \concept{indices and trends functions}

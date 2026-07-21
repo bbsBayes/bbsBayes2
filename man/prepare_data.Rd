@@ -104,9 +104,9 @@ s <- stratify(by = "bbs_cws", sample_data = TRUE,
 p <- prepare_data(s, min_year = 2009, max_year = 2018)
 }
 \seealso{
-Other Data prep functions: 
-\code{\link{prepare_model}()},
-\code{\link{prepare_spatial}()},
-\code{\link{stratify}()}
+Other Data prep functions:
+\code{\link[=prepare_model]{prepare_model()}},
+\code{\link[=prepare_spatial]{prepare_spatial()}},
+\code{\link[=stratify]{stratify()}}
 }
 \concept{Data prep functions}

@@ -54,8 +54,8 @@ s <- assign_prov_state(map, min_overlap = 0.6, plot = TRUE)
 
 }
 \seealso{
-Other helper functions: 
-\code{\link{load_map}()},
-\code{\link{search_species}()}
+Other helper functions:
+\code{\link[=load_map]{load_map()}},
+\code{\link[=search_species]{search_species()}}
 }
 \concept{helper functions}

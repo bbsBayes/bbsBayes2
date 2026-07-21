@@ -37,8 +37,8 @@ get_summary(pacific_wren_model, variables = "strata_raw[9]")
 options(opts)
 }
 \seealso{
-Other model assessment functions: 
-\code{\link{get_convergence}()},
-\code{\link{get_model_vars}()}
+Other model assessment functions:
+\code{\link[=get_convergence]{get_convergence()}},
+\code{\link[=get_model_vars]{get_model_vars()}}
 }
 \concept{model assessment functions}

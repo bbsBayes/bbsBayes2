@@ -25,17 +25,26 @@ library(rmapshaper) # allows simplification of the polygon boudnaries in a way
 # Updated BCR stratification ----------------------------------------------
 # updated BCR definitions that includes changes to Northern BCRS
 # circa 2025
-
-bcr_new <- "data-raw/maps_orig/bcr_2025_lakes12_statprov3.gpkg" %>%
-  read_sf() %>%
+# bcr_new <- read_sf("https://gis.birdscanada.org/server/services/Hosted/Bird_Conservation_Regions_by_Administrative_Divisions/MapServer/WFSServer?service=wfs&request=getcapabilities") |>
+# "https://gis.birdscanada.org/server/services/Hosted/Bird_Conservation_Regions_by_Administrative_Divisions/MapServer/WFSServer?service=wfs&request=getcapabilities"
+# tst <- ggplot()+
+#   geom_sf(data = tmp,
+#           aes(fill = BCR_Code))
+# tst
+#
+bcr_blank <- "data-raw/maps_orig/bcr2026_statprov.gpkg" %>%
+read_sf() %>%
   filter(!is_lake,
-         country_code %in% c("CA","US","MX"), #  removing France, and Hawaii
-         statprov_code != "HI") %>%
+         !is.na(COUNTRY),
+         COUNTRY %in% c("CAN","USA","MEX"), #  removing France, and Hawaii
+         STATEABB != "US-HI") %>%
   sf::st_transform(crs = bbsBayes2::equal_area_crs) %>%
   rmapshaper::ms_simplify(keep = 0.05,
                           keep_shapes = TRUE) %>%
-  sf::st_make_valid() %>%
-  mutate(strata_name = paste0("BCR",bcr_label))   %>%
+  sf::st_make_valid()
+
+bcr_new <- bcr_blank %>%
+  mutate(strata_name = paste0("bcr",bcr_label))   %>%
   group_by(strata_name) %>%
   summarise(.groups = "drop") %>%
   #st_cast("POLYGON") %>%
@@ -54,23 +63,30 @@ st_write(bcr_new,
 # New BCR bbs stratification ----------------------------------------------
 
 
-bbs_new <- "data-raw/maps_orig/bcr_2025_lakes12_statprov3.gpkg" %>%
-  read_sf() %>%
-  sf::st_transform(crs = bbsBayes2::equal_area_crs)
+# bbs_new <- "data-raw/maps_orig/bcr2026_statprov.gpkg" %>%
+#   read_sf() %>%
+#   sf::st_transform(crs = bbsBayes2::equal_area_crs)
 
-bbs_new <- rmapshaper::ms_simplify(bbs_new, keep = 0.05,
-                                keep_shapes = TRUE) %>%
-mutate(strata_name = paste0(country_code,"-",statprov_code,"-",bcr_label)) %>%
-  st_make_valid() %>% # As needed when st_is_valid() fails
-  filter(!is_lake,
-         country_code %in% c("CA","US"), #  removing Mexico, France, and Hawaii
-         statprov_code != "HI") %>%
-  group_by(strata_name,bcr_label) %>%
+bbs_new <- bcr_blank %>%
+mutate(country_code = ifelse(COUNTRY == "USA",
+                             "US",
+                             COUNTRY),
+       country_code = ifelse(COUNTRY == "CAN",
+                             "CA",
+                             country_code),
+       country_code = ifelse(COUNTRY == "MEX",
+                             "MX",
+                             country_code),
+       prov_state = str_extract(STATEABB,
+                                   "(?<=-)\\w+"),
+       strata_name = paste0(country_code,"-",prov_state,"-",bcr_label)) %>%
+  group_by(strata_name,
+           bcr_label,
+           prov_state,
+           country_code) %>%
   summarise(.groups = "drop") %>%
   mutate(area_sq_km = as.numeric(units::set_units(st_area(.), "km^2"))) %>%
-  mutate(country_code = str_extract(strata_name, "^(CA)|(US)|(MX)"),
-         bcr = bcr_label,
-         prov_state = str_extract(strata_name, "(?<=-)[A-Z]{2}"),
+  mutate(bcr = bcr_label,
          country = case_when(country_code == "CA" ~ "Canada",
                              country_code == "US" ~ "United States of America",
                              country_code == "MX" ~ "Mexico"),
@@ -191,7 +207,7 @@ st_write(strata_bcr_old,
 # updated to include the land area included in "bbs" stratification
 
 
-bbs_boundary <- bcr_new %>%
+bbs_boundary <- bcr_blank %>%
   summarise()%>%
   st_transform(crs = 4326)%>%
   st_make_valid()

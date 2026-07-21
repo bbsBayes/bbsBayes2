@@ -138,9 +138,9 @@ p <- prepare_data(s)
 pm <- prepare_model(p, model = "first_diff", model_variant = "hier")
 }
 \seealso{
-Other Data prep functions: 
-\code{\link{prepare_data}()},
-\code{\link{prepare_spatial}()},
-\code{\link{stratify}()}
+Other Data prep functions:
+\code{\link[=prepare_data]{prepare_data()}},
+\code{\link[=prepare_spatial]{prepare_spatial()}},
+\code{\link[=stratify]{stratify()}}
 }
 \concept{Data prep functions}

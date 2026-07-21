@@ -50,9 +50,9 @@ remove_cache(type = "model")
 
 }
 \seealso{
-Other BBS data functions: 
-\code{\link{fetch_bbs_data}()},
-\code{\link{have_bbs_data}()},
-\code{\link{load_bbs_data}()}
+Other BBS data functions:
+\code{\link[=fetch_bbs_data]{fetch_bbs_data()}},
+\code{\link[=have_bbs_data]{have_bbs_data()}},
+\code{\link[=load_bbs_data]{load_bbs_data()}}
 }
 \concept{BBS data functions}

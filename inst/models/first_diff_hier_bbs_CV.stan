@@ -176,11 +176,11 @@ transformed parameters {
       }else{ // for years 2020 and 2021 (so differences from 2019-2020 and 2020-2021)
     if(y_2020[t-1]){// will only be positive in 2020 negative in 2021 allows splitting based on p_2020
     beta[,t-1] = beta_2020*p_2020  + BETA_2020*p_2020 ; // in 2020 strata-parameters forced to 0
-    YearEffect[t] = YearEffect[t-1] - BETA_2020*p_2020 ; // hyperparameter trajectory interesting to monitor but no direct inference
+    YearEffect[t] = YearEffect[t-1] + BETA_2020*p_2020 ; // hyperparameter trajectory interesting to monitor but no direct inference
 
       }else{
       beta[,t-1] = beta_2020*(1-p_2020)  + BETA_2020*(1-p_2020) ; // in 2020 strata-parameters forced to 0
-    YearEffect[t] = YearEffect[t-1] - BETA_2020*(1-p_2020) ; // hyperparameter trajectory interesting to monitor but no direct inference
+    YearEffect[t] = YearEffect[t-1] + BETA_2020*(1-p_2020) ; // hyperparameter trajectory interesting to monitor but no direct inference
 
        }
  }

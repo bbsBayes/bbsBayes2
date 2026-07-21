@@ -191,10 +191,10 @@ i_custom <- generate_indices(
 
 }
 \seealso{
-Other indices and trends functions: 
-\code{\link{generate_trends}()},
-\code{\link{plot_geofacet}()},
-\code{\link{plot_indices}()},
-\code{\link{plot_map}()}
+Other indices and trends functions:
+\code{\link[=generate_trends]{generate_trends()}},
+\code{\link[=plot_geofacet]{plot_geofacet()}},
+\code{\link[=plot_indices]{plot_indices()}},
+\code{\link[=plot_map]{plot_map()}}
 }
 \concept{indices and trends functions}

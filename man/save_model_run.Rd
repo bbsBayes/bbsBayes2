@@ -49,8 +49,8 @@ save_model_run(pacific_wren_model, path = "my_model.rds")
 unlink("my_model.rds")
 }
 \seealso{
-Other modelling functions: 
-\code{\link{copy_model_file}()},
-\code{\link{run_model}()}
+Other modelling functions:
+\code{\link[=copy_model_file]{copy_model_file()}},
+\code{\link[=run_model]{run_model()}}
 }
 \concept{modelling functions}

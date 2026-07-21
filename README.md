@@ -7,11 +7,10 @@
 
 <!-- badges: end -->
 
-
-
-# bbsBayes2 1.2026.0 Released June, 2026 - Access to 2026 data release.
+# bbsBayes2 1.2026.1 Released July, 2026 - Updated BCRs and BCR names.
 
 Details on new releases below. 
+
 
 # bbsBayes2 <img src="man/figures/logo.png" align="right"/>
 

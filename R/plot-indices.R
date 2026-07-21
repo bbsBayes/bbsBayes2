@@ -110,7 +110,7 @@ plot_indices <- function(indices = NULL,
     to_plot <- indices[which(indices$region == i), ]
 
     samples_name <- to_plot %>%
-      dplyr::select(.data$region_type,.data$region) %>%
+      dplyr::select("region_type","region") %>%
       dplyr::distinct() %>%
       as.character() %>%
       paste(collapse = "_")

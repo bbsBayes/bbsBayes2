@@ -197,13 +197,17 @@ prepare_spatial <- function(prepared_data,
 
     v <- centre_union %>%
       sf::st_voronoi(envelope = bbox) %>%
-      sf::st_cast()
+      sf::st_cast() |>
+      sf::st_make_valid()
 
     vint <- sf::st_intersection(v, cov_hull_buf) %>%
       sf::st_cast("POLYGON") %>%
       sf::st_sf() %>%
       sf::st_join(centres, join = sf::st_contains) %>%
-      dplyr::arrange(.data[["strata_name"]])
+      dplyr::arrange(.data[["strata_name"]]) #%>%
+      # dplyr::group_by(.data[["strata_name"]]) %>%
+      # dplyr::summarise() %>%
+      # dplyr::arrange(.data[["strata_name"]])
 
     nb_db <- suppressWarnings(spdep::poly2nb(vint,
                             row.names = vint[["strata_name"]],

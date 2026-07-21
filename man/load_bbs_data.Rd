@@ -33,9 +33,9 @@ function is provided for custom explorations and is not part of the analysis
 workflow; \code{stratify()} will do the loading for you.
 }
 \seealso{
-Other BBS data functions: 
-\code{\link{fetch_bbs_data}()},
-\code{\link{have_bbs_data}()},
-\code{\link{remove_cache}()}
+Other BBS data functions:
+\code{\link[=fetch_bbs_data]{fetch_bbs_data()}},
+\code{\link[=have_bbs_data]{have_bbs_data()}},
+\code{\link[=remove_cache]{remove_cache()}}
 }
 \concept{BBS data functions}

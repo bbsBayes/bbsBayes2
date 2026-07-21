@@ -1,7 +1,7 @@
 Package: bbsBayes2
 Type: Package
 Title: Hierarchical Bayesian Analysis of North American BBS Data
-Version: 1.2026.0
+Version: 1.2026.1
 Authors@R: c(person("Brandon P.M.", "Edwards", role = c("aut", "cre"),
                      email = "brandonedwards3@cmail.carleton.ca"),
               person("Adam C.", "Smith", role = "aut",
@@ -30,7 +30,7 @@ Imports:
     units (>= 0.8.0),
     withr (>= 2.5.0),
     cmdstanr
-Depends: R (>= 3.5)
+Depends: R (>= 4.1)
 SystemRequirements: CmdStan (https://mc-stan.org/users/interfaces/cmdstan)
 URL: https://github.com/bbsBayes/bbsBayes2,
     https://bbsbayes.github.io/bbsBayes2/
@@ -52,10 +52,8 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: bzip2
-RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Suggests: 
-    cmdstanr,
     covr,
     knitr,
     rmarkdown,
@@ -66,3 +64,4 @@ Suggests:
 Additional_repositories: https://mc-stan.org/r-packages/, https://ropensci.r-universe.dev
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0
