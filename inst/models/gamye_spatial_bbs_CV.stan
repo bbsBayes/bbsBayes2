@@ -2,6 +2,40 @@
 // Spatial
 
 
+// This is an elaboration of the model used in Smith and Edwards 2021
+
+// function compute_E allows for efficient vectorization of the likelihood
+// without saving n_counts*4 parameters (E, ste_)
+
+functions {
+  vector compute_E(
+      vector strata, array[] int strat_tr,
+      vector yeareffect_flat, vector smooth_flat,
+      array[] int strat_year_idx,
+      real eta, array[] int first_year_tr,
+      real sdste, vector ste_raw, array[] int site_tr,
+      real sdobs, vector obs_raw, array[] int observer_tr,
+      int use_pois, real sdnoise, vector noise_raw) {
+    int n = size(strat_tr);
+    vector[n] noise_effect;
+
+    if (use_pois) {
+      noise_effect = sdnoise * noise_raw;
+    } else {
+      noise_effect = rep_vector(0, n);
+    }
+
+    return strata[strat_tr]
+           + smooth_flat[strat_year_idx]
+           + yeareffect_flat[strat_year_idx]
+           + eta * to_vector(first_year_tr)
+           + sdste * ste_raw[site_tr]
+           + sdobs * obs_raw[observer_tr]
+           + noise_effect;
+  }
+}
+
+
 
 data {
   int<lower=1> n_sites;
@@ -9,6 +43,7 @@ data {
   int<lower=1> n_counts;
   int<lower=1> n_years;
   int<lower=0,upper=1> use_likelihood; // if set to 0, then generates predictions from the priors
+  int<lower=0,upper=1> predict_counts; // if set to 1, then generates predictions for each observation
 
   array[n_counts] int<lower=0> count;              // count observations
   array[n_counts] int<lower=1> strat;               // strata indicators
@@ -38,6 +73,7 @@ data {
   int<lower=1> n_edges;
   array [n_edges] int<lower=1, upper=n_strata> node1;  // node1[i] adjacent to node2[i]
   array [n_edges] int<lower=1, upper=n_strata> node2;  // and node1[i] < node2[i]
+  real<lower=0> scaling_factor;
 
 
   // Extra Poisson variance options
@@ -77,6 +113,13 @@ transformed data {
      array[n_test] int observer_te = observer[test];
      int obs_type = sum(obs_mat[1,]); // evaluates to 0 if prepare_data(..., assume_observer_variation_log_normal == TRUE)
 
+     // supporting the vectorization of the main likelihood statement
+     array[n_train] int<lower=1, upper=n_strata*n_years> strat_year_idx;
+
+      for (i in 1:n_train) {
+        strat_year_idx[i] = (year_tr[i] - 1) * n_strata + strat_tr[i];
+        }
+
 
 
 
@@ -110,13 +153,16 @@ parameters {
 }
 
 transformed parameters {
-  vector[n_train] E;           // log_scale additive likelihood
   matrix[n_strata,n_knots_year] beta;         // spatial effect slopes (0-centered deviation from continental mean slope B)
   matrix[n_years,n_strata] smooth_pred;
   vector[n_years] SMOOTH_pred;
-  array[n_strata] vector[n_years] yeareffect;
+  //array[n_strata] vector[n_years] yeareffect;
+  matrix[n_strata,n_years] yeareffect;
   vector[n_knots_year] BETA;
   real<lower=0> phi; //transformed sdnoise
+  vector[n_strata] strata;
+  real<lower=0> sdbeta_scaled = sdbeta/sqrt(scaling_factor);
+  real<lower=0> sdstrata_scaled = sdstrata/sqrt(scaling_factor);
 
 
   if(use_pois){
@@ -125,16 +171,17 @@ transformed parameters {
     phi = 1/sqrt(sdnoise); //as recommended to avoid prior that places most prior mass at very high overdispersion by https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations
   }
 
+   strata = (sdstrata_scaled*strata_raw) + STRATA;
 
   BETA = sdBETA*BETA_raw;
 
   for(k in 1:n_knots_year){
-    beta[,k] = (sdbeta * beta_raw[k,]) + BETA[k];
+    beta[,k] = (sdbeta_scaled * beta_raw[k,]) + BETA[k];
   }
   SMOOTH_pred = year_basis * BETA;
 
   // for(s in 1:n_strata){
-  //   beta[s,] = (sdbeta[s] * beta_raw[s,]) + transpose(BETA);
+  //   beta[s,] = (sdbeta_scaled[s] * beta_raw[s,]) + transpose(BETA);
   // }
 
   for(s in 1:n_strata){
@@ -142,28 +189,10 @@ transformed parameters {
 }
 
 for(s in 1:n_strata){
-    yeareffect[s,] = sdyear[s]*yeareffect_raw[s,];
+    yeareffect[s,] = to_row_vector(sdyear[s]*yeareffect_raw[s,]);
 
 }
 
-// intercepts and slopes
-
-
-
-
-  for(i in 1:n_train){
-    real noise;
-    real obs = sdobs*obs_raw[observer_tr[i]];
-    real strata = (sdstrata*strata_raw[strat_tr[i]]) + STRATA;
-    real ste = sdste*ste_raw[site_tr[i]]; // site intercepts
-    if(use_pois){
-    noise = sdnoise*noise_raw[i];
-    }else{
-    noise = 0;
-    }
-
-    E[i] =  smooth_pred[year_tr[i],strat_tr[i]] + strata + yeareffect[strat_tr[i],year_tr[i]] + eta*first_year_tr[i] + ste + obs + noise;
-  }
 
 
 
@@ -228,15 +257,25 @@ for(k in 1:n_knots_year){
 
 
 if(use_likelihood){
+    vector[n_train] E_m = compute_E(
+      strata, strat_tr, to_vector(yeareffect),
+      to_vector(transpose(smooth_pred)),
+      strat_year_idx,
+      eta, first_year_tr,
+      sdste, ste_raw, site_tr,
+      sdobs, obs_raw, observer_tr,
+      use_pois, sdnoise, noise_raw);
+
 if(use_pois){
-  count_tr ~ poisson_log(E); //vectorized count likelihood with log-transformation
+  count_tr ~ poisson_log(E_m); //vectorized count likelihood with log-transformation
 }else{
-   count_tr ~ neg_binomial_2_log(E,phi); //vectorized count likelihood with log-transformation
+   count_tr ~ neg_binomial_2_log(E_m,phi); //vectorized count likelihood with log-transformation
 
 }
 }
 
 }
+
 
  generated quantities {
 
@@ -249,15 +288,36 @@ if(use_pois){
    vector[n_test*calc_CV] log_lik_cv; // alternative value to track the log-likelihood of the coutns in the test dataset
    real adj;
 
+   vector[n_train*predict_counts] E; // this adjusts the size of E (length = 0 if predict_counts == 0)
+  if(predict_counts){
+    E = compute_E(
+      strata, strat_tr, to_vector(yeareffect),
+      to_vector(transpose(smooth_pred)),
+      strat_year_idx,
+      eta, first_year_tr,
+      sdste, ste_raw, site_tr,
+      sdobs, obs_raw, observer_tr,
+      use_pois, sdnoise, noise_raw);
+    }
+
   if(calc_log_lik){
   // potentially useful for estimating loo-diagnostics, such as looic
+     vector[n_train] E_ll = compute_E(
+      strata, strat_tr, to_vector(yeareffect),
+      to_vector(transpose(smooth_pred)),
+      strat_year_idx,
+      eta, first_year_tr,
+      sdste, ste_raw, site_tr,
+      sdobs, obs_raw, observer_tr,
+      use_pois, sdnoise, noise_raw);
+
   if(use_pois){
-  for(i in 1:n_counts){
-   log_lik[i] = poisson_log_lpmf(count_tr[i] | E[i]);
+  for(i in 1:n_train){
+   log_lik[i] = poisson_log_lpmf(count_tr[i] | E_ll[i]);
    }
   }else{
-   for(i in 1:n_counts){
-   log_lik[i] = neg_binomial_2_log_lpmf(count_tr[i] | E[i] , phi);
+   for(i in 1:n_train){
+   log_lik[i] = neg_binomial_2_log_lpmf(count_tr[i] | E_ll[i] , phi);
    }
   }
   }
@@ -267,7 +327,6 @@ if(use_pois){
 
     real noise;
     real obs = sdobs*obs_raw[observer_te[i]];
-    real strata = (sdstrata*strata_raw[strat_te[i]]) + STRATA;
     real ste = sdste*ste_raw[site_te[i]]; // site intercepts
 
    if(use_pois){
@@ -282,11 +341,11 @@ if(use_pois){
       }
 
 
-   log_lik_cv[i] = poisson_log_lpmf(count_te[i] | smooth_pred[year_te[i],strat_te[i]] + strata + yeareffect[strat_te[i],year_te[i]] + eta*first_year_te[i] + ste + obs + noise);
+   log_lik_cv[i] = poisson_log_lpmf(count_te[i] | smooth_pred[year_te[i],strat_te[i]] + strata[strat_te[i]] + yeareffect[strat_te[i],year_te[i]] + eta*first_year_te[i] + ste + obs + noise);
 
    }else{
      noise = 0;
-  log_lik_cv[i] = neg_binomial_2_log_lpmf(count_te[i] | smooth_pred[year_te[i],strat_te[i]] + strata + yeareffect[strat_te[i],year_te[i]] + eta*first_year_te[i] + ste + obs + noise, phi);
+  log_lik_cv[i] = neg_binomial_2_log_lpmf(count_te[i] | smooth_pred[year_te[i],strat_te[i]] + strata[strat_te[i]] + yeareffect[strat_te[i],year_te[i]] + eta*first_year_te[i] + ste + obs + noise, phi);
 
    }
 
@@ -323,7 +382,6 @@ for(y in 1:n_years){
   array[n_obs_sites_strata[s]] real n_t;
   array[n_obs_sites_strata[s]] real n_smooth_t;
   real retrans_yr = 0.5*(sdyear[s]^2);
-  real strata = (sdstrata*strata_raw[s]) + STRATA;
 
         for(t in 1:n_obs_sites_strata[s]){  //n_obs_sites_strata max_n_obs_sites_strata
 
@@ -336,8 +394,8 @@ for(y in 1:n_years){
     }
 
 
-      n_t[t] = exp(strata+ smooth_pred[y,s] + yeareffect[s,y] + retrans_noise + obs + ste);// + retrans_obs);
-      n_smooth_t[t] = exp(strata + smooth_pred[y,s] + retrans_yr + retrans_noise + obs + ste);// + retrans_obs);
+      n_t[t] = exp(strata[s]+ smooth_pred[y,s] + yeareffect[s,y] + retrans_noise + obs + ste);// + retrans_obs);
+      n_smooth_t[t] = exp(strata[s] + smooth_pred[y,s] + retrans_yr + retrans_noise + obs + ste);// + retrans_obs);
         }
         n[s,y] = non_zero_weight[s] * mean(n_t);//mean of exponentiated predictions across sites in a stratum
         n_smooth[s,y] = non_zero_weight[s] * mean(n_smooth_t);//mean of exponentiated predictions across sites in a stratum

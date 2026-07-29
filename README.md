@@ -7,7 +7,7 @@
 
 <!-- badges: end -->
 
-# bbsBayes2 1.2026.2 Released July, 2026 - Updated BCRs and BCR names.
+# bbsBayes2 1.2026.3 Released , 2026 - Improved sampling new parameterization.
 
 Details on new releases below. 
 
@@ -80,13 +80,21 @@ NOTE: bbsBayes2 is supported by a small team of committed researchers with limit
 ```{r}
 pak::pkg_install("bbsBayes/bbsBayes2@dev")
 ```
+
+# bbsBayes2 1.2026.3 Released , 2026 - Improved sampling new parameterization.
+
+-   Modified all of the models to increase the level of vectorization and thereby increase sampling efficiency.
+-   Also added an argument to prepare_model() that allows the user to decrease the size of the stored model file by removing the count-level predictions. Default is to include the predictions so that posterior and prior predictions still work by default.
+-   Added a scaling factor to the spatial models to ensure consistent interpretation of the priors for the spatial variance across any spatial graph. Following recommendations in https://doi.org/10.1016/j.sste.2018.04.002. 
+
+
 # bbsBayes2 1.2026.2 Released July, 2026 - Non-interactive data download.
 
 -   Adding option to run `fetch_bbs_data(interactive = FALSE)`, to allow non-interactive data download.
 
 # bbsBayes2 1.2026.1 Released July, 2026 - Updated BCRs and BCR names.
 
--   Small update to reconcile the *bbs* and *bcr* stratifications to include the updated BCR names for the split northern BCRs. BCRs 3, 6, 7, and 8 are now split and renumbered to 69 through 77.
+-   Small update to reconcile the *bbs* and *bcr* stratifications to include the updated BCR names for the split northern BCRs. BCRs 3, 6, 7, and 8 are now split and renumbered to 68 through 77.
 
   
 # bbsBayes2 1.2026.0 Released June, 2026 - Access to 2026 data release.

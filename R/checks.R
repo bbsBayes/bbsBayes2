@@ -11,7 +11,7 @@ check_data <- function(data) {
     from <- "prepare_data()"
   } else if(type == "spatial_data") {
     # Don't use meta_data or meta_strata, n is an actual object returned
-    n <- c("n", "n_edges", "node1", "node2", "adj_matrix")
+    n <- c("n", "n_edges", "node1", "node2", "adj_matrix", "scaling_factor")
     from <- "prepare_spatial()"
   } else if(type == "model_data") {
     n <- c(n, "model_data", "init_values", "folds", "raw_data")

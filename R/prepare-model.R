@@ -42,6 +42,10 @@
 #'   the [models
 #'   article](https://bbsBayes.github.io/bbsBayes2/articles/models.html) for more
 #'   details.
+#' @param predict_counts Logical. Whether to generate log-scale mean predictions
+#'   for each count. Default is TRUE, so that each model output can be used to
+#'   run posterior predictive checks, but if set to FALSE it reduces the size
+#'   of the final stored model object.
 #' @param use_likelihood Logical. If set to FALSE generates prior predictions
 #'    i.e., ignores the likelihood of the count data. Default TRUE
 #'
@@ -107,6 +111,7 @@ prepare_model <- function(prepared_data,
                           cv_fold_groups = "obs_n",
                           cv_omit_singles = TRUE,
                           use_likelihood = TRUE,
+                          predict_counts = TRUE,
                           set_seed = NULL,
                           quiet = FALSE) {
 
@@ -120,7 +125,7 @@ prepare_model <- function(prepared_data,
   basis <- check_basis(basis)
 
   check_logical(heavy_tailed, use_pois, calculate_nu, calculate_log_lik,
-                calculate_cv, cv_omit_singles, quiet)
+                calculate_cv, cv_omit_singles, predict_counts, quiet)
   check_numeric(cv_k)
   check_in(cv_fold_groups, c("obs_n", "route"))
 
@@ -144,6 +149,7 @@ prepare_model <- function(prepared_data,
     n_counts = model_data$n_counts,
     basis, n_knots, heavy_tailed, use_pois,
     calculate_nu, calculate_log_lik,
+    predict_counts,
     use_likelihood)
 
   # Create master parameter list
@@ -152,7 +158,7 @@ prepare_model <- function(prepared_data,
   if(model_variant == "spatial") {
     model_data <- append(
       model_data,
-      prepared_data[["spatial_data"]][c("n_edges", "node1", "node2")])
+      prepared_data[["spatial_data"]][c("n_edges", "node1", "node2", "scaling_factor")])
   }
 
   # Keep track of data
@@ -163,7 +169,7 @@ prepare_model <- function(prepared_data,
          "model_file" = model_file))
 
   # Get initial values
-  init_values <- create_init(model, model_variant, model_data)
+  init_values <- 1
 
   # Create K-fold groupings
   if(calculate_cv) {
@@ -189,6 +195,7 @@ model_params <- function(model,
                          n_strata, year, n_counts,
                          basis, n_knots, heavy_tailed, use_pois,
                          calculate_nu, calculate_log_lik,
+                         predict_counts,
                          use_likelihood) {
 
 
@@ -196,6 +203,7 @@ model_params <- function(model,
 
   # Model options
   params[["use_likelihood"]] <- as.integer(use_likelihood)
+  params[["predict_counts"]] <- as.integer(predict_counts)
 
   # Extra Poisson variance options
   # 0 = use df == 3 (do not calculate df for the t-distributed noise)
@@ -342,95 +350,6 @@ model_params <- function(model,
 
 
 
-#' Create the initial definition list
-#'
-#' Creates list of initial parameter definitions to supply to
-#' `cmdstanr::sample()`.
-#'
-#' @noRd
-create_init <- function(model, model_variant, model_data,
-                        legacy = FALSE) {
-
-  if(legacy){
-  # Generic --------------
-  init_generic <-
-    list(
-      noise_raw  = stats::rnorm(model_data$n_counts * model_data$use_pois,
-                                0, 0.1),
-      strata_raw = stats::rnorm(model_data$n_strata, 0, 0.1),
-      STRATA     = 0,
-      nu         = 10,
-      sdstrata   = stats::runif(1, 0.01, 0.1),
-      eta        = 0,
-      obs_raw    = stats::rnorm(model_data$n_observers, 0, 0.1),
-      ste_raw    = stats::rnorm(model_data$n_sites, 0, 0.1),
-      sdnoise    = stats::runif(1,0.3,1.3),
-      sdobs      = stats::runif(1,0.01,0.1),
-      sdste      = stats::runif(1,0.01,0.2)
-    )
-
-  # By model -------------
-
-  # Matrices
-  m_yrs1 <-  function() matrix(
-    stats:: rnorm(model_data$n_years * model_data$n_strata, 0, 0.1),
-    nrow = model_data$n_strata,
-    ncol = model_data$n_years)
-
-  m_yrs2 <-  function() matrix(
-    stats::rnorm((model_data$n_years - 1) * model_data$n_strata, 0, 0.1),
-    nrow = model_data$n_strata,
-    ncol = model_data$n_years - 1)
-
-  m_knots <- function() matrix(
-    stats::rnorm(model_data$n_knots_year * model_data$n_strata, 0, 0.01),
-    nrow = model_data$n_strata,
-    ncol = model_data$n_knots_year)
-
-  # Vectors
-  v_rand1 <-  function() stats::runif( 1, 0.01, 0.1)
-  v_rand2 <-  function() stats::rnorm( 1,    0, 0.1)
-  v_strat1 <- function() stats::runif( model_data$n_strata,   0.01, 0.1)
-  v_strat2 <- function() stats::rnorm( model_data$n_strata,      0, 0.1)
-  v_yrs <-    function() stats::rnorm((model_data$n_years - 1), 0, 0.1)
-  v_knots <-  function() stats::rnorm( model_data$n_knots_year,  0, 0.1)
-
-  # Initial defs
-  init_specific <- dplyr::tribble(
-    ~yeareffect_raw, ~sdyear,  ~sdbeta,  ~sdBETA, ~BETA_raw, ~beta_raw, ~BETA,
-    "",              "",       v_strat1, "",      "",        m_yrs2,    "",     # first diff non-hier
-    "",              "",       v_rand1,  v_rand1, v_yrs,     m_yrs2,    "",     # first diff hier
-    "",              "",       v_rand1,  v_rand1, v_yrs,     m_yrs2,    "",     # first diff spatial
-    "",              "",       v_strat1, v_rand1, v_knots,   m_knots,   "",     # gam hier
-    "",              "",       v_rand1,  v_rand1, v_knots,   m_knots,   "",     # gam spatial
-    m_yrs1,          v_strat1, v_strat1, v_rand1, v_knots,   m_knots,   "",     # gamye hier
-    m_yrs1,          v_strat1, v_rand1,  v_rand1, v_knots,   m_knots,   "",     # gamye spatial
-    m_yrs1,          v_strat1, v_rand1,  "",      "",        v_strat2,  v_rand2,# slope hier
-    m_yrs1,          v_strat1, v_rand1,  "",      "",        v_strat2,  v_rand2 # slope spatial
-  )
-
-
-  # Join by model and get relevant variant
-  init_specific <- init_specific %>%
-    dplyr::bind_cols(bbsBayes2::bbs_models) %>%
-    dplyr::filter(.data$model == .env$model,
-                  .data$variant == .env$model_variant) %>%
-    dplyr::select(-"model", -"variant", -"file") %>%
-    unlist()
-
-  # Drop empty values
-  init_specific <- init_specific[init_specific != ""]
-
-  # Run all the functions
-  for(i in seq_along(init_specific)) {
-    init_specific[[i]] <- rlang::exec(init_specific[[i]])
-  }
-
-  # Join with generic values
-  append(init_generic, init_specific)
-  }
-  return(1)
-}
 
 
 #' Create cross validation groups
