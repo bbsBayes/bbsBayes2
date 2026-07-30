@@ -172,8 +172,6 @@ s <- stratify(by = "bbs", sample_data = TRUE)
 #>   Calculating area weights...
 #>   Joining routes to spatial layer...
 #>   Renaming routes...
-#>   Omitting 329/5,480 surveys, on 15 unique routes that do not match a stratum.
-#>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)
 # omits some routes so using distance_to_strata to capture coastal routes
 s <- stratify(by = "bbs", sample_data = TRUE, distance_to_strata = 2000)
 #> Using 'bbs' (standard) stratification
@@ -184,7 +182,6 @@ s <- stratify(by = "bbs", sample_data = TRUE, distance_to_strata = 2000)
 #> Preparing strata (ESRI:102008; North_America_Albers_Equal_Area_Conic)...
 #>   Calculating area weights...
 #>   Joining routes to spatial layer...
-#> Joining routes within 2000 m of strata boundaries
 #>   Renaming routes...
 
 # Full data - species and stratification
@@ -278,23 +275,15 @@ s <- stratify(by = "latlong", species = "Snowy Owl", return_omitted = TRUE)
 #>   Calculating area weights...
 #>   Joining routes to spatial layer...
 #>   Renaming routes...
-#>   Omitting 1,447/130,138 surveys, on 71 unique routes that do not match a stratum.
+#>   Omitting 3/130,138 surveys, on 1 unique routes that do not match a stratum.
 #>     Returning omitted routes.
 s[["routes_omitted"]]
-#> # A tibble: 1,447 × 11
-#>     year strata_name country state   route route_name latitude longitude   bcr
-#>    <dbl> <chr>       <chr>   <chr>   <chr> <chr>         <dbl>     <dbl> <dbl>
-#>  1  1967 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
-#>  2  1968 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
-#>  3  1969 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
-#>  4  1970 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
-#>  5  1971 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
-#>  6  1972 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
-#>  7  1973 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
-#>  8  1975 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
-#>  9  1977 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
-#> 10  1981 NA          US      ALABAMA 2-41  ALABAMA PT     30.3     -87.5    27
-#> # ℹ 1,437 more rows
+#> # A tibble: 3 × 11
+#>    year strata_name country state  route route_name latitude longitude   bcr
+#>   <dbl> <chr>       <chr>   <chr>  <chr> <chr>         <dbl>     <dbl> <dbl>
+#> 1  1977 NA          US      ALASKA 3-19  HOMER          59.6     -151.     4
+#> 2  1978 NA          US      ALASKA 3-19  HOMER          59.6     -151.     4
+#> 3  1982 NA          US      ALASKA 3-19  HOMER          59.6     -151.     4
 #> # ℹ 2 more variables: obs_n <dbl>, total_spp <dbl>
 
 # Use combined or non-combined species forms

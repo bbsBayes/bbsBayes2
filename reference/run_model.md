@@ -242,15 +242,15 @@ m <- run_model(pm, iter_warmup = 20, iter_sampling = 20, chains = 2)
 #> Chain 2 Iteration: 21 / 40 [ 52%]  (Sampling) 
 #> Chain 1 Iteration: 21 / 40 [ 52%]  (Sampling) 
 #> Chain 2 Iteration: 40 / 40 [100%]  (Sampling) 
-#> Chain 2 finished in 42.5 seconds.
+#> Chain 2 finished in 28.4 seconds.
 #> Chain 1 Iteration: 40 / 40 [100%]  (Sampling) 
-#> Chain 1 finished in 45.0 seconds.
+#> Chain 1 finished in 29.5 seconds.
 #> 
 #> Both chains finished successfully.
-#> Mean chain execution time: 43.8 seconds.
-#> Total execution time: 45.3 seconds.
+#> Mean chain execution time: 29.0 seconds.
+#> Total execution time: 29.7 seconds.
 #> 
-#> Warning: 2 of 2 chains had an E-BFMI less than 0.3.
+#> Warning: 1 of 2 chains had an E-BFMI less than 0.3.
 #> See https://mc-stan.org/misc/warnings for details.
-#> Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/docs/reference/BBS_PacificWren_first_diff_hier_202607211852_STAN.rds
+#> Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/docs/reference/BBS_PacificWren_first_diff_hier_202607302246_STAN.rds
 ```

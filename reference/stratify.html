@@ -15,7 +15,7 @@ a flexible search to identify correct species names)."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">bbsBayes2</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2026.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2026.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ a flexible search to identify correct species names)."><meta property="og:image"
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Stratify and filter Breeding Bird Survey data</h1>
-      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/v.1.2026.2/R/stratify.R" class="external-link"><code>R/stratify.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bbsBayes/bbsBayes2/blob/main/R/stratify.R" class="external-link"><code>R/stratify.R</code></a></small>
       <div class="d-none name"><code>stratify.Rd</code></div>
     </div>
 
@@ -206,8 +206,6 @@ for more details.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Calculating area weights...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Joining routes to spatial layer...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Omitting 329/5,480 surveys, on 15 unique routes that do not match a stratum.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     To see omitted routes use `return_omitted = TRUE` (see ?stratify)</span>
 <span class="r-in"><span><span class="co"># omits some routes so using distance_to_strata to capture coastal routes</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">stratify</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"bbs"</span>, sample_data <span class="op">=</span> <span class="cn">TRUE</span>, distance_to_strata <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using 'bbs' (standard) stratification</span>
@@ -218,7 +216,6 @@ for more details.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Preparing strata (ESRI:102008; North_America_Albers_Equal_Area_Conic)...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Calculating area weights...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Joining routes to spatial layer...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining routes within 2000 m of strata boundaries</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Full data - species and stratification</span></span></span>
@@ -312,23 +309,15 @@ for more details.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Calculating area weights...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Joining routes to spatial layer...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Renaming routes...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Omitting 1,447/130,138 surveys, on 71 unique routes that do not match a stratum.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Omitting 3/130,138 surveys, on 1 unique routes that do not match a stratum.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Returning omitted routes.</span>
 <span class="r-in"><span><span class="va">s</span><span class="op">[[</span><span class="st">"routes_omitted"</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,447 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     year strata_name country state   route route_name latitude longitude   bcr</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>  <span style="text-decoration: underline;">1</span>967 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-41  ALABAMA PT     30.3     -<span style="color: #BB0000;">87.5</span>    27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  <span style="text-decoration: underline;">1</span>968 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-41  ALABAMA PT     30.3     -<span style="color: #BB0000;">87.5</span>    27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  <span style="text-decoration: underline;">1</span>969 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-41  ALABAMA PT     30.3     -<span style="color: #BB0000;">87.5</span>    27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  <span style="text-decoration: underline;">1</span>970 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-41  ALABAMA PT     30.3     -<span style="color: #BB0000;">87.5</span>    27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  <span style="text-decoration: underline;">1</span>971 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-41  ALABAMA PT     30.3     -<span style="color: #BB0000;">87.5</span>    27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  <span style="text-decoration: underline;">1</span>972 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-41  ALABAMA PT     30.3     -<span style="color: #BB0000;">87.5</span>    27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  <span style="text-decoration: underline;">1</span>973 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-41  ALABAMA PT     30.3     -<span style="color: #BB0000;">87.5</span>    27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  <span style="text-decoration: underline;">1</span>975 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-41  ALABAMA PT     30.3     -<span style="color: #BB0000;">87.5</span>    27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  <span style="text-decoration: underline;">1</span>977 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-41  ALABAMA PT     30.3     -<span style="color: #BB0000;">87.5</span>    27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  <span style="text-decoration: underline;">1</span>981 <span style="color: #BB0000;">NA</span>          US      ALABAMA 2-41  ALABAMA PT     30.3     -<span style="color: #BB0000;">87.5</span>    27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,437 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 11</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    year strata_name country state  route route_name latitude longitude   bcr</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">1</span>977 <span style="color: #BB0000;">NA</span>          US      ALASKA 3-19  HOMER          59.6     -<span style="color: #BB0000;">151.</span>     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">1</span>978 <span style="color: #BB0000;">NA</span>          US      ALASKA 3-19  HOMER          59.6     -<span style="color: #BB0000;">151.</span>     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">1</span>982 <span style="color: #BB0000;">NA</span>          US      ALASKA 3-19  HOMER          59.6     -<span style="color: #BB0000;">151.</span>     4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: obs_n &lt;dbl&gt;, total_spp &lt;dbl&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use combined or non-combined species forms</span></span></span>
