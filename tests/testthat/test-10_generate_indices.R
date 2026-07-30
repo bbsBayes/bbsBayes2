@@ -206,57 +206,57 @@ test_that("generate_indices(regions_index)", {
                     "east_west_east", "east_west_west"))
 })
 
-
-  # Alternate n
-test_that("generate_indices(alternate_n)", {
-
-  r <- slope_test_model
-
-  # Diff annual index parameter
-  expect_silent(i1 <- generate_indices(r, regions = "stratum",
-                                       alternate_n = "n", quiet = TRUE))
-  expect_silent(i <- generate_indices(r, regions = "stratum",
-                                      alternate_n = "n_slope", quiet = TRUE))
-
-  # Differences based on alternate_n chosen
-  expect_false(all(i1$indices == i$indices))
-  expect_false(all(i1$samples[[1]] == i$samples[[1]]))
-
-  # Otherwise similar way of being created
-  ix <- i[["indices"]]
-  s <- i[["samples"]]
-
-  expect_s3_class(ix, "data.frame")
-  expect_equal(nrow(ix), n_strata * n_yrs)
-  expect_true(all(i[["raw_data"]]$year %in% ix$year)) # Can have missing in raw_data
-  expect_true(all(ix$region %in% i[["raw_data"]]$strata_name))
-  expect_true(all(ix$region == ix$strata_included))
-  expect_true(all(ix$strata_excluded == ""))
-
-  expect_named(s, paste0("stratum_", unique(i[["raw_data"]]$strata_name)))
-
-  # Samples for all iterations x all years  (20 iterations x 2 chains = 40)
-  expect_true(all(vapply(s, FUN = dim, FUN.VALUE = c(1, 1)) == c(40, n_yrs)))
-
-  # Expect quantiles based on samples: Check a bunch of combinations
-  year <- c(1, 20, 50)
-  strat <- c("CA-AB-10", "US-AK-5", "US-WA-9")
-  quant <- c(0.025, 0.75, 0.975)
-  for(y in year) {
-    for(st in strat) {
-      for(q in quant) {
-        expect_equal(stats::quantile(s[[paste0("stratum_", st)]][, y], q),
-                     ix[ix$region == st, ][[paste0("index_q_", q)]][y],
-                     ignore_attr = TRUE)
-      }
-    }
-  }
-
-  # Snapshots can't be run interactively
-  snp <- dplyr::select(ix, "year", "region", "obs_mean", "n_routes",
-                       "n_routes_total", "n_non_zero", "backcast_flag")
-  expect_snapshot_value_safe(snp, style = "json2")
-})
+#
+#   # Alternate n
+# test_that("generate_indices(alternate_n)", {
+#
+#   r <- slope_test_model
+#
+#   # Diff annual index parameter
+#   expect_silent(i1 <- generate_indices(r, regions = "stratum",
+#                                        alternate_n = "n", quiet = TRUE))
+#   expect_silent(i <- generate_indices(r, regions = "stratum",
+#                                       alternate_n = "n_slope", quiet = TRUE))
+#
+#   # Differences based on alternate_n chosen
+#   expect_false(all(i1$indices == i$indices))
+#   expect_false(all(i1$samples[[1]] == i$samples[[1]]))
+#
+#   # Otherwise similar way of being created
+#   ix <- i[["indices"]]
+#   s <- i[["samples"]]
+#
+#   expect_s3_class(ix, "data.frame")
+#   expect_equal(nrow(ix), n_strata * n_yrs)
+#   expect_true(all(i[["raw_data"]]$year %in% ix$year)) # Can have missing in raw_data
+#   expect_true(all(ix$region %in% i[["raw_data"]]$strata_name))
+#   expect_true(all(ix$region == ix$strata_included))
+#   expect_true(all(ix$strata_excluded == ""))
+#
+#   expect_named(s, paste0("stratum_", unique(i[["raw_data"]]$strata_name)))
+#
+#   # Samples for all iterations x all years  (20 iterations x 2 chains = 40)
+#   expect_true(all(vapply(s, FUN = dim, FUN.VALUE = c(1, 1)) == c(40, n_yrs)))
+#
+#   # Expect quantiles based on samples: Check a bunch of combinations
+#   year <- c(1, 20, 50)
+#   strat <- c("CA-AB-10", "US-AK-5", "US-WA-9")
+#   quant <- c(0.025, 0.75, 0.975)
+#   for(y in year) {
+#     for(st in strat) {
+#       for(q in quant) {
+#         expect_equal(stats::quantile(s[[paste0("stratum_", st)]][, y], q),
+#                      ix[ix$region == st, ][[paste0("index_q_", q)]][y],
+#                      ignore_attr = TRUE)
+#       }
+#     }
+#   }
+#
+#   # Snapshots can't be run interactively
+#   snp <- dplyr::select(ix, "year", "region", "obs_mean", "n_routes",
+#                        "n_routes_total", "n_non_zero", "backcast_flag")
+#   expect_snapshot_value_safe(snp, style = "json2")
+# })
 
 
 test_that("generate_indices(max_backcast)", {

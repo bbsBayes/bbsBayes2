@@ -405,7 +405,8 @@ stratify <- function(by,
 }
 
 stratify_map <- function(strata_map, routes, quiet = FALSE,
-                         stratify_type, distance_to_strata) {
+                         stratify_type, distance_to_strata,
+                         use_route_locations = TRUE) {
 
   if(!quiet) {
     c <- sf::st_crs(strata_map, parameters = TRUE)[c("srid", "Name")]
@@ -443,6 +444,70 @@ stratify_map <- function(strata_map, routes, quiet = FALSE,
 
   # Merge with map polygons and keep coordinates
   if(!quiet) message("  Joining routes to spatial layer...")
+
+  if(use_route_locations){
+
+
+    f <- system.file("maps", package = "bbsBayes2") %>%
+      list.files(pattern = paste0("route_locations"), full.names = TRUE)
+
+    route_lines <- sf::read_sf(dsn = f, quiet = TRUE) |>
+      sf::st_transform(sf::st_crs(strata_map))
+
+    routes_incl <- routes |>
+      dplyr::select(.data$country_num,.data$state_num,.data$route) |>
+      dplyr::distinct()
+
+    routes_line <- suppressWarnings(route_lines |>
+      dplyr::inner_join(routes_incl,
+                by = c("country_num",
+                       "state_num",
+                       "route")) |>
+      sf::st_join(strata_map,
+                  largest = TRUE) %>%
+      dplyr::relocate("strata_name")) # reorder
+
+    w_miss <- routes_line %>%
+      dplyr::filter(is.na(.data$strata_name)) %>%
+      dplyr::select(-c("strata_name","area_sq_km"))
+
+
+    if(!is.null(distance_to_strata) & nrow(w_miss) > 0){
+
+      if(!quiet) message(paste("Joining routes within",distance_to_strata,"m of strata boundaries"))
+
+      w_miss_join <- which_min_LT(outside = w_miss,
+                                  strata_map,
+                                  distance_to_strata)
+      routes_line <- routes_line %>%
+        dplyr::filter(!is.na(.data$strata_name)) %>%
+        dplyr::bind_rows(w_miss_join) |>
+        sf::st_drop_geometry()
+
+      routes <- routes |>
+        dplyr::left_join(routes_line,
+                  by = c("country_num",
+                         "state_num",
+                         "route")) |>
+        dplyr::relocate("strata_name")
+
+
+    }else{
+      routes_line <- routes_line |>
+        sf::st_drop_geometry()
+
+      routes <- routes |>
+        dplyr::left_join(routes_line,
+                         by = c("country_num",
+                                "state_num",
+                                "route")) |>
+        dplyr::relocate("strata_name")
+
+
+      }
+
+    }else{
+
   routes <- routes %>%
     dplyr::mutate(lon = .data$longitude, lat = .data$latitude) %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) %>%
@@ -459,7 +524,6 @@ stratify_map <- function(strata_map, routes, quiet = FALSE,
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326) %>%
     sf::st_transform(sf::st_crs(strata_map))
 
-
   if(!is.null(distance_to_strata) & nrow(w_miss) > 0){
 
     if(!quiet) message(paste("Joining routes within",distance_to_strata,"m of strata boundaries"))
@@ -470,7 +534,12 @@ stratify_map <- function(strata_map, routes, quiet = FALSE,
     routes <- routes %>%
       dplyr::filter(!is.na(.data$strata_name)) %>%
       dplyr::bind_rows(w_miss_join)
+
   }
+
+  }
+
+
 
   list("meta_strata" = sf::st_drop_geometry(strata_map_original),
        "routes" = routes)
@@ -478,7 +547,7 @@ stratify_map <- function(strata_map, routes, quiet = FALSE,
 
 
 # function to identify which rows of sf polygon layer are nearest and less than
-# dist metres from route start lecations.
+# dist metres from route start locations.
 which_min_LT <- function(outside,
                          strata_map,
                          distance_to_strata = 2000){
@@ -501,7 +570,12 @@ which_min_LT <- function(outside,
   strata_details_join <- strata_details[mtch,]
   outside_ret <- dplyr::bind_cols(outside,
                            strata_details_join) %>%
-    sf::st_drop_geometry() %>%
+    sf::st_drop_geometry()
+
+  if(any(c("lon","lat") %in% names(outside_ret))){
+    outside_ret <- outside_ret |>
     dplyr::rename("longitude" = "lon", "latitude" = "lat")
+  }
+
   return(outside_ret)
 }
