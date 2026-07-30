@@ -5,6 +5,35 @@
 //
 
 
+// function compute_E allows for efficient vectorization of the likelihood
+// without saving n_counts*4 parameters (E, ste_)
+
+functions {
+  vector compute_E(
+      vector strata, array[] int strat_tr,
+      vector yeareffect_flat, array[] int strat_year_idx,
+      real eta, array[] int first_year_tr,
+      real sdste, vector ste_raw, array[] int site_tr,
+      real sdobs, vector obs_raw, array[] int observer_tr,
+      int use_pois, real sdnoise, vector noise_raw) {
+    int n = size(strat_tr);
+    vector[n] noise_effect;
+
+    if (use_pois) {
+      noise_effect = sdnoise * noise_raw;
+    } else {
+      noise_effect = rep_vector(0, n);
+    }
+
+    return strata[strat_tr]
+           + yeareffect_flat[strat_year_idx]
+           + eta * to_vector(first_year_tr)
+           + sdste * ste_raw[site_tr]
+           + sdobs * obs_raw[observer_tr]
+           + noise_effect;
+  }
+}
+
 
 
 data {
@@ -15,6 +44,7 @@ data {
   int<lower=1> fixed_year; //middle year of the time-series scaled to ~(n_years/2)
   int<lower=1> n_years_m1; // n_years-1
   int<lower=0,upper=1> use_likelihood; // if set to 0, then generates predictions from the priors
+  int<lower=0,upper=1> predict_counts; // if set to 1, then generates predictions for each observation
 
 
   array[n_counts] int<lower=0> count;              // count observations
@@ -86,6 +116,12 @@ transformed data {
      array[n_test] int observer_te = observer[test];
      int obs_type = sum(obs_mat[1,]); // evaluates to 0 if prepare_data(..., assume_observer_variation_log_normal == TRUE)
 
+     // supporting the vectorization of the main likelihood statement
+     array[n_train] int<lower=1, upper=n_strata*n_years> strat_year_idx;
+
+      for (i in 1:n_train) {
+        strat_year_idx[i] = (year_tr[i] - 1) * n_strata + strat_tr[i];
+        }
 
 }
 
@@ -115,7 +151,6 @@ parameters {
 }
 
 transformed parameters {
-  vector[n_train] E;           // log_scale additive likelihood
   matrix[n_strata,n_years] beta;         // strata-level mean differences (0-centered deviation from continental mean BETA)
   matrix[n_strata,n_years] yeareffect;  // matrix of estimated annual values of trajectory
   //vector[n_years_m1] BETA; // annual estimates of continental mean differences (n_years - 1, because middle year is fixed at 0)
@@ -148,21 +183,6 @@ for(s in 1:n_strata){
   }
 }
    strata = (sdstrata*strata_raw) + STRATA;
-
-
-  for(i in 1:n_train){
-    real noise;
-    real obs = sdobs*obs_raw[observer_tr[i]];
-    real ste = sdste*ste_raw[site_tr[i]]; // site intercepts
-    if(use_pois){
-    noise = sdnoise*noise_raw[i];
-    }else{
-    noise = 0;
-    }
-
-    E[i] =  strata[strat_tr[i]] + yeareffect[strat_tr[i],year_tr[i]] + eta*first_year_tr[i] + ste + obs + noise;
-  }
-
 
 
   }
@@ -214,10 +234,17 @@ for(s in 1:(n_strata)){
 
 
 if(use_likelihood){
+    vector[n_train] E_m = compute_E(
+      strata, strat_tr, to_vector(yeareffect), strat_year_idx,
+      eta, first_year_tr,
+      sdste, ste_raw, site_tr,
+      sdobs, obs_raw, observer_tr,
+      use_pois, sdnoise, noise_raw);
+
 if(use_pois){
-  count_tr ~ poisson_log(E); //vectorized count likelihood with log-transformation
+  count_tr ~ poisson_log(E_m); //vectorized count likelihood with log-transformation
 }else{
-   count_tr ~ neg_binomial_2_log(E,phi); //vectorized count likelihood with log-transformation
+   count_tr ~ neg_binomial_2_log(E_m,phi); //vectorized count likelihood with log-transformation
 
 }
 }
@@ -236,15 +263,32 @@ if(use_pois){
    vector[n_test*calc_CV] log_lik_cv; // alternative value to track the log-likelihood of the coutns in the test dataset
    real adj;
 
+  vector[n_train*predict_counts] E; // this adjusts the size of E (length = 0 if predict_counts == 0)
+  if(predict_counts){
+      E = compute_E(
+        strata, strat_tr, to_vector(yeareffect), strat_year_idx,
+        eta, first_year_tr,
+        sdste, ste_raw, site_tr,
+        sdobs, obs_raw, observer_tr,
+        use_pois, sdnoise, noise_raw);
+  }
+
   if(calc_log_lik){
   // potentially useful for estimating loo-diagnostics, such as looic
+      vector[n_train] E_ll = compute_E(
+        strata, strat_tr, to_vector(yeareffect), strat_year_idx,
+        eta, first_year_tr,
+        sdste, ste_raw, site_tr,
+        sdobs, obs_raw, observer_tr,
+        use_pois, sdnoise, noise_raw);
+
   if(use_pois){
-  for(i in 1:n_counts){
-   log_lik[i] = poisson_log_lpmf(count_tr[i] | E[i]);
+  for(i in 1:n_train){
+   log_lik[i] = poisson_log_lpmf(count_tr[i] | E_ll[i]);
    }
   }else{
-   for(i in 1:n_counts){
-   log_lik[i] = neg_binomial_2_log_lpmf(count_tr[i] | E[i] , phi);
+   for(i in 1:n_train){
+   log_lik[i] = neg_binomial_2_log_lpmf(count_tr[i] | E_ll[i] , phi);
    }
   }
   }

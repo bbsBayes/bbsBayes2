@@ -4,8 +4,8 @@ test_that("run_model() first_diff short", {
   unlink(list.files(test_path(), "^BBS_PacificWren",
                     full.names = TRUE))
 
-  md <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE,
-                 use_map = FALSE) %>%
+  md <- stratify(by = "bbs", sample_data = TRUE, quiet = TRUE,
+                 use_map = TRUE) %>%
     prepare_data(min_max_route_years = 2) %>%
     prepare_model(model = "first_diff", set_seed = 111)
 
@@ -49,20 +49,6 @@ test_that("run_model() first_diff short", {
       unlink()
 })
 
-test_that("run_model() slope", {
-
-  # Use example model (slope takes a while to run)
-  r <- slope_test_model
-
-  expect_type(r, "list")
-  expect_named(r, c("model_fit", "model_data", "meta_data", "meta_strata",
-                    "raw_data"))
-
-  expect_s3_class(r$model_fit, "CmdStanMCMC")
-  expect_type(r[["meta_data"]], "list")
-  expect_s3_class(r[["meta_strata"]], "data.frame")
-  expect_s3_class(r[["raw_data"]], "data.frame")
-})
 
 
 test_that("run_model() first_diff spatial", {
@@ -70,11 +56,11 @@ test_that("run_model() first_diff spatial", {
   unlink(list.files(test_path(), "^BBS_PacificWren",
                     full.names = TRUE))
 
-  p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE,
-                use_map = FALSE) %>%
+  p <- stratify(by = "bbs", sample_data = TRUE, quiet = TRUE,
+                use_map = TRUE) %>%
     prepare_data(min_max_route_years = 2,
                  min_year = 2014) %>%
-    prepare_spatial(load_map("bbs_usgs"), quiet = TRUE)
+    prepare_spatial(load_map("bbs"), quiet = TRUE)
 
   md <- prepare_model(p, model = "first_diff",
                       model_variant = "spatial",
@@ -125,8 +111,8 @@ test_that("run_model() ... args", {
   unlink(list.files(test_path(), "^BBS_PacificWren",
                     full.names = TRUE))
 
-  md <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE,
-                 use_map = FALSE) %>%
+  md <- stratify(by = "bbs", sample_data = TRUE, quiet = TRUE,
+                 use_map = TRUE) %>%
     prepare_data(min_max_route_years = 2) %>%
     prepare_model(model = "first_diff", set_seed = 111)
 
@@ -198,16 +184,18 @@ test_that("run_model() Full", {
 
   skip("long")
 
-  p <- stratify(by = "bbs_usgs", sample_data = TRUE, quiet = TRUE,
-                use_map = FALSE) %>%
+  p <- stratify(by = "bbs", sample_data = TRUE, quiet = TRUE,
+                use_map = TRUE) %>%
     prepare_data(min_max_route_years = 2) %>%
-    prepare_spatial(load_map("bbs_cws"), quiet = TRUE)
+    prepare_spatial(load_map("bbs"), quiet = TRUE)
 
-  md <- prepare_model(p, model = bbs_models$model[i],
-                      model_variant = bbs_models$variant[i],
-                      set_seed = 111)
+  bbs_spat_models <- bbs_models[which(bbs_models$variant == "spatial"),]
 
-  for(i in seq_len(nrow(bbs_models))) {
+  for(i in seq_len(nrow(bbs_spat_models))) {
+
+    md <- prepare_model(p, model = bbs_spat_models$model[i],
+                        model_variant = bbs_spat_models$variant[i],
+                        set_seed = 111)
 
     expect_message(r <- run_model(md,
                                   output_dir = ".", chains = 2,

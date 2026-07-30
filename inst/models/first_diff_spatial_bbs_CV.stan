@@ -5,6 +5,37 @@
 //
 
 
+// This is an elaboration of the model used in Link and Sauer
+// function compute_E allows for efficient vectorization of the likelihood
+// without saving n_counts*4 parameters (E, ste_)
+
+functions {
+  vector compute_E(
+      vector strata, array[] int strat_tr,
+      vector yeareffect_flat, array[] int strat_year_idx,
+      real eta, array[] int first_year_tr,
+      real sdste, vector ste_raw, array[] int site_tr,
+      real sdobs, vector obs_raw, array[] int observer_tr,
+      int use_pois, real sdnoise, vector noise_raw) {
+    int n = size(strat_tr);
+    vector[n] noise_effect;
+
+    if (use_pois) {
+      noise_effect = sdnoise * noise_raw;
+    } else {
+      noise_effect = rep_vector(0, n);
+    }
+
+    return strata[strat_tr]
+           + yeareffect_flat[strat_year_idx]
+           + eta * to_vector(first_year_tr)
+           + sdste * ste_raw[site_tr]
+           + sdobs * obs_raw[observer_tr]
+           + noise_effect;
+  }
+}
+
+
 
 data {
   int<lower=1> n_sites;
@@ -14,6 +45,7 @@ data {
   int<lower=1> fixed_year; //middle year of the time-series scaled to ~(n_years/2)
   int<lower=1> n_years_m1; // n_years-1
   int<lower=0,upper=1> use_likelihood; // if set to 0, then generates predictions from the priors
+  int<lower=0,upper=1> predict_counts; // if set to 1, then generates predictions for each observation
 
   array[n_counts] int<lower=0> count;              // count observations
   array[n_counts] int<lower=1> strat;               // strata indicators
@@ -49,6 +81,7 @@ data {
   int<lower=1> n_edges;
   array [n_edges] int<lower=1, upper=n_strata> node1;  // node1[i] adjacent to node2[i]
   array [n_edges] int<lower=1, upper=n_strata> node2;  // and node1[i] < node2[i]
+  real<lower=0> scaling_factor;
 
   // Extra Poisson variance options
   int<lower=0,upper=1> heavy_tailed; //indicator if extra poisson variance should be t-distributed or normal (yes = 1, no = 0 and therefore normal)
@@ -88,6 +121,15 @@ transformed data {
      array[n_test] int first_year_te = first_year[test];
      array[n_test] int observer_te = observer[test];
      int obs_type = sum(obs_mat[1,]); // evaluates to 0 if prepare_data(..., assume_observer_variation_log_normal == TRUE)
+
+     // supporting the vectorization of the main likelihood statement
+     array[n_train] int<lower=1, upper=n_strata*n_years> strat_year_idx;
+
+      for (i in 1:n_train) {
+        strat_year_idx[i] = (year_tr[i] - 1) * n_strata + strat_tr[i];
+        }
+
+
 }
 
 
@@ -119,7 +161,6 @@ parameters {
 }
 
 transformed parameters {
-  vector[n_train] E;           // log_scale additive likelihood
   matrix[n_strata,n_years_m1] beta;         // strata-level mean differences (0-centered deviation from continental mean BETA)
   matrix[n_strata,n_years] yeareffect;  // matrix of estimated annual values of trajectory
   vector[n_years_m1] BETA; // annual estimates of continental mean differences (n_years - 1, because middle year is fixed at 0)
@@ -128,7 +169,8 @@ transformed parameters {
   real<lower=0> phi; //transformed sdnoise if use_pois == 0 (and therefore Negative Binomial)
   real BETA_2020;
   vector[n_strata] beta_2020;
-
+  real<lower=0> sdbeta_scaled = sdbeta/sqrt(scaling_factor);
+  real<lower=0> sdstrata_scaled = sdstrata/sqrt(scaling_factor);
 
   if(use_pois){
     phi = 0;
@@ -141,7 +183,7 @@ transformed parameters {
   // change values for the two-year span between 2019 and 2021
  // BBS was cancelled in 2020, so there are no data
   BETA_2020 = sdBETA * BETA_raw_2020;
-  beta_2020 = (sdbeta) * beta_raw_2020;
+  beta_2020 = (sdbeta_scaled) * beta_raw_2020;
 
 
 
@@ -152,7 +194,7 @@ transformed parameters {
   for(t in Iy1){
 
   if(y_2020[t]){ // all years not equal to 2020 or 2019
-    beta[,t] = (sdbeta * beta_raw[t,]) + BETA[t];
+    beta[,t] = (sdbeta_scaled * beta_raw[t,]) + BETA[t];
     YearEffect[t] = YearEffect[t+1] - BETA[t]; // hyperparameter trajectory interesting to monitor but no direct inference
 
   }else{ // years 2020 and 2019 (so differences from 2021-2020 and 2020-2019)
@@ -171,7 +213,7 @@ transformed parameters {
    for(t in Iy2){
 
    if(y_2020[t]){ // all years not equal to 2020 or 2021
-    beta[,t-1] = (sdbeta * beta_raw[t-1,]) + BETA[t-1];//
+    beta[,t-1] = (sdbeta_scaled * beta_raw[t-1,]) + BETA[t-1];//
     YearEffect[t] = YearEffect[t-1] + BETA[t-1];
 
       }else{ // for years 2020 and 2021 (so differences from 2019-2020 and 2020-2021)
@@ -188,23 +230,7 @@ transformed parameters {
     yeareffect[,t] = yeareffect[,t-1] + beta[,t-1];
   }
 
-   strata = (sdstrata*strata_raw) + STRATA;
-
-
-  for(i in 1:n_train){
-    real noise;
-    real obs = sdobs*obs_raw[observer_tr[i]];
-    real ste = sdste*ste_raw[site_tr[i]]; // site intercepts
-    if(use_pois){
-    noise = sdnoise*noise_raw[i];
-    }else{
-    noise = 0;
-    }
-
-    E[i] =  strata[strat_tr[i]] + yeareffect[strat_tr[i],year_tr[i]] + eta*first_year_tr[i] + ste + obs + noise;
-  }
-
-
+   strata = (sdstrata_scaled*strata_raw) + STRATA;
 
   }
 
@@ -282,10 +308,17 @@ for(t in Iy2){
    target += -0.5 * dot_self(strata_raw[node1] - strata_raw[node2]); // ICAR prior
 
 if(use_likelihood){
+    vector[n_train] E_m = compute_E(
+      strata, strat_tr, to_vector(yeareffect), strat_year_idx,
+      eta, first_year_tr,
+      sdste, ste_raw, site_tr,
+      sdobs, obs_raw, observer_tr,
+      use_pois, sdnoise, noise_raw);
+
 if(use_pois){
-  count_tr ~ poisson_log(E); //vectorized count likelihood with log-transformation
+  count_tr ~ poisson_log(E_m); //vectorized count likelihood with log-transformation
 }else{
-   count_tr ~ neg_binomial_2_log(E,phi); //vectorized count likelihood with log-transformation
+   count_tr ~ neg_binomial_2_log(E_m,phi); //vectorized count likelihood with log-transformation
 
 }
 }
@@ -305,15 +338,32 @@ if(use_pois){
    vector[n_test*calc_CV] log_lik_cv; // alternative value to track the log-likelihood of the coutns in the test dataset
    real adj;
 
+  vector[n_train*predict_counts] E; // this adjusts the size of E (length = 0 if predict_counts == 0)
+  if(predict_counts){
+      E = compute_E(
+        strata, strat_tr, to_vector(yeareffect), strat_year_idx,
+        eta, first_year_tr,
+        sdste, ste_raw, site_tr,
+        sdobs, obs_raw, observer_tr,
+        use_pois, sdnoise, noise_raw);
+  }
+
   if(calc_log_lik){
   // potentially useful for estimating loo-diagnostics, such as looic
+      vector[n_train] E_ll = compute_E(
+        strata, strat_tr, to_vector(yeareffect), strat_year_idx,
+        eta, first_year_tr,
+        sdste, ste_raw, site_tr,
+        sdobs, obs_raw, observer_tr,
+        use_pois, sdnoise, noise_raw);
+
   if(use_pois){
-  for(i in 1:n_counts){
-   log_lik[i] = poisson_log_lpmf(count_tr[i] | E[i]);
+  for(i in 1:n_train){
+   log_lik[i] = poisson_log_lpmf(count_tr[i] | E_ll[i]);
    }
   }else{
-   for(i in 1:n_counts){
-   log_lik[i] = neg_binomial_2_log_lpmf(count_tr[i] | E[i] , phi);
+   for(i in 1:n_train){
+   log_lik[i] = neg_binomial_2_log_lpmf(count_tr[i] | E_ll[i] , phi);
    }
   }
   }
@@ -399,7 +449,7 @@ for(y in 1:n_years){
         // if(calc_n2){
         // n2[s,y] = non_zero_weight[s] * exp(strata + yeareffect[s,y] + retrans_noise + retrans_ste + retrans_obs);//mean of exponentiated predictions across sites in a stratum
         // }
-      Hyper_N[y] = exp(STRATA + YearEffect[y] + retrans_noise + 0.5*sdobs^2 + 0.5*sdste^2);
+      Hyper_N[y] = exp(STRATA + YearEffect[y] + retrans_noise + retrans_obs + retrans_ste);
 
     }
   }

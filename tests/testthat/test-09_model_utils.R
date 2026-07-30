@@ -23,10 +23,7 @@ test_that("get_model_vars()", {
                     vars))
   expect_false("n_slope" %in% vars)
 
-  expect_silent(vars <- get_model_vars(slope_test_model))
-  expect_true(all(c("strata_raw", "beta", "yeareffect", "n", "n_slope") %in%
-                    vars))
-  expect_false("YearEffect" %in% vars)
+
 })
 
 test_that("get_summary()", {

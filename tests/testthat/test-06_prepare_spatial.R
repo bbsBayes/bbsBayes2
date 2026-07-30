@@ -79,7 +79,7 @@ test_that("prepare_spatial() defaults", {
                    "raw_data"))
 
   n <- n[["spatial_data"]]
-  expect_named(n, c("n", "n_edges", "node1", "node2", "adj_matrix", "map"))
+  expect_named(n, c("n", "n_edges", "node1", "node2", "adj_matrix", "map", "scaling_factor"))
 
   # Expect matches subset of map
   map_sub <- dplyr::filter(map, strata_name %in% p[["meta_strata"]]$strata_name)
@@ -153,7 +153,7 @@ test_that("prepare_spatial(voronoi = TRUE)", {
 
   n %>%
     expect_type("list") %>%
-    expect_named(c("n", "n_edges", "node1", "node2", "adj_matrix", "map"))
+    expect_named(c("n", "n_edges", "node1", "node2", "adj_matrix", "map", "scaling_factor"))
 
   # Expect matches subset of map
   map_sub <- dplyr::filter(map, strata_name %in% p[["meta_strata"]]$strata_name)

@@ -20,6 +20,7 @@ prepare_model(
   cv_fold_groups = "obs_n",
   cv_omit_singles = TRUE,
   use_likelihood = TRUE,
+  predict_counts = TRUE,
   set_seed = NULL,
   quiet = FALSE
 )
@@ -83,6 +84,11 @@ details.}
 
 \item{use_likelihood}{Logical. If set to FALSE generates prior predictions
 i.e., ignores the likelihood of the count data. Default TRUE}
+
+\item{predict_counts}{Logical. Whether to generate log-scale mean predictions
+for each count. Default is TRUE, so that each model output can be used to
+run posterior predictive checks, but if set to FALSE it reduces the size
+of the final stored model object.}
 
 \item{set_seed}{Numeric. If \code{NULL} (default) no seed is set. Otherwise an
 integer number to be used with \code{withr::with_seed()} internally to ensure

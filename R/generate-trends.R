@@ -262,7 +262,7 @@ generate_trends <- function(indices,
     dplyr::select("region","region_type",
                   "start_year","end_year",
                   "tr") %>%
-    dplyr::rename(trend_full_posterior = .data$tr)
+    dplyr::rename(trend_full_posterior = )
 
   # Reliability Criteria
   q1 <- quantiles[1]

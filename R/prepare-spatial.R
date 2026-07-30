@@ -97,6 +97,8 @@ prepare_spatial <- function(prepared_data,
   # Prepare spatial data
   if(!quiet) message("Preparing spatial data...")
 
+  n_strata <- prepared_data$model_data$n_strat
+
   # Project strata_map to equal area projection
   if(sf::st_crs(strata_map) != bbsBayes2::equal_area_crs){
     if(!quiet) message("Supplied strata_map is in a geographic projection. ",
@@ -230,11 +232,20 @@ prepare_spatial <- function(prepared_data,
   map <- plot_neighbours(strata_map, centres, nb_db, bbox, vint, add_map,
                          label_size)
 
+  nb_predata <- nb_fmt(nb_weights)
+
+  scaling_factor <- calculate_icar_scaling_factor(nb_predata$node1,
+                                                  nb_predata$node2,
+                                                  n_strata)
+  if(scaling_factor < 0.001){
+    warning("something may be wrong with the adjacency map, check scaling_factor")
+  }
   # Reformat nodes and edges
   nb <- append(
-    nb_fmt(nb_weights),
+    nb_predata,
     list("adj_matrix" = nb_mat,
-         "map" = map))
+         "map" = map,
+         "scaling_factor" = scaling_factor))
 
   append(
     list("spatial_data" = nb),
@@ -343,6 +354,72 @@ fix_islands <- function(nb_db, centres, island_link_dist_factor, quiet) {
   nb_db
 }
 
+calculate_icar_scaling_factor <- function(node1, node2, n_strata) {
+  # calculates scaling factor for precision matrix
+  # in the model, the sd scaling of the spatial effects is adjusted by
+  # dividing the sqrt(scaling_factor)
+  # dense adjacency matrix - fine at bbsBayes2's typical strata counts
+  # (tens to a couple hundred, occasionally low thousands); the eigen()
+  # step below is the actual cost driver, not this matrix's storage
+  adj <- matrix(0, n_strata, n_strata)
+  adj[cbind(node1, node2)] <- 1
+  adj[cbind(node2, node1)] <- 1
+
+  # ICAR precision matrix: Q = D - A
+  degree <- rowSums(adj)
+  Q <- diag(degree) - adj
+
+  # Moore-Penrose pseudoinverse via eigendecomposition: zeroing out the
+  # (near-)zero eigenvalues before inverting the rest automatically
+  # restricts to the sum-to-zero subspace - and does so correctly even
+  # for a disconnected graph, since each connected component contributes
+  # its own zero eigenvalue (spanned by that component's indicator
+  # vector), which gets zeroed out the same way
+  eig <- eigen(Q, symmetric = TRUE)
+  tol <- max(eig$values) * 1e-8
+  inv_values <- ifelse(eig$values > tol, 1 / eig$values, 0)
+  Q_inv <- eig$vectors %*% (inv_values * t(eig$vectors))
+
+  # geometric mean of the implied marginal variances
+  # (Riebler et al. 2016 / Freni-Sterrantino et al. 2018)
+  # see recomendation #1 in but here using only base R and not the
+  # sparse application that requires inla
+  # https://doi.org/10.1016/j.sste.2018.04.002
+  exp(mean(log(diag(Q_inv))))
+}
+
+### alternative for potential future consideration that requires inla
+# calculate_icar_scaling_factor <- function(node1, node2, n_strata) {
+#   # adjacency matrix from the edge list
+#   adj_matrix <- sparseMatrix(
+#     i = c(node1, node2), j = c(node2, node1),
+#     x = 1, dims = c(n_strata, n_strata)
+#   )
+#
+#   # ICAR precision matrix: Q = D - A
+#   Q <- Diagonal(n_strata, Matrix::rowSums(adj_matrix)) - adj_matrix
+#
+#   # small jitter - Q is singular by construction (one zero eigenvalue per
+#   # connected component), so a direct inverse doesn't exist without this
+#   Q_pert <- Q + Diagonal(n_strata) * max(diag(Q)) * sqrt(.Machine$double.eps)
+#
+#   # generalized inverse restricted to the sum-to-zero constraint
+#   if (requireNamespace("INLA", quietly = TRUE)) {
+#     Q_inv <- INLA::inla.qinv(
+#       Q_pert,
+#       constr = list(A = matrix(1, 1, n_strata), e = 0)
+#     )
+#   } else {
+#     # dense fallback - fine at bbsBayes2's typical strata counts
+#     # (dozens to a couple hundred); avoid for graphs with many
+#     # thousands of nodes
+#     Q_inv <- MASS::ginv(as.matrix(Q_pert))
+#   }
+#
+#   # geometric mean of the implied marginal variances
+#   # (Riebler et al. 2016 / Freni-Sterrantino et al. 2018)
+#   exp(mean(log(Matrix::diag(Q_inv))))
+# }
 
 plot_neighbours <- function(strata_map, centres, nb_db, bbox, vint, add_map,
                             label_size) {

@@ -1,7 +1,7 @@
 Package: bbsBayes2
 Type: Package
 Title: Hierarchical Bayesian Analysis of North American BBS Data
-Version: 1.2026.2
+Version: 1.2026.3
 Authors@R: c(person("Brandon P.M.", "Edwards", role = c("aut", "cre"),
                      email = "brandonedwards3@cmail.carleton.ca"),
               person("Adam C.", "Smith", role = "aut",
@@ -61,7 +61,7 @@ Suggests:
     rnaturalearthhires,
     roxygen2,
     testthat (>= 3.0.0)
-Additional_repositories: https://mc-stan.org/r-packages/, https://ropensci.r-universe.dev
+Additional_repositories: https://stan-dev.r-universe.dev/, https://ropensci.r-universe.dev
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 Config/roxygen2/version: 8.0.0
