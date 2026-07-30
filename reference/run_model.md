@@ -252,5 +252,5 @@ m <- run_model(pm, iter_warmup = 20, iter_sampling = 20, chains = 2)
 #> 
 #> Warning: 1 of 2 chains had an E-BFMI less than 0.3.
 #> See https://mc-stan.org/misc/warnings for details.
-#> Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/docs/reference/BBS_PacificWren_first_diff_hier_202607302246_STAN.rds
+#> Saving model output to /home/runner/work/bbsBayes2/bbsBayes2/docs/reference/BBS_PacificWren_first_diff_hier_202607302255_STAN.rds
 ```
