@@ -1,4 +1,4 @@
-# bbsBayes2 1.2026.3 Released , 2026 - Improved sampling new parameterization.
+# bbsBayes2 1.2026.3 Released July 31, 2026 - Improved sampling new parameterization.
 
 Details on new releases below.
 
