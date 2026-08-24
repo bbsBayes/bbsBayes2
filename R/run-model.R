@@ -318,6 +318,7 @@ save_model_run <- function(model_output,
 
     if(!quiet) message("Saving model output to ", save_file_path)
   } else {
+    csv_path <- model_fit$output_files()
     if(!is.null(save_file_path)){
     check_dir(dirname(save_file_path))
     }else{
@@ -339,6 +340,7 @@ save_model_run <- function(model_output,
   readr::write_rds(model_output, save_file_path)
 
   if(!retain_csv){
+
   unlink(csv_path) # deleting the csv files
   }
   invisible(model_output)

@@ -13,7 +13,7 @@ functions {
       array[] int strat_year_idx,
       real eta, array[] int first_year_tr,
       real sdste, vector ste_raw, array[] int site_tr,
-      real sdobs, vector obs_raw, array[] int observer_tr,
+      vector sdobs, vector obs_raw, array[] int observer_tr,
       int use_pois, real sdnoise, vector noise_raw) {
     int n = size(strat_tr);
     vector[n] noise_effect;
@@ -29,7 +29,7 @@ functions {
            + yeareffect_flat[strat_year_idx]
            + eta * to_vector(first_year_tr)
            + sdste * ste_raw[site_tr]
-           + sdobs * obs_raw[observer_tr]
+           + sdobs[strat_tr] * obs_raw[observer_tr]
            + noise_effect;
   }
 }
