@@ -9,11 +9,12 @@
 functions {
   vector compute_E(
       vector strata, array[] int strat_tr,
-      vector yeareffect_flat, vector smooth_flat,
+      vector yeareffect_flat,
+      vector smooth_flat,
       array[] int strat_year_idx,
       real eta, array[] int first_year_tr,
       real sdste, vector ste_raw, array[] int site_tr,
-      vector sdobs, vector obs_raw, array[] int observer_tr,
+      real sdobs, vector obs_raw, array[] int observer_tr,
       int use_pois, real sdnoise, vector noise_raw) {
     int n = size(strat_tr);
     vector[n] noise_effect;
@@ -29,7 +30,7 @@ functions {
            + yeareffect_flat[strat_year_idx]
            + eta * to_vector(first_year_tr)
            + sdste * ste_raw[site_tr]
-           + sdobs[strat_tr] * obs_raw[observer_tr]
+           + sdobs * obs_raw[observer_tr]
            + noise_effect;
   }
 }
@@ -106,6 +107,8 @@ transformed data {
 
 
      // supporting the vectorization of the main likelihood statement
+     // identifies the vector index for observations from a given strata and year
+     // for to_vector() versions of the smooth_pred and yeareffect matrices
      array[n_train] int<lower=1, upper=n_strata*n_years> strat_year_idx;
 
       for (i in 1:n_train) {
@@ -172,8 +175,11 @@ transformed parameters {
   SMOOTH_pred = year_basis * BETA;
   //structure for non-spatial version where beta values are estimated then centered on mean smooth
   for(s in 1:n_strata){
-    beta[s,] = (sdbeta[s] * beta_raw[s,]) + transpose(BETA);
+    for(k in 1:n_knots_year){
+    beta[s,k] = (sdbeta[s] * beta_raw[s,k]) + BETA[k];
+    }
   }
+
 
   for(s in 1:n_strata){
      smooth_pred[,s] = year_basis * transpose(beta[s,]);
@@ -245,7 +251,8 @@ for(s in 1:n_strata){
 
 if(use_likelihood){
     vector[n_train] E_m = compute_E(
-      strata, strat_tr, to_vector(yeareffect),
+      strata, strat_tr,
+      to_vector(yeareffect),
       to_vector(transpose(smooth_pred)),
       strat_year_idx,
       eta, first_year_tr,
