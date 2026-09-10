@@ -4,6 +4,10 @@ editor_options:
     wrap: sentence
 ---
 
+# bbsBayes2 1.2026.4 Released September 9, 2026 - indexing fix to hierarchical variants of gam and gamye models.
+
+-   Short 3-line code changes to the model files for the hierarchical variants of the GAM and GAMYE. A change in version 1.2026.3 created an indexing error in these models. Those indexing errors are fixed here.
+
 # bbsBayes2 1.2026.3 Released , 2026 - Improved sampling new parameterization.
 
 -   Modified all of the models to increase the level of vectorization and thereby increase sampling efficiency.

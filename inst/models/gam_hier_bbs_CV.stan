@@ -164,7 +164,9 @@ transformed parameters {
   SMOOTH_pred = year_basis * BETA;
   //structure for non-spatial version where beta values are estimated then centered on mean smooth
   for(s in 1:n_strata){
-    beta[s,] = (sdbeta[s] * beta_raw[s,]) + transpose(BETA);
+    for(k in 1:n_knots_year){
+    beta[s,k] = (sdbeta[s] * beta_raw[s,k]) + BETA[k];
+    }
   }
 
   for(s in 1:n_strata){
