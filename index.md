@@ -1,4 +1,4 @@
-# bbsBayes2 1.2026.4 Released September 9, 2026 - indexing fix to hierarchical variants of gam and gamye models.
+# bbsBayes2 1.2026.4 Released September 9, 2026
 
 Details on new releases below.
 
