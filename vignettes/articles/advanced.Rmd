@@ -109,15 +109,15 @@ Generating prior predictions for any model, based on the data structure (number 
 
 species.eng = "Pacific Wren"
 
-stratified_data <- stratify(by = "bbs_usgs",species=species.eng)
+stratified_data <- stratify(by = "bbs",species=species.eng)
 
 # to be included a stratum must have at least 3 routes on which the species has been observed
 # and at least one of those routes must have at least 2 years of observations
 d<- prepare_data(strata_data = stratified_data,
-                 min_year = 2013,
-                 max_year = 2023)
+                 min_year = 2015,
+                 max_year = 2025)
 
-sd <- prepare_spatial(d,load_map("bbs_cws")) # create spatial relationships
+sd <- prepare_spatial(d,load_map("bbs")) # create spatial relationships
 
 m<-prepare_model(
   prepared_data = sd,
@@ -158,7 +158,7 @@ print(cont_prior_trajectory)
 <img src="figures/advanced_prior_predictions-1.png" alt="Prior predicted population trajectories showing sample of predicted population trajectories that range from large increases to large decreases"  />
 <p class="caption">Prior predicted population trajectories</p>
 </div>
-So the predicted population trajectories include everything from extreme increases (upper 95% credible interval of the trends = 199.4 %/year to extreme decreases (lower 95% credible interval of the trends = -65.5 %/year).
+So the predicted population trajectories include everything from extreme increases (upper 95% credible interval of the trends = 222.2 %/year to extreme decreases (lower 95% credible interval of the trends = -57.2 %/year).
 
 
 
@@ -529,7 +529,7 @@ t$trends[1,c("region","percent_change","percent_change_q_0.95")]
 #> # A tibble: 1 × 3
 #>   region    percent_change percent_change_q_0.95
 #>   <chr>              <dbl>                 <dbl>
-#> 1 continent          -46.3                 -39.1
+#> 1 continent          -51.2                 -44.4
 ```
 
 In addition, the function can optionally calculate the posterior
@@ -544,7 +544,7 @@ t$trends[1,c("region","prob_decrease_0_percent","prob_decrease_50_percent")]
 #> # A tibble: 1 × 3
 #>   region    prob_decrease_0_percent prob_decrease_50_percent
 #>   <chr>                       <dbl>                    <dbl>
-#> 1 continent                       1                    0.191
+#> 1 continent                       1                    0.623
 ```
 
 These values can be useful for deriving statements such as "the
@@ -567,6 +567,35 @@ First we load a [fitted model object for Barn Swallow](https://drive.google.com/
 
 ``` r
 
+
+species <- "Barn Swallow"
+
+
+s <- stratify("bbs",
+              species = species) %>%
+  prepare_data(min_n_routes = 3,
+               min_span = 10)
+
+
+ps <- prepare_spatial(s, strata_map = load_map("bbs"))
+
+p <- prepare_model(ps,
+                model = "first_diff", model_variant = "spatial")
+
+
+
+BARS <- run_model(p,
+                  output_basename = "Barn_Swallow_first_diff_spatial",
+                  output_dir = "output",
+                  refresh = 500)
+
+```
+
+
+
+
+``` r
+
 BARS <- readRDS("output/Barn_Swallow_first_diff_spatial.rds")
 
 ```
@@ -579,9 +608,11 @@ of our new composite regions (*North* or *South*)
 ``` r
 
 comp_regions <- BARS$meta_strata %>%
-  mutate(north_south = ifelse(bcr < 15, "North","South"))
+  mutate(bcr = as.integer(str_extract(strata_name,"[[:digit:]]{1,2}$")),
+        north_south = ifelse(bcr < 15 | bcr > 68, "North","South"))
 
 i_BARS <- generate_indices(BARS,
+                           hpdi = TRUE,
                            regions_index = comp_regions, # new data frame to identify which strata are in composite regions
                            regions = "north_south") # column in data frame with composite region names
 #> Processing region north_south
@@ -590,7 +621,7 @@ trajectories <- plot_indices(i_BARS)
 print(trajectories[["North"]] / trajectories[["South"]])
 ```
 
-<img src="figures/advanced_unnamed-chunk-21-1.png" alt="Population trajectories for Barn Swallow in the northern and southern parts of their range"  />
+<img src="figures/advanced_unnamed-chunk-22-1.png" alt="Population trajectories for Barn Swallow in the northern and southern parts of their range"  />
 
 ## Exporting and modifying the Stan models
 
@@ -825,15 +856,47 @@ m_first_diff <- readRDS("output/BASP_latlong_first_diff_spatial.rds")
 
 # install.packages("loo") # you may need to install this package
 loo_gamye <- m_gamye$model_fit$loo()# loo calculations using the functions built into the cmdstanr model-fit object
-#> Error: Please install the 'loo' package to use this function.
+#> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 loo_first_diff <- m_first_diff$model_fit$loo()# loo calculations using the functions built into the cmdstanr model-fit object
-#> Error: Please install the 'loo' package to use this function.
+#> Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 
 
 loo_gamye
-#> Error: object 'loo_gamye' not found
+#> 
+#> Computed from 8000 by 4368 log-likelihood matrix.
+#> 
+#>          Estimate    SE
+#> elpd_loo  -7095.6 106.3
+#> p_loo       682.0  26.7
+#> looic     14191.2 212.5
+#> ------
+#> MCSE of elpd_loo is NA.
+#> MCSE and ESS estimates assume MCMC draws (r_eff in [0.3, 1.9]).
+#> 
+#> Pareto k diagnostic values:
+#>                          Count Pct.    Min. ESS
+#> (-Inf, 0.7]   (good)     4234  96.9%   187     
+#>    (0.7, 1]   (bad)       112   2.6%   <NA>    
+#>    (1, Inf)   (very bad)   22   0.5%   <NA>    
+#> See help('pareto-k-diagnostic') for details.
 loo_first_diff
-#> Error: object 'loo_first_diff' not found
+#> 
+#> Computed from 8000 by 4368 log-likelihood matrix.
+#> 
+#>          Estimate    SE
+#> elpd_loo  -6976.8 105.3
+#> p_loo       778.8  26.2
+#> looic     13953.6 210.7
+#> ------
+#> MCSE of elpd_loo is NA.
+#> MCSE and ESS estimates assume MCMC draws (r_eff in [0.3, 1.7]).
+#> 
+#> Pareto k diagnostic values:
+#>                          Count Pct.    Min. ESS
+#> (-Inf, 0.7]   (good)     4218  96.6%   178     
+#>    (0.7, 1]   (bad)       130   3.0%   <NA>    
+#>    (1, Inf)   (very bad)   20   0.5%   <NA>    
+#> See help('pareto-k-diagnostic') for details.
 ```
 
 This approximation of leave-one-out crossvalidation suggests that the first-difference model may slightly out-perform the gamye model for this species and time-period. However, the uncertainty in the calculation of loo is relatively wide and the estimates for the two models are only about 1 SD apart.
@@ -1024,7 +1087,7 @@ dif_by_count <- ggplot(cv_dif) +
 dif_by_count
 ```
 
-<img src="figures/advanced_unnamed-chunk-34-1.png" alt="Cross validation differences"  />
+<img src="figures/advanced_unnamed-chunk-35-1.png" alt="Cross validation differences"  />
 
 
 

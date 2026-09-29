@@ -114,15 +114,15 @@ Generating prior predictions for any model, based on the data structure (number 
 
 species.eng = "Pacific Wren"
 
-stratified_data <- stratify(by = "bbs_usgs",species=species.eng)
+stratified_data <- stratify(by = "bbs",species=species.eng)
 
 # to be included a stratum must have at least 3 routes on which the species has been observed
 # and at least one of those routes must have at least 2 years of observations
 d<- prepare_data(strata_data = stratified_data,
-                 min_year = 2013,
-                 max_year = 2023)
+                 min_year = 2015,
+                 max_year = 2025)
 
-sd <- prepare_spatial(d,load_map("bbs_cws")) # create spatial relationships
+sd <- prepare_spatial(d,load_map("bbs")) # create spatial relationships
 
 m<-prepare_model(
   prepared_data = sd,
@@ -528,6 +528,35 @@ northern and southern portions of the Barn Swallow's range.
 
 First we load a [fitted model object for Barn Swallow](https://drive.google.com/file/d/1hlJ9rljDSGdkV4P_-k07wBSyWyKOy-hm/view?usp=drive_link).
 
+```{r, eval = FALSE}
+
+
+species <- "Barn Swallow"
+
+
+s <- stratify("bbs",
+              species = species) %>%
+  prepare_data(min_n_routes = 3,
+               min_span = 10)
+
+
+ps <- prepare_spatial(s, strata_map = load_map("bbs"))
+
+p <- prepare_model(ps,
+                model = "first_diff", model_variant = "spatial")
+
+
+
+BARS <- run_model(p,
+                  output_basename = "Barn_Swallow_first_diff_spatial",
+                  output_dir = "output",
+                  refresh = 500)
+
+
+```
+
+
+
 ```{r}
 
 BARS <- readRDS("output/Barn_Swallow_first_diff_spatial.rds")
@@ -541,9 +570,11 @@ of our new composite regions (*North* or *South*)
 ```{r, fig.cap = "", fig.alt = "Population trajectories for Barn Swallow in the northern and southern parts of their range", fig.width = 8, fig.asp = 1}
 
 comp_regions <- BARS$meta_strata %>%
-  mutate(north_south = ifelse(bcr < 15, "North","South"))
+  mutate(bcr = as.integer(str_extract(strata_name,"[[:digit:]]{1,2}$")),
+        north_south = ifelse(bcr < 15 | bcr > 68, "North","South"))
 
 i_BARS <- generate_indices(BARS,
+                           hpdi = TRUE,
                            regions_index = comp_regions, # new data frame to identify which strata are in composite regions
                            regions = "north_south") # column in data frame with composite region names
 
