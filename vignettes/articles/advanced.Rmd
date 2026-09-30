@@ -286,7 +286,7 @@ In this example we've placed it in a sub-directory of our working directory call
 BARS <- readRDS("output/Barn_Swallow_gamye_spatial.rds")
 ```
 
-We generate annual indices of abundance using the smooth-only component of the population trajectory. Then use those to estimate long-term trends (1966 - 2021), and plot those trends on a map.
+We generate annual indices of abundance using the smooth-only component of the population trajectory. Then use those to estimate long-term trends (1966 - 2025), and plot those trends on a map.
 
 
 ``` r
@@ -474,12 +474,12 @@ pattern of change between the two end-points.
 ``` r
 t <- generate_trends(i,
                      slope = TRUE,
-                     min_year = 1980) #trends from 1980-2021
+                     min_year = 1980) #trends from 1980-2025
 t_map <- plot_map(t)
 print(t_map)
 ```
 
-<img src="figures/advanced_unnamed-chunk-16-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the default end-point trend estimates"  />
+<img src="figures/advanced_unnamed-chunk-16-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2025, using the default end-point trend estimates"  />
 
 ### Slope-based Trends
 
@@ -488,7 +488,7 @@ models to dampen the influence of the start and end years on the estimated trend
 These slope-based trends are calculated
 by fitting a log-linear slope to the series of all annual indices
 between the two end-points (e.g., all 11 years in a 10-year trend from
-2011-2021). We refer to these trends as *slope-based trends*. The slope
+2011-2025). We refer to these trends as *slope-based trends*. The slope
 of this line is transformed into an average annual percent change
 across the time-period of interest. F\This slope-based trend may be useful for estimates derived
 from a model and or a species with strong annual fluctuations when the
@@ -508,7 +508,7 @@ t_map_slope <- plot_map(t,
 print(t_map_slope)
 ```
 
-<img src="figures/advanced_unnamed-chunk-17-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2021, using the slope-based trend estimates"  />
+<img src="figures/advanced_unnamed-chunk-17-1.png" alt="Map of population trends for Scissor-tailed Flycatcher from 1980-2025, using the slope-based trend estimates"  />
 
 ### Percent Change and probability of change
 
@@ -550,7 +550,7 @@ t$trends[1,c("region","prob_decrease_0_percent","prob_decrease_50_percent")]
 These values can be useful for deriving statements such as "the
 first-difference spatial model suggests that it is extremely likely that
 the Scissor-tailed Flycatcher population monitored by the BBS has
-decreased between 1966 and 2021 (prob_decrease_0_percent \> 0.999), and
+decreased between 1966 and 2025 (prob_decrease_0_percent \> 0.999), and
 that there is an approximate 21% probability that the species has
 decreased by at least 50% in that same time period
 (prob_decrease_50-percent = 0.20775)".

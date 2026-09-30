@@ -169,22 +169,22 @@ s[["meta_data"]]
 
 s[["routes_strata"]]
 #> # A tibble: 22,261 × 34
-#>    strata_name country_num state_num route route_name active latitude longitude   bcr route_type_id route_type_detail_id route_data_id  rpid  year month   day
-#>    <chr>             <dbl>     <dbl> <chr> <chr>       <dbl>    <dbl>     <dbl> <dbl>         <dbl>                <dbl>         <dbl> <dbl> <dbl> <dbl> <dbl>
-#>  1 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6167129   101  1968     6    26
-#>  2 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6213711   101  1993     6    18
-#>  3 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6167277   101  2000     6    18
-#>  4 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6240061   101  2001     6    16
-#>  5 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6241797   101  2002     6    15
-#>  6 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6170455   101  2003     6    14
-#>  7 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6243485   101  2004     6    16
-#>  8 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6251257   101  2006     6    15
-#>  9 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6262637   101  2007     6    15
-#> 10 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6299246   101  2008     6    14
+#>    strata_name country_num state_num route route_name active latitude longitude   bcr route_type_id route_type_detail_id route_data_id  rpid
+#>    <chr>             <dbl>     <dbl> <chr> <chr>       <dbl>    <dbl>     <dbl> <dbl>         <dbl>                <dbl>         <dbl> <dbl>
+#>  1 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6167129   101
+#>  2 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6213711   101
+#>  3 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6167277   101
+#>  4 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6240061   101
+#>  5 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6241797   101
+#>  6 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6170455   101
+#>  7 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6243485   101
+#>  8 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6251257   101
+#>  9 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6262637   101
+#> 10 3                   840         3 3-4   BIRCH LAKE      1     64.3     -147.     4             1                    1       6299246   101
 #> # ℹ 22,251 more rows
-#> # ℹ 18 more variables: obs_n <dbl>, total_spp <dbl>, start_temp <dbl>, end_temp <dbl>, temp_scale <chr>, start_wind <dbl>, end_wind <dbl>, start_sky <dbl>,
-#> #   end_sky <dbl>, start_time <dbl>, end_time <dbl>, assistant <dbl>, quality_current_id <dbl>, run_type <dbl>, state <chr>, st_abrev <chr>, country <chr>,
-#> #   area_sq_km <dbl>
+#> # ℹ 21 more variables: year <dbl>, month <dbl>, day <dbl>, obs_n <dbl>, total_spp <dbl>, start_temp <dbl>, end_temp <dbl>, temp_scale <chr>,
+#> #   start_wind <dbl>, end_wind <dbl>, start_sky <dbl>, end_sky <dbl>, start_time <dbl>, end_time <dbl>, assistant <dbl>,
+#> #   quality_current_id <dbl>, run_type <dbl>, state <chr>, st_abrev <chr>, country <chr>, area_sq_km <dbl>
 ```
 ### Visualise the new strata and data
 
